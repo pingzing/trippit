@@ -7,6 +7,7 @@ using Template10.Common;
 using System;
 using System.Linq;
 using Windows.UI.Xaml.Data;
+using System.Runtime;
 
 namespace DigiTransit10
 {
@@ -23,10 +24,9 @@ namespace DigiTransit10
 
             #region App settings
 
-            var _settings = SettingsService.Instance;
-            RequestedTheme = _settings.AppTheme;
+            var _settings = SettingsService.Instance;            
             CacheMaxDuration = _settings.CacheMaxDuration;
-            ShowShellBackButton = _settings.UseShellBackButton;
+            ShowShellBackButton = _settings.UseShellBackButton;            
 
             #endregion
         }
@@ -52,7 +52,8 @@ namespace DigiTransit10
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
             // long-running startup tasks go here
-            await Task.Delay(5000);
+
+            // end here
 
             NavigationService.Navigate(typeof(Views.MainPage));
             await Task.CompletedTask;

@@ -9,6 +9,8 @@ namespace DigiTransit10.Views
 {
     public sealed partial class MainPage : Page
     {
+        public MainViewModel ViewModel => this.DataContext as MainViewModel;
+
         public MainPage()
         {
             InitializeComponent();

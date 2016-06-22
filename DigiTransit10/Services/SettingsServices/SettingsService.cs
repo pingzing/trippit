@@ -33,7 +33,9 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get
             {
-                var theme = ApplicationTheme.Light;
+                var theme = DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone 
+                    ? ApplicationTheme.Dark
+                    : ApplicationTheme.Light;
                 var value = _helper.Read<string>(nameof(AppTheme), theme.ToString());
                 return Enum.TryParse<ApplicationTheme>(value, out theme) ? theme : ApplicationTheme.Dark;
             }

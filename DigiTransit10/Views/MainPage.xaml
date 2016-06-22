@@ -8,11 +8,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:DigiTransit10.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:DigiTransit10.ViewModels" mc:Ignorable="d">
-
-    <Page.DataContext>
-        <vm:MainPageViewModel x:Name="ViewModel" />
-    </Page.DataContext>
+      xmlns:vm="using:DigiTransit10.ViewModels" 
+      mc:Ignorable="d"
+      DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -54,9 +52,6 @@
 
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
-                <AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
-                <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
-                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
             </controls:PageHeader.SecondaryCommands>
 
         </controls:PageHeader>
@@ -65,9 +60,9 @@
                           RelativePanel.AlignLeftWithPanel="True"
                           RelativePanel.Below="pageHeader">
 
-            <TextBox MinWidth="150" MinHeight="62"
-                     Header="Parameter to pass"
-                     Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox x:Name="EntryBox" MinWidth="150" MinHeight="62"
+                     Header="HSL stop ID"
+                     PlaceholderText="Ex: 1234567"                     
                      TextWrapping="Wrap">
                 <Interactivity:Interaction.Behaviors>
                     <!--  enable submit on enter key  -->
@@ -84,13 +79,20 @@
         </controls:Resizer>
 
         <Button x:Name="submitButton"
-                Click="{x:Bind ViewModel.GotoDetailsPage}" Content="Submit"
+                Content="Submit"
+                Command="{x:Bind ViewModel.GetStopDetailsCommand}"
+                CommandParameter="{Binding ElementName=EntryBox, Path=Text}"
                 RelativePanel.AlignBottomWith="parameterResizer"
-                RelativePanel.RightOf="parameterResizer" />
+                RelativePanel.RightOf="parameterResizer"/>
+
+        <TextBlock x:Name="ResponseBlock" Margin="16,16,0,0"
+                   Text="{x:Bind ViewModel.Value, Mode=OneWay}"
+                   RelativePanel.AlignLeftWith="parameterResizer"
+                   RelativePanel.Below="parameterResizer"/>
 
         <TextBlock x:Name="stateTextBox" Margin="16,16,0,0"
                    RelativePanel.AlignLeftWith="parameterResizer"
-                   RelativePanel.Below="parameterResizer"
+                   RelativePanel.Below="ResponseBlock"
                    Text="Current Visual State" />
 
     </RelativePanel>
