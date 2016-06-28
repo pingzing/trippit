@@ -1,9 +1,12 @@
 ﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace DigiTransit10.Models.ApiModels
 {
     public class ApiEnums
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiVertexType
         {
             [EnumMember(Value = "NORMAL")]
@@ -16,6 +19,7 @@ namespace DigiTransit10.Models.ApiModels
             BikeShare               
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiWheelchairBoarding
         {
             [EnumMember(Value = "NO_INFORMATION")]
@@ -26,6 +30,7 @@ namespace DigiTransit10.Models.ApiModels
             NotPossible
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiLocationType
         {
             [EnumMember(Value = "STOP")]
@@ -36,6 +41,7 @@ namespace DigiTransit10.Models.ApiModels
             Entrance
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiRealtimeState
         {
             [EnumMember(Value = "SCHEDULED")]
@@ -50,6 +56,7 @@ namespace DigiTransit10.Models.ApiModels
             Modified
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiPickupDropoffType
         {
             [EnumMember(Value = "SCHEDULED")]
@@ -62,6 +69,7 @@ namespace DigiTransit10.Models.ApiModels
             CoordinateWithDriver
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiBikesAllowed
         {
             [EnumMember(Value = "NO_INFORMATION")]
@@ -72,6 +80,7 @@ namespace DigiTransit10.Models.ApiModels
             NotAllowed
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum ApiMode
         {
             [EnumMember(Value = "AIRPLANE")]
