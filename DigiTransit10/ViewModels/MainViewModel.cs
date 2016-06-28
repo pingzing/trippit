@@ -7,6 +7,7 @@ using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Command;
 using DigiTransit10.Services;
+using Template10.Common;
 
 namespace DigiTransit10.ViewModels
 {    
@@ -21,37 +22,28 @@ namespace DigiTransit10.ViewModels
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
-                Value = "Designtime value";
+                //set up design-time values
             }
-        }
+        }        
 
-        string _value = "Gas";
-        public string Value { get { return _value; } set { Set(ref _value, value); } }
-
-        private RelayCommand<string> _getStopDetailsCommand = null;
-        public RelayCommand<string> GetStopDetailsCommand => _getStopDetailsCommand ?? (new RelayCommand<string>(GetStopDetails));
-
-        private async void GetStopDetails(string stopId)
-        {
-            int numericStopId = int.Parse(stopId);
-            Value = await _networkService.GetStop(numericStopId);
-        }
+        public TripFormViewModel TripFormViewModel => ((App) BootStrapper.Current).Locator.TripForm;
+        public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;               
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
             if (suspensionState.Any())
             {
-                Value = suspensionState[nameof(Value)]?.ToString();
+                //pull cached values in from the suspensionState dict
             }
             await Task.CompletedTask;
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {
+        {                        
             if (suspending)
             {
-                suspensionState[nameof(Value)] = Value;
-            }
+                //store cacheable values into the suspensionState dict
+            }            
             await Task.CompletedTask;
         }
 

@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Windows.UI.Xaml.Data;
 using System.Runtime;
+using DigiTransit10.Services;
 
 namespace DigiTransit10
 {
@@ -17,6 +18,11 @@ namespace DigiTransit10
     [Bindable]
     sealed partial class App : Template10.Common.BootStrapper
     {
+        /// <summary>
+        /// App-wide easy access to the ViewModelLocator.
+        /// </summary>
+        public ViewModelLocator Locator => Current.Resources["Locator"] as ViewModelLocator;
+
         public App()
         {
             InitializeComponent();
@@ -28,7 +34,7 @@ namespace DigiTransit10
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;            
 
-            #endregion
+            #endregion            
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)

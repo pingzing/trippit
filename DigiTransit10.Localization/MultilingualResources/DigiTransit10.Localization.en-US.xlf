@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
+  <file datatype="xml" source-language="en-US" target-language="en-US" original="DIGITRANSIT10.LOCALIZATION/STRINGS/EN-US/RESOURCES.RESW" tool-id="MultilingualAppToolkit" product-name="n/a" product-version="n/a" build-num="n/a">
+    <header>
+      <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.1605.0" tool-company="Microsoft" />
+    </header>
+    <body>
+      <group id="DIGITRANSIT10.LOCALIZATION/STRINGS/EN-US/APPRESOURCES.RESW">
+        <trans-unit id="LiteralDate" translate="yes" xml:space="preserve">
+          <source>Date</source>
+          <target state="new">Date</target>
+        </trans-unit>
+        <trans-unit id="MainPage_FromHeader" translate="yes" xml:space="preserve">
+          <source>From</source>
+          <target state="new">From</target>
+        </trans-unit>
+        <trans-unit id="MainPage_ToHeader" translate="yes" xml:space="preserve">
+          <source>To</source>
+          <target state="new">To</target>
+        </trans-unit>
+        <trans-unit id="TimeType_Arrival" translate="yes" xml:space="preserve">
+          <source>Arrival</source>
+          <target state="new">Arrival</target>
+        </trans-unit>
+        <trans-unit id="TimeType_Departure" translate="yes" xml:space="preserve">
+          <source>Departure</source>
+          <target state="new">Departure</target>
+        </trans-unit>
+        <trans-unit id="TripForm_PlanATripHeader" translate="yes" xml:space="preserve">
+          <source>Plan a trip</source>
+          <target state="new">Plan a trip</target>
+        </trans-unit>
+        <trans-unit id="TripResults_TripPlansHeader" translate="yes" xml:space="preserve">
+          <source>Trip plans</source>
+          <target state="new">Trip plans</target>
+        </trans-unit>
+        <trans-unit id="MainPage_Header" translate="yes" xml:space="preserve">
+          <source>Trip Planning</source>
+          <target state="new">Trip Planning</target>
+        </trans-unit>
+        <trans-unit id="TimeType_PlaceholderText" translate="yes" xml:space="preserve">
+          <source>Arrival or departure time?</source>
+          <target state="new">Arrival or departure time?</target>
+        </trans-unit>
+        <trans-unit id="TripForm_PlanTripButton" translate="yes" xml:space="preserve">
+          <source>Plan</source>
+          <target state="new">Plan</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

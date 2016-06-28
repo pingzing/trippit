@@ -20,6 +20,10 @@ namespace DigiTransit10.Backend
 
         Task<HttpResponseMessage> PostAsync(Uri uri,
             IHttpContent postContent,
+            CancellationToken token = default(CancellationToken));
+
+        Task<HttpResponseMessage> PostAsync(Uri uri,
+            IHttpContent postContent,
             HttpRequestHeaderCollection headers = default(HttpRequestHeaderCollection),
             CancellationToken token = default(CancellationToken));
 
@@ -27,7 +31,7 @@ namespace DigiTransit10.Backend
             HttpRequestHeaderCollection headers = default(HttpRequestHeaderCollection),
             CancellationToken token = default(CancellationToken));
 
-        Task<HttpResponseMessage> SendWithContentAsync(HttpRequestMessage message,
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage message,
             IHttpContent content,
             HttpRequestHeaderCollection headers = default(HttpRequestHeaderCollection),
             CancellationToken token = default(CancellationToken));
@@ -35,7 +39,7 @@ namespace DigiTransit10.Backend
 
     public class NetworkClient : INetworkClient
     {
-        HttpClient _client;
+        readonly HttpClient _client;
 
         public HttpRequestHeaderCollection DefaultHeaders => _client.DefaultRequestHeaders;
 
@@ -53,14 +57,27 @@ namespace DigiTransit10.Backend
             return await SendAsync(message, headers, token);
         }
 
+        public async Task<HttpResponseMessage> PostAsync(Uri uri, IHttpContent postContent, 
+            CancellationToken token = new CancellationToken())
+        {
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = postContent
+            };
+            HttpRequestHeaderCollection headers = DefaultHeaders;
+            return await SendAsync(message, postContent, headers, token);
+        }
+
         public async Task<HttpResponseMessage> PostAsync(Uri uri,
             IHttpContent postContent,
             HttpRequestHeaderCollection headers = default(HttpRequestHeaderCollection),
             CancellationToken token = default(CancellationToken))
         {
-            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, uri);
-            message.Content = postContent;
-            return await SendWithContentAsync(message, postContent, headers, token);
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = postContent
+            };
+            return await SendAsync(message, postContent, headers, token);
         }
 
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message,
@@ -70,7 +87,8 @@ namespace DigiTransit10.Backend
             return await _client.SendRequestAsync(message, HttpCompletionOption.ResponseHeadersRead).AsTask(token);
         }
 
-        public async Task<HttpResponseMessage> SendWithContentAsync(HttpRequestMessage message, IHttpContent content, 
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message, 
+            IHttpContent content, 
             HttpRequestHeaderCollection headers = null,
             CancellationToken token = default(CancellationToken))
         {

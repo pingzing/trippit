@@ -6,11 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Template10.Services.SettingsService;
 
 namespace DigiTransit10.Services
 {
     public class ViewModelLocator
     {
+
+        private const string LocalSettingsService = "LocalSettingsService";
+        private const string RoamingSettingsService = "RoamingSettingsService";
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);            
@@ -26,12 +30,30 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<INetworkService>(
                     () => new NetworkService(ServiceLocator.Current.GetInstance<Backend.INetworkClient>())
                 );
-
+                
+                SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Local), LocalSettingsService);
+                SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Roam), RoamingSettingsService);
 
             }
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<TripFormViewModel>();
+            SimpleIoc.Default.Register<TripResultViewModel>();
         }
 
+        //Viewmodels
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public TripFormViewModel TripForm => ServiceLocator.Current.GetInstance<TripFormViewModel>();
+        public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
+        
+        //Service getters
+        public ISettingsService GetLocalSettingsService()
+        {
+            return ServiceLocator.Current.GetInstance<ISettingsService>(LocalSettingsService);
+        }
+
+        public ISettingsService GetRoamingSettingsService()
+        {
+            return ServiceLocator.Current.GetInstance<ISettingsService>(RoamingSettingsService);
+        }
     }
 }

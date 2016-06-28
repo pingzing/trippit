@@ -8,9 +8,73 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:DigiTransit10.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:DigiTransit10.ViewModels" 
+      xmlns:vm="using:DigiTransit10.ViewModels"
+      xmlns:models="using:DigiTransit10.Models"
+      xmlns:conv="using:DigiTransit10.Converters"
       mc:Ignorable="d"
       DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+
+    <Page.Resources>
+        <conv:RadioButtonConverter x:Key="RadioButtonConverter"/>
+        <x:Boolean x:Key="TrueBoolean">True</x:Boolean>
+        <x:Boolean x:Key="FalseBoolean">False</x:Boolean>
+        <DataTemplate x:Name="TripFormTemplate" x:DataType="vm:TripFormViewModel">
+            <StackPanel>
+                <AutoSuggestBox x:Name="FromBox"
+                                Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}" />
+                <AutoSuggestBox x:Name="ToBox"
+                                Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}" 
+                                Margin="0 10 0 0"/>
+                <TimePicker x:Name="TimePicker"
+                            Time="{x:Bind SelectedTime, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 10 0 0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
+                    <RadioButton x:Name="DepartureRadioButon" 
+                                 GroupName="TimeType"
+                                 Content="{Binding Source={StaticResource Strings}, Path=TimeType_Departure}"
+                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource FalseBoolean}}"/>
+                    <RadioButton x:Name="ArrivalRadioButton" 
+                                 GroupName="TimeType"
+                                 Content="{Binding Source={StaticResource Strings}, Path=TimeType_Arrival}"
+                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource TrueBoolean}}"/>
+                </StackPanel>
+                <DatePicker x:Name="DatePicker" 
+                            Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}" 
+                            Date="{x:Bind SelectedDate, Mode=TwoWay}"
+                            Margin="0 10 0 0"/>
+                <Button x:Name="PlanTripButton" 
+                        Content="{Binding Source={StaticResource Strings}, Path=TripForm_PlanTripButton}"
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                        Foreground="White"
+                        HorizontalAlignment="Stretch"
+                        Command="{x:Bind PlanTripCommand}"
+                        Margin="0 10 0 0"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:TripResultViewModel">
+            <ListView x:Name="TripResultList"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollMode="Auto"
+                      ScrollViewer.IsHorizontalRailEnabled="True"
+                      ScrollViewer.IsVerticalRailEnabled="False"
+                      ItemsSource="{x:Bind TripResults, Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TripResult">
+                        <StackPanel>
+                            <TextBlock>
+                                <Run Text="From: " /><Run Text="{x:Bind BackendTripPlan.From.Name}" />
+                            </TextBlock>
+                            <TextBlock>
+                                <Run Text="To: " /><Run Text="{x:Bind BackendTripPlan.To.Name}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DataTemplate>
+    </Page.Resources>
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -22,7 +86,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for narrow view  -->
-                        <Setter Target="stateTextBox.Text" Value="Narrow Visual State" />
+                        <Setter Target="TripPlannerPivot.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateNormal">
@@ -31,7 +95,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for normal view  -->
-                        <Setter Target="stateTextBox.Text" Value="Normal Visual State" />
+                        <Setter Target="TripPlannerHub.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateWide">
@@ -40,23 +104,56 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for wide view  -->
-                        <Setter Target="stateTextBox.Text" Value="Wide Visual State" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:PageHeader x:Name="pageHeader" RelativePanel.AlignLeftWithPanel="True"
+        <controls:PageHeader x:Name="PageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True" Text="Main Page">
+                             RelativePanel.AlignTopWithPanel="True" 
+                             Text="{Binding Source={StaticResource Strings}, Path=MainPage_Header}">
 
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
             </controls:PageHeader.SecondaryCommands>
-
         </controls:PageHeader>
 
-        <controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0"
+        <!--Narrow view-->
+        <Pivot x:Name="TripPlannerPivot"
+               x:DeferLoadStrategy="Lazy"
+               RelativePanel.Below="PageHeader"
+               RelativePanel.AlignLeftWithPanel="True"
+               Visibility="Collapsed">
+            <PivotItem x:Name="TripFormPivotItem" DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
+                       Header="{Binding Source={StaticResource Strings}, Path=TripForm_PlanATripHeader}"
+                       ContentTemplate="{StaticResource TripFormTemplate}" />
+            <PivotItem x:Name="TripResultPivotItem" DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
+                       Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+                       ContentTemplate="{StaticResource TripResultTemplate}" />
+
+        </Pivot>
+
+        <!--Wide view-->
+        <Hub x:Name="TripPlannerHub"
+             x:DeferLoadStrategy="Lazy"
+             RelativePanel.Below="PageHeader"
+             RelativePanel.AlignLeftWithPanel="True"
+             Visibility="Collapsed">
+            <HubSection x:Name="TripFormHubSection" DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
+                        Header="{Binding Source={StaticResource Strings}, Path=TripForm_PlanATripHeader}"
+                        ContentTemplate="{StaticResource TripFormTemplate}" />
+            <HubSection x:Name="TripResultHubSecion" DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
+                        Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+                        ContentTemplate="{StaticResource TripResultTemplate}" />
+        </Hub>
+
+
+    </RelativePanel>
+</Page>
+
+<!--For reference, delete when no longer necessary-->
+<!--<controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0"
                           RelativePanel.AlignLeftWithPanel="True"
                           RelativePanel.Below="pageHeader">
 
@@ -65,36 +162,19 @@
                      PlaceholderText="Ex: 1234567"                     
                      TextWrapping="Wrap">
                 <Interactivity:Interaction.Behaviors>
-                    <!--  enable submit on enter key  -->
+                    -->
+<!--  enable submit on enter key  -->
+<!--
                     <Behaviors:KeyBehavior Key="Enter">
                         <Core:CallMethodAction MethodName="GotoDetailsPage" TargetObject="{Binding}" />
                     </Behaviors:KeyBehavior>
-                    <!--  focus on textbox when page loads  -->
+                    -->
+<!--  focus on textbox when page loads  -->
+<!--
                     <Core:EventTriggerBehavior>
                         <Behaviors:FocusAction />
                     </Core:EventTriggerBehavior>
                 </Interactivity:Interaction.Behaviors>
             </TextBox>
 
-        </controls:Resizer>
-
-        <Button x:Name="submitButton"
-                Content="Submit"
-                Command="{x:Bind ViewModel.GetStopDetailsCommand}"
-                CommandParameter="{Binding ElementName=EntryBox, Path=Text}"
-                RelativePanel.AlignBottomWith="parameterResizer"
-                RelativePanel.RightOf="parameterResizer"/>
-
-        <TextBlock x:Name="ResponseBlock" Margin="16,16,0,0"
-                   Text="{x:Bind ViewModel.Value, Mode=OneWay}"
-                   RelativePanel.AlignLeftWith="parameterResizer"
-                   RelativePanel.Below="parameterResizer"/>
-
-        <TextBlock x:Name="stateTextBox" Margin="16,16,0,0"
-                   RelativePanel.AlignLeftWith="parameterResizer"
-                   RelativePanel.Below="ResponseBlock"
-                   Text="Current Visual State" />
-
-    </RelativePanel>
-</Page>
-
+        </controls:Resizer>-->

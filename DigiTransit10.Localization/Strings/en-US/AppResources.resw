@@ -117,10 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="String1" xml:space="preserve">
-    <value>test</value>
+  <data name="LiteralDate" xml:space="preserve">
+    <value>Date</value>
   </data>
-  <data name="String2" xml:space="preserve">
-    <value>hello</value>
+  <data name="MainPage_FromHeader" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="MainPage_Header" xml:space="preserve">
+    <value>Trip Planning</value>
+  </data>
+  <data name="MainPage_ToHeader" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="TimeType_Arrival" xml:space="preserve">
+    <value>Arrival</value>
+  </data>
+  <data name="TimeType_Departure" xml:space="preserve">
+    <value>Departure</value>
+  </data>
+  <data name="TimeType_PlaceholderText" xml:space="preserve">
+    <value>Arrival or departure time?</value>
+  </data>
+  <data name="TripForm_PlanATripHeader" xml:space="preserve">
+    <value>Plan a trip</value>
+  </data>
+  <data name="TripForm_PlanTripButton" xml:space="preserve">
+    <value>Plan</value>
+  </data>
+  <data name="TripResults_TripPlansHeader" xml:space="preserve">
+    <value>Trip plans</value>
   </data>
 </root>
