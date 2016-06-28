@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.System.Profile;
+﻿using Windows.System.Profile;
 using Windows.UI.ViewManagement;
 
-namespace DigiTransit10.Services
+namespace DigiTransit10.Helpers
 {
     public static class DeviceTypeHelper
     {

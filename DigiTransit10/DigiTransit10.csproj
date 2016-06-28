@@ -100,11 +100,15 @@
     <Compile Include="Converters\RadioButtonConverter.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
     <Compile Include="ExtensionMethods\TaskExtensions.cs" />
+    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\MessageTypes.cs" />
+    <Compile Include="Helpers\NavParamKeys.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />
     <Compile Include="Models\ApiModels\ApiAlert.cs" />
     <Compile Include="Models\ApiModels\ApiBikeRentalStation.cs" />
     <Compile Include="Models\ApiModels\ApiCluster.cs" />
     <Compile Include="Models\ApiModels\ApiCoordinates.cs" />
+    <Compile Include="Models\ApiModels\ApiDataContainer.cs" />
     <Compile Include="Models\ApiModels\ApiDebugOutput.cs" />
     <Compile Include="Models\ApiModels\ApiEnums.cs" />
     <Compile Include="Models\ApiModels\ApiFare.cs" />
@@ -120,15 +124,15 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
-    <Compile Include="Models\TripResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\DeviceTypeHelper.cs" />
+    <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Services\ViewModelLocator.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TripFormViewModel.cs" />
     <Compile Include="ViewModels\TripResultViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBaseEx.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
     </Compile>

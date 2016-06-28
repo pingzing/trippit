@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Template10.Services.SettingsService;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Services
 {
@@ -33,6 +34,7 @@ namespace DigiTransit10.Services
                 
                 SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Local), LocalSettingsService);
                 SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Roam), RoamingSettingsService);
+                SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
 
             }
             SimpleIoc.Default.Register<MainViewModel>();

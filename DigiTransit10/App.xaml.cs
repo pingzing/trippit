@@ -8,6 +8,8 @@ using System;
 using System.Linq;
 using Windows.UI.Xaml.Data;
 using System.Runtime;
+using Windows.Foundation;
+using Windows.UI.ViewManagement;
 using DigiTransit10.Services;
 
 namespace DigiTransit10
@@ -26,13 +28,14 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);
+            SplashFactory = (e) => new Views.Splash(e);            
 
             #region App settings
 
             var _settings = SettingsService.Instance;            
             CacheMaxDuration = _settings.CacheMaxDuration;
-            ShowShellBackButton = _settings.UseShellBackButton;            
+            ShowShellBackButton = _settings.UseShellBackButton;  
+                      
 
             #endregion            
         }
@@ -44,6 +47,9 @@ namespace DigiTransit10
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
 
+                ApplicationView.PreferredLaunchViewSize = new Size { Height = 550, Width = 360 };
+                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+
                 // create modal root
                 Window.Current.Content = new ModalDialog
                 {
@@ -52,6 +58,9 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };
             }
+
+            this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
+
             await Task.CompletedTask;
         }
 

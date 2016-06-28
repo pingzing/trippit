@@ -11,11 +11,12 @@
       xmlns:vm="using:DigiTransit10.ViewModels"
       xmlns:models="using:DigiTransit10.Models"
       xmlns:conv="using:DigiTransit10.Converters"
+      xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
       mc:Ignorable="d"
       DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
 
     <Page.Resources>
-        <conv:RadioButtonConverter x:Key="RadioButtonConverter"/>
+        <conv:RadioButtonConverter x:Key="RadioButtonConverter" />
         <x:Boolean x:Key="TrueBoolean">True</x:Boolean>
         <x:Boolean x:Key="FalseBoolean">False</x:Boolean>
         <DataTemplate x:Name="TripFormTemplate" x:DataType="vm:TripFormViewModel">
@@ -23,33 +24,34 @@
                 <AutoSuggestBox x:Name="FromBox"
                                 Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}" />
                 <AutoSuggestBox x:Name="ToBox"
-                                Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}" 
-                                Margin="0 10 0 0"/>
+                                Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
+                                Margin="0 10 0 0" />
                 <TimePicker x:Name="TimePicker"
                             Time="{x:Bind SelectedTime, Mode=TwoWay}"
                             HorizontalAlignment="Stretch"
-                            Margin="0 10 0 0"/>
+                            Margin="0 10 0 0" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
-                    <RadioButton x:Name="DepartureRadioButon" 
+                    <RadioButton x:Name="DepartureRadioButon"
                                  GroupName="TimeType"
                                  Content="{Binding Source={StaticResource Strings}, Path=TimeType_Departure}"
-                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource FalseBoolean}}"/>
-                    <RadioButton x:Name="ArrivalRadioButton" 
+                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource FalseBoolean}}" />
+                    <RadioButton x:Name="ArrivalRadioButton"
                                  GroupName="TimeType"
                                  Content="{Binding Source={StaticResource Strings}, Path=TimeType_Arrival}"
-                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource TrueBoolean}}"/>
+                                 IsChecked="{Binding IsTimeTypeArrival, Mode=TwoWay, Converter={StaticResource RadioButtonConverter}, ConverterParameter={StaticResource TrueBoolean}}" />
                 </StackPanel>
-                <DatePicker x:Name="DatePicker" 
-                            Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}" 
+                <DatePicker x:Name="DatePicker"
+                            Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}"
                             Date="{x:Bind SelectedDate, Mode=TwoWay}"
-                            Margin="0 10 0 0"/>
-                <Button x:Name="PlanTripButton" 
+                            HorizontalAlignment="Stretch"
+                            Margin="0 10 0 0" />
+                <Button x:Name="PlanTripButton"
                         Content="{Binding Source={StaticResource Strings}, Path=TripForm_PlanTripButton}"
                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         Foreground="White"
                         HorizontalAlignment="Stretch"
                         Command="{x:Bind PlanTripCommand}"
-                        Margin="0 10 0 0"/>
+                        Margin="0 10 0 0" />
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:TripResultViewModel">
@@ -58,18 +60,25 @@
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollMode="Auto"
                       ScrollViewer.IsHorizontalRailEnabled="True"
-                      ScrollViewer.IsVerticalRailEnabled="False"
+                      ScrollViewer.IsVerticalRailEnabled="False"   
+                      ScrollViewer.IsHorizontalScrollChainingEnabled="False"
                       ItemsSource="{x:Bind TripResults, Mode=OneWay}">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:TripResult">
-                        <StackPanel>
-                            <TextBlock>
-                                <Run Text="From: " /><Run Text="{x:Bind BackendTripPlan.From.Name}" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Text="To: " /><Run Text="{x:Bind BackendTripPlan.To.Name}" />
-                            </TextBlock>
-                        </StackPanel>
+                    <DataTemplate x:DataType="apiModels:ApiItinerary">
+                        <ItemsControl ItemsSource="{x:Bind Legs}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="apiModels:ApiLeg">
+                                    <TextBlock Margin="0 0 10 0">
+                                        <Run Text="{x:Bind Mode}" /> <Run Text="{x:Bind Distance}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -111,7 +120,7 @@
 
         <controls:PageHeader x:Name="PageHeader" RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True" 
+                             RelativePanel.AlignTopWithPanel="True"
                              Text="{Binding Source={StaticResource Strings}, Path=MainPage_Header}">
 
             <!--  secondary commands  -->
@@ -124,6 +133,9 @@
                x:DeferLoadStrategy="Lazy"
                RelativePanel.Below="PageHeader"
                RelativePanel.AlignLeftWithPanel="True"
+               RelativePanel.AlignBottomWithPanel="True"
+               SelectedIndex="{x:Bind ViewModel.ActivePivot, Mode=TwoWay}"
+               IsLocked="{x:Bind ViewModel.IsPivotLocked, Mode=OneWay}"
                Visibility="Collapsed">
             <PivotItem x:Name="TripFormPivotItem" DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                        Header="{Binding Source={StaticResource Strings}, Path=TripForm_PlanATripHeader}"
@@ -139,12 +151,13 @@
              x:DeferLoadStrategy="Lazy"
              RelativePanel.Below="PageHeader"
              RelativePanel.AlignLeftWithPanel="True"
+             RelativePanel.AlignBottomWithPanel="True"
              Visibility="Collapsed">
             <HubSection x:Name="TripFormHubSection" DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                         Header="{Binding Source={StaticResource Strings}, Path=TripForm_PlanATripHeader}"
                         ContentTemplate="{StaticResource TripFormTemplate}" />
-            <HubSection x:Name="TripResultHubSecion" DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
-                        Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+            <HubSection x:Name="TripResultHubSection" DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
+                        Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"                        
                         ContentTemplate="{StaticResource TripResultTemplate}" />
         </Hub>
 

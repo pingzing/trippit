@@ -2,6 +2,7 @@ using System;
 using Template10.Common;
 using Template10.Utils;
 using Windows.UI.Xaml;
+using DigiTransit10.Helpers;
 
 namespace DigiTransit10.Services.SettingsServices
 {

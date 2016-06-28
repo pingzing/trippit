@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.UI.Xaml.Controls;
+using DigiTransit10.Helpers;
 using DigiTransit10.Services;
 using Template10.Common;
 using Template10.Mvvm;
@@ -13,13 +14,15 @@ using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.ViewModels
 {
-    public class TripFormViewModel : ViewModelBase
+    public class TripFormViewModel : ViewModelBaseEx
     {
-        public readonly INetworkService _networkService;
-        public readonly ISettingsService _settingsService;
+        private readonly INetworkService _networkService;
+        private readonly ISettingsService _settingsService;
+        private readonly IMessenger _messengerService;
 
         private bool _isTimeTypeArrival = false;
         public bool IsTimeTypeArrival
@@ -45,10 +48,11 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _planTripCommand = null;
         public RelayCommand PlanTripCommand => _planTripCommand ?? (new RelayCommand(PlanTrip));        
 
-        public TripFormViewModel(INetworkService netService)
+        public TripFormViewModel(INetworkService netService, IMessenger messengerService)
         {
             _networkService = netService;
             _settingsService = ((App) BootStrapper.Current).Locator.GetLocalSettingsService();
+            _messengerService = messengerService;
         }
 
         private async void PlanTrip()
@@ -62,7 +66,18 @@ namespace DigiTransit10.ViewModels
                 SelectedDate.DateTime, 
                 IsTimeTypeArrival
             );
+            Views.Busy.SetBusy(true, "Planning...");
             var result = await _networkService.PlanTrip(details);
-        }
+            if (!SessionState.ContainsKey(NavParamKeys.PlanResults))
+            {
+                SessionState.Add(NavParamKeys.PlanResults, result);
+            }
+            else
+            {
+                SessionState[NavParamKeys.PlanResults] = result;
+            }            
+            Views.Busy.SetBusy(false);
+            _messengerService.Send<object>(null, MessageTypes.PlanFoundMessage);
+        }        
     }
 }

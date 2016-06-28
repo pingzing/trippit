@@ -12,6 +12,7 @@ using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 
 namespace DigiTransit10.Services
@@ -71,7 +72,7 @@ namespace DigiTransit10.Services
                         $"time: \\\"{details.Time.Hours.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Minutes.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Seconds.ToString(NumberFormatInfo.InvariantInfo)}\\\", " +
                         $"date: \\\"{details.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\", " +
                         $"arriveBy: {details.IsTimeTypeArrival.ToString().ToLowerInvariant()}" +
-                        $")" +
+                        ")" +
                             "{itineraries " +
                                 "{legs " +
                                     "{startTime " +
@@ -80,27 +81,42 @@ namespace DigiTransit10.Services
                                     "duration " +
                                     "realTime " +
                                     "distance " +
-                                    "transitLeg" +
+                                    "transitLeg " +
+                                    "realTime " +
                                 "}" +
                             "}" +
                         "}" +
                     "}" +
                 "\"}\"";
+
             HttpStringContent stringContent = CreateJsonStringContent(requestString);
+            //todo: this needs to be wrapped in a try/catch with a generic handler, and a way to override/bypass that handler
             var response = await _networkClient.PostAsync(uri, stringContent, token);
             if (!response.IsSuccessStatusCode)
             {
                 LogFailure(response).DoNotAwait();
                 return null;
             }
-            return (await response.Content.ReadAsInputStreamAsync())
-                .AsStreamForRead()
-                .DeseriaizeJsonFromStream<ApiPlan>();
+
+            return await UnwrapServerResponse<ApiPlan>(response);
         }
 
         private HttpStringContent CreateJsonStringContent(string requestString)
         {
             return new HttpStringContent(requestString, UnicodeEncoding.Utf8, "application/json");
+        }
+
+        private async Task<T> UnwrapServerResponse<T>(HttpResponseMessage response)
+        {            
+            // The response comes back from the server wrapped in a "data" JSON object,
+            // which itself contains an object which ITSELF contains the actual object we want back.
+            // Thus: Data.First.First gets us the JSON object we really care about.
+            // todo: this is a bit of bottleneck, because we have to read the entire response into memory
+            // and manipulate it before returning it. 
+            return (await response.Content.ReadAsInputStreamAsync())
+                .AsStreamForRead()
+                .DeseriaizeJsonFromStream<ApiDataContainer>()
+                .Data.First.First.ToObject<T>();
         }
 
         private async Task LogFailure(HttpResponseMessage response)
