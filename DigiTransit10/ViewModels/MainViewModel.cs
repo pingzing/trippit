@@ -10,42 +10,25 @@ using GalaSoft.MvvmLight.Command;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Common;
+using Template10.Services.SettingsService;
+using DigiTransit10.Views;
 
 namespace DigiTransit10.ViewModels
 {    
 
-    public sealed class MainViewModel : ViewModelBaseEx
+    public sealed class MainViewModel : ViewModelBase
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
+        private readonly Services.SettingsServices.SettingsService _settingsService;
 
-        public enum ActivePivotEnum
-        {
-            TripForm = 0,
-            TripResults = 1
-        };
-
-        private int _activePivot = (int)ActivePivotEnum.TripForm;
-        public int ActivePivot
-        {
-            get { return _activePivot; }
-            set { Set(ref _activePivot, value); }
-        }
-
-        private bool _isPivotLocked = false;
-        public bool IsPivotLocked
-        {
-            get { return _isPivotLocked; }
-            set { Set(ref _isPivotLocked, value); }
-        }
-
-        public MainViewModel(INetworkService networkService, IMessenger messengerService)
+        public MainViewModel(INetworkService networkService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
         {
             _networkService = networkService;
             _messengerService = messengerService;
+            _settingsService = settings;           
 
-            _messengerService.Register<object>(this, MessageTypes.PlanFoundMessage, PlanFound);
-            _messengerService.Register<object>(this, MessageTypes.GoBackToTripFormMessage, GoBackToTripForm);
+            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);            
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -55,19 +38,15 @@ namespace DigiTransit10.ViewModels
 
         public TripFormViewModel TripFormViewModel => ((App) BootStrapper.Current).Locator.TripForm;
         public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
-
-        //If we're in the narrow view state, change the active Pivot.
-        private void PlanFound(object obj)
+        public FavoritesViewModel FavoritesViewModel => ((App)BootStrapper.Current).Locator.Favorites;
+        
+        private void PlanFound(string visualState)
         {
-            ActivePivot = (int) ActivePivotEnum.TripResults;
-            IsPivotLocked = true;
-        }
-
-        private void GoBackToTripForm(object obj)
-        {
-            IsPivotLocked = false;
-            ActivePivot = (int) ActivePivotEnum.TripForm;            
-        }
+            if(visualState == Constants.NarrowKey)
+            {
+                NavigationService.NavigateAsync(typeof(TripResultPage));
+            }
+        }        
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {

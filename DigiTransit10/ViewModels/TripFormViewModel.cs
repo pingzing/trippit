@@ -1,34 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Devices.Bluetooth.Advertisement;
-using Windows.UI.Xaml.Controls;
 using DigiTransit10.Helpers;
 using DigiTransit10.Services;
 using Template10.Common;
 using Template10.Mvvm;
-using Template10.Services.SettingsService;
-using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using System.Threading.Tasks;
 
 namespace DigiTransit10.ViewModels
 {
-    public class TripFormViewModel : ViewModelBaseEx
+    public class TripFormViewModel : ViewModelBase
     {
         private readonly INetworkService _networkService;
-        private readonly ISettingsService _settingsService;
+        private readonly Services.SettingsServices.SettingsService _settingsService;
         private readonly IMessenger _messengerService;
 
-        private bool _isTimeTypeArrival = false;
-        public bool IsTimeTypeArrival
+        private bool? _isArrivalChecked = false;
+        public bool? IsArrivalChecked
         {
-            get { return _isTimeTypeArrival; }
-            set { Set(ref _isTimeTypeArrival, value); }
+            get { return _isArrivalChecked; }
+            set { Set(ref _isArrivalChecked, value); }
+        }
+
+        private bool? _isDepartureChecked = true;
+        public bool? IsDepartureChecked
+        {
+            get { return _isDepartureChecked; }
+            set { Set(ref _isDepartureChecked, value); }
         }
 
         private TimeSpan _selectedTime = DateTime.Now.TimeOfDay;
@@ -45,39 +45,55 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDate, value); }
         }
 
-        private readonly RelayCommand _planTripCommand = null;
-        public RelayCommand PlanTripCommand => _planTripCommand ?? (new RelayCommand(PlanTrip));        
+        private readonly RelayCommand _planTripNarrowViewCommand = null;
+        public RelayCommand PlanTripNarrowViewCommand => _planTripNarrowViewCommand ?? (new RelayCommand(PlanTripNarrowView));
 
-        public TripFormViewModel(INetworkService netService, IMessenger messengerService)
+        private readonly RelayCommand _planTripWideViewCommand = null;
+        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTripWideView));
+
+        public TripFormViewModel(INetworkService netService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
         {
             _networkService = netService;
-            _settingsService = ((App) BootStrapper.Current).Locator.GetLocalSettingsService();
+            _settingsService = settings;
             _messengerService = messengerService;
-        }
+        }       
 
-        private async void PlanTrip()
+        private async Task PlanTrip()
         {
-            ApiCoordinates DEBUG_FROM_COORD = new ApiCoordinates {Lat = 60.23f, Lon = 25.12f,};
-            ApiCoordinates DEBUG_TO_COORD = new ApiCoordinates {Lat = 60.17f, Lon = 24.94f};
+            ApiCoordinates DEBUG_FROM_COORD = new ApiCoordinates { Lat = 60.23f, Lon = 25.12f, };
+            ApiCoordinates DEBUG_TO_COORD = new ApiCoordinates { Lat = 60.17f, Lon = 24.94f };
             BasicTripDetails details = new BasicTripDetails(
-                DEBUG_FROM_COORD, 
-                DEBUG_TO_COORD, 
-                SelectedTime, 
-                SelectedDate.DateTime, 
-                IsTimeTypeArrival
+                DEBUG_FROM_COORD,
+                DEBUG_TO_COORD,
+                SelectedTime,
+                SelectedDate.DateTime,
+                IsArrivalChecked == true
             );
             Views.Busy.SetBusy(true, "Planning...");
             var result = await _networkService.PlanTrip(details);
-            if (!SessionState.ContainsKey(NavParamKeys.PlanResults))
+            if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
-                SessionState.Add(NavParamKeys.PlanResults, result);
+                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result);
             }
             else
             {
-                SessionState[NavParamKeys.PlanResults] = result;
-            }            
+                BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
+                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result);
+            }
             Views.Busy.SetBusy(false);
-            _messengerService.Send<object>(null, MessageTypes.PlanFoundMessage);
-        }        
+            
+        }
+
+        private async void PlanTripNarrowView()
+        {
+            await PlanTrip();
+            _messengerService.Send<string>(Constants.NarrowKey, MessageTypes.PlanFoundMessage);
+        }
+
+        private async void PlanTripWideView()
+        {
+            await PlanTrip();
+            _messengerService.Send<string>(Constants.WideKey, MessageTypes.PlanFoundMessage);
+        }
     }
 }

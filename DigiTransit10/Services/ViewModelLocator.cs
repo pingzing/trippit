@@ -32,30 +32,20 @@ namespace DigiTransit10.Services
                     () => new NetworkService(ServiceLocator.Current.GetInstance<Backend.INetworkClient>())
                 );
                 
-                SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Local), LocalSettingsService);
-                SimpleIoc.Default.Register(() => SettingsService.Create(SettingsStrategies.Roam), RoamingSettingsService);
+                SimpleIoc.Default.Register(() => SettingsServices.SettingsService.Instance);                
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
 
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
             SimpleIoc.Default.Register<TripResultViewModel>();
+            SimpleIoc.Default.Register<FavoritesViewModel>();
         }
 
         //Viewmodels
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public TripFormViewModel TripForm => ServiceLocator.Current.GetInstance<TripFormViewModel>();
         public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
-        
-        //Service getters
-        public ISettingsService GetLocalSettingsService()
-        {
-            return ServiceLocator.Current.GetInstance<ISettingsService>(LocalSettingsService);
-        }
-
-        public ISettingsService GetRoamingSettingsService()
-        {
-            return ServiceLocator.Current.GetInstance<ISettingsService>(RoamingSettingsService);
-        }
+        public FavoritesViewModel Favorites => ServiceLocator.Current.GetInstance<FavoritesViewModel>();
     }
 }

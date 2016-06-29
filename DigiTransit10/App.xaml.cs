@@ -34,8 +34,7 @@ namespace DigiTransit10
 
             var _settings = SettingsService.Instance;            
             CacheMaxDuration = _settings.CacheMaxDuration;
-            ShowShellBackButton = _settings.UseShellBackButton;  
-                      
+            ShowShellBackButton = _settings.UseShellBackButton;                                 
 
             #endregion            
         }
@@ -45,10 +44,7 @@ namespace DigiTransit10
             if (Window.Current.Content as ModalDialog == null)
             {
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
-
-                ApplicationView.PreferredLaunchViewSize = new Size { Height = 550, Width = 360 };
-                ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -57,6 +53,7 @@ namespace DigiTransit10
                     Content = new Views.Shell(nav),
                     ModalContent = new Views.Busy(),
                 };
+                RequestedTheme = SettingsService.Instance.AppTheme;
             }
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            

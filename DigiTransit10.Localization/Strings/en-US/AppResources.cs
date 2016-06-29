@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 06/27/2016 16:09:33
+// 	Generated: 06/29/2016 18:49:58
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -49,6 +49,28 @@ namespace DigiTransit10.Localization.Strings
             else
             {
                 resourceLoader = ResourceLoader.GetForCurrentView(currentAssemblyName + "/AppResources");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "You haven't saved any favorites yet"
+        /// </summary>
+        public static string Favorites_EmptyList
+        {
+            get
+            {
+                return resourceLoader.GetString("Favorites_EmptyList");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Favorites"
+        /// </summary>
+        public static string Favorites_FavoritesHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("Favorites_FavoritesHeader");
             }
         }
         

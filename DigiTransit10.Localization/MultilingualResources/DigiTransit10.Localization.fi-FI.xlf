@@ -46,6 +46,14 @@
           <source>Plan</source>
           <target state="new">Plan</target>
         </trans-unit>
+        <trans-unit id="Favorites_FavoritesHeader" translate="yes" xml:space="preserve">
+          <source>Favorites</source>
+          <target state="new">Favorites</target>
+        </trans-unit>
+        <trans-unit id="Favorites_EmptyList" translate="yes" xml:space="preserve">
+          <source>You haven't saved any favorites yet</source>
+          <target state="new">You haven't saved any favorites yet</target>
+        </trans-unit>
       </group>
     </body>
   </file>

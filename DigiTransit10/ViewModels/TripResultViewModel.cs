@@ -11,10 +11,11 @@ using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Mvvm;
+using Template10.Common;
 
 namespace DigiTransit10.ViewModels
 {
-    public class TripResultViewModel : ViewModelBaseEx
+    public class TripResultViewModel : ViewModelBase
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
@@ -31,16 +32,24 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<object>(this, MessageTypes.PlanFoundMessage, PlanFound);                        
-        }        
+            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);            
+        }
 
-        private void PlanFound(object obj)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (!SessionState.ContainsKey(NavParamKeys.PlanResults))
+            //Only fired when coming in via the narrow view.
+            PlanFound(null);
+
+            await Task.CompletedTask;
+        }
+
+        private void PlanFound(string obj)
+        {
+            if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
                 return;
             }
-            var plan = SessionState[NavParamKeys.PlanResults] as ApiPlan;            
+            var plan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as ApiPlan;            
             if (plan?.Itineraries == null)
             {
                 return;
@@ -51,25 +60,6 @@ namespace DigiTransit10.ViewModels
             {
                 TripResults.Add(itinerary);
             }
-        }
-
-        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {
-            return base.OnNavigatedToAsync(parameter, mode, state);
-            NavigationService.FrameFacade.BackRequested += FrameFacade_BackRequested;
-        }
-
-        private void FrameFacade_BackRequested(object sender, Template10.Common.HandledEventArgs e)
-        {
-            e.Handled = true;
-            _messengerService.Send<object>(null, MessageTypes.GoBackToTripFormMessage);
-        }
-
-        public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
-        {
-            return base.OnNavigatedFromAsync(pageState, suspending);
-            NavigationService.FrameFacade.BackRequested -= FrameFacade_BackRequested;
-
-        }
+        }              
     }
 }

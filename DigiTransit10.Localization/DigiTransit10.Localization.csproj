@@ -109,7 +109,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <PRIResource Include="Strings\fi-FI\Resources.resw" />
+    <PRIResource Include="Strings\fi-FI\AppResources.resw" />
     <PRIResource Include="Strings\en-US\AppResources.resw">
       <CustomToolNamespace>DigiTransit10.Localization.Strings</CustomToolNamespace>
       <SubType>Designer</SubType>

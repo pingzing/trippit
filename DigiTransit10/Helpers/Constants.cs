@@ -8,5 +8,7 @@ namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
+        public const string WideKey = "Wide";
+        public const string NarrowKey = "Narrow";
     }
 }

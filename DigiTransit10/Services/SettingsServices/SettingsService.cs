@@ -3,16 +3,20 @@ using Template10.Common;
 using Template10.Utils;
 using Windows.UI.Xaml;
 using DigiTransit10.Helpers;
+using DigiTransit10.Models;
+using System.Collections.Generic;
+using Template10.Services.SettingsService;
+using Newtonsoft.Json;
 
 namespace DigiTransit10.Services.SettingsServices
 {
     public class SettingsService
     {
         public static SettingsService Instance { get; } = new SettingsService();
-        Template10.Services.SettingsService.ISettingsHelper _helper;
+        ISettingsHelper _helper;
         private SettingsService()
         {
-            _helper = new Template10.Services.SettingsService.SettingsHelper();
+            _helper = new SettingsHelper();
         }
 
         public bool UseShellBackButton
@@ -55,6 +59,48 @@ namespace DigiTransit10.Services.SettingsServices
             {
                 _helper.Write(nameof(CacheMaxDuration), value);
                 BootStrapper.Current.CacheMaxDuration = value;
+            }
+        }
+
+        //todo: add some flavor of caching to this, because it'll blow up if it ever gets too big
+        public List<FavoritePlace> FavoritePlaces
+        {
+            get
+            {
+                string serialized = _helper.Read<string>(nameof(FavoritePlaces), "", SettingsStrategies.Roam);
+                if(String.IsNullOrEmpty(serialized))
+                {
+                    return new List<FavoritePlace>();
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<List<FavoritePlace>>(serialized);
+                }
+            }
+            set
+            {
+                _helper.Write(nameof(FavoritePlaces), JsonConvert.SerializeObject(value), SettingsStrategies.Roam);
+            }
+        }
+
+        //todo: add some flavor of caching to this, because it'll blow up if it ever gets too big
+        public List<FavoriteRoute> FavoriteRoutes
+        {
+            get
+            {
+                string serialized = _helper.Read<string>(nameof(FavoriteRoutes), "", SettingsStrategies.Roam);
+                if (String.IsNullOrEmpty(serialized))
+                {
+                    return new List<FavoriteRoute>();
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<List<FavoriteRoute>>(serialized);
+                }
+            }
+            set
+            {
+                _helper.Write(nameof(FavoriteRoutes), JsonConvert.SerializeObject(value), SettingsStrategies.Roam);
             }
         }
     }
