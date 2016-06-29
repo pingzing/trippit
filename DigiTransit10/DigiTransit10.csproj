@@ -101,6 +101,9 @@
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
     <Compile Include="ExtensionMethods\TaskExtensions.cs" />
+    <Compile Include="GraphQL\GqlParameter.cs" />
+    <Compile Include="GraphQL\GqlQuery.cs" />
+    <Compile Include="GraphQL\GqlReturnValue.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />

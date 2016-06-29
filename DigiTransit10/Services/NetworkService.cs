@@ -14,6 +14,7 @@ using DigiTransit10.Models.ApiModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
+using DigiTransit10.GraphQL;
 
 namespace DigiTransit10.Services
 {
@@ -64,6 +65,30 @@ namespace DigiTransit10.Services
         public async Task<ApiPlan> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultRequestUrl);
+
+            GqlQuery query = new GqlQuery("plan")
+                .WithParameters(new GqlParameter("from", new { lat = details.FromPlaceCoords.Lat.ToString(NumberFormatInfo.InvariantInfo), lon = details.FromPlaceCoords.Lon.ToString(NumberFormatInfo.InvariantInfo) }),
+                    new GqlParameter("to", new { lat = details.ToPlaceCoordinates.Lat.ToString(NumberFormatInfo.InvariantInfo), lon = details.ToPlaceCoordinates.Lon.ToString(NumberFormatInfo.InvariantInfo) }),
+                    new GqlParameter("numItineraries", 5),
+                    new GqlParameter("time", $"{details.Time.Hours.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Minutes.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Seconds.ToString(NumberFormatInfo.InvariantInfo)}"),
+                    new GqlParameter("date", $"{details.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}"),
+                    new GqlParameter("arriveBy", details.IsTimeTypeArrival)
+                )
+                .WithReturnValues(
+                    new GqlReturnValue("itineraries", 
+                        new GqlReturnValue("legs",
+                            new GqlReturnValue("startTime"), 
+                            new GqlReturnValue("endTime"),
+                            new GqlReturnValue("mode"),
+                            new GqlReturnValue("duration"),
+                            new GqlReturnValue("realTime"),
+                            new GqlReturnValue("distance"),
+                            new GqlReturnValue("transitLeg"),
+                            new GqlReturnValue("realTime")
+                        )
+                    )
+                );
+            string parsedQuery = query.ParseToJsonString();
             string requestString =
                 "{\"query\": \"{" +
                     $"plan(from: {{lat:{details.FromPlaceCoords.Lat.ToString(NumberFormatInfo.InvariantInfo)}, lon:{details.FromPlaceCoords.Lon.ToString(NumberFormatInfo.InvariantInfo)}}}, " +
