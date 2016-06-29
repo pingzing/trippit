@@ -16,7 +16,7 @@ namespace DigiTransit10.GraphQL
         public GqlReturnValue(string name, params GqlReturnValue[] descendants)
         {
             Name = name;
-            Descendants = descendants.ToList();
+            Descendants = new List<GqlReturnValue>(descendants);
         }
     }
 }

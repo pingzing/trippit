@@ -67,11 +67,11 @@ namespace DigiTransit10.Services
             Uri uri = new Uri(DefaultRequestUrl);
 
             GqlQuery query = new GqlQuery("plan")
-                .WithParameters(new GqlParameter("from", new { lat = details.FromPlaceCoords.Lat.ToString(NumberFormatInfo.InvariantInfo), lon = details.FromPlaceCoords.Lon.ToString(NumberFormatInfo.InvariantInfo) }),
-                    new GqlParameter("to", new { lat = details.ToPlaceCoordinates.Lat.ToString(NumberFormatInfo.InvariantInfo), lon = details.ToPlaceCoordinates.Lon.ToString(NumberFormatInfo.InvariantInfo) }),
+                .WithParameters(new GqlParameter("from", new GqlTuple { { "lat", details.FromPlaceCoords.Lat}, { "lon", details.FromPlaceCoords.Lon } }),
+                    new GqlParameter("to", new GqlTuple { { "lat", details.ToPlaceCoordinates.Lat}, { "lon", details.ToPlaceCoordinates.Lon} }),
                     new GqlParameter("numItineraries", 5),
-                    new GqlParameter("time", $"{details.Time.Hours.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Minutes.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Seconds.ToString(NumberFormatInfo.InvariantInfo)}"),
-                    new GqlParameter("date", $"{details.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}"),
+                    new GqlParameter("time", details.Time),
+                    new GqlParameter("date", details.Date),
                     new GqlParameter("arriveBy", details.IsTimeTypeArrival)
                 )
                 .WithReturnValues(
@@ -88,33 +88,9 @@ namespace DigiTransit10.Services
                         )
                     )
                 );
-            string parsedQuery = query.ParseToJsonString();
-            string requestString =
-                "{\"query\": \"{" +
-                    $"plan(from: {{lat:{details.FromPlaceCoords.Lat.ToString(NumberFormatInfo.InvariantInfo)}, lon:{details.FromPlaceCoords.Lon.ToString(NumberFormatInfo.InvariantInfo)}}}, " +
-                        $"to: {{lat:{details.ToPlaceCoordinates.Lat.ToString(NumberFormatInfo.InvariantInfo)}, lon:{details.ToPlaceCoordinates.Lon.ToString(NumberFormatInfo.InvariantInfo)}}}, " +
-                        "numItineraries: 5, " +
-                        $"time: \\\"{details.Time.Hours.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Minutes.ToString(NumberFormatInfo.InvariantInfo)}:{details.Time.Seconds.ToString(NumberFormatInfo.InvariantInfo)}\\\", " +
-                        $"date: \\\"{details.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{details.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\", " +
-                        $"arriveBy: {details.IsTimeTypeArrival.ToString().ToLowerInvariant()}" +
-                        ")" +
-                            "{itineraries " +
-                                "{legs " +
-                                    "{startTime " +
-                                    "endTime " +
-                                    "mode " +
-                                    "duration " +
-                                    "realTime " +
-                                    "distance " +
-                                    "transitLeg " +
-                                    "realTime " +
-                                "}" +
-                            "}" +
-                        "}" +
-                    "}" +
-                "\"}\"";
+            string parsedQuery = query.ParseToJsonString();           
 
-            HttpStringContent stringContent = CreateJsonStringContent(requestString);
+            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
             //todo: this needs to be wrapped in a try/catch with a generic handler, and a way to override/bypass that handler
             var response = await _networkClient.PostAsync(uri, stringContent, token);
             if (!response.IsSuccessStatusCode)

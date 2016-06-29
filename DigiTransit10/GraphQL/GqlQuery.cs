@@ -53,7 +53,7 @@ namespace DigiTransit10.GraphQL
                 foreach (var param in Parameters)
                 {
                     bool isLast = Parameters.IndexOf(param) == Parameters.Count - 1;
-                    sb.Append($"{param.Name}: {param.Value}");
+                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value)}");
                     if (!isLast) sb.Append(", ");
                 }
             }

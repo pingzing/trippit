@@ -104,6 +104,8 @@
     <Compile Include="GraphQL\GqlParameter.cs" />
     <Compile Include="GraphQL\GqlQuery.cs" />
     <Compile Include="GraphQL\GqlReturnValue.cs" />
+    <Compile Include="GraphQL\GqlTuple.cs" />
+    <Compile Include="GraphQL\ParserHelpers.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
