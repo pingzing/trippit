@@ -22,4 +22,15 @@ I.E. dates are in ISO 8601 format, and times are expressed in 24-hour clock form
 
 When sending JSON requests, the double-quotes around strings must be escaped _in the request_. That means backslashes next to the quotes. _In the request_. Ugh.
 
+Example:
+```JSON
+{"query": 
+	"{ 
+		plan (time: \"2:59:0\"){ }	//note the backslashes and quotes next to the numerals
+	}"
+}
+```
+
+
+
 When times are returned by the server, they are usually in UNIX timestamp format, encoded as `long`s.
