@@ -109,13 +109,13 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
-    <PRIResource Include="Strings\fi-FI\AppResources.resw" />
     <PRIResource Include="Strings\en-US\AppResources.resw">
       <CustomToolNamespace>DigiTransit10.Localization.Strings</CustomToolNamespace>
       <SubType>Designer</SubType>
       <Generator>ReswFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.cs</LastGenOutput>
     </PRIResource>
+    <PRIResource Include="Strings\fi-FI\AppResources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

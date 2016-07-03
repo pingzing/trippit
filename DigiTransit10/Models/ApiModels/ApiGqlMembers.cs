@@ -25,6 +25,12 @@ namespace DigiTransit10.Models.ApiModels
         public static string duration => "duration";
         public static string realTime => "realTime";
         public static string distance => "distance";
-        public static string transitLeg => "transitLeg";        
+        public static string transitLeg => "transitLeg";
+        public static string stops => "stops";
+        public static string gtfsId => "gtfsId";
+        public static string name => "name";
+        public static string code => "code";
+        public static string routes => "routes";
+        public static string type => "type";
     }
 }

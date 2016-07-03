@@ -47,8 +47,7 @@
         <controls:PageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True"
-                             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                             RelativePanel.AlignTopWithPanel="True"                             
                              Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}">
 
             <!--  secondary commands  -->

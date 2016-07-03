@@ -20,9 +20,10 @@ namespace DigiTransit10.Services
 {
     public interface INetworkService
     {
-        string DefaultRequestUrl { get; }
+        string DefaultGqlRequestUrl { get; }
+        string DefaultGeocodingRequestUrl { get; }
 
-        Task<string> GetStop(int stopId, CancellationToken token = default(CancellationToken));
+        Task<List<ApiStop>> GetStops(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiPlan> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken));
     }
 
@@ -31,7 +32,8 @@ namespace DigiTransit10.Services
         private readonly Backend.INetworkClient _networkClient;
         private HttpRequestHeaderCollection _defaultHeaders = null;
 
-        public string DefaultRequestUrl { get; } = "https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql";
+        public string DefaultGqlRequestUrl { get; } = "https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql";
+        public string DefaultGeocodingRequestUrl { get; } = "https://api.digitransit.fi/geocoding/v1/";
 
         public NetworkService(Backend.INetworkClient networkClient)
         {
@@ -39,22 +41,36 @@ namespace DigiTransit10.Services
             _defaultHeaders = _networkClient.DefaultHeaders;
         }
 
-        public async Task<string> GetStop(int stopId, CancellationToken token = default(CancellationToken))
+        public async Task<List<ApiStop>> GetStops(string searchString, CancellationToken token = default(CancellationToken))
         {
-            Uri uri = new Uri(DefaultRequestUrl);                        
-            HttpStringContent stringContent = new HttpStringContent(@"{""query"": ""{stop(id: \""HSL:1173210\"") {name lat lon wheelchairBoarding}}""}", 
-                Windows.Storage.Streams.UnicodeEncoding.Utf8, 
-                "application/json");
-            var response = await _networkClient.PostAsync(uri, stringContent, token:token);
+            Uri uri = new Uri(DefaultGqlRequestUrl);
+
+            GqlQuery query = new GqlQuery(ApiGqlMembers.stops)
+                .WithParameters(new GqlParameter(ApiGqlMembers.name, searchString))
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.gtfsId),
+                    new GqlReturnValue(ApiGqlMembers.lat),
+                    new GqlReturnValue(ApiGqlMembers.lon),
+                    new GqlReturnValue(ApiGqlMembers.name),
+                    new GqlReturnValue(ApiGqlMembers.code),
+                    new GqlReturnValue(ApiGqlMembers.routes,
+                        new GqlReturnValue(ApiGqlMembers.type)
+                    )
+                );
+
+            string parsedQuery = query.ParseToJsonString();
+
+            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
+            var response = await _networkClient.PostAsync(uri, stringContent, token);
             if(!response.IsSuccessStatusCode)
             {
-                string errorResponse = await response?.Content?.ReadAsStringAsync();
+                LogFailure(response).DoNotAwait();
                 return null;
             }
-            string stringResponse = await response.Content.ReadAsStringAsync();
-            System.Diagnostics.Debug.WriteLine(stringResponse);
-            return stringResponse;
-        }
+
+            return await UnwrapServerResponse<List<ApiStop>>(response);
+
+        }        
 
         /// <summary>
         /// Returns a travel plan, or null on failure.
@@ -64,7 +80,7 @@ namespace DigiTransit10.Services
         /// <returns></returns>
         public async Task<ApiPlan> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken))
         {
-            Uri uri = new Uri(DefaultRequestUrl);
+            Uri uri = new Uri(DefaultGqlRequestUrl);
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.plan)
                 .WithParameters(new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),

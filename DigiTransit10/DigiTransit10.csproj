@@ -131,6 +131,11 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
+    <Compile Include="Models\Geocoding\Geocoding.cs" />
+    <Compile Include="Models\Geocoding\GeocodingEngine.cs" />
+    <Compile Include="Models\Geocoding\GeocodingFeature.cs" />
+    <Compile Include="Models\Geocoding\GeocodingQuery.cs" />
+    <Compile Include="Models\Geocoding\GeocodingResponse.cs" />
     <Compile Include="Models\ModelEnums.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Place.cs" />
