@@ -66,25 +66,24 @@ namespace DigiTransit10.Services
         {
             Uri uri = new Uri(DefaultRequestUrl);
 
-            GqlQuery query = new GqlQuery("plan")
-                .WithParameters(new GqlParameter("from", new GqlTuple { { "lat", details.FromPlaceCoords.Lat}, { "lon", details.FromPlaceCoords.Lon } }),
-                    new GqlParameter("to", new GqlTuple { { "lat", details.ToPlaceCoordinates.Lat}, { "lon", details.ToPlaceCoordinates.Lon} }),
-                    new GqlParameter("numItineraries", 5),
-                    new GqlParameter("time", details.Time),
-                    new GqlParameter("date", details.Date),
-                    new GqlParameter("arriveBy", details.IsTimeTypeArrival)
+            GqlQuery query = new GqlQuery(ApiGqlMembers.plan)
+                .WithParameters(new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
+                    new GqlParameter(ApiGqlMembers.to, new GqlTuple { { ApiGqlMembers.lat, details.ToPlaceCoordinates.Lat}, { ApiGqlMembers.lon, details.ToPlaceCoordinates.Lon} }),
+                    new GqlParameter(ApiGqlMembers.numItineraries, 5),
+                    new GqlParameter(ApiGqlMembers.time, details.Time),
+                    new GqlParameter(ApiGqlMembers.date, details.Date),
+                    new GqlParameter(ApiGqlMembers.arriveBy, details.IsTimeTypeArrival)
                 )
                 .WithReturnValues(
-                    new GqlReturnValue("itineraries", 
-                        new GqlReturnValue("legs",
-                            new GqlReturnValue("startTime"), 
-                            new GqlReturnValue("endTime"),
-                            new GqlReturnValue("mode"),
-                            new GqlReturnValue("duration"),
-                            new GqlReturnValue("realTime"),
-                            new GqlReturnValue("distance"),
-                            new GqlReturnValue("transitLeg"),
-                            new GqlReturnValue("realTime")
+                    new GqlReturnValue(ApiGqlMembers.itineraries, 
+                        new GqlReturnValue(ApiGqlMembers.legs,
+                            new GqlReturnValue(ApiGqlMembers.startTime), 
+                            new GqlReturnValue(ApiGqlMembers.endTime),
+                            new GqlReturnValue(ApiGqlMembers.mode),
+                            new GqlReturnValue(ApiGqlMembers.duration),
+                            new GqlReturnValue(ApiGqlMembers.realTime),
+                            new GqlReturnValue(ApiGqlMembers.distance),
+                            new GqlReturnValue(ApiGqlMembers.transitLeg)
                         )
                     )
                 );
@@ -108,12 +107,7 @@ namespace DigiTransit10.Services
         }
 
         private async Task<T> UnwrapServerResponse<T>(HttpResponseMessage response)
-        {            
-            // The response comes back from the server wrapped in a "data" JSON object,
-            // which itself contains an object which ITSELF contains the actual object we want back.
-            // Thus: Data.First.First gets us the JSON object we really care about.
-            // todo: this is a bit of bottleneck, because we have to read the entire response into memory
-            // and manipulate it before returning it. 
+        {                        
             return (await response.Content.ReadAsInputStreamAsync())
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<ApiDataContainer>()

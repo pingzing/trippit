@@ -118,6 +118,7 @@
     <Compile Include="Models\ApiModels\ApiDebugOutput.cs" />
     <Compile Include="Models\ApiModels\ApiEnums.cs" />
     <Compile Include="Models\ApiModels\ApiFare.cs" />
+    <Compile Include="Models\ApiModels\ApiGqlMembers.cs" />
     <Compile Include="Models\ApiModels\ApiItinerary.cs" />
     <Compile Include="Models\ApiModels\ApiLeg.cs" />
     <Compile Include="Models\ApiModels\ApiLegGeometry.cs" />
