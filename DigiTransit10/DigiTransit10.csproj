@@ -97,6 +97,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
+      <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
@@ -132,8 +135,11 @@
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
     <Compile Include="Models\Geocoding\Geocoding.cs" />
+    <Compile Include="Models\Geocoding\GeocodingConstants.cs" />
     <Compile Include="Models\Geocoding\GeocodingEngine.cs" />
     <Compile Include="Models\Geocoding\GeocodingFeature.cs" />
+    <Compile Include="Models\Geocoding\GeocodingGeometry.cs" />
+    <Compile Include="Models\Geocoding\GeocodingProperties.cs" />
     <Compile Include="Models\Geocoding\GeocodingQuery.cs" />
     <Compile Include="Models\Geocoding\GeocodingResponse.cs" />
     <Compile Include="Models\ModelEnums.cs" />
@@ -186,6 +192,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DigiTransitSearchBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Custom.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

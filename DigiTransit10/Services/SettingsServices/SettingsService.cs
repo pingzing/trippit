@@ -7,6 +7,9 @@ using DigiTransit10.Models;
 using System.Collections.Generic;
 using Template10.Services.SettingsService;
 using Newtonsoft.Json;
+using Windows.Globalization;
+using Windows.System.UserProfile;
+using System.Linq;
 
 namespace DigiTransit10.Services.SettingsServices
 {
@@ -101,6 +104,27 @@ namespace DigiTransit10.Services.SettingsServices
             set
             {
                 _helper.Write(nameof(FavoriteRoutes), JsonConvert.SerializeObject(value), SettingsStrategies.Roam);
+            }
+        }
+
+        public string CurrentLanguage
+        {
+            get
+            {
+                string langOverride = ApplicationLanguages.PrimaryLanguageOverride;
+                if(String.IsNullOrWhiteSpace(langOverride))
+                {
+                    return ApplicationLanguages.Languages.FirstOrDefault() ?? "en-US";
+                }
+                else
+                {
+                    return ApplicationLanguages.PrimaryLanguageOverride;
+                }
+            }
+            set
+            {
+                ApplicationLanguages.PrimaryLanguageOverride = value;
+                //do something to reload values?
             }
         }
     }

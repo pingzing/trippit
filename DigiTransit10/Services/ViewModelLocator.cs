@@ -1,12 +1,7 @@
 ﻿using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template10.Services.SettingsService;
+using DigiTransit10.Backend;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Services
@@ -27,12 +22,13 @@ namespace DigiTransit10.Services
             else
             {
                 //runtime stuff                
-                SimpleIoc.Default.Register<Backend.INetworkClient>(() => new Backend.NetworkClient());
-                SimpleIoc.Default.Register<INetworkService>(
-                    () => new NetworkService(ServiceLocator.Current.GetInstance<Backend.INetworkClient>())
-                );
-                
-                SimpleIoc.Default.Register(() => SettingsServices.SettingsService.Instance);                
+                var settingsService = SettingsServices.SettingsService.Instance;
+                SimpleIoc.Default.Register(() => settingsService);
+
+                INetworkClient networkClient = new NetworkClient();
+                SimpleIoc.Default.Register<INetworkClient>(() => networkClient);
+
+                SimpleIoc.Default.Register<INetworkService>(() => new NetworkService(networkClient, settingsService));                                
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
 
             }

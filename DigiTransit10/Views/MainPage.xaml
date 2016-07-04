@@ -5,6 +5,7 @@
       xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:controls="using:Template10.Controls"
+      xmlns:lclCtls="using:DigiTransit10.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:DigiTransit10.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -121,11 +122,13 @@
                         <PivotItem.ContentTemplate>
                             <DataTemplate x:DataType="vm:TripFormViewModel">
                                 <StackPanel>
-                                    <AutoSuggestBox x:Name="FromBox"
-                                                    Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}" />
-                                    <AutoSuggestBox x:Name="ToBox"
-                                                    Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
-                                                    Margin="0 10 0 0" />
+                                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"
+                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}"
+                                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
+                                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"
+                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
+                                                                  SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
+                                                                  Margin="0 10 0 0" />
                                     <TimePicker x:Name="TimePicker"
                                                 Time="{x:Bind SelectedTime, Mode=TwoWay}"
                                                 HorizontalAlignment="Stretch"
@@ -174,11 +177,13 @@
                         <HubSection.ContentTemplate>
                             <DataTemplate x:DataType="vm:TripFormViewModel">
                                 <StackPanel>
-                                    <AutoSuggestBox x:Name="FromBox"
-                                                    Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}" />
-                                    <AutoSuggestBox x:Name="ToBox"
-                                                    Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
-                                                    Margin="0 10 0 0" />
+                                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"
+                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}"
+                                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
+                                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"
+                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
+                                                                  SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
+                                                                  Margin="0 10 0 0" />
                                     <TimePicker x:Name="TimePicker"
                                                 Time="{x:Bind SelectedTime, Mode=TwoWay}"
                                                 HorizontalAlignment="Stretch"

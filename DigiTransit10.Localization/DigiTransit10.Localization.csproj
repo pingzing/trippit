@@ -127,7 +127,6 @@
     <EmbeddedResource Include="Properties\ClassLibrary1.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <XliffResource Include="MultilingualResources\DigiTransit10.Localization.en-US.xlf" />
     <XliffResource Include="MultilingualResources\DigiTransit10.Localization.fi-FI.xlf" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

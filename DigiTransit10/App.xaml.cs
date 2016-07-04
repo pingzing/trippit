@@ -34,9 +34,10 @@ namespace DigiTransit10
 
             var _settings = SettingsService.Instance;            
             CacheMaxDuration = _settings.CacheMaxDuration;
-            ShowShellBackButton = _settings.UseShellBackButton;                                 
+            ShowShellBackButton = _settings.UseShellBackButton;
+            RequestedTheme = SettingsService.Instance.AppTheme;
 
-            #endregion            
+            #endregion
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
@@ -52,8 +53,7 @@ namespace DigiTransit10
                     DisableBackButtonWhenModal = true,
                     Content = new Views.Shell(nav),
                     ModalContent = new Views.Busy(),
-                };
-                RequestedTheme = SettingsService.Instance.AppTheme;
+                };                
             }
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            

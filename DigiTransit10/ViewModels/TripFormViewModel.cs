@@ -45,11 +45,25 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDate, value); }
         }
 
+        private Place _fromPlace;
+        public Place FromPlace
+        {
+            get { return _fromPlace; }
+            set { Set(ref _fromPlace, value); }
+        }
+
+        private Place _toPlace;
+        public Place ToPlace
+        {
+            get { return _toPlace; }
+            set { Set(ref _toPlace, value); }
+        }
+
         private readonly RelayCommand _planTripNarrowViewCommand = null;
         public RelayCommand PlanTripNarrowViewCommand => _planTripNarrowViewCommand ?? (new RelayCommand(PlanTripNarrowView));
 
         private readonly RelayCommand _planTripWideViewCommand = null;
-        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTripWideView));
+        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTripWideView));        
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
         {
@@ -60,11 +74,11 @@ namespace DigiTransit10.ViewModels
 
         private async Task PlanTrip()
         {
-            ApiCoordinates DEBUG_FROM_COORD = new ApiCoordinates { Lat = 60.23f, Lon = 25.12f, };
-            ApiCoordinates DEBUG_TO_COORD = new ApiCoordinates { Lat = 60.17f, Lon = 24.94f };
+            ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
+            ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
             BasicTripDetails details = new BasicTripDetails(
-                DEBUG_FROM_COORD,
-                DEBUG_TO_COORD,
+                fromCoords,
+                toCoords,
                 SelectedTime,
                 SelectedDate.DateTime,
                 IsArrivalChecked == true
