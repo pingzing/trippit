@@ -12,9 +12,7 @@ namespace DigiTransit10.Helpers
                 case "Windows.Mobile":
                     return DeviceFormFactorType.Phone;
                 case "Windows.Desktop":
-                    return UIViewSettings.GetForCurrentView().UserInteractionMode == UserInteractionMode.Mouse
-                        ? DeviceFormFactorType.Desktop
-                        : DeviceFormFactorType.Tablet;
+                    return DeviceFormFactorType.Desktop;
                 case "Windows.Universal":
                     return DeviceFormFactorType.IoT;
                 case "Windows.Team":
