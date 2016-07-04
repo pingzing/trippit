@@ -62,9 +62,9 @@ namespace DigiTransit10.GraphQL
             {
                 foreach (var retVal in ReturnValues)
                 {
-                    sb.Append("{");
+                    if(ReturnValues.First() == retVal) sb.Append("{");
                     sb = ParseReturnValueRecursively(sb, retVal);
-                    sb.Append("}");
+                    if(ReturnValues.Last() == retVal) sb.Append("}");
                 }
             }
             sb.Append("}\"}\""); //close the bracket enclosing the method, and the opening query bracket
