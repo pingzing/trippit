@@ -15,6 +15,7 @@
             <str:AppResources x:Key="Strings"/>
 
             <conv:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
+            <conv:EmptyNullToVisibilityConverter x:Key="EmptyNullToVisibilityConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

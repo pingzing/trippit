@@ -101,6 +101,7 @@
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GroupedPlaceList.cs" />
+    <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Services\ViewModelLocator.cs" />
+    <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\TripFormViewModel.cs" />

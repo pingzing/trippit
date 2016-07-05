@@ -127,7 +127,7 @@ namespace DigiTransit10.Controls
             if (String.IsNullOrWhiteSpace(SearchBox.Text))
             {
                 _stopList.Clear();
-                _addressList.Clear();
+                _addressList.Clear();                
                 // this has to happen after the list clearnig. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
                 SearchText = "";
                 SelectedPlace = null;
@@ -224,7 +224,7 @@ namespace DigiTransit10.Controls
             List<Place> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.Id)).ToList();
             foreach (var stale in stalePlaces)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => _addressList.Remove(stale));
+                _addressList.Remove(stale);
             }
 
             foreach (var place in result.Features)
@@ -245,7 +245,7 @@ namespace DigiTransit10.Controls
                     Type = ModelEnums.PlaceType.Address,
                     Confidence = place.Properties.Confidence
                 };
-                DispatcherHelper.CheckBeginInvokeOnUI(() => _addressList.Add(foundPlace));
+                _addressList.AddSorted(foundPlace);
             }
         }
 
@@ -267,7 +267,7 @@ namespace DigiTransit10.Controls
             List<Place> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
             foreach (var stale in stalePlaces)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() => _stopList.Remove(stale));
+                _stopList.Remove(stale);
             }
 
             foreach (var stop in result)
@@ -284,7 +284,7 @@ namespace DigiTransit10.Controls
                     Lon = stop.Lon,
                     Type = ModelEnums.PlaceType.Stop
                 };
-                DispatcherHelper.CheckBeginInvokeOnUI(() => _stopList.AddSorted(foundPlace));
+                _stopList.AddSorted(foundPlace);
             }
         }
 
