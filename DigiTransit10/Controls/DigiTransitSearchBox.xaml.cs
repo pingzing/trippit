@@ -23,13 +23,12 @@ namespace DigiTransit10.Controls
     public sealed partial class DigiTransitSearchBox : UserControl, INotifyPropertyChanged
     {
         private readonly INetworkService _networkService;
-        private CancellationTokenSource _currentToken = new CancellationTokenSource();
-        private readonly DispatcherTimer _textChangeThrottle;        
+        private CancellationTokenSource _currentToken = new CancellationTokenSource();        
 
-        private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop, 
+        private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop,
             AppResources.SuggestBoxHeader_TransitStops);
 
-        private readonly GroupedPlaceList _addressList = new GroupedPlaceList(ModelEnums.PlaceType.Address, 
+        private readonly GroupedPlaceList _addressList = new GroupedPlaceList(ModelEnums.PlaceType.Address,
             AppResources.SuggestBoxHeader_Addresses);
 
         private ObservableCollection<GroupedPlaceList> _suggestedPlaces = new ObservableCollection<GroupedPlaceList>();
@@ -63,7 +62,7 @@ namespace DigiTransit10.Controls
         public DigiTransitSearchBox()
         {
             this.InitializeComponent();
-            if(Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 return;
             }
@@ -72,25 +71,21 @@ namespace DigiTransit10.Controls
             SuggestedPlaces.Add(_addressList);
             PlacesCollection.Source = SuggestedPlaces;
 
-            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();
-            _textChangeThrottle = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(400)
-            };
-            _textChangeThrottle.Tick += SearchTick;
+            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
         }
 
         public static readonly DependencyProperty SelectedPlaceProperty =
-            DependencyProperty.Register("SelectedPlace", typeof(Place), typeof(DigiTransitSearchBox), new PropertyMetadata(null, 
-                (obj, args) => {
+            DependencyProperty.Register("SelectedPlace", typeof(Place), typeof(DigiTransitSearchBox), new PropertyMetadata(null,
+                (obj, args) =>
+                {
                     DigiTransitSearchBox box = obj as DigiTransitSearchBox;
-                    if(box == null)
+                    if (box == null)
                     {
                         return;
                     }
 
                     Place newPlace = args.NewValue as Place;
-                    if(newPlace == null)
+                    if (newPlace == null)
                     {
                         return;
                     }
@@ -125,26 +120,27 @@ namespace DigiTransit10.Controls
         {
             get { return (string)GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
-        }                
+        }
 
-        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            if(String.IsNullOrWhiteSpace(SearchBox.Text))
-            {                
+            if (String.IsNullOrWhiteSpace(SearchBox.Text))
+            {
                 _stopList.Clear();
                 _addressList.Clear();
                 // this has to happen after the list clearnig. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
-                SearchText = ""; 
+                SearchText = "";
                 SelectedPlace = null;
                 return;
             }
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
+                string searchText = this.SearchBox.Text;
                 SelectedPlace = null;
-                _textChangeThrottle.Stop();
-                _textChangeThrottle.Start();
+                System.Diagnostics.Debug.WriteLine($"Firing SearchTick with: {searchText}!");
+                await TriggerSearch(searchText);
             }
-            if(!args.CheckCurrent())
+            if (!args.CheckCurrent())
             {
                 SearchText = SearchBox.Text;
             }
@@ -167,39 +163,32 @@ namespace DigiTransit10.Controls
             //fire a "search" event that a viewmodel can listen for
             IsWaiting = false;
 
-            if(args.ChosenSuggestion != null)
-            {                
+            if (args.ChosenSuggestion != null)
+            {
                 SelectedPlace = (Place)args.ChosenSuggestion;
 
-                if(Command != null && Command.CanExecute(SelectedPlace))
+                if (Command != null && Command.CanExecute(SelectedPlace))
                 {
                     Command.Execute(SelectedPlace);
                 }
             }
             else
             {
-                if(Command != null && Command.CanExecute(args.QueryText))
+                if (Command != null && Command.CanExecute(args.QueryText))
                 {
                     Command.Execute(args.QueryText);
                 }
             }
-        }
-
-        private async void SearchTick(object sender, object e)
-        {
-            System.Diagnostics.Debug.WriteLine("Firing SearchTick!");
-            _textChangeThrottle.Stop();
-            await TriggerSearch(this.SearchBox.Text);
-        }
+        }        
 
         private async Task TriggerSearch(string searchString)
         {
-            if(_currentToken != null && !_currentToken.IsCancellationRequested)
+            if (_currentToken != null && !_currentToken.IsCancellationRequested)
             {
                 _currentToken.Cancel();
             }
 
-            _currentToken = new CancellationTokenSource();            
+            _currentToken = new CancellationTokenSource();
 
             Task addressTask = SearchAddresses(searchString, _currentToken.Token);
             Task stopTask = SearchStops(searchString, _currentToken.Token);
@@ -219,18 +208,14 @@ namespace DigiTransit10.Controls
 
         private async Task SearchAddresses(string searchString, CancellationToken token)
         {
-            GeocodingResponse result;
-            try
+            var result = await _networkService.SearchAddress(searchString);
+            if (token.IsCancellationRequested)
             {
-                result = await _networkService.SearchAddress(searchString, token);
-            }
-            catch (OperationCanceledException ex)
-            {
-                System.Diagnostics.Debug.WriteLine("SearchAddresses operation cancelled.");
                 return;
             }
+
             if (result == null || result.Features.Length < 1)
-            {                
+            {
                 return;
             }
 
@@ -250,10 +235,10 @@ namespace DigiTransit10.Controls
                 }
                 string name = place.Properties.Name;
                 if (place.Properties.Street != null) name += $", {place.Properties.Street}";
-                if (place.Properties.HouseNumber != null) name += $" {place.Properties.HouseNumber}";                
+                if (place.Properties.HouseNumber != null) name += $" {place.Properties.HouseNumber}";
                 Place foundPlace = new Place
                 {
-                    Id= place.Properties.Id,
+                    Id = place.Properties.Id,
                     Name = name,
                     Lat = (float)place.Geometry.Coordinates[1],
                     Lon = (float)place.Geometry.Coordinates[0],
@@ -261,22 +246,18 @@ namespace DigiTransit10.Controls
                     Confidence = place.Properties.Confidence
                 };
                 DispatcherHelper.CheckBeginInvokeOnUI(() => _addressList.Add(foundPlace));
-            }            
+            }
         }
 
         private async Task SearchStops(string searchString, CancellationToken token)
         {
-            List<ApiStop> result;
-            try
+            var result = await _networkService.GetStops(searchString);
+            if (token.IsCancellationRequested)
             {
-                result = await _networkService.GetStops(searchString, token);
-            }
-            catch (OperationCanceledException ex)
-            {
-                System.Diagnostics.Debug.WriteLine("SearchStops operation cancelled.");
                 return;
             }
-            if(result == null || result.Count < 1)
+
+            if (result == null || result.Count < 1)
             {
                 return;
             }
@@ -286,10 +267,10 @@ namespace DigiTransit10.Controls
             List<Place> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
             foreach (var stale in stalePlaces)
             {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>_stopList.Remove(stale));
+                DispatcherHelper.CheckBeginInvokeOnUI(() => _stopList.Remove(stale));
             }
 
-            foreach(var stop in result)
+            foreach (var stop in result)
             {
                 if (_stopList.Any(x => x.Id == stop.Id))
                 {
@@ -301,9 +282,9 @@ namespace DigiTransit10.Controls
                     Name = $"{stop.Name}, {stop.Code}",
                     Lat = stop.Lat,
                     Lon = stop.Lon,
-                    Type = ModelEnums.PlaceType.Stop                    
+                    Type = ModelEnums.PlaceType.Stop
                 };
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>_stopList.AddSorted(foundPlace));
+                DispatcherHelper.CheckBeginInvokeOnUI(() => _stopList.AddSorted(foundPlace));
             }
         }
 
