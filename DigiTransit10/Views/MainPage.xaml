@@ -116,7 +116,7 @@
                        x:DeferLoadStrategy="Lazy"     
                        RelativePanel.AlignTopWithPanel="True"
                        RelativePanel.AlignBottomWithPanel="True"
-                       RelativePanel.AlignLeftWithPanel="True"                                     
+                       RelativePanel.AlignLeftWithPanel="True"                        
                        Visibility="Collapsed">
                     <PivotItem x:Name="TripFormPivotItem" 
                                DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
