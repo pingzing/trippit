@@ -11,6 +11,7 @@ using System.Runtime;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using DigiTransit10.Services;
+using GalaSoft.MvvmLight.Threading;
 
 namespace DigiTransit10
 {
@@ -58,6 +59,7 @@ namespace DigiTransit10
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
+            DispatcherHelper.Initialize();
             await Task.CompletedTask;
         }
 

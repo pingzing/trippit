@@ -54,6 +54,14 @@
           <source>Trip plans</source>
           <target state="new">Trip plans</target>
         </trans-unit>
+        <trans-unit id="SuggestBoxHeader_Addresses" translate="yes" xml:space="preserve">
+          <source>Addresses</source>
+          <target state="new">Addresses</target>
+        </trans-unit>
+        <trans-unit id="SuggestBoxHeader_TransitStops" translate="yes" xml:space="preserve">
+          <source>Transit Stops</source>
+          <target state="new">Transit Stops</target>
+        </trans-unit>
       </group>
     </body>
   </file>

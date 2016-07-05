@@ -1,8 +1,10 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Models;
 using DigiTransit10.Services;
+using DigiTransit10.Localization.Strings;
 using Microsoft.Practices.ServiceLocation;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,6 +13,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.Linq;
+using DigiTransit10.Models.ApiModels;
+using DigiTransit10.Models.Geocoding;
+using GalaSoft.MvvmLight.Threading;
 
 namespace DigiTransit10.Controls
 {
@@ -18,10 +24,16 @@ namespace DigiTransit10.Controls
     {
         private readonly INetworkService _networkService;
         private CancellationTokenSource _currentToken = new CancellationTokenSource();
-        private DispatcherTimer _textChangeThrottle;
+        private readonly DispatcherTimer _textChangeThrottle;        
 
-        private ObservableCollection<Place> _suggestedPlaces = new ObservableCollection<Place>();
-        public ObservableCollection<Place> SuggestedPlaces
+        private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop, 
+            AppResources.SuggestBoxHeader_TransitStops);
+
+        private readonly GroupedPlaceList _addressList = new GroupedPlaceList(ModelEnums.PlaceType.Address, 
+            AppResources.SuggestBoxHeader_Addresses);
+
+        private ObservableCollection<GroupedPlaceList> _suggestedPlaces = new ObservableCollection<GroupedPlaceList>();
+        public ObservableCollection<GroupedPlaceList> SuggestedPlaces
         {
             get { return _suggestedPlaces; }
             set
@@ -55,9 +67,16 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
+
+            SuggestedPlaces.Add(_stopList);
+            SuggestedPlaces.Add(_addressList);
+            PlacesCollection.Source = SuggestedPlaces;
+
             _networkService = ServiceLocator.Current.GetInstance<INetworkService>();
-            _textChangeThrottle = new DispatcherTimer();
-            _textChangeThrottle.Interval = TimeSpan.FromMilliseconds(250);
+            _textChangeThrottle = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
             _textChangeThrottle.Tick += SearchTick;
         }
 
@@ -111,9 +130,11 @@ namespace DigiTransit10.Controls
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if(String.IsNullOrWhiteSpace(SearchBox.Text))
-            {
-                SearchText = "";
-                SuggestedPlaces.Clear();
+            {                
+                _stopList.Clear();
+                _addressList.Clear();
+                // this has to happen after the list clearnig. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
+                SearchText = ""; 
                 SelectedPlace = null;
                 return;
             }
@@ -164,21 +185,21 @@ namespace DigiTransit10.Controls
             }
         }
 
-        private void SearchTick(object sender, object e)
+        private async void SearchTick(object sender, object e)
         {
+            System.Diagnostics.Debug.WriteLine("Firing SearchTick!");
             _textChangeThrottle.Stop();
-            TriggerSearch(this.SearchBox.Text).DoNotAwait();
+            await TriggerSearch(this.SearchBox.Text);
         }
 
         private async Task TriggerSearch(string searchString)
         {
-            if(!_currentToken.IsCancellationRequested)
+            if(_currentToken != null && !_currentToken.IsCancellationRequested)
             {
                 _currentToken.Cancel();
             }
 
-            _currentToken = new CancellationTokenSource();
-            SuggestedPlaces.Clear(); //remove this and do a per-call removal in each task below
+            _currentToken = new CancellationTokenSource();            
 
             Task addressTask = SearchAddresses(searchString, _currentToken.Token);
             Task stopTask = SearchStops(searchString, _currentToken.Token);
@@ -194,55 +215,97 @@ namespace DigiTransit10.Controls
                 return;
             }
             IsWaiting = false;
-
         }
 
         private async Task SearchAddresses(string searchString, CancellationToken token)
         {
-            var result = await _networkService.SearchAddress(searchString, token);
+            GeocodingResponse result;
+            try
+            {
+                result = await _networkService.SearchAddress(searchString, token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("SearchAddresses operation cancelled.");
+                return;
+            }
             if (result == null || result.Features.Length < 1)
             {                
                 return;
             }
+
+            //Remove entries in old list not in new response
+            List<string> responseIds = result.Features.Select(x => x.Properties.Id).ToList();
+            List<Place> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            foreach (var stale in stalePlaces)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() => _addressList.Remove(stale));
+            }
+
             foreach (var place in result.Features)
             {
+                if (_addressList.Any(x => x.Id == place.Properties.Id))
+                {
+                    continue;
+                }
                 string name = place.Properties.Name;
                 if (place.Properties.Street != null) name += $", {place.Properties.Street}";
-                if (place.Properties.HouseNumber != null) name += $" {place.Properties.HouseNumber}";
-                name += $", C:{place.Properties.Confidence}";
+                if (place.Properties.HouseNumber != null) name += $" {place.Properties.HouseNumber}";                
                 Place foundPlace = new Place
                 {
+                    Id= place.Properties.Id,
                     Name = name,
                     Lat = (float)place.Geometry.Coordinates[1],
                     Lon = (float)place.Geometry.Coordinates[0],
                     Type = ModelEnums.PlaceType.Address,
                     Confidence = place.Properties.Confidence
                 };
-                SuggestedPlaces.AddSorted(foundPlace);
-            }
+                DispatcherHelper.CheckBeginInvokeOnUI(() => _addressList.Add(foundPlace));
+            }            
         }
 
         private async Task SearchStops(string searchString, CancellationToken token)
         {
-            var result = await _networkService.GetStops(searchString, token);
+            List<ApiStop> result;
+            try
+            {
+                result = await _networkService.GetStops(searchString, token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("SearchStops operation cancelled.");
+                return;
+            }
             if(result == null || result.Count < 1)
             {
                 return;
             }
+
+            //Remove entries in old list not in new response
+            List<string> responseIds = result.Select(x => x.Id).ToList();
+            List<Place> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            foreach (var stale in stalePlaces)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>_stopList.Remove(stale));
+            }
+
             foreach(var stop in result)
             {
+                if (_stopList.Any(x => x.Id == stop.Id))
+                {
+                    continue;
+                }
                 Place foundPlace = new Place
                 {
+                    Id = stop.Id,
                     Name = $"{stop.Name}, {stop.Code}",
                     Lat = stop.Lat,
                     Lon = stop.Lon,
                     Type = ModelEnums.PlaceType.Stop                    
                 };
-                SuggestedPlaces.AddSorted(foundPlace);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>_stopList.AddSorted(foundPlace));
             }
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName]string propertyName = "")

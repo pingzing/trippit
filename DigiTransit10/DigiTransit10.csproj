@@ -100,6 +100,7 @@
     <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GroupedPlaceList.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />

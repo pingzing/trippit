@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -43,8 +44,10 @@ namespace DigiTransit10.Services
         }
 
         //---GEOCODING REQUESTS---
+
         public async Task<GeocodingResponse> SearchAddress(string searchString, CancellationToken token = default(CancellationToken))
         {
+            searchString = WebUtility.UrlEncode(searchString);
             string urlString = $"{DefaultGeocodingRequestUrl}" +
                 $"search?text={searchString}" +
                 $"&boundary.rect.min_lat={GeocodingConstants.BoundaryRectMinLat}" +
@@ -75,11 +78,13 @@ namespace DigiTransit10.Services
 
         public async Task<List<ApiStop>> GetStops(string searchString, CancellationToken token = default(CancellationToken))
         {
+            searchString = WebUtility.UrlEncode(searchString);
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.stops)
                 .WithParameters(new GqlParameter(ApiGqlMembers.name, searchString))
                 .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.id),
                     new GqlReturnValue(ApiGqlMembers.gtfsId),
                     new GqlReturnValue(ApiGqlMembers.lat),
                     new GqlReturnValue(ApiGqlMembers.lon),
@@ -100,7 +105,7 @@ namespace DigiTransit10.Services
                 return null;
             }
 
-            return await UnwrapServerResponse<List<ApiStop>>(response);
+            return await UnwrapGqlResposne<List<ApiStop>>(response);
         }        
 
         /// <summary>
@@ -114,7 +119,8 @@ namespace DigiTransit10.Services
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.plan)
-                .WithParameters(new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
+                .WithParameters(
+                    new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
                     new GqlParameter(ApiGqlMembers.to, new GqlTuple { { ApiGqlMembers.lat, details.ToPlaceCoordinates.Lat}, { ApiGqlMembers.lon, details.ToPlaceCoordinates.Lon} }),
                     new GqlParameter(ApiGqlMembers.numItineraries, 5),
                     new GqlParameter(ApiGqlMembers.time, details.Time),
@@ -145,7 +151,7 @@ namespace DigiTransit10.Services
                 return null;
             }
 
-            return await UnwrapServerResponse<ApiPlan>(response);
+            return await UnwrapGqlResposne<ApiPlan>(response);
         }
 
         private HttpStringContent CreateJsonStringContent(string requestString)
@@ -153,7 +159,7 @@ namespace DigiTransit10.Services
             return new HttpStringContent(requestString, UnicodeEncoding.Utf8, "application/json");
         }
 
-        private async Task<T> UnwrapServerResponse<T>(HttpResponseMessage response)
+        private async Task<T> UnwrapGqlResposne<T>(HttpResponseMessage response)
         {                        
             return (await response.Content.ReadAsInputStreamAsync())
                 .AsStreamForRead()
