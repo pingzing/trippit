@@ -208,6 +208,7 @@ namespace DigiTransit10.Controls
 
         private async Task SearchAddresses(string searchString, CancellationToken token)
         {
+            //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
             var result = await _networkService.SearchAddress(searchString);
             if (token.IsCancellationRequested)
             {
@@ -251,6 +252,7 @@ namespace DigiTransit10.Controls
 
         private async Task SearchStops(string searchString, CancellationToken token)
         {
+            //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
             var result = await _networkService.GetStops(searchString);
             if (token.IsCancellationRequested)
             {
