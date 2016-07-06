@@ -62,6 +62,14 @@
           <source>Transit Stops</source>
           <target state="new">Transit Stops</target>
         </trans-unit>
+        <trans-unit id="TripForm_PlanningTrip" translate="yes" xml:space="preserve">
+          <source>Planning...</source>
+          <target state="new">Planning...</target>
+        </trans-unit>
+        <trans-unit id="TripFrom_GettingsAddresses" translate="yes" xml:space="preserve">
+          <source>Resolving locations...</source>
+          <target state="new">Resolving locations...</target>
+        </trans-unit>
       </group>
     </body>
   </file>

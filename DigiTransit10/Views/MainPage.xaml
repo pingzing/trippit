@@ -123,41 +123,49 @@
                                Header="{Binding Source={StaticResource Strings}, Path=TripForm_PlanATripHeader}">
                         <PivotItem.ContentTemplate>
                             <DataTemplate x:DataType="vm:TripFormViewModel">
-                                <StackPanel>
-                                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"
-                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}"
-                                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
-                                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"
-                                                                  Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
-                                                                  SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
-                                                                  Margin="0 10 0 0" />
-                                    <TimePicker x:Name="TimePicker"
-                                                Time="{x:Bind SelectedTime, Mode=TwoWay}"
-                                                HorizontalAlignment="Stretch"
-                                                Margin="0 10 0 0" />
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
-                                        <RadioButton x:Name="DepartureRadioButon"
-                                                     GroupName="TimeType"
-                                                     Content="{Binding Source={StaticResource Strings}, Path=TimeType_Departure}"
-                                                     IsChecked="{x:Bind IsDepartureChecked, Mode=TwoWay}" />
-                                        <RadioButton x:Name="ArrivalRadioButton"
-                                                     GroupName="TimeType"
-                                                     Content="{Binding Source={StaticResource Strings}, Path=TimeType_Arrival}"
-                                                     IsChecked="{x:Bind IsArrivalChecked, Mode=TwoWay}" />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0">
+                                        <lclCtls:DigiTransitSearchBox x:Name="FromBox"
+                                                                      Header="{Binding Source={StaticResource Strings}, Path=MainPage_FromHeader}"
+                                                                      SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
+                                        <lclCtls:DigiTransitSearchBox x:Name="ToBox"
+                                                                      Header="{Binding Source={StaticResource Strings}, Path=MainPage_ToHeader}"
+                                                                      SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
+                                                                      Margin="0 10 0 0" />
+                                        <TimePicker x:Name="TimePicker"
+                                                    Time="{x:Bind SelectedTime, Mode=TwoWay}"
+                                                    HorizontalAlignment="Stretch"
+                                                    Margin="0 10 0 0" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10 0 0">
+                                            <RadioButton x:Name="DepartureRadioButon"
+                                                         GroupName="TimeType"
+                                                         Content="{Binding Source={StaticResource Strings}, Path=TimeType_Departure}"
+                                                         IsChecked="{x:Bind IsDepartureChecked, Mode=TwoWay}" />
+                                            <RadioButton x:Name="ArrivalRadioButton"
+                                                         GroupName="TimeType"
+                                                         Content="{Binding Source={StaticResource Strings}, Path=TimeType_Arrival}"
+                                                         IsChecked="{x:Bind IsArrivalChecked, Mode=TwoWay}" />
+                                        </StackPanel>
+                                        <DatePicker x:Name="DatePicker"
+                                                    HorizontalAlignment="Stretch"
+                                                    Margin="0 10 0 0" 
+                                                    Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}"
+                                                    Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
                                     </StackPanel>
-                                    <DatePicker x:Name="DatePicker"
-                                                HorizontalAlignment="Stretch"
-                                                Margin="0 10 0 0" 
-                                                Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}"
-                                                Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
                                     <Button x:Name="PlanTripButton"
-                                            Margin="0 10 0 0" 
+                                            Grid.Row="1"
+                                            VerticalAlignment="Bottom"
+                                            Margin="0 10 0 10" 
                                             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                                             Foreground="White"
                                             HorizontalAlignment="Stretch"
                                             Content="{Binding Source={StaticResource Strings}, Path=TripForm_PlanTripButton}"                            
                                             Command="{x:Bind PlanTripNarrowViewCommand}"/>
-                                </StackPanel>
+                                </Grid>
                             </DataTemplate>
                         </PivotItem.ContentTemplate>
                     </PivotItem>
@@ -170,8 +178,10 @@
 
                 <!--Wide view-->
                 <Hub x:Name="TripPlannerHub"
+                     Margin="0 0 0 10"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      x:DeferLoadStrategy="Lazy"             
-                     RelativePanel.AlignLeftWithPanel="True"             
+                     RelativePanel.AlignLeftWithPanel="True"                     
                      Visibility="Collapsed">
                     <HubSection x:Name="TripFormHubSection"                        
                                 DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
@@ -206,7 +216,7 @@
                                                 Header="{Binding Source={StaticResource Strings}, Path=LiteralDate}"
                                                 Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
                                     <Button x:Name="PlanTripButton"
-                                            Margin="0 10 0 0" 
+                                            Margin="0 10 0 10" 
                                             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                                             Foreground="White"
                                             HorizontalAlignment="Stretch"

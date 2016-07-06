@@ -12,7 +12,8 @@ namespace DigiTransit10.Models
         {
             Stop,
             Address,
-            Coordinates
+            Coordinates,
+            NameOnly
         }      
     }
 }

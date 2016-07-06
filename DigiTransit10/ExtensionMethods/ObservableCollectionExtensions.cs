@@ -29,7 +29,57 @@ namespace DigiTransit10.ExtensionMethods
 
             foreach (var sortItem in sorted)
             {
-                col.Move(col.IndexOf(sortItem), sorted.IndexOf(sortItem));
+                int currIndex = col.IndexOf(sortItem);
+                int sortedIndex = sorted.IndexOf(sortItem);
+                if (currIndex != sortedIndex)
+                {
+                    col.Move(currIndex, sortedIndex);
+                }
+            }
+        }
+
+        public static void SortInPlace<TSource, TKey>(this ObservableCollection<TSource> col, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            List<TSource> sorted = col.OrderBy(keySelector, comparer).ToList();
+
+            foreach (var sortItem in sorted)
+            {
+                int currIndex = col.IndexOf(sortItem);
+                int sortedIndex = sorted.IndexOf(sortItem);
+                if (currIndex != sortedIndex)
+                {
+                    col.Move(currIndex, sortedIndex);
+                }
+            }
+        }
+
+        public static void SortInPlaceDescending<TSource, TKey>(this ObservableCollection<TSource> col, Func<TSource, TKey> keySelector)
+        {
+            List<TSource> sorted = col.OrderByDescending(keySelector).ToList();
+
+            foreach (var sortItem in sorted)
+            {
+                int currIndex = col.IndexOf(sortItem);
+                int sortedIndex = sorted.IndexOf(sortItem);
+                if (currIndex != sortedIndex)
+                {
+                    col.Move(currIndex, sortedIndex);
+                }
+            }
+        }
+
+        public static void SortInPlaceDescending<TSource, TKey>(this ObservableCollection<TSource> col, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            List<TSource> sorted = col.OrderByDescending(keySelector, comparer).ToList();
+
+            foreach (var sortItem in sorted)
+            {
+                int currIndex = col.IndexOf(sortItem);
+                int sortedIndex = sorted.IndexOf(sortItem);
+                if (currIndex != sortedIndex)
+                {
+                    col.Move(currIndex, sortedIndex);
+                }
             }
         }
     }

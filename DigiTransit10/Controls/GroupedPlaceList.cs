@@ -18,30 +18,5 @@ namespace DigiTransit10.Controls
             GroupType = type;
             Key = header;
         }
-
-        private object lockObject = new object();
-        public new void Add(Place newPlace)
-        {
-            lock(lockObject)
-            {
-                base.Add(newPlace);
-            }
-        }
-
-        public void AddSorted(Place newPlace)
-        {
-            lock(lockObject)
-            {
-                ExtensionMethods.ObservableCollectionExtensions.AddSorted(this, newPlace);
-            }
-        }
-
-        public new void Remove(Place newPlace)
-        {
-            lock(lockObject)
-            {
-                base.Remove(newPlace);
-            }
-        }
     }
 }

@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/05/2016 16:33:16
+// 	Generated: 07/06/2016 11:58:53
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -185,6 +185,17 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
+        /// Localized resource similar to "Planning..."
+        /// </summary>
+        public static string TripForm_PlanningTrip
+        {
+            get
+            {
+                return resourceLoader.GetString("TripForm_PlanningTrip");
+            }
+        }
+        
+        /// <summary>
         /// Localized resource similar to "Plan"
         /// </summary>
         public static string TripForm_PlanTripButton
@@ -192,6 +203,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripForm_PlanTripButton");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Resolving locations..."
+        /// </summary>
+        public static string TripFrom_GettingsAddresses
+        {
+            get
+            {
+                return resourceLoader.GetString("TripFrom_GettingsAddresses");
             }
         }
         

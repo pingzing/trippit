@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Media.Streaming.Adaptive;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
@@ -17,13 +15,13 @@ namespace DigiTransit10.Models
     }
 
     public class Place : IPlace, IComparable<Place>
-    {
+    {        
         public string Id { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
         public PlaceType Type { get; set; }
-        public double? Confidence { get; set; }
+        public double? Confidence { get; set; }        
 
         public override bool Equals(object obj)
         {
@@ -38,7 +36,7 @@ namespace DigiTransit10.Models
 
         protected bool Equals(Place other)
         {
-            return this.Id.Equals(other.Id)
+            return this.Id == other.Id
                 && this.Name.Equals(other.Name)
                 && this.Lat == other.Lat
                 && this.Lon == other.Lon
@@ -106,6 +104,32 @@ namespace DigiTransit10.Models
             }
 
             return this.Name.CompareTo(other.Name);
+        }
+    }
+
+    public class PlaceComparer : IComparer<Place>
+    {
+        public int Compare(Place a, Place b)
+        {
+            //this should take into account placetype (rank Stops higher than addresses) and confidence. if no confidence, fall back to alphabetical            
+            int scoreSoFar = 0;
+            scoreSoFar = a.Type.CompareTo(b.Type);
+            if (scoreSoFar != 0)
+            {
+                return scoreSoFar;
+            }
+
+            if (a.Confidence != null && b.Confidence != null)
+            {
+                scoreSoFar = (a.Confidence.Value).CompareTo(b.Confidence.Value) * -1; //we want descending order for score, default is ascending
+            }
+
+            if (scoreSoFar != 0)
+            {
+                return scoreSoFar;
+            }
+
+            return a.Name.CompareTo(b.Name);
         }
     }
 }

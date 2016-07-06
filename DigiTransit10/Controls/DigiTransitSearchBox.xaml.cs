@@ -22,6 +22,8 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitSearchBox : UserControl, INotifyPropertyChanged
     {
+        private static readonly PlaceComparer _placeComparer = new PlaceComparer();
+
         private readonly INetworkService _networkService;
         private CancellationTokenSource _currentToken = new CancellationTokenSource();        
 
@@ -99,7 +101,7 @@ namespace DigiTransit10.Controls
         }
 
         public static readonly DependencyProperty SearchTextProperty =
-            DependencyProperty.Register("SearchText", typeof(string), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
+            DependencyProperty.Register("SearchText", typeof(string), typeof(DigiTransitSearchBox), new PropertyMetadata(""));
         public string SearchText
         {
             get { return (string)GetValue(SearchTextProperty); }
@@ -133,16 +135,20 @@ namespace DigiTransit10.Controls
                 SelectedPlace = null;
                 return;
             }
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                string searchText = this.SearchBox.Text;
-                SelectedPlace = null;
-                System.Diagnostics.Debug.WriteLine($"Firing SearchTick with: {searchText}!");
-                await TriggerSearch(searchText);
-            }
+
             if (!args.CheckCurrent())
             {
                 SearchText = SearchBox.Text;
+            }
+
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                SelectedPlace = new Place
+                {
+                    Name = SearchText,
+                    Type = ModelEnums.PlaceType.NameOnly
+                };
+                await TriggerSearch(SearchText);
             }
         }
 
@@ -150,22 +156,23 @@ namespace DigiTransit10.Controls
         {
             //cancel any outstanding Searches, set text field to the Place chosen
             IsWaiting = false;
-
-            _currentToken.Cancel();
+            _currentToken?.Cancel();
 
             SelectedPlace = (Place)args.SelectedItem;
             SearchText = SelectedPlace.Name;
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            //if the ChosenSuggestion property is not null, set textbox text (may happen automatically)
+        {            
             //fire a "search" event that a viewmodel can listen for
+            //todo: should this also be an actual event, as well as the Command?
             IsWaiting = false;
+            _currentToken?.Cancel();
 
             if (args.ChosenSuggestion != null)
             {
                 SelectedPlace = (Place)args.ChosenSuggestion;
+                SearchText = SelectedPlace.Name;
 
                 if (Command != null && Command.CanExecute(SelectedPlace))
                 {
@@ -174,6 +181,16 @@ namespace DigiTransit10.Controls
             }
             else
             {
+                SelectedPlace = new Place
+                {
+                    Confidence = null,
+                    Id = null,
+                    Lat = 0,
+                    Lon = 0,
+                    Name = args.QueryText,
+                    Type = ModelEnums.PlaceType.NameOnly
+                };                
+                SearchText = args.QueryText;
                 if (Command != null && Command.CanExecute(args.QueryText))
                 {
                     Command.Execute(args.QueryText);
@@ -232,11 +249,14 @@ namespace DigiTransit10.Controls
             {
                 if (_addressList.Any(x => x.Id == place.Properties.Id))
                 {
+                    Place address = _addressList.First(x => x.Id == place.Properties.Id);
+                    if (address.Confidence != place.Properties.Confidence)
+                    {
+                        address.Confidence = place.Properties.Confidence;
+                    }
                     continue;
                 }
-                string name = place.Properties.Name;
-                if (place.Properties.Street != null) name += $", {place.Properties.Street}";
-                if (place.Properties.HouseNumber != null) name += $" {place.Properties.HouseNumber}";
+                string name = place.Properties.Name;                
                 Place foundPlace = new Place
                 {
                     Id = place.Properties.Id,
@@ -246,8 +266,9 @@ namespace DigiTransit10.Controls
                     Type = ModelEnums.PlaceType.Address,
                     Confidence = place.Properties.Confidence
                 };
-                _addressList.AddSorted(foundPlace);
+                _addressList.AddSorted(foundPlace, _placeComparer);                                
             }
+            _addressList.SortInPlace(x => x, _placeComparer);
         }
 
         private async Task SearchStops(string searchString, CancellationToken token)
@@ -286,8 +307,9 @@ namespace DigiTransit10.Controls
                     Lon = stop.Lon,
                     Type = ModelEnums.PlaceType.Stop
                 };
-                _stopList.AddSorted(foundPlace);
+                _stopList.AddSorted(foundPlace, _placeComparer);                
             }
+            _stopList.SortInPlace(x => x, _placeComparer);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -153,8 +153,14 @@
   <data name="TripForm_PlanATripHeader" xml:space="preserve">
     <value>Plan a trip</value>
   </data>
+  <data name="TripForm_PlanningTrip" xml:space="preserve">
+    <value>Planning...</value>
+  </data>
   <data name="TripForm_PlanTripButton" xml:space="preserve">
     <value>Plan</value>
+  </data>
+  <data name="TripFrom_GettingsAddresses" xml:space="preserve">
+    <value>Resolving locations...</value>
   </data>
   <data name="TripResults_TripPlansHeader" xml:space="preserve">
     <value>Trip plans</value>

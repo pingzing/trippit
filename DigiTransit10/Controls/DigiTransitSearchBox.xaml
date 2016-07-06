@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <!--Home glyph icon-->
+                <!--House glyph icon-->
                 <FontIcon Grid.Column="0" x:Name="FontIcon" FontFamily="Segoe MDL2 Assets"  Glyph="&#xEA8A;"/> 
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
             </Grid>
@@ -46,6 +46,7 @@
                                              AddressTemplate="{StaticResource AddressTemplate}"
                                              StopTemplate="{StaticResource StopTemplate}"/>
 
+        <!--Copied so that we can add transitions to the suggestions Popup elements.-->
         <Style x:Key="AutoSuggestBoxTextBoxStyle" TargetType="TextBox">
             <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}"/>
             <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}"/>
@@ -266,7 +267,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" Header="{TemplateBinding Header}" Margin="0" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" Width="{TemplateBinding Width}" Canvas.ZIndex="0"/>
-                            <Popup x:Name="SuggestionsPopup">
+                            <Popup x:Name="SuggestionsPopup" IsLightDismissEnabled="False">
                                 <Border x:Name="SuggestionsContainer">
                                     <Border.RenderTransform>
                                         <TranslateTransform x:Name="UpwardTransform"/>
@@ -275,6 +276,7 @@
                                         <ListView.ItemContainerTransitions>
                                             <TransitionCollection>
                                                 <PopupThemeTransition FromHorizontalOffset="400"/>
+                                                <ReorderThemeTransition/>
                                             </TransitionCollection>
                                         </ListView.ItemContainerTransitions>
                                     </ListView>
@@ -296,6 +298,7 @@
                         RelativePanel.Below="HeaderBlock"
                         RelativePanel.AlignLeftWithPanel="True"
                         RelativePanel.AlignRightWithPanel="True"
+                        AutoMaximizeSuggestionArea="True"
                         ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
                         ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"
                         Text="{x:Bind SearchText, Mode=TwoWay}"                        
