@@ -70,6 +70,14 @@
           <source>Resolving locations...</source>
           <target state="new">Resolving locations...</target>
         </trans-unit>
+        <trans-unit id="TripForm_FewerOptions" translate="yes" xml:space="preserve">
+          <source>Fewer options</source>
+          <target state="new">Fewer options</target>
+        </trans-unit>
+        <trans-unit id="TripForm_MoreOptions" translate="yes" xml:space="preserve">
+          <source>More options</source>
+          <target state="new">More options</target>
+        </trans-unit>
       </group>
     </body>
   </file>

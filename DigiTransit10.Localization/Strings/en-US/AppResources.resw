@@ -165,4 +165,10 @@
   <data name="TripResults_TripPlansHeader" xml:space="preserve">
     <value>Trip plans</value>
   </data>
+  <data name="TripForm_FewerOptions" xml:space="preserve">
+    <value>Fewer options</value>
+  </data>
+  <data name="TripForm_MoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
 </root>

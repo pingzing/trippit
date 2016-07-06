@@ -106,6 +106,7 @@
     <Compile Include="Controls\TripPlanStrip.xaml.cs">
       <DependentUpon>TripPlanStrip.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="GraphQL\GqlTuple.cs" />
     <Compile Include="GraphQL\ParserHelpers.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\FontIconGlyphs.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />

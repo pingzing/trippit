@@ -9,9 +9,10 @@
     <Color x:Key="HslTrainPurple">#8C4799</Color>
     <Color x:Key="HslMetroOrange">#FF6319</Color>
     <Color x:Key="HslFerryBlue">#00B9E4</Color>
+    <Color x:Key="HslBikeGoldenrod">#FCB614</Color>
     
     <!--HSL Pictographic Fonts-->
-    <FontFamily x:Key="HslPictoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto Normal</FontFamily>
+    <FontFamily x:Key="HslPictoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto</FontFamily>
     <FontFamily x:Key="HslPictoFrameFont">/Assets/Fonts/hsl-pikto-frame-webfont.ttf#HSL-Pikto Frame</FontFamily>
     
     <!--HSL Color Brushes-->
@@ -20,5 +21,6 @@
     <SolidColorBrush x:Key="HslTrainPurpleBrush" Color="{StaticResource HslTrainPurple}"/>
     <SolidColorBrush x:Key="HslMetroOrangeBrush" Color="{StaticResource HslMetroOrange}"/>
     <SolidColorBrush x:Key="HslFerryBlueBrush" Color="{StaticResource HslFerryBlue}"/>
+    <SolidColorBrush x:Key="HslBikeGoldenrodBrush" Color="{StaticResource HslBikeGoldenrod}"/>
 
 </ResourceDictionary>

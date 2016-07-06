@@ -36,6 +36,27 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isDepartureChecked, value); }
         }
 
+        private bool _isTransitPanelVisible = false;
+        public bool IsTransitPanelVisible
+        {
+            get { return _isTransitPanelVisible; }
+            set { Set(ref _isTransitPanelVisible, value); }
+        }
+
+        private string _showHideTransitPanelText = AppResources.TripForm_MoreOptions;
+        public string ShowHideTransitPanelText
+        {
+            get { return _showHideTransitPanelText; }
+            set { Set(ref _showHideTransitPanelText, value); }
+        }
+
+        private string _showHideTransitPanelGlyph = FontIconGlyphs.BoldDownArrow;
+        public string ShowHideTransitPanelGlyph
+        {
+            get { return _showHideTransitPanelGlyph; }
+            set { Set(ref _showHideTransitPanelGlyph, value); }
+        }
+
         private TimeSpan _selectedTime = DateTime.Now.TimeOfDay;
         public TimeSpan SelectedTime
         {
@@ -70,11 +91,29 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _planTripWideViewCommand = null;
         public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTripWideView));
 
+        private readonly RelayCommand _toggleTransitPanelCommand = null;
+        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
+
         public TripFormViewModel(INetworkService netService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
         {
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
+        }
+
+        private void TransitTogglePannel()
+        {            
+            IsTransitPanelVisible = !IsTransitPanelVisible;
+            if(IsTransitPanelVisible)
+            {
+                ShowHideTransitPanelText = AppResources.TripForm_FewerOptions;
+                ShowHideTransitPanelGlyph = FontIconGlyphs.BoldUpArrow;
+            }
+            else
+            {
+                ShowHideTransitPanelText = AppResources.TripForm_MoreOptions;
+                ShowHideTransitPanelGlyph = FontIconGlyphs.BoldDownArrow;
+            }
         }
 
         private async Task PlanTrip()
