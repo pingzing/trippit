@@ -171,4 +171,10 @@
   <data name="TripForm_MoreOptions" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="LiteralTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="TripForm_TransitTypeHeader" xml:space="preserve">
+    <value>Transit types</value>
+  </data>
 </root>

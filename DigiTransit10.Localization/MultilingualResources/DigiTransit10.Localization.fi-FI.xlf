@@ -78,6 +78,14 @@
           <source>More options</source>
           <target state="new">More options</target>
         </trans-unit>
+        <trans-unit id="TripForm_TransitTypeHeader" translate="yes" xml:space="preserve">
+          <source>Transit types</source>
+          <target state="new">Transit types</target>
+        </trans-unit>
+        <trans-unit id="LiteralTime" translate="yes" xml:space="preserve">
+          <source>Time</source>
+          <target state="new">Time</target>
+        </trans-unit>
       </group>
     </body>
   </file>
