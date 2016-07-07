@@ -141,6 +141,12 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _toggleTransitPanelCommand = null;
         public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
 
+        private readonly RelayCommand _setTimeToNowCommand = null;
+        public RelayCommand SetTimeToNowCommand => _setTimeToNowCommand ?? new RelayCommand(SetTimeToNow);
+
+        private readonly RelayCommand _setDateToTodayCommand = null;
+        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
+
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, 
             IGeolocationService geolocationService)
@@ -306,6 +312,16 @@ namespace DigiTransit10.ViewModels
         {
             await PlanTrip();
             _messengerService.Send<string>(Constants.WideKey, MessageTypes.PlanFoundMessage);
+        }
+
+        private void SetDateToToday()
+        {
+            SelectedDate = DateTime.Now;
+        }
+
+        private void SetTimeToNow()
+        {
+            SelectedTime = DateTime.Now.TimeOfDay;
         }
     }
 }

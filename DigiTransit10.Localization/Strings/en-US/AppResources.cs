@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/07/2016 14:08:11
+// 	Generated: 07/07/2016 19:34:22
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -280,6 +280,39 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("SuggestBoxHeader_MyLocation");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Now"
+        /// </summary>
+        public static string LiteralNow
+        {
+            get
+            {
+                return resourceLoader.GetString("LiteralNow");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Set to today"
+        /// </summary>
+        public static string TripForm_SetDateToNow
+        {
+            get
+            {
+                return resourceLoader.GetString("TripForm_SetDateToNow");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Set to now"
+        /// </summary>
+        public static string TripForm_SetTimeToNow
+        {
+            get
+            {
+                return resourceLoader.GetString("TripForm_SetTimeToNow");
             }
         }
     }

@@ -90,6 +90,18 @@
           <source>My location</source>
           <target state="new">My location</target>
         </trans-unit>
+        <trans-unit id="LiteralNow" translate="yes" xml:space="preserve">
+          <source>Now</source>
+          <target state="new">Now</target>
+        </trans-unit>
+        <trans-unit id="TripForm_SetDateToNow" translate="yes" xml:space="preserve">
+          <source>Set to today</source>
+          <target state="new">Set to today</target>
+        </trans-unit>
+        <trans-unit id="TripForm_SetTimeToNow" translate="yes" xml:space="preserve">
+          <source>Set to now</source>
+          <target state="new">Set to now</target>
+        </trans-unit>
       </group>
     </body>
   </file>

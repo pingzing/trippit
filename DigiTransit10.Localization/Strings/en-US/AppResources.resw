@@ -180,4 +180,13 @@
   <data name="SuggestBoxHeader_MyLocation" xml:space="preserve">
     <value>My location</value>
   </data>
+  <data name="LiteralNow" xml:space="preserve">
+    <value>Now</value>
+  </data>
+  <data name="TripForm_SetDateToNow" xml:space="preserve">
+    <value>Set to today</value>
+  </data>
+  <data name="TripForm_SetTimeToNow" xml:space="preserve">
+    <value>Set to now</value>
+  </data>
 </root>
