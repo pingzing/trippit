@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/07/2016 02:51:51
+// 	Generated: 07/07/2016 14:08:11
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -269,6 +269,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripForm_TransitTypeHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "My location"
+        /// </summary>
+        public static string SuggestBoxHeader_MyLocation
+        {
+            get
+            {
+                return resourceLoader.GetString("SuggestBoxHeader_MyLocation");
             }
         }
     }

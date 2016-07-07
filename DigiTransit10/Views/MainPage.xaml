@@ -14,8 +14,7 @@
       xmlns:conv="using:DigiTransit10.Converters"
       xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
       xmlns:Media="using:Microsoft.Xaml.Interactions.Media" x:Class="DigiTransit10.Views.MainPage"
-      mc:Ignorable="d"
-      >
+      mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -250,24 +249,23 @@
 
             <!--  secondary commands  -->
         </controls:PageHeader>
-        <ScrollViewer VerticalScrollBarVisibility="Auto"                      
-                      RelativePanel.Below="PageHeader"
-                      RelativePanel.AlignLeftWithPanel="True"
-                      RelativePanel.AlignRightWithPanel="True"                      
-                      RelativePanel.AlignBottomWithPanel="True">
-            <RelativePanel>
+        <RelativePanel RelativePanel.Below="PageHeader" RelativePanel.AlignBottomWithPanel="True">
 
-                <!--Narrow view-->
-                <Pivot x:Name="TripPlannerPivot"
-                       x:DeferLoadStrategy="Lazy"     
+            <!--Narrow view-->
+            <Pivot x:Name="TripPlannerPivot"
+                       x:DeferLoadStrategy="Lazy"                            
                        RelativePanel.AlignTopWithPanel="True"
                        RelativePanel.AlignBottomWithPanel="True"
                        RelativePanel.AlignLeftWithPanel="True"                        
                        Visibility="Collapsed">
-                    <PivotItem x:Name="TripFormPivotItem" 
+                <PivotItem x:Name="TripFormPivotItem" 
                                DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                                Header="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}">
-                        <Grid>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  Margin="-10 0 -10 0" 
+                                  VerticalAlignment="Stretch" 
+                                  VerticalContentAlignment="Stretch">
+                        <Grid Margin="10 0 10 0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -300,26 +298,29 @@
                                                 HorizontalContentAlignment="Stretch"
                                                 VerticalContentAlignment="Stretch"/>
                         </Grid>
-                    </PivotItem>
-                    <PivotItem x:Name="FavoritesPivot" 
+                    </ScrollViewer>
+                </PivotItem>
+                <PivotItem x:Name="FavoritesPivot" 
                                DataContext="{x:Bind ViewModel.FavoritesViewModel, Mode=OneWay}"
                                Header="{Binding Favorites_FavoritesHeader, Source={StaticResource Strings}}"                        
                                ContentTemplate="{StaticResource FavoritesTemplate}" />
 
-                </Pivot>
+            </Pivot>
 
-                <!--Wide view-->
-                <Hub x:Name="TripPlannerHub"
+            <!--Wide view-->
+            <Hub x:Name="TripPlannerHub"
                      x:DeferLoadStrategy="Lazy"
                      Visibility="Collapsed"
                      Margin="0 0 0 10"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"                                  
                      RelativePanel.AlignLeftWithPanel="True">
-                    <HubSection x:Name="TripFormHubSection"                        
+                <HubSection x:Name="TripFormHubSection"          
+                                Margin="0 0 0 10"
                                 DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                                 Header="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}">
-                        <DataTemplate x:DataType="vm:TripFormViewModel">
-                            <Grid>
+                    <DataTemplate x:DataType="vm:TripFormViewModel">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="-10 0 -10 0">
+                            <Grid Margin="10 0 20 0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -353,23 +354,23 @@
                                                       VerticalContentAlignment="Stretch"/>
 
                             </Grid>
-                        </DataTemplate>
-                    </HubSection>
-                    <HubSection x:Name="FavoritesHubSection"
+                        </ScrollViewer>
+                    </DataTemplate>
+                </HubSection>
+                <HubSection x:Name="FavoritesHubSection"
                                 RelativePanel.AlignBottomWith="TripFormHubSection"
                                 DataContext="{x:Bind ViewModel.FavoritesViewModel, Mode=OneWay}"
                                 Header="{Binding Favorites_FavoritesHeader, Source={StaticResource Strings}}"
                                 ContentTemplate="{StaticResource FavoritesTemplate}"/>
-                </Hub>
+            </Hub>
 
-                <ContentPresenter x:Name="TripResultsPanel"  
+            <ContentPresenter x:Name="TripResultsPanel"  
                                   x:DeferLoadStrategy="Lazy"                                  
                                   Visibility="Collapsed"                        
                                   RelativePanel.Below="TripPlannerHub"                                                
                                   RelativePanel.AlignHorizontalCenterWithPanel="True"                        
                                   ContentTemplate="{StaticResource TripResultTemplate}"/>
-            </RelativePanel>
-        </ScrollViewer>
+        </RelativePanel>
 
 
     </RelativePanel>

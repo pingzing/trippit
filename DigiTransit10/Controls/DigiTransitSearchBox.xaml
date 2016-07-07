@@ -25,7 +25,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--House glyph icon-->
-                <FontIcon Grid.Column="0" x:Name="FontIcon" FontFamily="Segoe MDL2 Assets"  Glyph="&#xEA8A;"/> 
+                <FontIcon Grid.Column="0" x:Name="FontIcon" FontFamily="Segoe MDL2 Assets" Glyph="{Binding House, Source={StaticResource FontIcons}}"/> 
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
             </Grid>
         </DataTemplate>
@@ -37,14 +37,27 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--Flag glyph icon-->
-                <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="&#xE7C1;"/>
+                <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="{Binding Flag, Source={StaticResource FontIcons}}"/>
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}"/>
             </Grid>
         </DataTemplate>
 
-        <selectors:PlaceItemTemplateSelector x:Key="PlaceTemplateSelector"
+        <DataTemplate x:Key="UserCurrentLocationTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width ="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--Bullseye font icon-->
+                <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="{Binding LocationTarget, Source={StaticResource FontIcons}}"/>
+                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+
+                <selectors:PlaceItemTemplateSelector x:Key="PlaceTemplateSelector"
                                              AddressTemplate="{StaticResource AddressTemplate}"
-                                             StopTemplate="{StaticResource StopTemplate}"/>
+                                             StopTemplate="{StaticResource StopTemplate}"
+                                                     UserCurrentLocationTemplate="{StaticResource UserCurrentLocationTemplate}"/>
 
         <!--Copied so that we can add transitions to the suggestions Popup elements.-->
         <Style x:Key="AutoSuggestBoxTextBoxStyle" TargetType="TextBox">

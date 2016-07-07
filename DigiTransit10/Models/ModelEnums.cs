@@ -10,10 +10,11 @@ namespace DigiTransit10.Models
     {
         public enum PlaceType
         {
+            UserCurrentLocation,
             Stop,
             Address,
             Coordinates,
-            NameOnly
+            NameOnly,            
         }      
     }
 }

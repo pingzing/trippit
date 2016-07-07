@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using DigiTransit10.Models.Geocoding;
 using System.Collections.Generic;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.ViewModels
 {
@@ -20,6 +21,8 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly Services.SettingsServices.SettingsService _settingsService;
         private readonly IMessenger _messengerService;
+        private readonly IGeolocationService _geolocationService;
+
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private bool? _isArrivalChecked = false;
@@ -94,11 +97,14 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _toggleTransitPanelCommand = null;
         public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
 
-        public TripFormViewModel(INetworkService netService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
+        public TripFormViewModel(INetworkService netService, IMessenger messengerService,
+            Services.SettingsServices.SettingsService settings, 
+            IGeolocationService geolocationService)
         {
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
+            _geolocationService = geolocationService;
         }
 
         private void TransitTogglePannel()
@@ -166,28 +172,46 @@ namespace DigiTransit10.ViewModels
             for (int i = places.Count - 1; i >= 0; i--)
             {                
                 int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
-                if(places[idx].Type != ModelEnums.PlaceType.NameOnly)
+                if (places[idx].Type == ModelEnums.PlaceType.NameOnly)
                 {
-                    continue;
+                    Task<GeocodingResponse> task = _networkService.SearchAddress(places[idx].Name, token);
+                    getAddressTasks.Add(task.ContinueWith(resp =>
+                    {
+                        if (resp.Result == null || resp.Result.Features.Length == 0)
+                        {
+                            return false;
+                        }
+                        places[idx] = new Place
+                        {
+                            Lon = (float)task.Result.Features[0].Geometry.Coordinates[0],
+                            Lat = (float)task.Result.Features[0].Geometry.Coordinates[1],
+                            Name = task.Result.Features[0].Properties.Name,
+                            Type = ModelEnums.PlaceType.Address,
+                            Id = task.Result.Features[0].Properties.Id,
+                            Confidence = task.Result.Features[0].Properties.Confidence
+                        };
+                        return true;
+                    }));
                 }
-                Task<GeocodingResponse> task = _networkService.SearchAddress(places[idx].Name, token);
-                getAddressTasks.Add(task.ContinueWith(resp =>
+                else if (places[idx].Type == ModelEnums.PlaceType.UserCurrentLocation)
                 {
-                    if (resp.Result == null || resp.Result.Features.Length == 0)
-                    {
-                        return false;
-                    }
-                    places[idx] = new Place
-                    {
-                        Lon = (float)task.Result.Features[0].Geometry.Coordinates[0],
-                        Lat = (float)task.Result.Features[0].Geometry.Coordinates[1],
-                        Name = task.Result.Features[0].Properties.Name,
-                        Type = ModelEnums.PlaceType.Address,
-                        Id = task.Result.Features[0].Properties.Id,
-                        Confidence = task.Result.Features[0].Properties.Confidence
-                    };
-                    return true;
-                }));
+                    Task<Geoposition> task = _geolocationService.GetCurrentLocation();
+                    getAddressTasks.Add(task.ContinueWith(resp => {
+                        if(resp == null || resp.Result?.Coordinate?.Point?.Position == null)
+                        {
+                            return false;
+                        }
+                        var loc = resp.Result.Coordinate.Point.Position;
+                        places[idx] = new Place
+                        {
+                            Lon = (float)loc.Longitude,
+                            Lat = (float)loc.Latitude,
+                            Name = AppResources.SuggestBoxHeader_MyLocation,
+                            Type = ModelEnums.PlaceType.UserCurrentLocation
+                        };
+                        return true;
+                    }));
+                }                
             }
 
             await Task.WhenAll(getAddressTasks);

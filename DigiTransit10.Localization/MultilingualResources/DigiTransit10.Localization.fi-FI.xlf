@@ -86,6 +86,10 @@
           <source>Time</source>
           <target state="new">Time</target>
         </trans-unit>
+        <trans-unit id="SuggestBoxHeader_MyLocation" translate="yes" xml:space="preserve">
+          <source>My location</source>
+          <target state="new">My location</target>
+        </trans-unit>
       </group>
     </body>
   </file>

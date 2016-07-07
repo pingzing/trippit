@@ -33,6 +33,9 @@ namespace DigiTransit10.Controls
         private readonly GroupedPlaceList _addressList = new GroupedPlaceList(ModelEnums.PlaceType.Address,
             AppResources.SuggestBoxHeader_Addresses);
 
+        private readonly GroupedPlaceList _userCurrentLocationList = new GroupedPlaceList(ModelEnums.PlaceType.UserCurrentLocation,
+            AppResources.SuggestBoxHeader_MyLocation);
+
         private ObservableCollection<GroupedPlaceList> _suggestedPlaces = new ObservableCollection<GroupedPlaceList>();
         public ObservableCollection<GroupedPlaceList> SuggestedPlaces
         {
@@ -69,6 +72,8 @@ namespace DigiTransit10.Controls
                 return;
             }
 
+            _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
+            SuggestedPlaces.Add(_userCurrentLocationList);
             SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
             PlacesCollection.Source = SuggestedPlaces;

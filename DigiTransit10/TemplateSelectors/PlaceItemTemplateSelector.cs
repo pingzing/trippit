@@ -14,6 +14,7 @@ namespace DigiTransit10.TemplateSelectors
         public DataTemplate AddressTemplate { get; set; }
         public DataTemplate StopTemplate { get; set; }
         public DataTemplate CoordinatesTemplate { get; set; }
+        public DataTemplate UserCurrentLocationTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
@@ -31,6 +32,10 @@ namespace DigiTransit10.TemplateSelectors
                 else if(place.Type == ModelEnums.PlaceType.Coordinates)
                 {
                     return CoordinatesTemplate;
+                }
+                else if(place.Type == ModelEnums.PlaceType.UserCurrentLocation)
+                {
+                    return UserCurrentLocationTemplate;
                 }
             }
 

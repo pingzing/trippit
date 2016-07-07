@@ -177,4 +177,7 @@
   <data name="TripForm_TransitTypeHeader" xml:space="preserve">
     <value>Transit types</value>
   </data>
+  <data name="SuggestBoxHeader_MyLocation" xml:space="preserve">
+    <value>My location</value>
+  </data>
 </root>
