@@ -70,7 +70,7 @@ namespace DigiTransit10.Controls
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 return;
-            }
+            }                                    
 
             _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
             SuggestedPlaces.Add(_userCurrentLocationList);
@@ -315,6 +315,12 @@ namespace DigiTransit10.Controls
                 _stopList.AddSorted(foundPlace, _placeComparer);                
             }
             _stopList.SortInPlace(x => x, _placeComparer);
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            this.SearchBox.IsSuggestionListOpen = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

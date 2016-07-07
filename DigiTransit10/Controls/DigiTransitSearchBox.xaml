@@ -4,6 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DigiTransit10.Controls"
     xmlns:models="using:DigiTransit10.Models"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media"
     xmlns:selectors="using:DigiTransit10.TemplateSelectors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -273,6 +276,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="AutoSuggestBox">
                         <Grid>
+                            <Grid.Resources>
+                                <Storyboard x:Name="PopupAppearStoryboard">
+                                    <PopInThemeAnimation Storyboard.TargetName="SuggestionsPopup" 
+                                                         FromVerticalOffset="200"                                                         
+                                                         FromHorizontalOffset="0"/>
+                                </Storyboard>
+                            </Grid.Resources>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="Orientation">
                                     <VisualState x:Name="Landscape"/>
@@ -280,7 +290,14 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" Header="{TemplateBinding Header}" Margin="0" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" Width="{TemplateBinding Width}" Canvas.ZIndex="0"/>
-                            <Popup x:Name="SuggestionsPopup" IsLightDismissEnabled="False">
+                            <Popup x:Name="SuggestionsPopup">
+                                <Interactivity:Interaction.Behaviors>
+                                    <Core:DataTriggerBehavior Binding="{Binding ElementName=SuggestionsPopup, Path=IsOpen}"
+                                                              ComparisonCondition="Equal"
+                                                              Value="True">
+                                        <Media:ControlStoryboardAction Storyboard="{StaticResource PopupAppearStoryboard}"/>
+                                    </Core:DataTriggerBehavior>
+                                </Interactivity:Interaction.Behaviors>
                                 <Border x:Name="SuggestionsContainer">
                                     <Border.RenderTransform>
                                         <TranslateTransform x:Name="UpwardTransform"/>
@@ -288,7 +305,8 @@
                                     <ListView x:Name="SuggestionsList" BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}" BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" DisplayMemberPath="{TemplateBinding DisplayMemberPath}" IsItemClickEnabled="True" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" MaxHeight="{ThemeResource AutoSuggestListMaxHeight}" Margin="{ThemeResource AutoSuggestListMargin}" Padding="{ThemeResource AutoSuggestListPadding}">
                                         <ListView.ItemContainerTransitions>
                                             <TransitionCollection>
-                                                <PopupThemeTransition FromHorizontalOffset="400"/>
+                                                <RepositionThemeTransition/>
+                                                <AddDeleteThemeTransition/>
                                                 <ReorderThemeTransition/>
                                             </TransitionCollection>
                                         </ListView.ItemContainerTransitions>
