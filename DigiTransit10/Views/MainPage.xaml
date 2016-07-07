@@ -97,42 +97,48 @@
                                        Text="{Binding Source={StaticResource Strings}, Path=TripForm_TransitTypeHeader}"/>
 
                             <CheckBox x:Name="BusCheckBox"                                                      
-                                      Grid.Row="1" Grid.Column="0" MinWidth="100">
+                                      Grid.Row="1" Grid.Column="0" MinWidth="100"
+                                      IsChecked="{x:Bind IsBusChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslBusBlueBrush}"                                                              
                                           FontSize="50"                                                              
                                           Glyph="{Binding BusIcon, Source={StaticResource FontIcons}}"/>
                             </CheckBox>
                             <CheckBox x:Name="TramCheckBox"                                                       
-                                      Grid.Row="1" Grid.Column="1" MinWidth="100">
+                                      Grid.Row="1" Grid.Column="1" MinWidth="100"
+                                      IsChecked="{x:Bind IsTramChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslTramGreenBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TramIcon, Source={StaticResource FontIcons}}"/>
                             </CheckBox>
                             <CheckBox x:Name="TrainCheckBox" 
-                                      Grid.Row="1" Grid.Column="2" MinWidth="100">
+                                      Grid.Row="1" Grid.Column="2" MinWidth="100"
+                                      IsChecked="{x:Bind IsTrainChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslTrainPurpleBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TrainIcon, Source={StaticResource FontIcons}}"/>
                             </CheckBox>
                             <CheckBox x:Name="MetroCheckBox" 
-                                      Grid.Row="2" Grid.Column="0" MinWidth="100">
+                                      Grid.Row="2" Grid.Column="0" MinWidth="100"
+                                      IsChecked="{x:Bind IsMetroChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}"
                                           Foreground="{Binding Source={StaticResource HslMetroOrangeBrush}}"
                                           FontSize="50"
                                           Glyph="{Binding MetroIcon, Source={StaticResource FontIcons}}" />
                             </CheckBox>
                             <CheckBox x:Name="FerryCheckBox"
-                                      Grid.Row="2" Grid.Column="1" MinWidth="100">
+                                      Grid.Row="2" Grid.Column="1" MinWidth="100"
+                                      IsChecked="{x:Bind IsFerryChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
                                           Foreground="{Binding Source={StaticResource HslFerryBlueBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding FerryIcon, Source={StaticResource FontIcons}}"/>
                             </CheckBox>
                             <CheckBox x:Name="BikeCheckBox"
-                                      Grid.Row="2" Grid.Column="2" MinWidth="100">
+                                      Grid.Row="2" Grid.Column="2" MinWidth="100"
+                                      IsChecked="{x:Bind IsBikeChecked, Mode=TwoWay}">
                                 <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
                                           Foreground="{Binding Source={StaticResource HslBikeGoldenrodBrush}}"
                                           FontSize="50" 

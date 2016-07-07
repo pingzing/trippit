@@ -88,6 +88,48 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _toPlace, value); }
         }
 
+        private bool? _isBusChecked = true;
+        public bool? IsBusChecked
+        {
+            get { return _isBusChecked; }
+            set { Set(ref _isBusChecked, value); }
+        }
+
+        private bool? _isTramChecked = true;
+        public bool? IsTramChecked
+        {
+            get { return _isTramChecked; }
+            set { Set(ref _isTramChecked, value); }
+        }
+
+        private bool? _isTrainChecked = true;
+        public bool? IsTrainChecked
+        {
+            get { return _isTrainChecked; }
+            set { Set(ref _isTrainChecked, value); }
+        }
+
+        private bool? _isMetroChecked = true;
+        public bool? IsMetroChecked
+        {
+            get { return _isMetroChecked; }
+            set { Set(ref _isMetroChecked, value); }
+        }
+
+        private bool? _isFerryChecked = false;
+        public bool? IsFerryChecked
+        {
+            get { return _isFerryChecked; }
+            set { Set(ref _isFerryChecked, value); }
+        }
+
+        private bool? _isBikeChecked = false;
+        public bool? IsBikeChecked
+        {
+            get { return _isBikeChecked; }
+            set { Set(ref _isBikeChecked, value); }
+        }
+
         private readonly RelayCommand _planTripNarrowViewCommand = null;
         public RelayCommand PlanTripNarrowViewCommand => _planTripNarrowViewCommand ?? (new RelayCommand(PlanTripNarrowView));
 
