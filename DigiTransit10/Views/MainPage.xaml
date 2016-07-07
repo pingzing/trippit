@@ -340,11 +340,11 @@
                                             Orientation="Horizontal" 
                                             HorizontalAlignment="Center" 
                                             Margin="0 10 0 0">
-                                <RadioButton x:Name="DepartureRadioButon"
+                                <RadioButton x:Name="DepartureRadioButonNarrow"
                                          GroupName="TimeTypeNarrow"
                                          Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
                                          IsChecked="{x:Bind ViewModel.TripFormViewModel.IsDepartureChecked, Mode=TwoWay}" />
-                                <RadioButton x:Name="ArrivalRadioButton"
+                                <RadioButton x:Name="ArrivalRadioButtonNarrow"
                                          GroupName="TimeTypeNarrow"
                                          Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
                                          IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
@@ -374,64 +374,86 @@
                           VerticalScrollBarVisibility="Auto"
                           RelativePanel.AlignLeftWithPanel="True"
                           RelativePanel.AlignRightWithPanel="True">
-                <RelativePanel Margin="10 0 10 0">
-                    <Hub x:Name="TripPlannerHub"                                                  
-                         Margin="0 0 0 10"
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <HubSection x:Name="TripFormHubSection"          
+                <RelativePanel Margin="10 0 10 10">
+                    <ContentControl x:Name="TripPlannerWideForm"          
                                     Margin="0 0 0 10"
-                                    DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
-                                    Header="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}">
-                            <DataTemplate x:DataType="vm:TripFormViewModel">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="-10 0 -10 0">
-                                    <Grid Margin="10 0 20 0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
+                                    DataContext="{x:Bind ViewModel.TripFormViewModel}">
+                        <ContentControl.Content>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
 
-                                        <ContentControl Grid.Row="0"
-                                                        HorizontalAlignment="Stretch" 
-                                                        HorizontalContentAlignment="Stretch"
-                                                        ContentTemplate="{StaticResource TopPanelHalf}"/>
+                                <TextBlock x:Name="TripFormHeader"
+                                           Margin="0 0 0 9"
+                                           Grid.Row="0"
+                                           FontSize="20"
+                                           Text="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}"/>
 
-                                        <StackPanel Grid.Row="1" 
-                                                    Orientation="Horizontal" 
-                                                    HorizontalAlignment="Center" 
-                                                    Margin="0 10 0 0">
-                                            <RadioButton x:Name="DepartureRadioButon"
-                                                 GroupName="TimeTypeWide"
-                                                 Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
-                                                 IsChecked="{x:Bind IsDepartureChecked, Mode=TwoWay}" />
-                                            <RadioButton x:Name="ArrivalRadioButton"
-                                                 GroupName="TimeTypeWide"
-                                                 Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
-                                                 IsChecked="{x:Bind IsArrivalChecked, Mode=TwoWay}" />
-                                        </StackPanel>
+                                <ContentControl Grid.Row="1"
+                                                HorizontalAlignment="Stretch" 
+                                                HorizontalContentAlignment="Stretch"
+                                                ContentTemplate="{StaticResource TopPanelHalf}"/>
 
-                                        <ContentPresenter Grid.Row="2" 
-                                                          ContentTemplate="{StaticResource BottomPanelHalf}"
-                                                          DataContext="{x:Bind}"
-                                                          HorizontalAlignment="Stretch" 
-                                                          HorizontalContentAlignment="Stretch"
-                                                          VerticalContentAlignment="Stretch"/>
+                                    <StackPanel Grid.Row="2" 
+                                                Orientation="Horizontal" 
+                                                HorizontalAlignment="Center" 
+                                                Margin="0 10 0 0">
+                                        <RadioButton x:Name="DepartureRadioButonWide"
+                                                     GroupName="TimeTypeWide"
+                                                     Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
+                                                     IsChecked="{x:Bind ViewModel.TripFormViewModel.IsDepartureChecked, Mode=TwoWay}" />
+                                        <RadioButton x:Name="ArrivalRadioButtonWide"
+                                                     GroupName="TimeTypeWide"
+                                                     Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
+                                                     IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
+                                    </StackPanel>
 
-                                    </Grid>
-                                </ScrollViewer>
+                                <ContentPresenter Grid.Row="3" 
+                                                  ContentTemplate="{StaticResource BottomPanelHalf}"
+                                                  DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
+                                                  HorizontalAlignment="Stretch" 
+                                                  HorizontalContentAlignment="Stretch"
+                                                  VerticalContentAlignment="Stretch"/>
+
+                            </Grid>
+                            </ContentControl.Content>
+                        </ContentControl>
+                    
+                    <ContentControl x:Name="FavoritesWidePanel"
+                                    Margin="10 0 0 0"
+                                    DataContext="{x:Bind ViewModel.FavoritesViewModel}"
+                                    RelativePanel.RightOf="TripPlannerWideForm"
+                                    RelativePanel.AlignTopWith="TripPlannerWideForm"
+                                    RelativePanel.AlignBottomWith="TripPlannerWideForm">
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Favorites_FavoritesHeader, Source={StaticResource Strings}}"
+                                               Margin="0 0 0 9"                                           
+                                               FontSize="20"/>
+                                    <ContentPresenter ContentTemplate="{StaticResource FavoritesTemplate}"/>
+                                </StackPanel>
                             </DataTemplate>
-                        </HubSection>
-                        <HubSection x:Name="FavoritesHubSection"
-                                    RelativePanel.AlignBottomWith="TripFormHubSection"
-                                    DataContext="{x:Bind ViewModel.FavoritesViewModel, Mode=OneWay}"
-                                    Header="{Binding Favorites_FavoritesHeader, Source={StaticResource Strings}}"
-                                    ContentTemplate="{StaticResource FavoritesTemplate}"/>
-                    </Hub>
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
 
-                    <ContentPresenter x:Name="TripResultsPanel"                                                                                                                          
-                                  RelativePanel.Below="TripPlannerHub"                                                
-                                  RelativePanel.AlignHorizontalCenterWithPanel="True"                        
-                                  ContentTemplate="{StaticResource TripResultTemplate}"/>
+                    <ContentControl x:Name="TripResultsPanel"                                                                                                                          
+                                  RelativePanel.Below="FavoritesWidePanel">
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+                                               Margin="0 0 0 9"                                           
+                                               FontSize="20"/>
+                                    <ContentPresenter ContentTemplate="{StaticResource TripResultTemplate}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
                 </RelativePanel>
             </ScrollViewer>
         </RelativePanel>
