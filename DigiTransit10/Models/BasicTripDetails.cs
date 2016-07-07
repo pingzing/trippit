@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 using DigiTransit10.Models.ApiModels;
+using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
@@ -17,27 +18,17 @@ namespace DigiTransit10.Models
         public bool IsTimeTypeArrival { get; set; }
         public ApiCoordinates FromPlaceCoords { get; set; }
         public ApiCoordinates ToPlaceCoordinates { get; set; }
+        public string TransitModes { get; set;}
 
-        public BasicTripDetails(string fromString, string toString, TimeSpan time, DateTime date, bool isTimeTypeArrival)
-        {
-            FromPlaceString = fromString;
-            ToPlaceString = toString;
-            FillRemainingDetails(time, date, isTimeTypeArrival);
-        }
 
-        public BasicTripDetails(ApiCoordinates fromCoords, ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival)
+        public BasicTripDetails(ApiCoordinates fromCoords, ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
         {
             FromPlaceCoords = fromCoords;
             ToPlaceCoordinates = toCoords;
-            FillRemainingDetails(time, date, isTimeTypeArrival);
-        }
-
-        private void FillRemainingDetails(TimeSpan time, DateTime date, bool isTimeTypeArrival)
-        {
+            TransitModes = transit;
             Time = time;
             Date = date;
-            IsTimeTypeArrival = isTimeTypeArrival;
+            IsTimeTypeArrival = isTimeTypeArrival;            
         }
-    }
-    
+    }    
 }

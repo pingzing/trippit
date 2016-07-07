@@ -125,7 +125,8 @@ namespace DigiTransit10.Services
                     new GqlParameter(ApiGqlMembers.numItineraries, 5),
                     new GqlParameter(ApiGqlMembers.time, details.Time),
                     new GqlParameter(ApiGqlMembers.date, details.Date),
-                    new GqlParameter(ApiGqlMembers.arriveBy, details.IsTimeTypeArrival)
+                    new GqlParameter(ApiGqlMembers.arriveBy, details.IsTimeTypeArrival),
+                    new GqlParameter(ApiGqlMembers.modes, details.TransitModes)
                 )
                 .WithReturnValues(
                     new GqlReturnValue(ApiGqlMembers.itineraries, 

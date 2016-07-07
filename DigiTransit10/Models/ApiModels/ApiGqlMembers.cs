@@ -23,6 +23,7 @@ namespace DigiTransit10.Models.ApiModels
         public static string startTime => "startTime";
         public static string endTime => "endTime";
         public static string mode => "mode";
+        public static string modes => "modes";
         public static string duration => "duration";
         public static string realTime => "realTime";
         public static string distance => "distance";

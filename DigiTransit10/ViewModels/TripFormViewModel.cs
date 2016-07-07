@@ -13,6 +13,8 @@ using System.Threading;
 using DigiTransit10.Models.Geocoding;
 using System.Collections.Generic;
 using Windows.Devices.Geolocation;
+using static DigiTransit10.Models.ModelEnums;
+using System.Text;
 
 namespace DigiTransit10.ViewModels
 {
@@ -183,13 +185,15 @@ namespace DigiTransit10.ViewModels
             ToPlace = places[1]; // but for now, magic numbers wheee
 
             ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
-            ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
+            ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };            
             BasicTripDetails details = new BasicTripDetails(
                 fromCoords,
                 toCoords,
                 SelectedTime,
                 SelectedDate.DateTime,
-                IsArrivalChecked == true
+                IsArrivalChecked == true,
+                ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
+                                      (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
             );
 
             Views.Busy.SetBusy(true, AppResources.TripForm_PlanningTrip);
@@ -206,7 +210,7 @@ namespace DigiTransit10.ViewModels
             }
             Views.Busy.SetBusy(false);
 
-        }
+        }        
 
         private async Task<List<Place>> ResolvePlaces(List<Place> places, CancellationToken token)
         {
@@ -259,6 +263,37 @@ namespace DigiTransit10.ViewModels
             await Task.WhenAll(getAddressTasks);
 
             return places;
+        }
+
+        private string ConstructTransitModes(bool isBus, bool isTram, bool isTrain, bool isMetro, bool isFerry, bool isBike)
+        {            
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{Constants.WalkTransitMode} ");
+            if (isBike)
+            {
+                sb.Append($"{Constants.BikeTransitMode} ");
+            }
+            if (isBus)
+            {
+                sb.Append($"{Constants.BusTransitMode} ");
+            }
+            if (isFerry)
+            {
+                sb.Append($"{Constants.FerryTransitMode} ");
+            }
+            if (isTrain)
+            {
+                sb.Append($"{Constants.TrainTransitMode} ");
+            }
+            if (isMetro)
+            {
+                sb.Append($"{Constants.MetroTransitMode} ");
+            }
+            if (isTram)
+            {
+                sb.Append($"{Constants.TramTransitMode} ");
+            }
+            return sb.ToString().Trim().Replace(" ", ",");
         }
 
         private async void PlanTripNarrowView()

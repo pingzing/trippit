@@ -15,6 +15,6 @@ namespace DigiTransit10.Models
             Address,
             Coordinates,
             NameOnly,            
-        }      
+        }
     }
 }
