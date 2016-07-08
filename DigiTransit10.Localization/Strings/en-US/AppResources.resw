@@ -189,4 +189,7 @@
   <data name="TripForm_SetTimeToNow" xml:space="preserve">
     <value>Set to now</value>
   </data>
+  <data name="TripPlanStrip_StartingPlaceDefault" xml:space="preserve">
+    <value>Origin</value>
+  </data>
 </root>

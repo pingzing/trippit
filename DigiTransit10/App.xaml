@@ -22,6 +22,9 @@
             <conv:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
             <conv:EmptyNullToVisibilityConverter x:Key="EmptyNullToVisibilityConverter"/>
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <conv:TransitModeToFontIconConverter x:Key="TransitModeToFontIconConverter"/>
+            <conv:TransitModeToForegroundBrushConverter x:Key="TransitModeToForegroundBrushConverter"/>
+            <conv:UnixTimeToLocalTimeConverter x:Key="UnixTimeToLocalTimeConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

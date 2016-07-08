@@ -1,4 +1,6 @@
-﻿using DigiTransit10.Models.ApiModels;
+﻿using DigiTransit10.Localization.Strings;
+using DigiTransit10.Models;
+using DigiTransit10.Models.ApiModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +25,20 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class TripPlanStrip : UserControl, INotifyPropertyChanged
     {
+        private ObservableCollection<TripLeg> _tripLegs = new ObservableCollection<TripLeg>();
+        public ObservableCollection<TripLeg> TripLegs
+        {
+            get { return _tripLegs; }
+            set
+            {
+                if(_tripLegs != value)
+                {
+                    _tripLegs = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public static readonly DependencyProperty StripItineraryProperty =
             DependencyProperty.Register("StripItinerary", typeof(ApiItinerary), typeof(TripPlanStrip), new PropertyMetadata(null, 
                 (obj, args) => {
@@ -36,37 +52,47 @@ namespace DigiTransit10.Controls
                     {
                         return;
                     }
-                    ApiItinerary newItinerary = args.NewValue as ApiItinerary;
-                    if(newItinerary == null)
+                    ApiItinerary newPlan = args.NewValue as ApiItinerary;
+                    if(newPlan == null)
                     {
                         throw new ArgumentException($"The {nameof(StripItinerary)} property must by of type {nameof(ApiItinerary)}");
                     }
 
-                    thisPlanStrip.CreateNewPlanStrip(thisPlanStrip);
-
+                    thisPlanStrip.CreateNewPlanStrip(newPlan);
                 }));
+
+
+        public static readonly DependencyProperty StartingPlaceNameProperty =
+            DependencyProperty.Register("StartingPlaceName", typeof(string), typeof(TripPlanStrip), new PropertyMetadata(AppResources.TripPlanStrip_StartingPlaceDefault));
+        public string StartingPlaceName
+        {
+            get { return (string)GetValue(StartingPlaceNameProperty); }
+            set { SetValue(StartingPlaceNameProperty, value); }
+        }
 
         public ApiItinerary StripItinerary
         {
             get { return (ApiItinerary)GetValue(StripItineraryProperty); }
             set { SetValue(StripItineraryProperty, value); }
-        }
-
-        public double HalfStartWidth => this.StartSection.ActualWidth / 2;
+        }        
 
         public TripPlanStrip()
         {
             this.InitializeComponent();
         }
 
-        private void CreateNewPlanStrip(TripPlanStrip thisPlanStrip)
+        private void CreateNewPlanStrip(ApiItinerary thisItinerary)
         {
-            throw new NotImplementedException();
-        }
-
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(HalfStartWidth));
+            TripLegs.Clear();
+            foreach(var leg in thisItinerary.Legs)
+            {
+                TripLegs.Add(new TripLeg
+                {
+                    BackingLeg = leg,
+                    IsStart = thisItinerary.Legs.First() == leg,
+                    IsEnd = thisItinerary.Legs.Last() == leg
+                });
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,5 +100,33 @@ namespace DigiTransit10.Controls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }        
+    }
+
+    public class TripLeg
+    {
+        public bool IsEnd { get; set; }
+        public bool IsStart { get; set; }
+        public ApiLeg BackingLeg { get; set; }
+        public HorizontalAlignment LegAlignment
+        {
+            get
+            {
+                if(IsStart)
+                {
+                    return HorizontalAlignment.Left;
+                }
+                else
+                {
+                    return HorizontalAlignment.Center;
+                }
+            }
+        }
+
+        //We want to the make the line for a final Leg draw all the way to the end.
+        public int LineColumnSpan => IsEnd ? 3 : 2;
+        //Adjust the margin to not overdraw past the circle for an End Leg.
+        public Thickness LineMargin => IsEnd
+            ? new Thickness(-5, 0, 5, 0)
+            : new Thickness(5, 0, -5, 0);
     }
 }

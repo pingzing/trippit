@@ -137,7 +137,18 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.duration),
                             new GqlReturnValue(ApiGqlMembers.realTime),
                             new GqlReturnValue(ApiGqlMembers.distance),
-                            new GqlReturnValue(ApiGqlMembers.transitLeg)
+                            new GqlReturnValue(ApiGqlMembers.transitLeg),
+                            new GqlReturnValue(ApiGqlMembers.from,
+                                new GqlReturnValue(ApiGqlMembers.name)
+                            ),
+                            new GqlReturnValue(ApiGqlMembers.to,
+                                new GqlReturnValue(ApiGqlMembers.name)
+                            )
+                        ),
+                    new GqlReturnValue(ApiGqlMembers.fares,
+                            new GqlReturnValue(ApiGqlMembers.type),
+                            new GqlReturnValue(ApiGqlMembers.currency),
+                            new GqlReturnValue(ApiGqlMembers.cents)
                         )
                     )
                 );

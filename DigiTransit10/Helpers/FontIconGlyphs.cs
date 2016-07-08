@@ -15,6 +15,7 @@ namespace DigiTransit10.Helpers
         public static string MetroIcon => "\u0035";
         public static string FerryIcon => "\u0036";
         public static string BikeIcon => "\u0037";
+        public static string WalkIcon => "\u0048";
 
         //Segoe MDL2 Assets icons
         public static string BoldDownArrow => "\uE96E";

@@ -34,5 +34,8 @@ namespace DigiTransit10.Models.ApiModels
         public static string code => "code";
         public static string routes => "routes";
         public static string type => "type";
+        public static string fares => "fares";
+        public static string currency => "currency";
+        public static string cents => "cents";
     }
 }

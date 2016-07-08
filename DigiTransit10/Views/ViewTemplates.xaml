@@ -8,29 +8,17 @@
 
     <DataTemplate x:Name="TripResultTemplate">
         <ListView x:Name="TripResultList"
-                      DataContext="{Binding Source={StaticResource Locator}, Path=TripResult}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      ScrollViewer.HorizontalScrollMode="Auto"
-                      ScrollViewer.IsHorizontalRailEnabled="True"
-                      ScrollViewer.IsVerticalRailEnabled="False"                         
-                      ItemsSource="{Binding TripResults, Mode=OneWay}">
+                  DataContext="{Binding Source={StaticResource Locator}, Path=TripResult}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollMode="Auto"
+                  ScrollViewer.IsHorizontalRailEnabled="True"
+                  ScrollViewer.IsVerticalRailEnabled="False"                         
+                  ItemsSource="{Binding TripResults, Mode=OneWay}"
+                  HorizontalAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding Legs}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="0 0 10 0">
-                                        <Run Text="{Binding Mode}" /> <Run Text="{Binding Distance}"/>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <lclCtls:TripPlanStrip StripItinerary="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

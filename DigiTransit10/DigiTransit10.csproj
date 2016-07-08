@@ -109,6 +109,9 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
+    <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
+    <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
+    <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
     <Compile Include="ExtensionMethods\TaskExtensions.cs" />

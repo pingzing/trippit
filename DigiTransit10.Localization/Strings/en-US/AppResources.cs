@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/07/2016 19:34:22
+// 	Generated: 07/08/2016 14:33:07
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -313,6 +313,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripForm_SetTimeToNow");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Origin"
+        /// </summary>
+        public static string TripPlanStrip_StartingPlaceDefault
+        {
+            get
+            {
+                return resourceLoader.GetString("TripPlanStrip_StartingPlaceDefault");
             }
         }
     }

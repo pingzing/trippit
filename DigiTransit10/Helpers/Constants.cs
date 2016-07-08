@@ -8,9 +8,11 @@ namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
+        //Misc keys
         public const string WideKey = "Wide";
         public const string NarrowKey = "Narrow";
 
+        //Transit mode names
         public const string BusTransitMode = "BUS";
         public const string TramTransitMode = "TRAM";
         public const string TrainTransitMode = "RAIL";
@@ -18,5 +20,13 @@ namespace DigiTransit10.Helpers
         public const string FerryTransitMode = "FERRY";
         public const string BikeTransitMode = "BICYCLE";
         public const string WalkTransitMode = "WALK";
+
+        //Resource brush names
+        public const string BusBrushName = "HslBusBlueBrush";
+        public const string TramBrushName = "HslTramGreenBrush";
+        public const string TrainBrushName = "HslTrainPurpleBrush";
+        public const string MetroBrushName = "HslMetroOrangeBrush";
+        public const string FerryBrushName = "HslFerryBlueBrush";
+        public const string BikeBrushName = "HslBikeGoldenrodBrush";        
     }
 }

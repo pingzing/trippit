@@ -102,6 +102,10 @@
           <source>Set to now</source>
           <target state="new">Set to now</target>
         </trans-unit>
+        <trans-unit id="TripPlanStrip_StartingPlaceDefault" translate="yes" xml:space="preserve">
+          <source>Origin</source>
+          <target state="new">Origin</target>
+        </trans-unit>
       </group>
     </body>
   </file>
