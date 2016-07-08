@@ -34,11 +34,10 @@ Example:
 }
 ```
 
+When times are returned by the server, they are usually in UNIX-milliseconds timestamp format, encoded as `long`s.
+
 #####Transit Modes-The `mode` parameter
 Contrary to the documentation, it's not a string that gets coerced to a masked enum (i.e. `"WALK | BUS"`) but rather a comma-separated list of strings with no spaces (i.e. `modes:"BUS,TRAM,RAIL,SUBWAY,FERRY,WALK"`). 
-
-
-When times are returned by the server, they are usually in UNIX timestamp format, encoded as `long`s.
 
 ##Stupid Platform Bugs Log
  * When using a `CollectionViewSource` as a `ListView`'s `ItemSource` and a `GroupStyle` with a `GroupStyleHeader` set to `HideIfEmpty=True`, if (any of?) the underlying lists backing the `CollectionViewSource` are ever emptied, the next time an element is added to them, the app will hard crash with no exception. Further information on [StackOverflow](http://stackoverflow.com/questions/24398252/is-there-a-bug-inside-groupstyle-hidesifempty).

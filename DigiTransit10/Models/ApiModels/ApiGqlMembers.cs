@@ -32,6 +32,8 @@ namespace DigiTransit10.Models.ApiModels
         public static string gtfsId => "gtfsId";
         public static string name => "name";
         public static string code => "code";
+        public static string route => nameof(route);
+        public static string shortName => nameof(shortName);
         public static string routes => "routes";
         public static string type => "type";
         public static string fares => "fares";

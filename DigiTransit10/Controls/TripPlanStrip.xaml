@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     d:DesignHeight="80"
     d:DesignWidth="460">
-    <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}">
+    <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}" >
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal"/>
@@ -17,70 +17,28 @@
         </ItemsControl.ItemsPanel>
 
         <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="local:TripLeg">
-                <Grid x:Name="LegGrid">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="35"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                    </Grid.RowDefinitions>
+            <DataTemplate x:DataType="local:TripLegViewModel">
+                <Grid x:Name="LegContentRoot">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="TimeBlock" 
-                               Text="{x:Bind BackingLeg.StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}" 
-                               Grid.Row="1" Grid.Column="0" 
-                               HorizontalAlignment="{x:Bind LegAlignment}"
-                               VerticalAlignment="Bottom"/>
-                    <Rectangle x:Name="LegLine" 
-                               Grid.Row="2" Grid.Column="0" 
-                               Grid.ColumnSpan="{x:Bind LineColumnSpan}"
-                               Margin="{x:Bind LineMargin}"
-                               Fill="{ThemeResource AppBarSeparatorForegroundThemeBrush}"                                
-                               Height="10" 
-                               HorizontalAlignment="Stretch"/>
-                    <Ellipse x:Name="LegCircle" 
-                             Grid.Row="2" Grid.Column="0" 
-                             Width="20" Height="20" 
-                             HorizontalAlignment="{x:Bind LegAlignment}"
-                             Fill="{ThemeResource AppBarSeparatorForegroundThemeBrush}"/>
-                    <TextBlock x:Name="LegLocationBlock" 
-                               Text="{x:Bind BackingLeg.From.Name}" 
-                               Grid.Row="3" Grid.Column="0"                                    
-                               HorizontalAlignment="Center"/>
+                    <local:TripPlanPoint StartTime="{x:Bind BackingLeg.StartTime.Value}"
+                                         PlaceName="{x:Bind BackingLeg.From.Name}"
+                                         Grid.Column="0"/>
+                    <local:TripPlanTransitMethod TransitMode="{x:Bind BackingLeg.Mode.Value}"
+                                                 ShortName="{x:Bind BackingLeg.Route.ShortName}"
+                                                 Distance="{x:Bind BackingLeg.Distance}"
+                                                 Grid.Column="0"
+                                                 HorizontalAlignment="Center"
+                                                 Grid.ColumnSpan="3"
+                                                 Margin="10 0"/>
+                    <local:TripPlanPoint StartTime="{x:Bind NextLeg.StartTime.Value}"
+                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
+                                         PlaceName="{x:Bind BackingLeg.To.Name}"
+                                         Grid.Column="2"/>
                     
-                    <TextBlock x:Name="LegDistanceBlock" 
-                               Text="{x:Bind BackingLeg.Distance}" 
-                               Grid.Row="0" Grid.Column="1"                                    
-                               HorizontalAlignment="Center"/>
-                    <FontIcon x:Name="LegIcon"                              
-                              Grid.Row="1" Grid.Column="1"
-                              FontSize="35"
-                              FontFamily="{StaticResource HslPictoFrameFont}"
-                              Glyph="{x:Bind BackingLeg.Mode, Converter={StaticResource TransitModeToFontIconConverter}, ConverterParameter=Mode}" 
-                              Foreground="{x:Bind BackingLeg.Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}, ConverterParameter=Mode}"
-                              HorizontalAlignment="Center"/>
-                    
-                    <TextBlock x:Name="EndTimeBlock"
-                               Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
-                               Text="{x:Bind BackingLeg.EndTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}" 
-                               Grid.Row="1" Grid.Column="2" 
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom"/>
-                    <Ellipse x:Name="EndLegCircle"
-                             Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
-                             Grid.Row="2" Grid.Column="2" 
-                             Width="20" Height="20" 
-                             HorizontalAlignment="Right"
-                             Fill="{ThemeResource AppBarSeparatorForegroundThemeBrush}"/>
-                    <TextBlock x:Name="EndLegLocationBlock" 
-                               Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
-                               Text="{x:Bind BackingLeg.To.Name}" 
-                               Grid.Row="3" Grid.Column="2"
-                               HorizontalAlignment="Right"/>
                 </Grid>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

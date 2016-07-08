@@ -25,8 +25,8 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class TripPlanStrip : UserControl, INotifyPropertyChanged
     {
-        private ObservableCollection<TripLeg> _tripLegs = new ObservableCollection<TripLeg>();
-        public ObservableCollection<TripLeg> TripLegs
+        private ObservableCollection<TripLegViewModel> _tripLegs = new ObservableCollection<TripLegViewModel>();
+        public ObservableCollection<TripLegViewModel> TripLegs
         {
             get { return _tripLegs; }
             set
@@ -84,13 +84,20 @@ namespace DigiTransit10.Controls
         private void CreateNewPlanStrip(ApiItinerary thisItinerary)
         {
             TripLegs.Clear();
-            foreach(var leg in thisItinerary.Legs)
+            for(int i = 0; i < thisItinerary.Legs.Count; i++)
             {
-                TripLegs.Add(new TripLeg
+                bool isEnd = i == thisItinerary.Legs.Count - 1;
+                ApiLeg nextLeg = null;
+                if(!isEnd)
                 {
-                    BackingLeg = leg,
-                    IsStart = thisItinerary.Legs.First() == leg,
-                    IsEnd = thisItinerary.Legs.Last() == leg
+                    nextLeg = thisItinerary.Legs[i + 1];
+                }
+                TripLegs.Add(new TripLegViewModel
+                {
+                    BackingLeg = thisItinerary.Legs[i],
+                    IsStart = i == 0,
+                    IsEnd = isEnd,
+                    NextLeg = nextLeg
                 });
             }
         }
@@ -102,11 +109,12 @@ namespace DigiTransit10.Controls
         }        
     }
 
-    public class TripLeg
+    public class TripLegViewModel
     {
         public bool IsEnd { get; set; }
         public bool IsStart { get; set; }
         public ApiLeg BackingLeg { get; set; }
+        public ApiLeg NextLeg { get; set; }
         public HorizontalAlignment LegAlignment
         {
             get

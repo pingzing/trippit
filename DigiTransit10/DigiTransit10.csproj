@@ -103,8 +103,14 @@
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GroupedPlaceList.cs" />
+    <Compile Include="Controls\TripPlanPoint.xaml.cs">
+      <DependentUpon>TripPlanPoint.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TripPlanStrip.xaml.cs">
       <DependentUpon>TripPlanStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripPlanTransitMethod.xaml.cs">
+      <DependentUpon>TripPlanTransitMethod.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
@@ -210,7 +216,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\TripPlanPoint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\TripPlanStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanTransitMethod.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
