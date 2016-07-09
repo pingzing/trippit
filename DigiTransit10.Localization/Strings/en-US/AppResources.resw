@@ -192,6 +192,9 @@
   <data name="TripPlanStrip_StartingPlaceDefault" xml:space="preserve">
     <value>Origin</value>
   </data>
+  <data name="LoadingLiteral" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
   <data name="TripPlanStrip_EndPlaceDefault" xml:space="preserve">
     <value>Destination</value>
   </data>

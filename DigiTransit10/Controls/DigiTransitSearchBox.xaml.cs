@@ -168,8 +168,7 @@ namespace DigiTransit10.Controls
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {            
-            //fire a "search" event that a viewmodel can listen for
+        {                        
             //todo: should this also be an actual event, as well as the Command?
             IsWaiting = false;
             _currentToken?.Cancel();
@@ -196,6 +195,12 @@ namespace DigiTransit10.Controls
                     Type = ModelEnums.PlaceType.NameOnly
                 };                
                 SearchText = args.QueryText;
+
+                if(SearchBox.IsSuggestionListOpen)
+                {
+                    SearchBox.IsSuggestionListOpen = false;
+                }
+
                 if (Command != null && Command.CanExecute(args.QueryText))
                 {
                     Command.Execute(args.QueryText);

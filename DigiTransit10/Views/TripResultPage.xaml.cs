@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigiTransit10.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,11 @@ namespace DigiTransit10.Views
     /// </summary>
     public sealed partial class TripResultPage : Page
     {
+        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
+
         public TripResultPage()
         {
-            this.InitializeComponent();
-        }
+            this.InitializeComponent();            
+        }        
     }
 }

@@ -10,12 +10,13 @@ namespace DigiTransit10.Models
     public interface IFavorite
     {
         string UserChosenName { get; set; }       
-        //some kind of icon? 
+        string FontIconGlyph { get; set; }
     }
 
     public class FavoritePlace : IFavorite, IPlace
     {
         public string UserChosenName { get; set; }
+        public string FontIconGlyph { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
@@ -25,6 +26,7 @@ namespace DigiTransit10.Models
     public class FavoriteRoute : IFavorite
     {
         public string UserChosenName { get; set; }
+        public string FontIconGlyph { get; set; }
         public List<Place> RoutePlaces { get; set; }
     }
 }

@@ -441,19 +441,13 @@
                         </ContentControl.ContentTemplate>
                     </ContentControl>
 
-                    <ContentControl x:Name="TripResultsPanel"                                                                                                                          
-                                  RelativePanel.Below="FavoritesWidePanel">
-                        <ContentControl.ContentTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+                    <StackPanel RelativePanel.Below="FavoritesWidePanel">
+                        <TextBlock Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
                                                Margin="0 0 0 9"                                           
                                                FontSize="20"/>
-                                    <ContentPresenter ContentTemplate="{StaticResource TripResultTemplate}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ContentControl.ContentTemplate>
-                    </ContentControl>
+                        <lclCtls:TripResultsList x:Name="TripResultsPanel" 
+                                                 DataContext="{x:Bind ViewModel.TripResultViewModel}"/>
+                    </StackPanel>
                 </RelativePanel>
             </ScrollViewer>
         </RelativePanel>

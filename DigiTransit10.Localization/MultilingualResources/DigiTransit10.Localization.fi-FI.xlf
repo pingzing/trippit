@@ -110,6 +110,10 @@
           <source>Destination</source>
           <target state="new">Destination</target>
         </trans-unit>
+        <trans-unit id="LoadingLiteral" translate="yes" xml:space="preserve">
+          <source>Loading...</source>
+          <target state="new">Loading...</target>
+        </trans-unit>
       </group>
     </body>
   </file>

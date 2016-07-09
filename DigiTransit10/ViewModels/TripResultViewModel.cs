@@ -11,6 +11,8 @@ using Template10.Common;
 using DigiTransit10.Models.TripPlanStrip;
 using DigiTransit10.Models;
 using DigiTransit10.Localization.Strings;
+using GalaSoft.MvvmLight.Command;
+using System;
 
 namespace DigiTransit10.ViewModels
 {
@@ -32,7 +34,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);             
+            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);                    
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)

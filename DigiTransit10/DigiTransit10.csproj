@@ -112,6 +112,9 @@
     <Compile Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml.cs">
       <DependentUpon>TripPlanTransitIcon.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TripResultsList.xaml.cs">
+      <DependentUpon>TripResultsList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
@@ -234,6 +237,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Controls\TripResultsList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Custom.xaml">
       <SubType>Designer</SubType>
