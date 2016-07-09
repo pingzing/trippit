@@ -9,7 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
+    <Grid x:Name="TripPlanPointRootLayout" x:FieldModifier="Public">
         <Grid.RowDefinitions>
             <RowDefinition Height="55"/>
             <RowDefinition Height="20"/>
