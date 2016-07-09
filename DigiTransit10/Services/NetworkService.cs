@@ -129,7 +129,13 @@ namespace DigiTransit10.Services
                     new GqlParameter(ApiGqlMembers.modes, details.TransitModes)
                 )
                 .WithReturnValues(
-                    new GqlReturnValue(ApiGqlMembers.itineraries, 
+                    new GqlReturnValue(ApiGqlMembers.from,
+                        new GqlReturnValue(ApiGqlMembers.name)
+                    ),
+                    new GqlReturnValue(ApiGqlMembers.to,
+                        new GqlReturnValue(ApiGqlMembers.name)
+                    ),
+                    new GqlReturnValue(ApiGqlMembers.itineraries,                        
                         new GqlReturnValue(ApiGqlMembers.legs,
                             new GqlReturnValue(ApiGqlMembers.startTime), 
                             new GqlReturnValue(ApiGqlMembers.endTime),
@@ -147,7 +153,7 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.route,
                                 new GqlReturnValue(ApiGqlMembers.shortName)
                             )
-                        ),
+                        ),                    
                     new GqlReturnValue(ApiGqlMembers.fares,
                             new GqlReturnValue(ApiGqlMembers.type),
                             new GqlReturnValue(ApiGqlMembers.currency),

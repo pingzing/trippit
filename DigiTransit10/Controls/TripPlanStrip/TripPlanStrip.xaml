@@ -1,14 +1,19 @@
 ﻿<UserControl
-    x:Class="DigiTransit10.Controls.TripPlanStrip"
+    x:Class="DigiTransit10.Controls.TripPlanStrip.TripPlanStrip"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DigiTransit10.Controls"
+    xmlns:local="using:DigiTransit10.Controls.TripPlanStrip"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:DigiTransit10.Models"
     mc:Ignorable="d"
     d:DesignHeight="109"
     d:DesignWidth="460">
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="TripPlanStripResources.xaml"/>
+    </UserControl.Resources>
+
     <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}" >
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -24,10 +29,11 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <local:TripPlanPoint x:Name="StartPoint" StartTime="{x:Bind BackingLeg.StartTime.Value}"
-                                         PlaceName="{x:Bind BackingLeg.From.Name}"
-                                         Grid.Column="0"/>
-                    <local:TripPlanTransitMethod x:Name="TransitIcon" 
+                    <local:TripPlanPoint x:Name="StartPoint" PointTime="{x:Bind BackingLeg.StartTime.Value}"
+                                         Grid.Column="0"
+                                         IsStart="{x:Bind IsStart}"                                         
+                                         PlaceName="{x:Bind StartPlaceName}"/>
+                    <local:TripPlanTransitIcon x:Name="TransitIcon" 
                                                  Grid.Column="1"
                                                  TransitMode="{x:Bind BackingLeg.Mode.Value}"
                                                  ShortName="{x:Bind BackingLeg.Route.ShortName}"
@@ -35,10 +41,10 @@
                                                  HorizontalAlignment="Center"/>
                     <local:TripPlanPoint x:Name="OptionalEndPoint" 
                                          Grid.Column="2"
-                                         StartTime="{x:Bind NextLeg.StartTime.Value}"
-                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
-                                         PlaceName="{x:Bind BackingLeg.To.Name}"/>
-                    
+                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"                                         
+                                         IsEnd="{x:Bind IsEnd}"
+                                         PlaceName="{x:Bind EndPlaceName}"
+                                         PointTime="{x:Bind BackingLeg.EndTime.Value}"/>
                 </Grid>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

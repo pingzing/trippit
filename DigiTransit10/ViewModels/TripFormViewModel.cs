@@ -205,14 +205,21 @@ namespace DigiTransit10.ViewModels
             Views.Busy.SetBusy(true, AppResources.TripForm_PlanningTrip);
 
             var result = await _networkService.PlanTrip(details);
+            TripPlan newPlan = new TripPlan
+            {
+                ApiPlan = result,
+                StartingPlaceName = FromPlace.Name,
+                EndingPlaceName = ToPlace.Name
+            };
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
-                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result);
+                
+                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
             }
             else
             {
                 BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
-                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result);
+                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
             }
             Views.Busy.SetBusy(false);
 

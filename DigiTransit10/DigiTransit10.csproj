@@ -103,14 +103,14 @@
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GroupedPlaceList.cs" />
-    <Compile Include="Controls\TripPlanPoint.xaml.cs">
+    <Compile Include="Controls\TripPlanStrip\TripPlanPoint.xaml.cs">
       <DependentUpon>TripPlanPoint.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TripPlanStrip.xaml.cs">
+    <Compile Include="Controls\TripPlanStrip\TripPlanStrip.xaml.cs">
       <DependentUpon>TripPlanStrip.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TripPlanTransitMethod.xaml.cs">
-      <DependentUpon>TripPlanTransitMethod.xaml</DependentUpon>
+    <Compile Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml.cs">
+      <DependentUpon>TripPlanTransitIcon.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
@@ -163,6 +163,7 @@
     <Compile Include="Models\ModelEnums.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Place.cs" />
+    <Compile Include="Models\TripPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\GeolocationService.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Models\TripPlanStrip\ItineraryModel.cs" />
     <Compile Include="ViewModels\TripFormViewModel.cs" />
     <Compile Include="ViewModels\TripResultViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
@@ -216,17 +218,22 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TripPlanPoint.xaml">
+    <Page Include="Controls\TripPlanStrip\TripPlanPoint.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TripPlanStrip.xaml">
+    <Page Include="Controls\TripPlanStrip\TripPlanStrip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TripPlanTransitMethod.xaml">
+    <Page Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanStrip\TripPlanStripResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Styles\Custom.xaml">
       <SubType>Designer</SubType>
@@ -266,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Images\" />
+    <Folder Include="ViewModels\SubViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigiTransit10.Backend\DigiTransit10.Backend.csproj">

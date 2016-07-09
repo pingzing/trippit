@@ -1,15 +1,17 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace DigiTransit10.Controls
+namespace DigiTransit10.Controls.TripPlanStrip
 {
-    public sealed partial class TripPlanTransitMethod : UserControl
+    public sealed partial class TripPlanTransitIcon : UserControl
     {
         public static readonly DependencyProperty TransitModeProperty =
-            DependencyProperty.Register("TransitMode", typeof(ApiMode), typeof(TripPlanTransitMethod), new PropertyMetadata(0));
+            DependencyProperty.Register("TransitMode", typeof(ApiMode), typeof(TripPlanTransitIcon), new PropertyMetadata(0));
         public ApiMode TransitMode
         {
             get { return (ApiMode)GetValue(TransitModeProperty); }
@@ -17,11 +19,11 @@ namespace DigiTransit10.Controls
         }                
         
         public static readonly DependencyProperty ShortNameProperty =
-            DependencyProperty.Register("ShortName", typeof(string), typeof(TripPlanTransitMethod), new PropertyMetadata(null, new PropertyChangedCallback(ShortNameChanged)));
+            DependencyProperty.Register("ShortName", typeof(string), typeof(TripPlanTransitIcon), new PropertyMetadata(null, new PropertyChangedCallback(ShortNameChanged)));
 
         private static void ShortNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            TripPlanTransitMethod thisControl = d as TripPlanTransitMethod;
+            TripPlanTransitIcon thisControl = d as TripPlanTransitIcon;
             if (e.NewValue != null)
             {
                 thisControl.NameOrDistanceBlock.Text = (string)e.NewValue;
@@ -46,11 +48,11 @@ namespace DigiTransit10.Controls
         }
         
         public static readonly DependencyProperty DistanceProperty =
-            DependencyProperty.Register("Distance", typeof(float?), typeof(TripPlanTransitMethod), new PropertyMetadata(null, new PropertyChangedCallback(DistanceChanged)));
+            DependencyProperty.Register("Distance", typeof(float?), typeof(TripPlanTransitIcon), new PropertyMetadata(null, new PropertyChangedCallback(DistanceChanged)));
 
         private static void DistanceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            TripPlanTransitMethod thisControl = d as TripPlanTransitMethod;
+            TripPlanTransitIcon thisControl = d as TripPlanTransitIcon;
             if(thisControl.ShortName != null)
             {
                 return;
@@ -73,9 +75,31 @@ namespace DigiTransit10.Controls
         {
             get { return (float?)GetValue(DistanceProperty); }
             set { SetValue(DistanceProperty, value); }
-        }                
+        }
 
-        public TripPlanTransitMethod()
+        public static readonly DependencyProperty HorizontalOffsetProperty =
+            DependencyProperty.Register("HorizontalOffset", typeof(double), typeof(TripPlanTransitIcon), new PropertyMetadata(0, new PropertyChangedCallback(HorizontalOffsetChanged)));
+        private static void HorizontalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TripPlanTransitIcon thisControl = d as TripPlanTransitIcon;
+            if(d == null)
+            {
+                return;
+            }
+            if (e.NewValue is double)
+            {
+                double newOffset = (double)e.NewValue;
+                thisControl.NameOrDistanceBlock.RenderTransform = new TranslateTransform { X = newOffset };
+                thisControl.TransitModeIcon.RenderTransform = new TranslateTransform { X = newOffset };
+            }
+        }
+        public double HorizontalOffset
+        {
+            get { return (double)GetValue(HorizontalOffsetProperty); }
+            set { SetValue(HorizontalOffsetProperty, value); }
+        }              
+
+        public TripPlanTransitIcon()
         {
             this.InitializeComponent();
         }

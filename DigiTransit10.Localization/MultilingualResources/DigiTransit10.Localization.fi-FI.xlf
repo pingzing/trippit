@@ -106,6 +106,10 @@
           <source>Origin</source>
           <target state="new">Origin</target>
         </trans-unit>
+        <trans-unit id="TripPlanStrip_EndPlaceDefault" translate="yes" xml:space="preserve">
+          <source>Destination</source>
+          <target state="new">Destination</target>
+        </trans-unit>
       </group>
     </body>
   </file>

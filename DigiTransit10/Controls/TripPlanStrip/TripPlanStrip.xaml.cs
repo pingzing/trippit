@@ -22,10 +22,12 @@ using Windows.UI.Xaml.Shapes;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace DigiTransit10.Controls
+namespace DigiTransit10.Controls.TripPlanStrip
 {
     public sealed partial class TripPlanStrip : UserControl, INotifyPropertyChanged
     {
+        private const string RectangleHeightKey = "TripPlanStripRectangleHeight";
+
         private ObservableCollection<TripLegViewModel> _tripLegs = new ObservableCollection<TripLegViewModel>();
         public ObservableCollection<TripLegViewModel> TripLegs
         {
@@ -71,6 +73,14 @@ namespace DigiTransit10.Controls
             set { SetValue(StartingPlaceNameProperty, value); }
         }
 
+        public static readonly DependencyProperty EndingPlaceNameProperty =
+            DependencyProperty.Register("EndingPlaceName", typeof(string), typeof(TripPlanStrip), new PropertyMetadata(AppResources.TripPlanStrip_EndPlaceDefault));
+        public string EndingPlaceName
+        {
+            get { return (string)GetValue(EndingPlaceNameProperty); }
+            set { SetValue(EndingPlaceNameProperty, value); }
+        }               
+
         public ApiItinerary StripItinerary
         {
             get { return (ApiItinerary)GetValue(StripItineraryProperty); }
@@ -97,18 +107,14 @@ namespace DigiTransit10.Controls
                 TripLegs.Add(new TripLegViewModel
                 {
                     BackingLeg = thisItinerary.Legs[i],
+                    StartPlaceName = i == 0 ? StartingPlaceName : thisItinerary.Legs[i].From.Name,
+                    EndPlaceName = EndingPlaceName,
                     IsStart = i == 0,
-                    IsEnd = isEnd,
+                    IsEnd = isEnd,                    
                     NextLeg = nextLeg
                 });
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([CallerMemberName]string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        }        
 
         List<Grid> loadedGrids = new List<Grid>();
         private void LegContentRoot_Loaded(object sender, RoutedEventArgs e)
@@ -131,7 +137,7 @@ namespace DigiTransit10.Controls
             {
                 var firstPoint = (grid.Children.FirstOrDefault() as TripPlanPoint)
                     ?.TripPlanPointRootLayout?.Children
-                    ?.Skip(1)?.Take(1)
+                    ?.Skip(2)?.Take(1)
                     ?.FirstOrDefault() as Ellipse;
                 if (firstPoint == null)
                 {
@@ -144,7 +150,7 @@ namespace DigiTransit10.Controls
                 {
                     thirdPoint = potentialEndpoint?.TripPlanPointRootLayout?
                         .Children
-                        ?.Skip(1)?.Take(1)
+                        ?.Skip(2)?.Take(1)
                         ?.FirstOrDefault() as Ellipse;
                 }                
                 
@@ -159,7 +165,7 @@ namespace DigiTransit10.Controls
                     }
                     thirdPoint = (newGrid.Children.FirstOrDefault() as TripPlanPoint)
                         ?.TripPlanPointRootLayout?.Children
-                        ?.Skip(1)?.Take(1)
+                        ?.Skip(2)?.Take(1)
                         ?.FirstOrDefault() as Ellipse;
                 }
                 
@@ -168,16 +174,25 @@ namespace DigiTransit10.Controls
                     return;
                 }
 
-                var icon = (grid.Children.Skip(1).Take(1).First() as TripPlanTransitMethod);
+                var icon = (grid.Children.Skip(1).Take(1).First() as TripPlanTransitIcon);
 
-                double firstPointCenterX = firstPoint.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0)).X + 10;
-                double iconCenterX = icon.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0)).X + (icon.ActualWidth / 2);
-                double thirdPointCenterX = thirdPoint.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0)).X + 10;                
+                double firstPointCenterX = firstPoint.TransformToVisual(Window.Current.Content)
+                    .TransformPoint(new Point(0, 0)).X + (double)this.Resources[RectangleHeightKey];
+                double iconCenterX = icon.TransformToVisual(Window.Current.Content)
+                    .TransformPoint(new Point(0, 0)).X + (icon.ActualWidth / 2);
+                double thirdPointCenterX = thirdPoint.TransformToVisual(Window.Current.Content)
+                    .TransformPoint(new Point(0, 0)).X + (double)this.Resources[RectangleHeightKey];
                 double circlesMidpoint = (firstPointCenterX + thirdPointCenterX) / 2;
 
                 double difference = circlesMidpoint - iconCenterX;
-                icon.RenderTransform = new TranslateTransform { X = difference };                                          
+                icon.HorizontalOffset = difference;
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 
@@ -185,28 +200,9 @@ namespace DigiTransit10.Controls
     {
         public bool IsEnd { get; set; }
         public bool IsStart { get; set; }
+        public string StartPlaceName { get; set; }
+        public string EndPlaceName { get; set; }
         public ApiLeg BackingLeg { get; set; }
-        public ApiLeg NextLeg { get; set; }
-        public HorizontalAlignment LegAlignment
-        {
-            get
-            {
-                if(IsStart)
-                {
-                    return HorizontalAlignment.Left;
-                }
-                else
-                {
-                    return HorizontalAlignment.Center;
-                }
-            }
-        }
-
-        //We want to the make the line for a final Leg draw all the way to the end.
-        public int LineColumnSpan => IsEnd ? 3 : 2;
-        //Adjust the margin to not overdraw past the circle for an End Leg.
-        public Thickness LineMargin => IsEnd
-            ? new Thickness(-5, 0, 5, 0)
-            : new Thickness(5, 0, -5, 0);
+        public ApiLeg NextLeg { get; set; }                        
     }
 }
