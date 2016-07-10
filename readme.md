@@ -6,6 +6,20 @@ Requirements
 * [Multilingual App Toolkit v4.0](https://developer.microsoft.com/en-us/windows/develop/multilingual-app-toolkit)
 * [Resw Code File Generator](https://reswcodegen.codeplex.com/)
 
+##Feature Epics
+- [x] Trip planning
+- [x] Favorites (partially completed)
+- [ ] Detailed trip plan
+- [ ] Line search
+- [ ] Stop search
+- [ ] Multi-leg trip planning
+- [ ] Show nearby stops
+- [ ] Transit service alerts
+- [ ] Stop/route tile pinning
+- [ ] Subscribe to a line, receive notifications when it stops somewhere
+- [ ] Crash reporting
+- [ ] Analytics
+- [ ] Testing
 
 ##Design Notes
 ####Searching
