@@ -36,6 +36,8 @@ time: "23:28:00"
 
 I.E. dates are in ISO 8601 format, and times are expressed in 24-hour clock format with colon separators. 
 
+When times are returned by the server, they are usually in UNIX-milliseconds timestamp format, encoded as `long`s.
+
 #####Formatting
 When sending JSON requests, the double-quotes around strings must be escaped _in the request_. That means backslashes next to the quotes. _In the request_. Ugh.
 
@@ -47,8 +49,6 @@ Example:
 	}"
 }
 ```
-
-When times are returned by the server, they are usually in UNIX-milliseconds timestamp format, encoded as `long`s.
 
 #####Transit Modes-The `mode` parameter
 Contrary to the documentation, it's not a string that gets coerced to a masked enum (i.e. `"WALK | BUS"`) but rather a comma-separated list of strings with no spaces (i.e. `modes:"BUS,TRAM,RAIL,SUBWAY,FERRY,WALK"`). 
