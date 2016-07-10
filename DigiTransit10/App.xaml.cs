@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Threading;
+using Windows.ApplicationModel;
 
 namespace DigiTransit10
 {
@@ -71,6 +72,13 @@ namespace DigiTransit10
 
             NavigationService.Navigate(typeof(Views.MainPage));
             await Task.CompletedTask;
+        }
+
+        public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
+        {
+            Locator.Cleanup();
+            
+            await base.OnSuspendingAsync(s, e, prelaunchActivated);
         }
     }
 }

@@ -30,13 +30,9 @@ namespace DigiTransit10.ViewModels
 
             _networkService = networkService;
             _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
-            foreach(var place in _settingsService.FavoritePlaces)
+            foreach(var place in _settingsService.Favorites)
             {
                 Favorites.AddSorted(place);
-            }
-            foreach(var route in _settingsService.FavoriteRoutes)
-            {
-                Favorites.AddSorted(route);
             }
         }
     }

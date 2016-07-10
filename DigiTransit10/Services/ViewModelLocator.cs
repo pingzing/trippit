@@ -44,5 +44,14 @@ namespace DigiTransit10.Services
         public TripFormViewModel TripForm => ServiceLocator.Current.GetInstance<TripFormViewModel>();
         public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
         public FavoritesViewModel Favorites => ServiceLocator.Current.GetInstance<FavoritesViewModel>();
+
+        public void Cleanup()
+        {
+            //Serialize data that needs serializing, etc etc
+            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushFavoritesToStorage();
+
+        }
     }
+
+
 }

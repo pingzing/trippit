@@ -27,10 +27,12 @@
 
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"
-                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
+                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"
+                                                  FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
                     <lclCtls:DigiTransitSearchBox x:Name="ToBox"
                                                   Header="{Binding MainPage_ToHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
+                                                  FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"
                                                   Margin="0 10 0 0" />
 
                     <Grid Margin="0 10 0 0">
@@ -225,27 +227,10 @@
 
             <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
                 <Grid>
-                    <TextBlock x:Name="EmptyListTextBlock" 
-                               Visibility="Visible" 
+                    <TextBlock x:Name="EmptyListTextBlock"                    
+                               Visibility="{Binding Items.Count, ElementName=FavoritesListView, Converter={StaticResource EmptyNullToVisibilityConverter}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
-                               Style="{StaticResource EmptyListHeaderStyle}">
-                        <Interactivity:Interaction.Behaviors>
-                            <Core:DataTriggerBehavior Binding="{Binding Items.Count, ElementName=FavoritesListView}"
-                                                      ComparisonCondition="GreaterThan"
-                                                      Value="0">
-                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=EmptyListTextBlock}"
-                                                           PropertyName="Visibility"
-                                                           Value="Collapsed"/>
-                             </Core:DataTriggerBehavior>
-                             <Core:DataTriggerBehavior Binding="{Binding Items.Count, ElementName=FavoritesListView}"
-                                                       ComparisonCondition="Equal"
-                                                       Value="0">
-                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=EmptyListTextBlock}"
-                                                           PropertyName="Visibility"
-                                                           Value="Visible"/>
-                            </Core:DataTriggerBehavior>
-                        </Interactivity:Interaction.Behaviors>
-                    </TextBlock>
+                               Style="{StaticResource EmptyListHeaderStyle}"/>
                     <ListView x:Name="FavoritesListView"
                               ItemsSource="{x:Bind Favorites, Mode=OneWay}">
                         <ListView.ItemTemplate>

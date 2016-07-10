@@ -41,7 +41,7 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get
             {
-                var theme = DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone 
+                var theme = DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone
                     ? ApplicationTheme.Dark
                     : ApplicationTheme.Light;
                 var value = _helper.Read<string>(nameof(AppTheme), theme.ToString());
@@ -65,46 +65,49 @@ namespace DigiTransit10.Services.SettingsServices
             }
         }
 
-        //todo: add some flavor of caching to this, because it'll blow up if it ever gets too big
-        public List<FavoritePlace> FavoritePlaces
+        //Serialize as just a list of places to save space, but expose as dictionary with names as keys
+        private List<IFavorite> _favorites;
+        public List<IFavorite> Favorites
         {
             get
             {
-                string serialized = _helper.Read<string>(nameof(FavoritePlaces), "", SettingsStrategies.Roam);
-                if(String.IsNullOrEmpty(serialized))
+                if (_favorites == null)
                 {
-                    return new List<FavoritePlace>();
+                    string serialized = _helper.Read<string>(nameof(Favorites), "", SettingsStrategies.Roam);
+                    if (String.IsNullOrEmpty(serialized) || serialized == "null")
+                    {
+                        _favorites = new List<IFavorite>();
+                        return _favorites;
+                    }
+                    else
+                    {
+                        _favorites = JsonConvert.DeserializeObject<List<IFavorite>>(serialized, new JsonSerializerSettings {
+                            TypeNameHandling = TypeNameHandling.Objects,
+                            TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
+                        });
+                        return _favorites;
+                    }
                 }
                 else
                 {
-                    return JsonConvert.DeserializeObject<List<FavoritePlace>>(serialized);
+                    return _favorites;
                 }
             }
             set
             {
-                _helper.Write(nameof(FavoritePlaces), JsonConvert.SerializeObject(value), SettingsStrategies.Roam);
+                _favorites = value;
+                FlushFavoritesToStorage();
             }
-        }
+        }        
 
-        //todo: add some flavor of caching to this, because it'll blow up if it ever gets too big
-        public List<FavoriteRoute> FavoriteRoutes
-        {
-            get
-            {
-                string serialized = _helper.Read<string>(nameof(FavoriteRoutes), "", SettingsStrategies.Roam);
-                if (String.IsNullOrEmpty(serialized))
-                {
-                    return new List<FavoriteRoute>();
-                }
-                else
-                {
-                    return JsonConvert.DeserializeObject<List<FavoriteRoute>>(serialized);
-                }
-            }
-            set
-            {
-                _helper.Write(nameof(FavoriteRoutes), JsonConvert.SerializeObject(value), SettingsStrategies.Roam);
-            }
+        /// <summary>
+        /// Flushes the in-memory list of <see cref="IFavorite"/>s in Settings to disk.
+        /// </summary>
+        public void FlushFavoritesToStorage()
+        {            
+            _helper.Write(nameof(Favorites), JsonConvert.SerializeObject(_favorites,
+                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects}), 
+                SettingsStrategies.Roam);
         }
 
         public string CurrentLanguage

@@ -147,6 +147,9 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _setDateToTodayCommand = null;
         public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
 
+        private readonly RelayCommand<Place> _addFavoriteCommand = null;
+        public RelayCommand<Place> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<Place>(AddFavorite);
+
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, 
             IGeolocationService geolocationService)
@@ -329,6 +332,20 @@ namespace DigiTransit10.ViewModels
         private void SetTimeToNow()
         {
             SelectedTime = DateTime.Now.TimeOfDay;
+        }
+
+        private void AddFavorite(Place place)
+        {
+            FavoritePlace newFavoritePlace = new FavoritePlace
+            {
+                FontIconGlyph = FontIconGlyphs.FilledStar,
+                Lat = place.Lat,
+                Lon = place.Lon,
+                Name = place.Name,
+                Type = place.Type,
+                UserChosenName = place.Name
+            };
+            _settingsService.Favorites.Add(newFavoritePlace);
         }
     }
 }
