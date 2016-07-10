@@ -173,7 +173,7 @@ namespace DigiTransit10.Controls
                 }));
         public IPlace SelectedPlace
         {
-            get { return (Place)GetValue(SelectedPlaceProperty); }
+            get { return (IPlace)GetValue(SelectedPlaceProperty); }
             set { SetValue(SelectedPlaceProperty, value); }
         }
 
@@ -420,6 +420,9 @@ namespace DigiTransit10.Controls
                     _favoritePlacesList.Remove(castRemoved);
                 }
             }
+
+            RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
+            RaisePropertyChanged(nameof(FavoriteButtonGlyph));
         }
 
         private void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
