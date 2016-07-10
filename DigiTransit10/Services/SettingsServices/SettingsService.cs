@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using Windows.Globalization;
 using Windows.System.UserProfile;
 using System.Linq;
+using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Services.SettingsServices
 {
@@ -65,9 +67,11 @@ namespace DigiTransit10.Services.SettingsServices
             }
         }
 
-        //Serialize as just a list of places to save space, but expose as dictionary with names as keys
+        /// <summary>
+        /// Access a read-only collection of the user's IFavorites. To Add or Remove, call the AddFavorite() or RemoveFavorite() methods.
+        /// </summary>
         private List<IFavorite> _favorites;
-        public List<IFavorite> Favorites
+        public IReadOnlyList<IFavorite> Favorites
         {
             get
             {
@@ -77,7 +81,7 @@ namespace DigiTransit10.Services.SettingsServices
                     if (String.IsNullOrEmpty(serialized) || serialized == "null")
                     {
                         _favorites = new List<IFavorite>();
-                        return _favorites;
+                        return _favorites.AsReadOnly();
                     }
                     else
                     {
@@ -85,7 +89,7 @@ namespace DigiTransit10.Services.SettingsServices
                             TypeNameHandling = TypeNameHandling.Objects,
                             TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
                         });
-                        return _favorites;
+                        return _favorites.AsReadOnly();
                     }
                 }
                 else
@@ -95,7 +99,7 @@ namespace DigiTransit10.Services.SettingsServices
             }
             set
             {
-                _favorites = value;
+                _favorites = value.ToList();
                 FlushFavoritesToStorage();
             }
         }        
@@ -108,6 +112,28 @@ namespace DigiTransit10.Services.SettingsServices
             _helper.Write(nameof(Favorites), JsonConvert.SerializeObject(_favorites,
                     new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects}), 
                 SettingsStrategies.Roam);
+        }
+
+        /// <summary>
+        /// Add favorite to backing list behind <see cref="Favorites"/>, and flushes the changed favorites list to storage.
+        /// </summary>
+        /// <param name="newFavorite"></param>
+        public void AddFavorite(IFavorite newFavorite)
+        {
+            _favorites.Add(newFavorite);
+            Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(new List<IFavorite> { newFavorite }, null));
+            FlushFavoritesToStorage();
+        }
+
+        public bool RemoveFavorite(IFavorite toRemove)
+        {
+            bool success =_favorites.Remove(toRemove);
+            if (success)
+            {
+                Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(null, new List<IFavorite> { toRemove }));
+                FlushFavoritesToStorage();
+            }
+            return success;
         }
 
         public string CurrentLanguage

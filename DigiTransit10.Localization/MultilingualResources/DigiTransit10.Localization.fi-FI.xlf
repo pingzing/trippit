@@ -114,6 +114,10 @@
           <source>Loading...</source>
           <target state="new">Loading...</target>
         </trans-unit>
+        <trans-unit id="SuggestBoxHeader_FavoritePlaces" translate="yes" xml:space="preserve">
+          <source>Favorites</source>
+          <target state="new">Favorites</target>
+        </trans-unit>
       </group>
     </body>
   </file>

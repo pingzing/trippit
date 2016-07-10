@@ -198,4 +198,7 @@
   <data name="TripPlanStrip_EndPlaceDefault" xml:space="preserve">
     <value>Destination</value>
   </data>
+  <data name="SuggestBoxHeader_FavoritePlaces" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
 </root>

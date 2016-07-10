@@ -7,20 +7,34 @@ using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
-    public interface IFavorite
+    public interface IFavorite : IComparable<IFavorite>
     {
         string UserChosenName { get; set; }       
         string FontIconGlyph { get; set; }
     }
 
-    public class FavoritePlace : IFavorite, IPlace
+    public class FavoritePlace : IFavorite, IPlace, IComparable<IPlace>
     {
+        private static IPlaceComparer _comparer = new IPlaceComparer();
+
+        public string Id { get; set; }
         public string UserChosenName { get; set; }
         public string FontIconGlyph { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
         public PlaceType Type { get; set; }
+        public double? Confidence { get; set; }
+
+        public int CompareTo(IFavorite other)
+        {
+            return this.UserChosenName.CompareTo(other.UserChosenName);
+        }
+
+        public int CompareTo(IPlace other)
+        {            
+            return _comparer.Compare(this, other);
+        }
     }
 
     public class FavoriteRoute : IFavorite
@@ -28,5 +42,10 @@ namespace DigiTransit10.Models
         public string UserChosenName { get; set; }
         public string FontIconGlyph { get; set; }
         public List<Place> RoutePlaces { get; set; }
+
+        public int CompareTo(IFavorite other)
+        {
+            return this.UserChosenName.CompareTo(other.UserChosenName);
+        }
     }
 }

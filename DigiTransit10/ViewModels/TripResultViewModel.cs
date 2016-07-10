@@ -34,7 +34,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);                    
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);                    
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -49,7 +49,7 @@ namespace DigiTransit10.ViewModels
             await Task.CompletedTask;
         }
 
-        private void PlanFound(string obj)
+        private void PlanFound(MessageTypes.PlanFoundMessage _)
         {
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {

@@ -99,6 +99,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DigiTransitMap.xaml.cs">
+      <DependentUpon>DigiTransitMap.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
@@ -217,6 +220,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DigiTransitMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DigiTransitSearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

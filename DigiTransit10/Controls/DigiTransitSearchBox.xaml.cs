@@ -19,14 +19,16 @@ using DigiTransit10.Models.Geocoding;
 using GalaSoft.MvvmLight.Threading;
 using DigiTransit10.Services.SettingsServices;
 using DigiTransit10.Helpers;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitSearchBox : UserControl, INotifyPropertyChanged
     {
-        private static readonly PlaceComparer _placeComparer = new PlaceComparer();
+        private static readonly IPlaceComparer _placeComparer = new IPlaceComparer();
         private static readonly SettingsService _settingsService = null;
         private static readonly INetworkService _networkService = null;
+        private static readonly IMessenger _messengerService = null;
 
         private CancellationTokenSource _currentToken = new CancellationTokenSource();        
 
@@ -38,6 +40,9 @@ namespace DigiTransit10.Controls
 
         private readonly GroupedPlaceList _userCurrentLocationList = new GroupedPlaceList(ModelEnums.PlaceType.UserCurrentLocation,
             AppResources.SuggestBoxHeader_MyLocation);
+
+        private readonly GroupedPlaceList _favoritePlacesList = new GroupedPlaceList(ModelEnums.PlaceType.FavoritePlace,
+            AppResources.SuggestBoxHeader_FavoritePlaces);
 
         private ObservableCollection<GroupedPlaceList> _suggestedPlaces = new ObservableCollection<GroupedPlaceList>();
         public ObservableCollection<GroupedPlaceList> SuggestedPlaces
@@ -77,6 +82,7 @@ namespace DigiTransit10.Controls
                 }                
                 if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
                     || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
+                    || SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
                     || SelectedPlace.Lat == default(float) 
                     || SelectedPlace.Lon == default(float))
                 {
@@ -101,8 +107,9 @@ namespace DigiTransit10.Controls
                 {
                     return FontIconGlyphs.HollowStar;
                 }
-                if(_settingsService.Favorites.Where(x => x is FavoritePlace)
-                    .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat 
+                if(SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace 
+                    || _settingsService.Favorites.Where(x => x is FavoritePlace)
+                        .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat 
                             && ((FavoritePlace)x).Lon == SelectedPlace.Lon))
                 {
                     return FontIconGlyphs.FilledStar;
@@ -117,7 +124,8 @@ namespace DigiTransit10.Controls
         static DigiTransitSearchBox()
         {            
             _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
-            _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();            
+            _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();
+            _messengerService = ServiceLocator.Current.GetInstance<IMessenger>();
         }
 
         public DigiTransitSearchBox()
@@ -129,14 +137,22 @@ namespace DigiTransit10.Controls
             }                                    
 
             _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
+            foreach(var favorite in _settingsService.Favorites.Where(x => x is FavoritePlace))
+            {
+                _favoritePlacesList.AddSorted(favorite as FavoritePlace);
+            }
             SuggestedPlaces.Add(_userCurrentLocationList);
+            SuggestedPlaces.Add(_favoritePlacesList);
             SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
-            PlacesCollection.Source = SuggestedPlaces;                    
+            PlacesCollection.Source = SuggestedPlaces;
+
+            this.SearchBox.GotFocus += SearchBox_GotFocus;
+            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
         }
 
         public static readonly DependencyProperty SelectedPlaceProperty =
-            DependencyProperty.Register("SelectedPlace", typeof(Place), typeof(DigiTransitSearchBox), new PropertyMetadata(null,
+            DependencyProperty.Register("SelectedPlace", typeof(IPlace), typeof(DigiTransitSearchBox), new PropertyMetadata(null,
                 (obj, args) =>
                 {
                     DigiTransitSearchBox box = obj as DigiTransitSearchBox;
@@ -145,7 +161,7 @@ namespace DigiTransit10.Controls
                         return;
                     }
 
-                    Place newPlace = args.NewValue as Place;
+                    IPlace newPlace = args.NewValue as IPlace;
                     if (newPlace == null)
                     {
                         return;
@@ -155,7 +171,7 @@ namespace DigiTransit10.Controls
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
                     box.RaisePropertyChanged(nameof(FavoriteButtonGlyph));
                 }));
-        public Place SelectedPlace
+        public IPlace SelectedPlace
         {
             get { return (Place)GetValue(SelectedPlaceProperty); }
             set { SetValue(SelectedPlaceProperty, value); }
@@ -227,7 +243,7 @@ namespace DigiTransit10.Controls
             IsWaiting = false;
             _currentToken?.Cancel();
 
-            SelectedPlace = (Place)args.SelectedItem;
+            SelectedPlace = (IPlace)args.SelectedItem;
             SearchText = SelectedPlace.Name;
         }
 
@@ -239,7 +255,7 @@ namespace DigiTransit10.Controls
 
             if (args.ChosenSuggestion != null)
             {
-                SelectedPlace = (Place)args.ChosenSuggestion;
+                SelectedPlace = (IPlace)args.ChosenSuggestion;
                 SearchText = SelectedPlace.Name;
 
                 if (Command != null && Command.CanExecute(SelectedPlace))
@@ -313,7 +329,7 @@ namespace DigiTransit10.Controls
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Features.Select(x => x.Properties.Id).ToList();
-            List<Place> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            List<IPlace> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.Id)).ToList();
             foreach (var stale in stalePlaces)
             {
                 _addressList.Remove(stale);
@@ -323,7 +339,7 @@ namespace DigiTransit10.Controls
             {
                 if (_addressList.Any(x => x.Id == place.Properties.Id))
                 {
-                    Place address = _addressList.First(x => x.Id == place.Properties.Id);
+                    IPlace address = _addressList.First(x => x.Id == place.Properties.Id);
                     if (address.Confidence != place.Properties.Confidence)
                     {
                         address.Confidence = place.Properties.Confidence;
@@ -361,7 +377,7 @@ namespace DigiTransit10.Controls
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Select(x => x.Id).ToList();
-            List<Place> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
             foreach (var stale in stalePlaces)
             {
                 _stopList.Remove(stale);
@@ -386,10 +402,24 @@ namespace DigiTransit10.Controls
             _stopList.SortInPlace(x => x, _placeComparer);
         }
 
-        protected override void OnGotFocus(RoutedEventArgs e)
+        private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
         {
-            base.OnGotFocus(e);
-            this.SearchBox.IsSuggestionListOpen = true;
+            if(obj.AddedFavorites?.Count > 0)
+            {
+                foreach(var added in obj.AddedFavorites)
+                {
+                    IPlace castAdded = (IPlace)added;
+                    _favoritePlacesList.AddSorted(castAdded);
+                }
+            }
+            if(obj.RemovedFavorites?.Count > 0)
+            {
+                foreach(var removed in obj.RemovedFavorites)
+                {
+                    IPlace castRemoved = (IPlace)removed;
+                    _favoritePlacesList.Remove(castRemoved);
+                }
+            }
         }
 
         private void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
@@ -397,6 +427,14 @@ namespace DigiTransit10.Controls
            if(FavoriteTappedCommand != null && FavoriteTappedCommand.CanExecute(SelectedPlace))
             {
                 FavoriteTappedCommand.Execute(SelectedPlace);
+            }
+        }
+
+        private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!SearchBox.IsSuggestionListOpen)
+            {
+                SearchBox.IsSuggestionListOpen = true;
             }
         }
 

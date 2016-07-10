@@ -6,16 +6,26 @@ using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
-    public interface IPlace
-    {        
+    public interface IPlace : IComparable<IPlace>
+    {
+        /// <summary>
+        /// Optional.
+        /// </summary>
+        string Id { get; set; }
         string Name { get; set; }
         float Lat { get; set; }
         float Lon { get; set; }
-        PlaceType Type { get; set; }        
+        PlaceType Type { get; set; }
+        /// <summary>
+        /// Optional.
+        /// </summary>
+        double? Confidence { get; set; }
     }
 
-    public class Place : IPlace, IComparable<Place>
+    public class Place : IPlace
     {        
+        private static IPlaceComparer _comparer = new IPlaceComparer();
+
         public string Id { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
@@ -109,11 +119,16 @@ namespace DigiTransit10.Models
 
             return this.Name.CompareTo(other.Name);
         }
+
+        public int CompareTo(IPlace other)
+        {
+            return _comparer.Compare(this, other);
+        }
     }
 
-    public class PlaceComparer : IComparer<Place>
+    public class IPlaceComparer : IComparer<IPlace>
     {
-        public int Compare(Place a, Place b)
+        public int Compare(IPlace a, IPlace b)
         {
             //this should take into account placetype (rank Stops higher than addresses) and confidence. if no confidence, fall back to alphabetical            
             int scoreSoFar = 0;

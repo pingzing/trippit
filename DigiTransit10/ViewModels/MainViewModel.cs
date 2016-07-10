@@ -28,7 +28,7 @@ namespace DigiTransit10.ViewModels
             _messengerService = messengerService;
             _settingsService = settings;           
 
-            _messengerService.Register<string>(this, MessageTypes.PlanFoundMessage, PlanFound);            
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -40,9 +40,9 @@ namespace DigiTransit10.ViewModels
         public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
         public FavoritesViewModel FavoritesViewModel => ((App)BootStrapper.Current).Locator.Favorites;
         
-        private void PlanFound(string visualState)
+        private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
-            if(visualState == Constants.NarrowKey)
+            if(planFoundMessage.VisualStateFoundIn == Constants.NarrowKey)
             {
                 NavigationService.NavigateAsync(typeof(TripResultPage));
             }

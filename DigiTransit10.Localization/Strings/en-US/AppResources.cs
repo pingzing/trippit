@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/09/2016 20:24:18
+// 	Generated: 07/10/2016 17:31:53
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -346,6 +346,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripPlanStrip_EndPlaceDefault");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Favorites"
+        /// </summary>
+        public static string SuggestBoxHeader_FavoritePlaces
+        {
+            get
+            {
+                return resourceLoader.GetString("SuggestBoxHeader_FavoritePlaces");
             }
         }
     }

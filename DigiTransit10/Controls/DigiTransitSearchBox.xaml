@@ -57,10 +57,23 @@
             </Grid>
         </DataTemplate>
 
-                <selectors:PlaceItemTemplateSelector x:Key="PlaceTemplateSelector"
+        <DataTemplate x:Key="FavoritePlaceTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--Hollow star icon-->
+                <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="{Binding HollowStar, Source={StaticResource FontIcons}}"/>
+                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+
+        <selectors:PlaceItemTemplateSelector x:Key="PlaceTemplateSelector"
                                              AddressTemplate="{StaticResource AddressTemplate}"
                                              StopTemplate="{StaticResource StopTemplate}"
-                                                     UserCurrentLocationTemplate="{StaticResource UserCurrentLocationTemplate}"/>
+                                             UserCurrentLocationTemplate="{StaticResource UserCurrentLocationTemplate}"
+                                             FavoritePlaceTemplate="{StaticResource FavoritePlaceTemplate}"/>
 
         <!--Copied so that we can add transitions to the suggestions Popup elements.-->
         <Style x:Key="AutoSuggestBoxTextBoxStyle" TargetType="TextBox">

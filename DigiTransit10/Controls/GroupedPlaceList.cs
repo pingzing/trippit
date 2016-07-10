@@ -8,7 +8,7 @@ using DigiTransit10.Models;
 
 namespace DigiTransit10.Controls
 {
-    public class GroupedPlaceList : ObservableCollection<Place>
+    public class GroupedPlaceList : ObservableCollection<IPlace>
     {
         public string Key { get; }
         public ModelEnums.PlaceType GroupType { get; }

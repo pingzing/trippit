@@ -76,15 +76,15 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDate, value); }
         }
 
-        private Place _fromPlace;
-        public Place FromPlace
+        private IPlace _fromPlace;
+        public IPlace FromPlace
         {
             get { return _fromPlace; }
             set { Set(ref _fromPlace, value); }
         }
 
-        private Place _toPlace;
-        public Place ToPlace
+        private IPlace _toPlace;
+        public IPlace ToPlace
         {
             get { return _toPlace; }
             set { Set(ref _toPlace, value); }
@@ -147,8 +147,8 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _setDateToTodayCommand = null;
         public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
 
-        private readonly RelayCommand<Place> _addFavoriteCommand = null;
-        public RelayCommand<Place> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<Place>(AddFavorite);
+        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;
+        public RelayCommand<IPlace> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<IPlace>(AddFavorite);
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, 
@@ -185,7 +185,7 @@ namespace DigiTransit10.ViewModels
 
             Views.Busy.SetBusy(true, AppResources.TripFrom_GettingsAddresses);
 
-            List<Place> places = new List<Place>();
+            List<IPlace> places = new List<IPlace>();
             places.Add(FromPlace);
             places.Add(ToPlace);
 
@@ -228,7 +228,7 @@ namespace DigiTransit10.ViewModels
 
         }        
 
-        private async Task<List<Place>> ResolvePlaces(List<Place> places, CancellationToken token)
+        private async Task<List<IPlace>> ResolvePlaces(List<IPlace> places, CancellationToken token)
         {
             List<Task<bool>> getAddressTasks = new List<Task<bool>>();
             for (int i = places.Count - 1; i >= 0; i--)
@@ -315,13 +315,13 @@ namespace DigiTransit10.ViewModels
         private async void PlanTripNarrowView()
         {
             await PlanTrip();
-            _messengerService.Send<string>(Constants.NarrowKey, MessageTypes.PlanFoundMessage);
+            _messengerService.Send(new MessageTypes.PlanFoundMessage(Constants.NarrowKey));
         }
 
         private async void PlanTripWideView()
         {
             await PlanTrip();
-            _messengerService.Send<string>(Constants.WideKey, MessageTypes.PlanFoundMessage);
+            _messengerService.Send(new MessageTypes.PlanFoundMessage(Constants.WideKey));
         }
 
         private void SetDateToToday()
@@ -334,7 +334,7 @@ namespace DigiTransit10.ViewModels
             SelectedTime = DateTime.Now.TimeOfDay;
         }
 
-        private void AddFavorite(Place place)
+        private void AddFavorite(IPlace place)
         {
             FavoritePlace newFavoritePlace = new FavoritePlace
             {
@@ -342,10 +342,10 @@ namespace DigiTransit10.ViewModels
                 Lat = place.Lat,
                 Lon = place.Lon,
                 Name = place.Name,
-                Type = place.Type,
+                Type = PlaceType.FavoritePlace,
                 UserChosenName = place.Name
             };
-            _settingsService.Favorites.Add(newFavoritePlace);
+            _settingsService.AddFavorite(newFavoritePlace);
         }
     }
 }
