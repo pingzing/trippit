@@ -36,6 +36,10 @@ namespace DigiTransit10.Models
 
         protected bool Equals(Place other)
         {
+            if(object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
             return this.Id == other.Id
                 && this.Name.Equals(other.Name)
                 && this.Lat == other.Lat

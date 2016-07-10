@@ -23,5 +23,7 @@ namespace DigiTransit10.Helpers
         public static string House => "\uEA8A";
         public static string Flag => "\uE7C1";
         public static string LocationTarget => "\uEC43";
+        public static string HollowStar => "\uE1CE";
+        public static string FilledStar => "\uE0B5";
     }
 }

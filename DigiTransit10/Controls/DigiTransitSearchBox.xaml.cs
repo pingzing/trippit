@@ -17,14 +17,17 @@ using System.Linq;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Models.Geocoding;
 using GalaSoft.MvvmLight.Threading;
+using DigiTransit10.Services.SettingsServices;
+using DigiTransit10.Helpers;
 
 namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitSearchBox : UserControl, INotifyPropertyChanged
     {
         private static readonly PlaceComparer _placeComparer = new PlaceComparer();
+        private static readonly SettingsService _settingsService = null;
+        private static readonly INetworkService _networkService = null;
 
-        private readonly INetworkService _networkService;
         private CancellationTokenSource _currentToken = new CancellationTokenSource();        
 
         private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop,
@@ -64,6 +67,59 @@ namespace DigiTransit10.Controls
             }
         }
 
+        public bool IsFavoriteButtonEnabled
+        {
+            get
+            {
+                if(SelectedPlace == null)
+                {
+                    return false;
+                }                
+                if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
+                    || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
+                    || SelectedPlace.Lat == default(float) 
+                    || SelectedPlace.Lon == default(float))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        public string FavoriteButtonGlyph
+        {
+            get
+            {
+                if (SelectedPlace == null)
+                {
+                    return FontIconGlyphs.HollowStar;
+                }
+                if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
+                    || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
+                    || SelectedPlace.Lat == default(float)
+                    || SelectedPlace.Lon == default(float))
+                {
+                    return FontIconGlyphs.HollowStar;
+                }
+                if(_settingsService.Favorites.Where(x => x is FavoritePlace)
+                    .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat 
+                            && ((FavoritePlace)x).Lon == SelectedPlace.Lon))
+                {
+                    return FontIconGlyphs.FilledStar;
+                }
+                else
+                {
+                    return FontIconGlyphs.HollowStar;
+                }
+            }
+        }
+
+        static DigiTransitSearchBox()
+        {            
+            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
+            _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();            
+        }
+
         public DigiTransitSearchBox()
         {
             this.InitializeComponent();
@@ -76,9 +132,7 @@ namespace DigiTransit10.Controls
             SuggestedPlaces.Add(_userCurrentLocationList);
             SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
-            PlacesCollection.Source = SuggestedPlaces;
-
-            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
+            PlacesCollection.Source = SuggestedPlaces;                    
         }
 
         public static readonly DependencyProperty SelectedPlaceProperty =
@@ -98,6 +152,8 @@ namespace DigiTransit10.Controls
                     }
 
                     box.SearchText = newPlace.Name;
+                    box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
+                    box.RaisePropertyChanged(nameof(FavoriteButtonGlyph));
                 }));
         public Place SelectedPlace
         {
@@ -112,7 +168,7 @@ namespace DigiTransit10.Controls
             get { return (string)GetValue(SearchTextProperty); }
             set { SetValue(SearchTextProperty, value); }
         }
-
+        
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command", typeof(ICommand), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
         public ICommand Command
@@ -120,6 +176,14 @@ namespace DigiTransit10.Controls
             get { return (ICommand)GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
         }
+
+        public static readonly DependencyProperty FavoriteTappedCommandProperty =
+            DependencyProperty.Register("FavoriteTappedCommand", typeof(ICommand), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
+        public ICommand FavoriteTappedCommand
+        {
+            get { return (ICommand)GetValue(FavoriteTappedCommandProperty); }
+            set { SetValue(FavoriteTappedCommandProperty, value); }
+        }                
 
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register("Header", typeof(string), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
@@ -326,6 +390,14 @@ namespace DigiTransit10.Controls
         {
             base.OnGotFocus(e);
             this.SearchBox.IsSuggestionListOpen = true;
+        }
+
+        private void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+           if(FavoriteTappedCommand != null && FavoriteTappedCommand.CanExecute(SelectedPlace))
+            {
+                FavoriteTappedCommand.Execute(SelectedPlace);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

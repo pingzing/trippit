@@ -325,10 +325,16 @@
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignRightWithPanel="True"
                    Text="{x:Bind Header, Mode=OneWay}"/>
+        <ProgressBar x:Name="ProgressBar"
+                     RelativePanel.AlignLeftWithPanel="True"
+                     RelativePanel.AlignRightWithPanel="True"
+                     RelativePanel.Below="HeaderBlock"
+                     Background="Transparent"
+                     IsIndeterminate="{x:Bind IsWaiting, Mode=OneWay}"/>
         <AutoSuggestBox x:Name="SearchBox"
-                        RelativePanel.Below="HeaderBlock"
+                        RelativePanel.Below="ProgressBar"
+                        RelativePanel.LeftOf="AddToFavoriteButton"                        
                         RelativePanel.AlignLeftWithPanel="True"
-                        RelativePanel.AlignRightWithPanel="True"
                         AutoMaximizeSuggestionArea="True"
                         ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
                         ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"
@@ -338,12 +344,14 @@
                         TextChanged="AutoSuggestBox_TextChanged"
                         SuggestionChosen="AutoSuggestBox_SuggestionChosen"
                         QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
-
-        <ProgressBar x:Name="ProgressBar"
-                     RelativePanel.AlignLeftWithPanel="True"
-                     RelativePanel.AlignRightWithPanel="True"
-                     RelativePanel.Below="SearchBox"
-                     Background="Transparent"
-                     IsIndeterminate="{x:Bind IsWaiting, Mode=OneWay}"/>
+        <Button x:Name="AddToFavoriteButton"
+                RelativePanel.Below="ProgressBar"
+                RelativePanel.AlignRightWithPanel="True"
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                IsEnabled="{x:Bind IsFavoriteButtonEnabled, Mode=OneWay}"
+                Tapped="AddToFavoriteButton_Tapped">
+            <FontIcon FontFamily="Segoe MDL2 Assets" 
+                      Glyph="{x:Bind FavoriteButtonGlyph, Mode=OneWay}"/>
+        </Button>
     </RelativePanel>
 </UserControl>
