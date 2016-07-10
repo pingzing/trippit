@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight.Messaging;
 using System.Collections.ObjectModel;
 using Template10.Mvvm;
 using System;
+using GalaSoft.MvvmLight.Command;
 
 namespace DigiTransit10.ViewModels
 {
@@ -23,6 +24,9 @@ namespace DigiTransit10.ViewModels
             get { return _favorites; }
             set { Set(ref _favorites, value); }
         }
+
+        private RelayCommand<IFavorite> _deleteFavoriteCommand = null;
+        public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService)
         {
@@ -41,6 +45,11 @@ namespace DigiTransit10.ViewModels
             }
 
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
+        }
+
+        private void DeleteFavorite(IFavorite favorite)
+        {
+            _settingsService.RemoveFavorite(favorite);
         }
 
         private void FavoritesChanged(MessageTypes.FavoritesChangedMessage message)

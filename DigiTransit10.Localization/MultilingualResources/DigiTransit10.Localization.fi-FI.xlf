@@ -118,6 +118,10 @@
           <source>Favorites</source>
           <target state="new">Favorites</target>
         </trans-unit>
+        <trans-unit id="LiteralDelete" translate="yes" xml:space="preserve">
+          <source>Delete</source>
+          <target state="new">Delete</target>
+        </trans-unit>
       </group>
     </body>
   </file>
