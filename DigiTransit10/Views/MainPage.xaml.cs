@@ -32,18 +32,6 @@ namespace DigiTransit10.Views
             ViewModel?.TripFormViewModel?.ToggleTransitPanelCommand.Execute(null);
         }
 
-        private void PlanTripButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            if(AdaptiveVisualStateGroup.CurrentState.Name == "VisualStateNarrow")
-            {
-                ViewModel.TripFormViewModel.PlanTripNarrowViewCommand.Execute(null);
-            }
-            else
-            {
-                ViewModel.TripFormViewModel.PlanTripWideViewCommand.Execute(null);
-            }
-        }
-
         private void Favorite_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
         {
             var item = sender as FrameworkElement;
@@ -58,6 +46,18 @@ namespace DigiTransit10.Views
                 MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;
                 ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
                 flyout?.ShowAt(this, point);                
+            }
+        }
+
+        private void PlanTripButton_Tapped(object sender, RoutedEventArgs e)
+        {
+            if (AdaptiveVisualStateGroup.CurrentState.Name == "VisualStateNarrow")
+            {
+                ViewModel.TripFormViewModel.PlanTripNarrowViewCommand.Execute(null);
+            }
+            else
+            {
+                ViewModel.TripFormViewModel.PlanTripWideViewCommand.Execute(null);
             }
         }
     }

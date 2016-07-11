@@ -222,7 +222,7 @@
                         Foreground="White"
                         HorizontalAlignment="Stretch"
                         Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                            
-                        Tapped="PlanTripButton_Tapped"/>
+                        Click="PlanTripButton_Tapped"/>
                 </Grid>
             </DataTemplate>
 
