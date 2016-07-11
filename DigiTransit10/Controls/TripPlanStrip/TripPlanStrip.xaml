@@ -10,10 +10,6 @@
     d:DesignHeight="109"
     d:DesignWidth="460">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="TripPlanStripResources.xaml"/>
-    </UserControl.Resources>
-
     <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}" >
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>

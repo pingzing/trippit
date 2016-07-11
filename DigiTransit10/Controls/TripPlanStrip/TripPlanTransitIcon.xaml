@@ -9,10 +9,6 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="TripPlanStripResources.xaml"/>
-    </UserControl.Resources>
-
     <Grid x:Name="TripPlanRootTransitRootLayout" MinWidth="50">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>

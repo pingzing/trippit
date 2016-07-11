@@ -84,7 +84,7 @@ namespace DigiTransit10.Controls.TripPlanStrip
         public TripPlanStrip()
         {
             this.InitializeComponent();
-            RectangleHeight = (double)this.Resources[RectangleHeightKey];            
+            RectangleHeight = (double)App.Current.Resources[RectangleHeightKey];            
         }
 
         private void CreateNewPlanStrip(ApiItinerary thisItinerary)

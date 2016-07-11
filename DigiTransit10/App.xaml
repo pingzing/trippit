@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles\Custom.xaml"/>
                 <ResourceDictionary Source="Styles\HslStyles.xaml"/>
+                <ResourceDictionary Source="Controls\TripPlanStrip\TripPlanStripResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <hlpr:FontIconGlyphs x:Key="FontIcons"/>

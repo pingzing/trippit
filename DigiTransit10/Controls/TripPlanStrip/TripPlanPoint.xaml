@@ -9,10 +9,6 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <UserControl.Resources>
-        <ResourceDictionary Source="TripPlanStripResources.xaml"/>
-    </UserControl.Resources>
-
     <!--Made public to allow layout fiddling in the TripPlanStrip when we do the second render pass for TripPlanTransitIcons.-->
     <Grid x:Name="TripPlanPointRootLayout" x:FieldModifier="Public">
         <Grid.RowDefinitions>
