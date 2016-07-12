@@ -8,18 +8,49 @@ using DigiTransit10.Localization.Strings;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using DigiTransit10.Models;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Template10.Common;
+using DigiTransit10.Helpers;
 
 namespace DigiTransit10.Views
 {
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public MainViewModel ViewModel => this.DataContext as MainViewModel;
+        public MainViewModel ViewModel => this.DataContext as MainViewModel;        
 
         public MainPage()
         {
             InitializeComponent();
-            NavigationCacheMode = NavigationCacheMode.Enabled;                          
+            NavigationCacheMode = NavigationCacheMode.Enabled;
+            this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
+            this.Loaded += MainPage_Loaded;
         }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            string currentStateName = AdaptiveVisualStateGroup.CurrentState.Name;
+            if (BootStrapper.Current.SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
+            {
+                BootStrapper.Current.SessionState[Constants.CurrentMainPageVisualStateKey] = currentStateName;
+            }
+            else
+            {
+                BootStrapper.Current.SessionState.Add(Constants.CurrentMainPageVisualStateKey, currentStateName);
+            }
+        }
+
+        private void AdaptiveVisualStateGroup_CurrentStateChanged(object sender, VisualStateChangedEventArgs e)
+        {
+            if (BootStrapper.Current.SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
+            {
+                BootStrapper.Current.SessionState[Constants.CurrentMainPageVisualStateKey] = e.NewState.Name;
+            }
+            else
+            {
+                BootStrapper.Current.SessionState.Add(Constants.CurrentMainPageVisualStateKey, e.NewState.Name);
+            }
+        }        
 
         private void HideShowOptionsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -49,16 +80,10 @@ namespace DigiTransit10.Views
             }
         }
 
-        private void PlanTripButton_Tapped(object sender, RoutedEventArgs e)
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
-            if (AdaptiveVisualStateGroup.CurrentState.Name == "VisualStateNarrow")
-            {
-                ViewModel.TripFormViewModel.PlanTripNarrowViewCommand.Execute(null);
-            }
-            else
-            {
-                ViewModel.TripFormViewModel.PlanTripWideViewCommand.Execute(null);
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

@@ -162,12 +162,11 @@ namespace DigiTransit10.Controls
                     }
 
                     IPlace newPlace = args.NewValue as IPlace;
-                    if (newPlace == null)
+                    if (newPlace != null)
                     {
-                        return;
+                        box.SearchText = newPlace.Name;
                     }
-
-                    box.SearchText = newPlace.Name;
+                    
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
                     box.RaisePropertyChanged(nameof(FavoriteButtonGlyph));
                 }));

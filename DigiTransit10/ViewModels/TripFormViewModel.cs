@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 using System.Text;
+using DigiTransit10.VisualStateFramework;
 
 namespace DigiTransit10.ViewModels
 {
@@ -24,6 +25,7 @@ namespace DigiTransit10.ViewModels
         private readonly Services.SettingsServices.SettingsService _settingsService;
         private readonly IMessenger _messengerService;
         private readonly IGeolocationService _geolocationService;
+        private enum TripFormVisualState { VisualStateNarrow, VisualStateNormal, VisualStateWide };
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -132,11 +134,29 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isBikeChecked, value); }
         }
 
-        private readonly RelayCommand _planTripNarrowViewCommand = null;
-        public RelayCommand PlanTripNarrowViewCommand => _planTripNarrowViewCommand ?? (new RelayCommand(PlanTripNarrowView));
+        private RelayCommand _planTripCommand = null;
+        public RelayCommand PlanTripCommand {
+            get
+            {
+                if(_planTripCommand != null)
+                {
+                    return _planTripCommand;
+                }
+                _planTripCommand = new RelayCommand(PlanTrip,
+                    () =>
+                    {
+                        return ((bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked 
+                                || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked)
+                        && FromPlace != null
+                        && ToPlace != null;
+                    });
+                this.PropertyChanged += (s, e) => _planTripCommand.RaiseCanExecuteChanged();
+                return _planTripCommand;
+            }
+        }
 
         private readonly RelayCommand _planTripWideViewCommand = null;
-        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTripWideView));
+        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTrip));
 
         private readonly RelayCommand _toggleTransitPanelCommand = null;
         public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
@@ -147,7 +167,7 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand _setDateToTodayCommand = null;
         public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
 
-        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;
+        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;        
         public RelayCommand<IPlace> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<IPlace>(AddFavorite);
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
@@ -175,7 +195,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private async Task PlanTrip()
+        private async void PlanTrip()
         {
             if (_cts != null && !_cts.IsCancellationRequested)
             {
@@ -224,8 +244,9 @@ namespace DigiTransit10.ViewModels
                 BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
                 BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
             }
-            Views.Busy.SetBusy(false);
 
+            _messengerService.Send(new MessageTypes.PlanFoundMessage());
+            Views.Busy.SetBusy(false);
         }        
 
         private async Task<List<IPlace>> ResolvePlaces(List<IPlace> places, CancellationToken token)
@@ -310,19 +331,7 @@ namespace DigiTransit10.ViewModels
                 sb.Append($"{Constants.TramTransitMode} ");
             }
             return sb.ToString().Trim().Replace(" ", ",");
-        }
-
-        private async void PlanTripNarrowView()
-        {
-            await PlanTrip();
-            _messengerService.Send(new MessageTypes.PlanFoundMessage(Constants.NarrowKey));
-        }
-
-        private async void PlanTripWideView()
-        {
-            await PlanTrip();
-            _messengerService.Send(new MessageTypes.PlanFoundMessage(Constants.WideKey));
-        }
+        }        
 
         private void SetDateToToday()
         {
@@ -346,6 +355,6 @@ namespace DigiTransit10.ViewModels
                 UserChosenName = place.Name
             };
             _settingsService.AddFavorite(newFavoritePlace);
-        }
+        }        
     }
 }

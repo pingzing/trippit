@@ -14,6 +14,7 @@
     xmlns:conv="using:DigiTransit10.Converters"
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
     xmlns:Media="using:Microsoft.Xaml.Interactions.Media" x:Class="DigiTransit10.Views.MainPage"
+    xmlns:vsf="using:DigiTransit10.VisualStateFramework"
     mc:Ignorable="d"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}">
 
@@ -221,8 +222,8 @@
                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         Foreground="White"
                         HorizontalAlignment="Stretch"
-                        Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                            
-                        Click="PlanTripButton_Tapped"/>
+                        Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
+                        Command="{x:Bind PlanTripCommand}"/>
                 </Grid>
             </DataTemplate>
 

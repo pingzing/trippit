@@ -11,13 +11,9 @@ namespace DigiTransit10.Helpers
     public static class MessageTypes
     {
         public class PlanFoundMessage
-        {
-            public string VisualStateFoundIn { get; set; }
+        {            
 
-            public PlanFoundMessage(string visState)
-            {
-                VisualStateFoundIn = visState;
-            }
+            public PlanFoundMessage() { }
         }                
         public class FavoritesChangedMessage
         {

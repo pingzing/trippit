@@ -27,6 +27,14 @@ namespace DigiTransit10.Helpers
         public const string TrainBrushName = "HslTrainPurpleBrush";
         public const string MetroBrushName = "HslMetroOrangeBrush";
         public const string FerryBrushName = "HslFerryBlueBrush";
-        public const string BikeBrushName = "HslBikeGoldenrodBrush";        
+        public const string BikeBrushName = "HslBikeGoldenrodBrush";
+
+        //Global dictionary Current Visual State keys
+        public const string CurrentMainPageVisualStateKey = "CurrentMainPageVisualState";
+
+        //Visual state names
+        public const string VisualStateNarrow = "VisualStateNarrow";
+        public const string VisualStateNormal = "VisualStateNormal";
+        public const string VisualStateWide = "VisualStateWide";
     }
 }

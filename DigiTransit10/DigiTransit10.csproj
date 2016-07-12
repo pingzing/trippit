@@ -198,6 +198,9 @@
     <Compile Include="Views\TripResultPage.xaml.cs">
       <DependentUpon>TripResultPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisualStateFramework\DataTrigger.cs" />
+    <Compile Include="VisualStateFramework\StateAwareViewModel.cs" />
+    <Compile Include="VisualStateFramework\VmStateChangedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

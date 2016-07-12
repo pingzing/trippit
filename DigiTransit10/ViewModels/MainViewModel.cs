@@ -42,7 +42,12 @@ namespace DigiTransit10.ViewModels
         
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
-            if(planFoundMessage.VisualStateFoundIn == Constants.NarrowKey)
+            if(!SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
+            {
+                throw new ArgumentNullException("CurrentMainPageVisualStateKey");
+            }
+
+            if((string)SessionState[Constants.CurrentMainPageVisualStateKey] == Constants.VisualStateNarrow)
             {
                 NavigationService.NavigateAsync(typeof(TripResultPage));
             }

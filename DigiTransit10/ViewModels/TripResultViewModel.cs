@@ -38,14 +38,7 @@ namespace DigiTransit10.ViewModels
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {
-            //Only fired when coming in via the narrow view for the first time. (this won't get called until first navigation in narrow view otherwise)
-            if (_isFirstNavigation)
-            {
-                PlanFound(null);
-                _isFirstNavigation = false;
-            }
-
+        {            
             await Task.CompletedTask;
         }
 
