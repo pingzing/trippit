@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Shapes;
+using DigiTransit10.ExtensionMethods;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -131,22 +132,20 @@ namespace DigiTransit10.Controls.TripPlanStrip
 
             foreach (var grid in loadedGrids)
             {
-
-                var firstPoint = (grid.Children.FirstOrDefault() as TripPlanPoint)
-                    ?.TripPlanPointRootLayout?.Children                    
-                    ?.Skip(2)?.FirstOrDefault(x => x is Ellipse) as Ellipse;
+                var firstPoint = (grid.GetNthGridChildOrNull(0) as TripPlanPoint)
+                    ?.TripPlanPointRootLayout?.GetNthGridChildOrNull(2) as Ellipse;                    
                 if (firstPoint == null)
                 {
                     return;
                 }
 
-                var potentialEndpoint = (grid.Children.LastOrDefault() as TripPlanPoint);
+                var potentialEndpoint = (grid.GetNthGridChildOrNull(2) as TripPlanPoint);
                 Ellipse thirdPoint = null;
                 if (potentialEndpoint?.Visibility != Visibility.Collapsed)
                 {
-                    thirdPoint = potentialEndpoint?.
-                        TripPlanPointRootLayout?.Children
-                        ?.Skip(2)?.FirstOrDefault(x => x is Ellipse) as Ellipse;
+                    thirdPoint = potentialEndpoint
+                        ?.TripPlanPointRootLayout
+                        ?.GetNthGridChildOrNull(2) as Ellipse;
                 }
 
                 if (thirdPoint == null)
@@ -158,9 +157,9 @@ namespace DigiTransit10.Controls.TripPlanStrip
                     {
                         return;
                     }
-                    thirdPoint = (newGrid.Children.FirstOrDefault() as TripPlanPoint)
-                        ?.TripPlanPointRootLayout?.Children
-                        ?.Skip(2)?.FirstOrDefault(x => x is Ellipse) as Ellipse;
+                    thirdPoint = (newGrid.GetNthGridChildOrNull(0) as TripPlanPoint)
+                        ?.TripPlanPointRootLayout
+                        ?.GetNthGridChildOrNull(2) as Ellipse;
                 }
 
                 if (thirdPoint == null)
@@ -168,7 +167,7 @@ namespace DigiTransit10.Controls.TripPlanStrip
                     return;
                 }
 
-                var icon = (grid.Children.Skip(1).Take(1).First() as TripPlanTransitIcon);
+                var icon = (grid.GetNthGridChildOrNull(1) as TripPlanTransitIcon);
                 var currWindow = Window.Current.Content;
                 Point emptyPoint = new Point(0, 0);
 
@@ -190,7 +189,7 @@ namespace DigiTransit10.Controls.TripPlanStrip
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-    }
+    }  
 
     public class TripLegViewModel
     {

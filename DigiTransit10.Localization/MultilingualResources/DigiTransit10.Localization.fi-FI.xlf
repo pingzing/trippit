@@ -23,8 +23,8 @@
           <target state="new">From</target>
         </trans-unit>
         <trans-unit id="MainPage_Header" translate="yes" xml:space="preserve">
-          <source>Trip Planning</source>
-          <target state="new">Trip Planning</target>
+          <source>TRIP PLANNING</source>
+          <target state="new">TRIP PLANNING</target>
         </trans-unit>
         <trans-unit id="MainPage_ToHeader" translate="yes" xml:space="preserve">
           <source>To</source>
@@ -51,8 +51,8 @@
           <target state="new">Plan</target>
         </trans-unit>
         <trans-unit id="TripResults_TripPlansHeader" translate="yes" xml:space="preserve">
-          <source>Trip plans</source>
-          <target state="new">Trip plans</target>
+          <source>TRIP PLANS</source>
+          <target state="new">TRIP PLANS</target>
         </trans-unit>
         <trans-unit id="SuggestBoxHeader_Addresses" translate="yes" xml:space="preserve">
           <source>Addresses</source>

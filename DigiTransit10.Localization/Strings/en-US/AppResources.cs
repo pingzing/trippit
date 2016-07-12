@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/10/2016 19:38:31
+// 	Generated: 07/11/2016 16:45:56
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -97,7 +97,7 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "Trip Planning"
+        /// Localized resource similar to "TRIP PLANNING"
         /// </summary>
         public static string MainPage_Header
         {
@@ -218,7 +218,7 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "Trip plans"
+        /// Localized resource similar to "TRIP PLANS"
         /// </summary>
         public static string TripResults_TripPlansHeader
         {

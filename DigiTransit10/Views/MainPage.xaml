@@ -300,11 +300,10 @@
         <controls:PageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True"                             
-                             Text="{Binding MainPage_Header, Source={StaticResource Strings}}">
+                             RelativePanel.AlignTopWithPanel="True"                                
+                             Text="{Binding MainPage_Header, Source={StaticResource Strings}}"/>
+        <!--  secondary commands  -->
 
-            <!--  secondary commands  -->
-        </controls:PageHeader>
         <RelativePanel x:Name="RootContentPanel" RelativePanel.Below="PageHeader" 
                        RelativePanel.AlignBottomWithPanel="True" 
                        RelativePanel.AlignRightWithPanel="True"

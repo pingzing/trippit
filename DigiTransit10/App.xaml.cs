@@ -4,12 +4,7 @@ using DigiTransit10.Services.SettingsServices;
 using Windows.ApplicationModel.Activation;
 using Template10.Controls;
 using Template10.Common;
-using System;
-using System.Linq;
 using Windows.UI.Xaml.Data;
-using System.Runtime;
-using Windows.Foundation;
-using Windows.UI.ViewManagement;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Threading;
 using Windows.ApplicationModel;
@@ -45,7 +40,7 @@ namespace DigiTransit10
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
             if (Window.Current.Content as ModalDialog == null)
-            {
+            {                
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
 

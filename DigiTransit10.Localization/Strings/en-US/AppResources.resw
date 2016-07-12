@@ -130,7 +130,7 @@
     <value>From</value>
   </data>
   <data name="MainPage_Header" xml:space="preserve">
-    <value>Trip Planning</value>
+    <value>TRIP PLANNING</value>
   </data>
   <data name="MainPage_ToHeader" xml:space="preserve">
     <value>To</value>
@@ -163,7 +163,7 @@
     <value>Resolving locations...</value>
   </data>
   <data name="TripResults_TripPlansHeader" xml:space="preserve">
-    <value>Trip plans</value>
+    <value>TRIP PLANS</value>
   </data>
   <data name="TripForm_FewerOptions" xml:space="preserve">
     <value>Fewer options</value>
