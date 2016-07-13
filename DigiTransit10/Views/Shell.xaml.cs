@@ -18,6 +18,11 @@ namespace DigiTransit10.Views
         {
             Instance = this;
             InitializeComponent();
+
+            HamburgerMenu.HamburgerButtonVisibility = 
+                HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay 
+                ? Visibility.Collapsed 
+                : Visibility.Visible;
         }
 
         public Shell(INavigationService navigationService) : this()
@@ -28,6 +33,14 @@ namespace DigiTransit10.Views
         public void SetNavigationService(INavigationService navigationService)
         {
             MyHamburgerMenu.NavigationService = navigationService;
+        }
+
+        //We don't use the Hamburger menu on the phone, so hide the button in narrow view.
+        private void MyHamburgerMenu_OnDisplayModeChanged(object sender, ChangedEventArgs<SplitViewDisplayMode> e)
+        {
+            HamburgerMenu.HamburgerButtonVisibility = e.NewValue == SplitViewDisplayMode.Overlay 
+                ? Visibility.Collapsed 
+                : Visibility.Visible;
         }
     }
 }

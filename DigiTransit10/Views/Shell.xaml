@@ -11,7 +11,7 @@
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
 
-    <Controls:HamburgerMenu x:Name="MyHamburgerMenu" OpenCloseMode="Swipe">
+    <Controls:HamburgerMenu x:Name="MyHamburgerMenu" OpenCloseMode="Swipe" DisplayModeChanged="MyHamburgerMenu_OnDisplayModeChanged">
 
         <Controls:HamburgerMenu.PrimaryButtons>
             <!--  mainpage button  -->
