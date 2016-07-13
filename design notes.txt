@@ -1,0 +1,25 @@
+From
+	- Prefill with My Location
+
+Favorites Button
+	- Make disabled BG same color as text box border
+	- Add Text box stroke around button as border
+	
+Time Picker
+	- Show "Current Time" by default, expand into time picker
+	- Hide Departure/Arrival radio buttons unless custom time set
+	- Remove "Set to now"
+	
+More Options button
+	- More margin, bigger text
+	
+Desktop View
+	- Put the map with favorites at the top right
+	
+Favorites
+	- Remove favorites pivot, put as list below from/to with newly-gained
+	vertical space
+	
+Navigation
+	- All in the command bar?
+	- Kill the hamburger for the phone, keep it for the desktop?

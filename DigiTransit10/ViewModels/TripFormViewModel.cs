@@ -78,7 +78,7 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDate, value); }
         }
 
-        private IPlace _fromPlace;
+        private IPlace _fromPlace = new Place { Type = PlaceType.UserCurrentLocation, Name = AppResources.SuggestBoxHeader_MyLocation };
         public IPlace FromPlace
         {
             get { return _fromPlace; }
