@@ -64,7 +64,7 @@
                         <TimePicker x:Name="TimePicker"
                                     Grid.Row="1" Grid.Column="0"
                                     Grid.ColumnSpan="2"
-                                    Style="{StaticResource WideTimePickerStyle}"
+                                    Style="{StaticResource WideTimePickerStyle}"                                      
                                     HorizontalAlignment="Stretch"                                    
                                     Time="{x:Bind SelectedTime, Mode=TwoWay}"/>
                     </Grid>
@@ -203,6 +203,7 @@
                         </Grid>
 
                         <HyperlinkButton x:Name="HideShowOptionsButton" 
+                                         Margin="0 10 0 0"
                                      Click="HideShowOptionsButton_Click">
                             <HyperlinkButton.Transitions>
                                 <TransitionCollection>
@@ -210,7 +211,7 @@
                                 </TransitionCollection>
                             </HyperlinkButton.Transitions>
                             <TextBlock>
-                                <Run Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/> <Run FontFamily="Segoe MDL2 Assets" Text="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
+                                <Run FontSize="20" Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/> <Run FontFamily="Segoe MDL2 Assets" Text="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
                             </TextBlock>
                         </HyperlinkButton>
                     </StackPanel>
