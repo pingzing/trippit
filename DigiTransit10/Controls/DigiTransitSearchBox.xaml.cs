@@ -214,6 +214,7 @@ namespace DigiTransit10.Controls
             {
                 _stopList.Clear();
                 _addressList.Clear();                
+
                 // this has to happen after the list clearnig. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
                 SearchText = "";
                 SelectedPlace = null;

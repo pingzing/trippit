@@ -204,4 +204,7 @@
   <data name="SuggestBoxHeader_FavoritePlaces" xml:space="preserve">
     <value>Favorites</value>
   </data>
+  <data name="CurrentTimePicker_CurrentTime" xml:space="preserve">
+    <value>Now</value>
+  </data>
 </root>

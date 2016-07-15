@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/11/2016 16:45:56
+// 	Generated: 07/14/2016 16:49:54
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -368,6 +368,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("SuggestBoxHeader_FavoritePlaces");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Now"
+        /// </summary>
+        public static string CurrentTimePicker_CurrentTime
+        {
+            get
+            {
+                return resourceLoader.GetString("CurrentTimePicker_CurrentTime");
             }
         }
     }

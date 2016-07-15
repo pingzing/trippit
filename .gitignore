@@ -3,6 +3,8 @@
 
 #DigiTransit-specific
 Style Resources/
+Raw Assets/
+Design Reference/
 
 # User-specific files
 *.suo

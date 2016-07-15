@@ -302,7 +302,7 @@
                                     <VisualState x:Name="Portrait"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" Header="{TemplateBinding Header}" Margin="0" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" Width="{TemplateBinding Width}" Canvas.ZIndex="0"/>
+                            <TextBox x:Name="TextBox" ScrollViewer.BringIntoViewOnFocusChange="False" DesiredCandidateWindowAlignment="BottomEdge" FontSize="{TemplateBinding FontSize}" Header="{TemplateBinding Header}" Margin="0" MaxHeight="60" PlaceholderText="{TemplateBinding PlaceholderText}" Style="{TemplateBinding TextBoxStyle}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="{TemplateBinding Width}" Canvas.ZIndex="0"/>
                             <Popup x:Name="SuggestionsPopup">
                                 <Interactivity:Interaction.Behaviors>
                                     <Core:DataTriggerBehavior Binding="{Binding ElementName=SuggestionsPopup, Path=IsOpen}"
@@ -344,28 +344,46 @@
                      RelativePanel.Below="HeaderBlock"
                      Background="Transparent"
                      IsIndeterminate="{x:Bind IsWaiting, Mode=OneWay}"/>
-        <AutoSuggestBox x:Name="SearchBox"
-                        RelativePanel.Below="ProgressBar"
-                        RelativePanel.LeftOf="AddToFavoriteButton"                        
-                        RelativePanel.AlignLeftWithPanel="True"
+        <Grid RelativePanel.Below="ProgressBar" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+        
+        <AutoSuggestBox x:Name="SearchBox"                        
+                        Grid.Column="0"                                
                         AutoMaximizeSuggestionArea="True"
+                        FontSize="{StaticResource TallTextBoxFontSize}"                                                                       
                         ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
-                        ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"
+                        ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"                        
+                        MinHeight="{StaticResource TallTextBoxHeight}"                                                 
+                        Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"
+                        VerticalAlignment="Center"  
+                        VerticalContentAlignment="Center"
                         Text="{x:Bind SearchText, Mode=TwoWay}"                        
                         TextMemberPath="Name"
-                        Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"
                         TextChanged="AutoSuggestBox_TextChanged"
                         SuggestionChosen="AutoSuggestBox_SuggestionChosen"
                         QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
-        <Button x:Name="AddToFavoriteButton"
-                RelativePanel.Below="ProgressBar"
-                RelativePanel.AlignRightWithPanel="True"
-                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+        <Border x:Name="AddToFavoritesBorder"                 
+                Grid.Column="1"                
+                BorderThickness="2"                
+                BorderBrush="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"
+                VerticalAlignment="Center">
+        <Button x:Name="AddToFavoriteButton"                       
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"                
+                Height="40"
+                VerticalAlignment="Center"
+                VerticalContentAlignment="Center"
                 IsEnabled="{x:Bind IsFavoriteButtonEnabled, Mode=OneWay}"
                 Tapped="AddToFavoriteButton_Tapped">
             <FontIcon FontFamily="Segoe MDL2 Assets" 
                       Glyph="{x:Bind FavoriteButtonGlyph, Mode=OneWay}"
                       Foreground="White"/>
         </Button>
+        </Border>
+        </Grid>
     </RelativePanel>
 </UserControl>
+
+    

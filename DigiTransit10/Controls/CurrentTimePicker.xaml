@@ -1,0 +1,308 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DigiTransit10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Foundation="using:Windows.Foundation" x:Name="userControl"
+    x:Class="DigiTransit10.Controls.CurrentTimePicker"
+    mc:Ignorable="d"
+    d:DesignHeight="64"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <Style x:Key="CurrentTimePickerStyle" TargetType="TimePicker">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="MinWidth" Value="242"/>
+            <Setter Property="MaxWidth" Value="640"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TimePicker">
+                        <StackPanel x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+                            <StackPanel.Resources>
+                                <Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
+                                    <Setter Property="UseSystemFocusVisuals" Value="False"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Grid Background="{TemplateBinding Background}">
+                                                    <VisualStateManager.VisualStateGroups>
+                                                        <VisualStateGroup x:Name="CommonStates">
+                                                            <VisualState x:Name="Normal"/>
+                                                            <VisualState x:Name="PointerOver">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlPageBackgroundAltMediumBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Pressed">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Disabled">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                        </VisualStateGroup>
+                                                        <VisualStateGroup x:Name="FocusStates">
+                                                            <VisualState x:Name="Focused">
+                                                                <Storyboard>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentLowBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
+                                                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </VisualState>
+                                                            <VisualState x:Name="Unfocused"/>
+                                                            <VisualState x:Name="PointerFocused"/>
+                                                        </VisualStateGroup>
+                                                    </VisualStateManager.VisualStateGroups>
+                                                    <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="2" Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="{TemplateBinding Height}" MinHeight="{TemplateBinding MinHeight}" MaxHeight="{TemplateBinding MaxHeight}"/>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </StackPanel.Resources>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="HeaderContentPresenter">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="FirstColumnDivider">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SecondColumnDivider">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="HeaderContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Margin="0,0,0,8" Visibility="Collapsed" x:DeferLoadStrategy="Lazy"/>
+                            <Button x:Name="FlyoutButton" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsEnabled="{TemplateBinding IsEnabled}" Style="{StaticResource TimePickerFlyoutButtonStyle}" Height="{TemplateBinding Height}" MinHeight="{TemplateBinding MinHeight}" MaxHeight="{TemplateBinding MaxHeight}">
+                                <Grid x:Name="FlyoutButtonContentGrid">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition x:Name="FirstTextBlockColumn" Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition x:Name="SecondTextBlockColumn" Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition x:Name="ThirdTextBlockColumn" Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border x:Name="FirstPickerHost" Grid.Column="0">
+                                        <TextBlock x:Name="HourTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <Rectangle x:Name="FirstColumnDivider" Grid.Column="1" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2"/>
+                                    <Border x:Name="SecondPickerHost" Grid.Column="2">
+                                        <TextBlock x:Name="MinuteTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Rectangle x:Name="SecondColumnDivider" Grid.Column="3" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2"/>
+                                    <Border x:Name="ThirdPickerHost" Grid.Column="4">
+                                        <TextBlock x:Name="PeriodTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="ControlRoot">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Common">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition From="UseCurrentTimeState" To="UseCustomTimeState">
+                        <Storyboard x:Name="CurrentToCustomStoryboard">
+                            <DoubleAnimationUsingKeyFrames x:Name="CurrentToCustomWidthAnimation" EnableDependentAnimation="True" Storyboard.TargetProperty="Width" Storyboard.TargetName="CurrentTimeButton">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="50">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <QuarticEase EasingMode="EaseOut"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimation Duration="0:0:0.4" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox" d:IsOptimized="True"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <HorizontalAlignment>Right</HorizontalAlignment>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.ColumnSpan)" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <x:Int32>2</x:Int32>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimation Duration="0:0:0.8" To="90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock" d:IsOptimized="True">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <ColorAnimation Duration="0:0:0.8" To="{ThemeResource SystemAccentColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock" d:IsOptimized="True"/>
+                        </Storyboard>
+                    </VisualTransition>
+                    <VisualTransition From="UseCustomTimeState" GeneratedDuration="0" To="UseCurrentTimeState">
+                        <Storyboard x:Name="CustomToCurrentStoryboard">
+                            <DoubleAnimationUsingKeyFrames x:Name="CustomToCurrentWidthAnimatioin" EnableDependentAnimation="True" Storyboard.TargetProperty="Width" Storyboard.TargetName="CurrentTimeButton">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0" Value="50"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <QuarticEase EasingMode="EaseOut"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="90"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemAccentColor}" To="{ThemeResource SystemBaseMediumColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <HorizontalAlignment>Right</HorizontalAlignment>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <HorizontalAlignment>Stretch</HorizontalAlignment>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="UseCurrentTimeState"/>
+                <VisualState x:Name="UseCustomTimeState">
+                    <VisualState.Setters>
+                        <Setter Target="CurrentTimeBox.(TextBlock.FontFamily)" Value="{ThemeResource SymbolThemeFontFamily}"/>
+                        <Setter Target="CurrentTimeBox.(TextBlock.Text)" Value="{Binding Source={StaticResource FontIcons}, Path=BoldLeftArrow}"/>
+                        <Setter Target="CurrentTimeBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemAccentColor}"/>
+                        <Setter Target="CurrentTimeButton.(Grid.Column)" Value="1"/>
+                        <Setter Target="CurrentTimeButton.(Grid.ColumnSpan)" Value="1"/>
+                        <Setter Target="ArrowTextBlock.(UIElement.Visibility)" Value="Collapsed"/>
+                        <Setter Target="CurrentTimeBox.(FrameworkElement.HorizontalAlignment)" Value="Center"/>
+                    </VisualState.Setters>
+                    <Storyboard/>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+
+        <TimePicker x:Name="UnderPicker"
+                    Grid.ColumnSpan="1"
+                    MinHeight="{StaticResource TallTextBoxHeight}"                    
+                    FontSize="{StaticResource TallTextBoxFontSize}"
+                    Style="{StaticResource CurrentTimePickerStyle}"
+                    IsEnabled="False"
+                    HorizontalAlignment="Stretch" 
+                    Visibility="Visible"
+                    TimeChanged="UnderPicker_TimeChanged"/>
+        <Button x:Name="CurrentTimeButton"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Click="CurrentTimeButton_Click"
+                Height="{StaticResource TallTextBoxHeight}"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+                Style="{StaticResource NoStyleButtonStyle}" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <CompositeTransform/>
+            </Button.RenderTransform>
+            <Border x:Name="border" BorderBrush="{ThemeResource TextBoxBorderThemeBrush}" BorderThickness="2" Padding="8 4 8 4">
+                <Border.RenderTransform>
+                    <CompositeTransform/>
+                </Border.RenderTransform>
+                <TextBlock x:Name="CurrentTimeBox"                                                      
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                           FontSize="{StaticResource TallTextBoxFontSize}"
+                           VerticalAlignment="Center" 
+                           RenderTransformOrigin="0.5,0.5"
+                           Text="{Binding CurrentTimePicker_CurrentTime, Source={StaticResource Strings}}">
+                    <TextBlock.RenderTransform>
+                        <CompositeTransform/>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Border>
+        </Button>
+        <TextBlock x:Name="ArrowTextBlock"
+                   Grid.Column="1"
+                   IsHitTestVisible="False"
+                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                   Text="{Binding Source={StaticResource FontIcons}, Path=BoldDownArrow}"
+                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+            <TextBlock.RenderTransform>
+                <CompositeTransform/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+    </Grid>
+
+</UserControl>

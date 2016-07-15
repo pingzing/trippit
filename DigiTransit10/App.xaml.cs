@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Data;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Threading;
 using Windows.ApplicationModel;
+using DigiTransit10.Helpers;
+using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10
 {

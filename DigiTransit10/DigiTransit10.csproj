@@ -99,6 +99,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CurrentTimePicker.xaml.cs">
+      <DependentUpon>CurrentTimePicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DigiTransitMap.xaml.cs">
       <DependentUpon>DigiTransitMap.xaml</DependentUpon>
     </Compile>
@@ -118,6 +121,7 @@
     <Compile Include="Controls\TripResultsList.xaml.cs">
       <DependentUpon>TripResultsList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
@@ -224,6 +228,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\CurrentTimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DigiTransitMap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

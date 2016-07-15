@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10.Helpers
 {
     public static class MessageTypes
     {
         public class PlanFoundMessage
-        {            
-
+        {
             public PlanFoundMessage() { }
-        }                
+        }
         public class FavoritesChangedMessage
         {
             public ReadOnlyCollection<IFavorite> AddedFavorites { get; }
@@ -22,8 +22,8 @@ namespace DigiTransit10.Helpers
 
             public FavoritesChangedMessage(IList<IFavorite> added, IList<IFavorite> removed)
             {
-                if(added != null) AddedFavorites = new ReadOnlyCollection<IFavorite>(added);
-                if(removed != null) RemovedFavorites = new ReadOnlyCollection<IFavorite>(removed);
+                if (added != null) AddedFavorites = new ReadOnlyCollection<IFavorite>(added);
+                if (removed != null) RemovedFavorites = new ReadOnlyCollection<IFavorite>(removed);
             }
         }
     }

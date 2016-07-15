@@ -29,6 +29,13 @@ namespace DigiTransit10.ViewModels
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
+        private bool _isUsingCurrentTime = true;
+            public bool IsUsingCurrentTime
+        {
+            get { return _isUsingCurrentTime; }
+            set { Set(ref _isUsingCurrentTime, value); }
+        }
+
         private bool? _isArrivalChecked = false;
         public bool? IsArrivalChecked
         {
@@ -41,7 +48,7 @@ namespace DigiTransit10.ViewModels
         {
             get { return _isDepartureChecked; }
             set { Set(ref _isDepartureChecked, value); }
-        }
+        }        
 
         private bool _isTransitPanelVisible = false;
         public bool IsTransitPanelVisible
@@ -341,6 +348,7 @@ namespace DigiTransit10.ViewModels
         private void SetTimeToNow()
         {
             SelectedTime = DateTime.Now.TimeOfDay;
+            IsUsingCurrentTime = true;
         }
 
         private void AddFavorite(IPlace place)

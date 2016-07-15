@@ -122,6 +122,10 @@
           <source>Delete</source>
           <target state="new">Delete</target>
         </trans-unit>
+        <trans-unit id="CurrentTimePicker_CurrentTime" translate="yes" xml:space="preserve">
+          <source>Now</source>
+          <target state="new">Now</target>
+        </trans-unit>
       </group>
     </body>
   </file>
