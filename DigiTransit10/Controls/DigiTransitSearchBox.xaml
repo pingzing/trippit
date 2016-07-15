@@ -373,6 +373,7 @@
         <Button x:Name="AddToFavoriteButton"                       
                 Background="{ThemeResource SystemControlBackgroundAccentBrush}"                
                 Height="44"
+                Width="44"
                 Margin="-2 0 0 0"
                 VerticalAlignment="Center"
                 VerticalContentAlignment="Center"
