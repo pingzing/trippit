@@ -99,7 +99,7 @@
 
                         <Grid x:Name="TransitContentPanel" 
                               Visibility="{x:Bind IsTransitPanelVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
-                              Margin="0 10 0 10">
+                              Margin="0 10 10 10">
 
                             <Interactivity:Interaction.Behaviors>
                                 <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=TransitContentPanel}"
@@ -457,7 +457,13 @@
                                                   DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                                                   HorizontalAlignment="Stretch" 
                                                   HorizontalContentAlignment="Stretch"
-                                                  VerticalContentAlignment="Stretch"/>
+                                                  VerticalContentAlignment="Stretch">
+                                    <ContentPresenter.Transitions>
+                                        <TransitionCollection>
+                                            <RepositionThemeTransition/>
+                                        </TransitionCollection>
+                                    </ContentPresenter.Transitions>
+                                </ContentPresenter>
 
                             </Grid>
                             </ContentControl.Content>
