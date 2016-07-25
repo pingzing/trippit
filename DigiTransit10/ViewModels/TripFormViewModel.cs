@@ -16,6 +16,9 @@ using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 using System.Text;
 using DigiTransit10.VisualStateFramework;
+using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Navigation;
+using System.Linq;
 
 namespace DigiTransit10.ViewModels
 {
@@ -141,6 +144,13 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isBikeChecked, value); }
         }
 
+        private ObservableCollection<IFavorite> _pinnedFavorites = new ObservableCollection<IFavorite>();
+        public ObservableCollection<IFavorite> PinnedFavorites
+        {
+            get { return _pinnedFavorites; }
+            set { Set(ref _pinnedFavorites, value); }
+        }
+
         private RelayCommand _planTripCommand = null;
         public RelayCommand PlanTripCommand {
             get
@@ -166,10 +176,7 @@ namespace DigiTransit10.ViewModels
         public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTrip));
 
         private readonly RelayCommand _toggleTransitPanelCommand = null;
-        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
-
-        private readonly RelayCommand _setTimeToNowCommand = null;
-        public RelayCommand SetTimeToNowCommand => _setTimeToNowCommand ?? new RelayCommand(SetTimeToNow);
+        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);        
 
         private readonly RelayCommand _setDateToTodayCommand = null;
         public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
@@ -184,7 +191,9 @@ namespace DigiTransit10.ViewModels
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
-            _geolocationService = geolocationService;
+            _geolocationService = geolocationService;                        
+
+            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
         }
 
         private void TransitTogglePannel()
@@ -218,14 +227,14 @@ namespace DigiTransit10.ViewModels
 
             places = await ResolvePlaces(places, _cts.Token);
             FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
-            ToPlace = places[1]; // but for now, magic numbers wheee
+            ToPlace = places[1]; // but for now, magic numbers wheee            
 
             ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
             ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };            
             BasicTripDetails details = new BasicTripDetails(
                 fromCoords,
                 toCoords,
-                SelectedTime,
+                IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
                 SelectedDate.DateTime,
                 IsArrivalChecked == true,
                 ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
@@ -343,19 +352,14 @@ namespace DigiTransit10.ViewModels
         private void SetDateToToday()
         {
             SelectedDate = DateTime.Now;
-        }
-
-        private void SetTimeToNow()
-        {
-            SelectedTime = DateTime.Now.TimeOfDay;
-            IsUsingCurrentTime = true;
-        }
+        }        
 
         private void AddFavorite(IPlace place)
         {
             FavoritePlace newFavoritePlace = new FavoritePlace
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
+                IconFontFace = "Segoe MDL2 Assets",
                 Lat = place.Lat,
                 Lon = place.Lon,
                 Name = place.Name,
@@ -363,6 +367,42 @@ namespace DigiTransit10.ViewModels
                 UserChosenName = place.Name
             };
             _settingsService.AddFavorite(newFavoritePlace);
-        }        
+        }
+
+        private void FillPinnedFavorites()
+        {
+            //if(_settingsService.PinnedFavorites is null, or empty, or less than three
+            // fill, or partially fill the PinnedFavoritesCollection from the lsit in order
+            //otherwise, grab in order from the PinnedFavorites List
+            if(_settingsService.Favorites.Count == 0)
+            {
+                PinnedFavorites.Clear();
+                return;
+            }
+            List<IFavorite> favorites = null;
+            if(_settingsService.Favorites.Count >= 3)
+            {
+                favorites = new List<IFavorite>(_settingsService.Favorites.Take(3));
+            }
+            else
+            {
+                favorites = new List<IFavorite>(_settingsService.Favorites);
+            }
+            PinnedFavorites = new ObservableCollection<IFavorite>(favorites);
+        }
+
+        private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
+        {
+            if(obj.RemovedFavorites?.Count > 0 || obj.AddedFavorites?.Count > 0)
+            {
+                FillPinnedFavorites();
+            }            
+        }
+
+        public async override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            FillPinnedFavorites();
+            await Task.CompletedTask;
+        }
     }
 }

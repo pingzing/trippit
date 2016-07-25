@@ -126,6 +126,10 @@
           <source>Now</source>
           <target state="new">Now</target>
         </trans-unit>
+        <trans-unit id="TripForm_PinnedFavoritesHeader" translate="yes" xml:space="preserve">
+          <source>Pinned favorites</source>
+          <target state="new">Pinned favorites</target>
+        </trans-unit>
       </group>
     </body>
   </file>

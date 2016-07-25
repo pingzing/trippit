@@ -109,6 +109,9 @@
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GroupedPlaceList.cs" />
+    <Compile Include="Controls\NavCommandBar.xaml.cs">
+      <DependentUpon>NavCommandBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TripPlanStrip\TripPlanPoint.xaml.cs">
       <DependentUpon>TripPlanPoint.xaml</DependentUpon>
     </Compile>
@@ -237,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DigiTransitSearchBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NavCommandBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

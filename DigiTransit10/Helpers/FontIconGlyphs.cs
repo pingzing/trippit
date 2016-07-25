@@ -19,12 +19,13 @@ namespace DigiTransit10.Helpers
 
         //Segoe MDL2 Assets icons
         public static string BoldDownArrow => "\uE96E";
-        public static string BoldUpArrow => "\uE96F";
+        public static string BoldUpArrow => "\uE96D";
         public static string BoldLeftArrow => "\uE96F";
         public static string House => "\uEA8A";
         public static string Flag => "\uE7C1";
         public static string LocationTarget => "\uEC43";
         public static string HollowStar => "\uE1CE";
         public static string FilledStar => "\uE0B5";
+        public static string Thumbtack => "\uE840";
     }
 }

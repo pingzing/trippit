@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using DigiTransit10.Helpers;
-using GalaSoft.MvvmLight.Command;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Common;
-using Template10.Services.SettingsService;
 using DigiTransit10.Views;
 
 namespace DigiTransit10.ViewModels
-{    
+{
 
     public sealed class MainViewModel : ViewModelBase
     {
@@ -59,6 +57,7 @@ namespace DigiTransit10.ViewModels
             {
                 //pull cached values in from the suspensionState dict
             }
+            await TripFormViewModel.OnNavigatedToAsync(parameter, mode, suspensionState);
             await Task.CompletedTask;
         }
 
@@ -67,7 +66,8 @@ namespace DigiTransit10.ViewModels
             if (suspending)
             {
                 //store cacheable values into the suspensionState dict
-            }            
+            }
+            await TripFormViewModel.OnNavigatedFromAsync(suspensionState, suspending);
             await Task.CompletedTask;
         }
 

@@ -207,4 +207,7 @@
   <data name="CurrentTimePicker_CurrentTime" xml:space="preserve">
     <value>Now</value>
   </data>
+  <data name="TripForm_PinnedFavoritesHeader" xml:space="preserve">
+    <value>Pinned favorites</value>
+  </data>
 </root>

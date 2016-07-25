@@ -314,7 +314,8 @@
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" 
+                            <TextBlock Text="{Binding}"
+                                       Margin="-6 0 0 0"
                                        Foreground="{TemplateBinding Foreground}"
                                        Style="{StaticResource BaseTextBlockStyle}"
                                        FontWeight="Bold"/>
@@ -371,6 +372,7 @@
                     <Setter.Value>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" 
+                                       Margin="-6 0 0 0"
                                        Foreground="{TemplateBinding Foreground}"
                                        Style="{StaticResource BaseTextBlockStyle}"
                                        FontWeight="Bold"/>

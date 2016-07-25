@@ -11,6 +11,7 @@ namespace DigiTransit10.Models
     {
         string UserChosenName { get; set; }       
         string FontIconGlyph { get; set; }
+        string IconFontFace { get; set; }
     }
 
     public class FavoritePlace : IFavorite, IPlace, IComparable<IPlace>
@@ -19,6 +20,7 @@ namespace DigiTransit10.Models
 
         public string Id { get; set; }
         public string UserChosenName { get; set; }
+        public string IconFontFace { get; set; }
         public string FontIconGlyph { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
@@ -41,6 +43,7 @@ namespace DigiTransit10.Models
     {
         public string UserChosenName { get; set; }
         public string FontIconGlyph { get; set; }
+        public string IconFontFace { get; set; }
         public List<Place> RoutePlaces { get; set; }
 
         public int CompareTo(IFavorite other)

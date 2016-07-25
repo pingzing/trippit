@@ -9,10 +9,19 @@
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:lclCtls="using:DigiTransit10.Controls"
     xmlns:planStrip="using:DigiTransit10.Controls.TripPlanStrip"
+    xmlns:models="using:DigiTransit10.Models"
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels">
 
-    <DataTemplate x:Name="TripResultTemplate">
-        
+    <DataTemplate x:Key="FavoritePlaceTemplate">
+        <RelativePanel>
+            <FontIcon x:Name="FavoriteIcon" 
+                      FontFamily="{Binding IconFontFace}" 
+                      Glyph="{Binding FontIconGlyph}"/>
+            <TextBlock x:Name="FavoriteName" 
+                       RelativePanel.RightOf="FavoriteIcon"
+                       Margin="5 0 0 0"
+                       Text="{Binding UserChosenName}"/>
+        </RelativePanel>
     </DataTemplate>
 
 </ResourceDictionary>

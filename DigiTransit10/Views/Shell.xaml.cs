@@ -32,7 +32,7 @@ namespace DigiTransit10.Views
 
         public void SetNavigationService(INavigationService navigationService)
         {
-            MyHamburgerMenu.NavigationService = navigationService;
+            MyHamburgerMenu.NavigationService = navigationService;            
         }
 
         //We don't use the Hamburger menu on the phone, so hide the button in narrow view.
