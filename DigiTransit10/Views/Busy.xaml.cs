@@ -10,6 +10,8 @@ namespace DigiTransit10.Views
 {
     public sealed partial class Busy : UserControl
     {
+        public static event EventHandler<bool> BusyChanged;
+
         public Busy()
         {
             InitializeComponent();
@@ -29,7 +31,19 @@ namespace DigiTransit10.Views
             set { SetValue(IsBusyProperty, value); }
         }
         public static readonly DependencyProperty IsBusyProperty =
-            DependencyProperty.Register(nameof(IsBusy), typeof(bool), typeof(Busy), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(IsBusy), typeof(bool), typeof(Busy), new PropertyMetadata(false, 
+                IsBusyChanged));
+        private static void IsBusyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Busy _this = d as Busy;
+            if (_this == null)
+            {
+                return;
+            }
+            bool newIsBusy = (bool) e.NewValue;
+
+            _this.RaiseBusyChanged(newIsBusy);
+        }
 
         // hide and show busy dialog
         public static void SetBusy(bool busy, string text = null)
@@ -43,6 +57,11 @@ namespace DigiTransit10.Views
                 modal.IsModal = view.IsBusy = busy;
                 view.BusyText = text;
             });
+        }
+
+        private void RaiseBusyChanged(bool newIsBusy)
+        {
+            BusyChanged?.Invoke(this, newIsBusy);
         }
     }
 }

@@ -535,7 +535,7 @@
     </RelativePanel>
 
     <Page.BottomAppBar>
-        <CommandBar />
+        <lclCtls:NavCommandBar />
     </Page.BottomAppBar>
     
 </Page>
