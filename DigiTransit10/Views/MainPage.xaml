@@ -94,8 +94,8 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
 
@@ -161,6 +161,7 @@
 
                             <TextBlock x:Name="TransitTypeHeader" 
                                        Grid.Row="1"
+                                       Grid.Column="0"
                                        Grid.ColumnSpan="3"
                                        Margin="0 10 0 -5"
                                        Text="{Binding Source={StaticResource Strings}, Path=TripForm_TransitTypeHeader}"/>
@@ -238,8 +239,8 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
-                            
                         </Grid.RowDefinitions>
+                        
                         <TextBlock x:Name="PinnedFavoritesHeaderBlock">
                             <Run FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                  Text="{Binding Source={StaticResource FontIcons}, Path=Thumbtack}"/>
@@ -258,7 +259,7 @@
 
                     <Button x:Name="PlanTripButton"
                         Grid.Row="2"
-                        VerticalAlignment="Bottom"
+                        VerticalAlignment="Top"
                         Margin="0 10 0 10" 
                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         Foreground="White"
@@ -408,12 +409,13 @@
                                         IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
                     </StackPanel>
 
-                    <ContentControl Grid.Row="2" 
-                                        ContentTemplate="{StaticResource BottomPanelHalf}"
-                                        DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
-                                        HorizontalAlignment="Stretch" 
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch">
+                    <ContentControl x:Name="BottomPanelHalfContent" 
+                                    Grid.Row="2" 
+                                    ContentTemplate="{StaticResource BottomPanelHalf}"
+                                    DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
+                                    HorizontalAlignment="Stretch" 
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch">
                         <ContentControl.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -502,11 +504,6 @@
                                                   HorizontalAlignment="Stretch" 
                                                   HorizontalContentAlignment="Stretch"
                                                   VerticalContentAlignment="Stretch">
-                                    <ContentPresenter.Transitions>
-                                        <TransitionCollection>
-                                            <RepositionThemeTransition/>
-                                        </TransitionCollection>
-                                    </ContentPresenter.Transitions>
                                 </ContentPresenter>
                             </Grid>
                         </ContentControl.Content>
@@ -527,6 +524,11 @@
             </ScrollViewer>
         </RelativePanel>
     </RelativePanel>
+
+    <Page.BottomAppBar>
+        <CommandBar />
+    </Page.BottomAppBar>
+    
 </Page>
 
 <!--For reference, delete when no longer necessary-->

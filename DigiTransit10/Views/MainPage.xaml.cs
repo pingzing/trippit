@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using DigiTransit10.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Template10.Common;
 using DigiTransit10.Helpers;
 
@@ -84,6 +85,6 @@ namespace DigiTransit10.Views
         private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        }        
     }
 }
