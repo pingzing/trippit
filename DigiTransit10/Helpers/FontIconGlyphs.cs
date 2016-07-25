@@ -27,5 +27,6 @@ namespace DigiTransit10.Helpers
         public static string HollowStar => "\uE1CE";
         public static string FilledStar => "\uE0B5";
         public static string Thumbtack => "\uE840";
+        public static string RightArrow => "\uE09F";
     }
 }

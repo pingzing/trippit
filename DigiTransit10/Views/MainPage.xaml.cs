@@ -85,6 +85,15 @@ namespace DigiTransit10.Views
         private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }        
+        }
+
+        private void PinnedFavoritesControl_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            FavoritePlace clickedPlace = e.ClickedItem as FavoritePlace;
+            if (clickedPlace != null)
+            {
+                ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(clickedPlace);
+            }
+        }
     }
 }

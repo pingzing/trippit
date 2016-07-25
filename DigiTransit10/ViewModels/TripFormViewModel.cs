@@ -160,13 +160,12 @@ namespace DigiTransit10.ViewModels
                     return _planTripCommand;
                 }
                 _planTripCommand = new RelayCommand(PlanTrip,
-                    () =>
-                    {
-                        return ((bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked 
-                                || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked)
+                    () => (
+                        (bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked 
+                        || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked)
                         && FromPlace != null
-                        && ToPlace != null;
-                    });
+                        && ToPlace != null
+                    );
                 this.PropertyChanged += (s, e) => _planTripCommand.RaiseCanExecuteChanged();
                 return _planTripCommand;
             }
@@ -183,6 +182,10 @@ namespace DigiTransit10.ViewModels
 
         private readonly RelayCommand<IPlace> _addFavoriteCommand = null;        
         public RelayCommand<IPlace> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<IPlace>(AddFavorite);
+
+        private readonly RelayCommand<FavoritePlace> _favoritePlaceClickedCommand = null;
+        public RelayCommand<FavoritePlace> FavoritePlaceClickedCommand
+            => _favoritePlaceClickedCommand ?? new RelayCommand<FavoritePlace>(FavoritePlaceClicked);        
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, 
@@ -399,7 +402,16 @@ namespace DigiTransit10.ViewModels
             }            
         }
 
-        public async override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        private void FavoritePlaceClicked(FavoritePlace obj)
+        {
+            ToPlace = obj;
+            if (PlanTripCommand.CanExecute(null))
+            {
+                PlanTrip();
+            }
+        }
+
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             FillPinnedFavorites();
             await Task.CompletedTask;

@@ -13,15 +13,29 @@
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels">
 
     <DataTemplate x:Key="FavoritePlaceTemplate">
-        <RelativePanel>
-            <FontIcon x:Name="FavoriteIcon" 
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <FontIcon x:Name="FavoriteIcon"
+                      Grid.Column="0"
                       FontFamily="{Binding IconFontFace}" 
                       Glyph="{Binding FontIconGlyph}"/>
             <TextBlock x:Name="FavoriteName" 
-                       RelativePanel.RightOf="FavoriteIcon"
+                       Grid.Column="1"                       
                        Margin="5 0 0 0"
-                       Text="{Binding UserChosenName}"/>
-        </RelativePanel>
+                       Text="{Binding UserChosenName}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"/>
+            <FontIcon x:Name="ArrowIcon"
+                      Grid.Column="2"                     
+                      Foreground="{ThemeResource SystemAccentColor}"
+                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                      Glyph="{Binding Source={StaticResource FontIcons}, Path=RightArrow}"
+                      HorizontalAlignment="Right"/>
+        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>

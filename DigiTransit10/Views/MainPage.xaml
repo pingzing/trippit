@@ -13,8 +13,7 @@
     xmlns:models="using:DigiTransit10.Models"
     xmlns:conv="using:DigiTransit10.Converters"
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
-    xmlns:Media="using:Microsoft.Xaml.Interactions.Media" x:Class="DigiTransit10.Views.MainPage"
-    xmlns:vsf="using:DigiTransit10.VisualStateFramework"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media" x:Class="DigiTransit10.Views.MainPage"    
     mc:Ignorable="d"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}">
 
@@ -252,8 +251,14 @@
                                   CanReorderItems="True"
                                   ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
                                   SelectionMode="None"
-                                  IsItemClickEnabled="True"                                                                    
+                                  IsItemClickEnabled="True"
+                                  ItemClick="PinnedFavoritesControl_OnItemClick"
                                   ItemTemplate="{StaticResource FavoritePlaceTemplate}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/> 
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
                     </Grid>
 
@@ -292,7 +297,6 @@
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:IFavorite">
-                                <!--Wrapped in a grid so that we can force the tap-surface to stretch the entire vertical height of the ListViewItem.-->
                                 <TextBlock Text="{x:Bind UserChosenName}" 
                                            Style="{StaticResource BodyTextBlockStyle}"
                                            VerticalAlignment="Center">
@@ -504,6 +508,11 @@
                                                   HorizontalAlignment="Stretch" 
                                                   HorizontalContentAlignment="Stretch"
                                                   VerticalContentAlignment="Stretch">
+                                    <ContentPresenter.Transitions>
+                                        <TransitionCollection>
+                                            <RepositionThemeTransition/>
+                                        </TransitionCollection>
+                                    </ContentPresenter.Transitions>
                                 </ContentPresenter>
                             </Grid>
                         </ContentControl.Content>
