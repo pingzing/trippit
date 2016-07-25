@@ -185,7 +185,11 @@ namespace DigiTransit10.ViewModels
 
         private readonly RelayCommand<FavoritePlace> _favoritePlaceClickedCommand = null;
         public RelayCommand<FavoritePlace> FavoritePlaceClickedCommand
-            => _favoritePlaceClickedCommand ?? new RelayCommand<FavoritePlace>(FavoritePlaceClicked);        
+            => _favoritePlaceClickedCommand ?? new RelayCommand<FavoritePlace>(FavoritePlaceClicked);
+
+        private readonly RelayCommand<IFavorite> _removePinnedFavoriteCommand = null;
+        public RelayCommand<IFavorite> RemovePinnedFavoriteCommand
+            => _removePinnedFavoriteCommand ?? new RelayCommand<IFavorite>(RemovePinnedFavorite);        
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, 
@@ -409,6 +413,11 @@ namespace DigiTransit10.ViewModels
             {
                 PlanTrip();
             }
+        }
+
+        private void RemovePinnedFavorite(IFavorite favorite)
+        {
+            _settingsService.RemoveFavorite(favorite);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)

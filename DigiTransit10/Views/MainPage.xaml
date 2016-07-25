@@ -79,6 +79,12 @@
 
             <DataTemplate x:Key="BottomPanelHalf" x:DataType="vm:TripFormViewModel">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    
+                    <Grid.ChildrenTransitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition/>
+                        </TransitionCollection>
+                    </Grid.ChildrenTransitions>
 
                     <Grid.Resources>
                         <Storyboard x:Name="TransitPanelAppearStoryboard">
@@ -229,58 +235,69 @@
                         </HyperlinkButton>
                     </StackPanel>
 
-                    <Grid x:Name="PinnedFavoritesGrid" Grid.Row="1" Margin="0 10 0 0">
-                        <Grid.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </Grid.Transitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        
-                        <TextBlock x:Name="PinnedFavoritesHeaderBlock">
-                            <Run FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                                 Text="{Binding Source={StaticResource FontIcons}, Path=Thumbtack}"/>
-                            <Run Text="{Binding Source={StaticResource Strings}, Path=TripForm_PinnedFavoritesHeader}"/>
-                        </TextBlock>
-                        <ListView x:Name="PinnedFavoritesControl"
-                                  Grid.Row="1"
-                                  AllowDrop="True"
-                                  CanReorderItems="True"
-                                  ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
-                                  SelectionMode="None"
-                                  IsItemClickEnabled="True"
-                                  ItemClick="PinnedFavoritesControl_OnItemClick"
-                                  ItemTemplate="{StaticResource FavoritePlaceTemplate}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/> 
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                        </ListView>
-                    </Grid>
+                    <ListView x:Name="PinnedFavoritesControl"
+                              Grid.Row="1"
+                              AllowDrop="True"
+                              CanReorderItems="True"                                  
+                              IsItemClickEnabled="True"
+                              ItemClick="PinnedFavoritesControl_OnItemClick"
+                              ItemTemplate="{StaticResource FavoritePlaceTemplate}"
+                              ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
+                              Margin="0 10 0 0"
+                              SelectionMode="None"
+                              RightTapped="PinnedFavoritesControl_OnRightTapped">
+                        <ListView.Header>
+                            <TextBlock>
+                                <Run FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                     Text="{Binding Source={StaticResource FontIcons}, Path=Thumbtack}"/>
+                                <Run Text="{Binding Source={StaticResource Strings}, Path=TripForm_PinnedFavoritesHeader}"/>
+                            </TextBlock>
+                        </ListView.Header>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <FlyoutBase.AttachedFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem x:Name="RemoveItem"
+                                                    Text="{Binding Source={StaticResource Strings}, Path=FavoritesList_RemoveItem}"
+                                                    Command="{x:Bind RemovePinnedFavoriteCommand}"/>
+                            </MenuFlyout>
+                        </FlyoutBase.AttachedFlyout>
+                        <Interactivity:Interaction.Behaviors>
+                            <Core:DataTriggerBehavior Binding="{x:Bind PinnedFavorites.Count, Mode=OneWay}"
+                                                        ComparisonCondition="GreaterThan"
+                                                        Value="0">
+                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=PinnedFavoritesControl}"
+                                                           PropertyName="Visibility"
+                                                           Value="Visible"/>
+                            </Core:DataTriggerBehavior>
+                            <Core:DataTriggerBehavior Binding="{x:Bind PinnedFavorites.Count, Mode=OneWay}"
+                                                        ComparisonCondition="Equal"
+                                                        Value="0">
+                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=PinnedFavoritesControl}"
+                                                           PropertyName="Visibility"
+                                                           Value="Collapsed"/>
+                            </Core:DataTriggerBehavior>
+                        </Interactivity:Interaction.Behaviors>
+                    </ListView>
 
                     <Button x:Name="PlanTripButton"
                         Grid.Row="2"
-                        VerticalAlignment="Top"
+                        VerticalAlignment="Bottom"
                         Margin="0 10 0 10" 
                         Background="{ThemeResource SystemControlBackgroundAccentBrush}"
                         Foreground="White"
                         HorizontalAlignment="Stretch"
                         Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
                         Command="{x:Bind PlanTripCommand}">
-                        <Button.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </Button.Transitions>
                     </Button>
                 </Grid>
             </DataTemplate>
 
-            <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
+            <!--Todo: Move this to the as-yet nonexistent Favorites page, where we can reuse it.-->
+            <!--<DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
                 <Grid>
                     <TextBlock x:Name="EmptyListTextBlock"                    
                                Visibility="{Binding Items.Count, ElementName=FavoritesListView, Converter={StaticResource EmptyNullToVisibilityConverter}}"
@@ -305,14 +322,14 @@
                         </ListView.ItemTemplate>
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
-                                <!--CommandParameter set in Code-behind just before showing the Flyout.-->
+                                --><!--CommandParameter set in Code-behind just before showing the Flyout.--><!--
                                 <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
                                                 Command="{Binding FavoritesViewModel.DeleteFavoriteCommand, Mode=OneTime}"/>
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
                     </ListView>
                 </Grid>
-            </DataTemplate>
+            </DataTemplate>-->
         </ResourceDictionary>
     </Page.Resources>
 

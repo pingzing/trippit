@@ -210,4 +210,7 @@
   <data name="TripForm_PinnedFavoritesHeader" xml:space="preserve">
     <value>Pinned favorites</value>
   </data>
+  <data name="FavoritesList_RemoveItem" xml:space="preserve">
+    <value>Remove</value>
+  </data>
 </root>

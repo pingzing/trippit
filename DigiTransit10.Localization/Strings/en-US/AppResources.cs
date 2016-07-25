@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/15/2016 17:04:13
+// 	Generated: 07/26/2016 01:40:40
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -390,6 +390,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripForm_PinnedFavoritesHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Remove"
+        /// </summary>
+        public static string FavoritesList_RemoveItem
+        {
+            get
+            {
+                return resourceLoader.GetString("FavoritesList_RemoveItem");
             }
         }
     }

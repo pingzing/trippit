@@ -130,6 +130,10 @@
           <source>Pinned favorites</source>
           <target state="new">Pinned favorites</target>
         </trans-unit>
+        <trans-unit id="FavoritesList_RemoveItem" translate="yes" xml:space="preserve">
+          <source>Remove</source>
+          <target state="new">Remove</target>
+        </trans-unit>
       </group>
     </body>
   </file>

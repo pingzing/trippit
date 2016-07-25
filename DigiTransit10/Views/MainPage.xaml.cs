@@ -11,6 +11,7 @@ using DigiTransit10.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Input;
 using Template10.Common;
 using DigiTransit10.Helpers;
 
@@ -62,30 +63,7 @@ namespace DigiTransit10.Views
             }
 
             ViewModel?.TripFormViewModel?.ToggleTransitPanelCommand.Execute(null);
-        }
-
-        private void Favorite_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
-        {
-            var item = sender as FrameworkElement;
-            var tappedItem = (e.OriginalSource as FrameworkElement).DataContext as IFavorite;
-            ShowFavoriteContextMenu(item, e.GetPosition(this), tappedItem);
-        }
-
-        private void ShowFavoriteContextMenu(FrameworkElement item, Point point, IFavorite tappedItem)
-        {
-            if(item != null)
-            {
-                MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;
-                ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
-                flyout?.ShowAt(this, point);                
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([CallerMemberName]string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        }        
 
         private void PinnedFavoritesControl_OnItemClick(object sender, ItemClickEventArgs e)
         {
@@ -95,5 +73,24 @@ namespace DigiTransit10.Views
                 ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(clickedPlace);
             }
         }
+
+        private void PinnedFavoritesControl_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var item = sender as FrameworkElement;
+            var tappedItem = (e.OriginalSource as FrameworkElement).DataContext as IFavorite;
+
+            if (item != null)
+            {
+                MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;                
+                ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
+                flyout.ShowAt(this, e.GetPosition(this));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }       
     }
 }
