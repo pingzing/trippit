@@ -4,6 +4,7 @@
     xmlns:Behaviors="using:Template10.Behaviors"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:controls="using:Template10.Controls"
     xmlns:lclCtls="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,8 +13,9 @@
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:models="using:DigiTransit10.Models"
     xmlns:conv="using:DigiTransit10.Converters"
-    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
-    xmlns:Media="using:Microsoft.Xaml.Interactions.Media" x:Class="DigiTransit10.Views.MainPage"    
+    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"    
+    x:Class="DigiTransit10.Views.MainPage"    
+    x:Name="ThisMainPage"
     mc:Ignorable="d"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}">
 
@@ -26,15 +28,6 @@
             <Storyboard x:Name="NarrowRadioButtonAppearStoryboard">
                 <RepositionThemeAnimation TargetName="NarrowRadioButtonStackPanel" FromVerticalOffset="-50"/>
                 <DoubleAnimationUsingKeyFrames Storyboard.TargetName="NarrowRadioButtonStackPanel"
-                                                           Storyboard.TargetProperty="Opacity">
-                    <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                </DoubleAnimationUsingKeyFrames>
-            </Storyboard>
-            
-            <Storyboard x:Name="WideRadioButtonAppearStoryboard">
-                <RepositionThemeAnimation TargetName="WideRadioButtonStackPanel" FromVerticalOffset="-50"/>
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="WideRadioButtonStackPanel"
                                                            Storyboard.TargetProperty="Opacity">
                     <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
                     <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
@@ -79,7 +72,7 @@
 
             <DataTemplate x:Key="BottomPanelHalf" x:DataType="vm:TripFormViewModel">
                 <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    
+
                     <Grid.ChildrenTransitions>
                         <TransitionCollection>
                             <RepositionThemeTransition/>
@@ -154,7 +147,6 @@
                                         </DataTemplate>
                                     </HyperlinkButton.ContentTemplate>
                                 </HyperlinkButton>
-
 
                                 <DatePicker x:Name="DatePicker"
                                     Grid.Row="1" Grid.Column="0"
@@ -284,14 +276,14 @@
                     </ListView>
 
                     <Button x:Name="PlanTripButton"
-                        Grid.Row="2"
-                        VerticalAlignment="Bottom"
-                        Margin="0 10 0 10" 
-                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-                        Foreground="White"
-                        HorizontalAlignment="Stretch"
-                        Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
-                        Command="{x:Bind PlanTripCommand}">
+                            Grid.Row="2"
+                            VerticalAlignment="Bottom"
+                            Margin="0 10 0 10" 
+                            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                            Foreground="White"
+                            HorizontalAlignment="Stretch"
+                            Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
+                            Command="{x:Bind PlanTripCommand}">
                     </Button>
                 </Grid>
             </DataTemplate>
@@ -322,7 +314,9 @@
                         </ListView.ItemTemplate>
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
-                                --><!--CommandParameter set in Code-behind just before showing the Flyout.--><!--
+                                -->
+            <!--CommandParameter set in Code-behind just before showing the Flyout.-->
+            <!--
                                 <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
                                                 Command="{Binding FavoritesViewModel.DeleteFavoriteCommand, Mode=OneTime}"/>
                             </MenuFlyout>
@@ -342,7 +336,6 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <!--  TODO: change properties for narrow view  -->
                         <Setter Target="NarrowTripView.Visibility" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
@@ -351,7 +344,7 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TripPlannerWideScrollViewer.Visibility" Value="Visible" />
+                        <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -360,7 +353,7 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TripPlannerWideScrollViewer.Visibility" Value="Visible" />
+                        <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -461,100 +454,156 @@
                   RelativePanel.AlignLeftWithPanel="True"/>
 
             <!--Wide view-->
-            <ScrollViewer x:Name="TripPlannerWideScrollViewer"
-                          x:DeferLoadStrategy="Lazy"
-                          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                          Visibility="Collapsed"                          
-                          HorizontalScrollBarVisibility="Auto"   
-                          VerticalScrollBarVisibility="Auto"
-                          RelativePanel.AlignHorizontalCenterWithPanel="True">
-                <RelativePanel Margin="20 0 20 10">
-                    <ContentControl x:Name="TripPlannerWideForm"          
-                                    Margin="0 0 0 10"                                    
-                                    DataContext="{x:Bind ViewModel.TripFormViewModel}"
-                                    HorizontalContentAlignment="Stretch"    
-                                    Width="600"
-                                    RelativePanel.AlignLeftWithPanel="True"
-                                    RelativePanel.AlignRightWithPanel="True">
-                        <ContentControl.Content>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
+            <Hub x:Name="WideHub"
+                 x:DeferLoadStrategy="Lazy"
+                 Visibility="Collapsed"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 RelativePanel.AlignTopWithPanel="True"
+                 RelativePanel.AlignBottomWithPanel="True">
 
-                                <TextBlock x:Name="TripFormHeader"                                           
-                                           Grid.Row="0"
-                                           Style="{StaticResource HeaderTextBlockStyle}"
-                                           Text="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}"/>
+                <HubSection x:Name="WideTripFormSection"                            
+                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalContentAlignment="Stretch">
+                    <HubSection.ContentTemplate>
+                        <DataTemplate x:DataType="vm:MainViewModel">
+                            <ScrollViewer Margin="-10 -15 -10 5"
+                                          VerticalScrollBarVisibility="Auto"
+                                          VerticalAlignment="Stretch">
+                                <ContentControl x:Name="TripPlannerWideForm"          
+                                            Margin="20 0 20 10"                                  
+                                            DataContext="{x:Bind TripFormViewModel}"
+                                            HorizontalContentAlignment="Stretch"    
+                                            VerticalAlignment="Stretch"
+                                            VerticalContentAlignment="Stretch"
+                                            Width="450">
+                                    <ContentControl.Resources>
+                                        <Storyboard x:Name="WideRadioButtonAppearStoryboard">
+                                            <RepositionThemeAnimation TargetName="WideRadioButtonStackPanel" FromVerticalOffset="-50"/>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="WideRadioButtonStackPanel"
+                                                           Storyboard.TargetProperty="Opacity">
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </ContentControl.Resources>
+                                    
+                                    <ContentControl.Content>
+                                        <Grid VerticalAlignment="Stretch">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
 
-                                <ContentControl Grid.Row="1"
+                                            <TextBlock x:Name="TripFormHeader"                                           
+                                                   Grid.Row="0"
+                                                   Style="{StaticResource HeaderTextBlockStyle}"
+                                                   Text="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}"/>
+
+                                            <ContentControl Grid.Row="1"
                                                 HorizontalAlignment="Stretch" 
                                                 HorizontalContentAlignment="Stretch"
                                                 ContentTemplate="{StaticResource TopPanelHalf}"/>
 
-                                <StackPanel x:Name="WideRadioButtonStackPanel" 
-                                            Grid.Row="2" 
-                                            Visibility="{x:Bind ViewModel.TripFormViewModel.IsUsingCurrentTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"
-                                            Orientation="Horizontal" 
-                                            HorizontalAlignment="Center" 
-                                            Margin="0 10 0 0">
-                                    <Interactivity:Interaction.Behaviors>
-                                        <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=WideRadioButtonStackPanel}"
-                                                          ComparisonCondition="Equal"
-                                                          Value="Visible">
-                                            <Media:ControlStoryboardAction Storyboard="{StaticResource WideRadioButtonAppearStoryboard}"
-                                                                   ControlStoryboardOption="Play"/>
-                                        </Core:DataTriggerBehavior>
-                                    </Interactivity:Interaction.Behaviors>
-                                    <RadioButton x:Name="DepartureRadioButonWide"
-                                                     GroupName="TimeTypeWide"
-                                                     Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
-                                                     IsChecked="{x:Bind ViewModel.TripFormViewModel.IsDepartureChecked, Mode=TwoWay}" />
-                                    <RadioButton x:Name="ArrivalRadioButtonWide"
-                                                     GroupName="TimeTypeWide"
-                                                     Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
-                                                     IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
-                                </StackPanel>
+                                            <StackPanel x:Name="WideRadioButtonStackPanel" 
+                                                        Grid.Row="2" 
+                                                        Visibility="{x:Bind TripFormViewModel.IsUsingCurrentTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"
+                                                        Orientation="Horizontal" 
+                                                        HorizontalAlignment="Center" 
+                                                        Margin="0 10 0 0">
+                                                <Interactivity:Interaction.Behaviors>
+                                                    <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=WideRadioButtonStackPanel}"
+                                                                              ComparisonCondition="Equal"
+                                                                              Value="Visible">
+                                                        <Media:ControlStoryboardAction Storyboard="{StaticResource WideRadioButtonAppearStoryboard}"
+                                                                                       ControlStoryboardOption="Play"/>
+                                                    </Core:DataTriggerBehavior>
+                                                </Interactivity:Interaction.Behaviors>
+                                                
+                                                <RadioButton x:Name="DepartureRadioButonWide"
+                                                             GroupName="TimeTypeWide"
+                                                             Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
+                                                             IsChecked="{x:Bind TripFormViewModel.IsDepartureChecked, Mode=TwoWay}" />
+                                                <RadioButton x:Name="ArrivalRadioButtonWide"
+                                                             GroupName="TimeTypeWide"
+                                                             Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
+                                                             IsChecked="{x:Bind TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
+                                            </StackPanel>
 
-                                <ContentPresenter Grid.Row="3" 
-                                                  ContentTemplate="{StaticResource BottomPanelHalf}"
-                                                  DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
-                                                  HorizontalAlignment="Stretch" 
-                                                  HorizontalContentAlignment="Stretch"
-                                                  VerticalContentAlignment="Stretch">
-                                    <ContentPresenter.Transitions>
-                                        <TransitionCollection>
-                                            <RepositionThemeTransition/>
-                                        </TransitionCollection>
-                                    </ContentPresenter.Transitions>
-                                </ContentPresenter>
-                            </Grid>
-                        </ContentControl.Content>
-                    </ContentControl>
+                                            <ContentPresenter Grid.Row="3" 
+                                                          ContentTemplate="{StaticResource BottomPanelHalf}"
+                                                          DataContext="{x:Bind TripFormViewModel, Mode=OneWay}"
+                                                          HorizontalAlignment="Stretch" 
+                                                          HorizontalContentAlignment="Stretch"
+                                                          VerticalAlignment="Stretch"
+                                                          VerticalContentAlignment="Stretch">
+                                                <ContentPresenter.Transitions>
+                                                    <TransitionCollection>
+                                                        <RepositionThemeTransition/>
+                                                    </TransitionCollection>
+                                                </ContentPresenter.Transitions>
+                                            </ContentPresenter>
+                                        </Grid>
+                                    </ContentControl.Content>
+                                </ContentControl>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </HubSection.ContentTemplate>
+                </HubSection>
 
-                    <StackPanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-                                MaxWidth="650"
-                                RelativePanel.Below="TripPlannerWideForm"
-                                RelativePanel.AlignHorizontalCenterWithPanel="True">
-                        <TextBlock Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
-                                   Margin="0 0 0 9"                                           
-                                   FontSize="20"/>
-                        <lclCtls:TripResultsList x:Name="TripResultsPanel" 
-                                                 DataContext="{x:Bind ViewModel.TripResultViewModel}"/>
-                    </StackPanel>
+                <HubSection x:Name="TripResultHubSection" 
+                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalContentAlignment="Stretch"                            
+                            Visibility="Collapsed">
+                    <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:MainViewModel">
+                        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"                              
+                              VerticalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" 
+                                       Margin="0 0 0 9"
+                                       Style="{StaticResource HeaderTextBlockStyle}" 
+                                       Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeaderLowercase}"/>
+                            <lclCtls:TripResultsList x:Name="TripResultsPanel"
+                                                     Grid.Row="1"
+                                                     DataContext="{x:Bind TripResultViewModel, Mode=OneWay}"
+                                                     Margin="-10 0 -10 5"/>
+                        </Grid>
+                    </DataTemplate>
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:DataTriggerBehavior Binding="{x:Bind ViewModel.TripResultViewModel.TripResults.Count, Mode=OneWay}"
+                                                  ComparisonCondition="Equal"
+                                                  Value="1">
+                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=TripResultHubSection}"
+                                                       PropertyName="Visibility"
+                                                       Value="Visible"/>
+                        </Core:DataTriggerBehavior>
+                        <Core:DataTriggerBehavior Binding="{Binding ElementName=TripResultHubSection, Path=Visibility}"
+                                                  ComparisonCondition="Equal"
+                                                  Value="Visible">
+                            <Core:CallMethodAction TargetObject="{Binding ElementName=ThisMainPage}"
+                                                   MethodName="ScrollToTripResultHubSection"/>
+                        </Core:DataTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                    
+                </HubSection>
 
-                </RelativePanel>
-            </ScrollViewer>
+            </Hub>
         </RelativePanel>
     </RelativePanel>
 
     <Page.BottomAppBar>
         <lclCtls:NavCommandBar />
     </Page.BottomAppBar>
-    
+
 </Page>
 
 <!--For reference, delete when no longer necessary-->

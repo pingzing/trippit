@@ -213,4 +213,7 @@
   <data name="FavoritesList_RemoveItem" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="TripResults_TripPlansHeaderLowercase" xml:space="preserve">
+    <value>Trip plans</value>
+  </data>
 </root>

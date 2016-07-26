@@ -34,7 +34,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);                    
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)

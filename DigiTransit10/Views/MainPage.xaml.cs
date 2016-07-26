@@ -1,19 +1,17 @@
-using System;
 using DigiTransit10.ViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using System.Collections.ObjectModel;
-using DigiTransit10.Localization.Strings;
-using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using DigiTransit10.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Template10.Common;
 using DigiTransit10.Helpers;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Views
 {
@@ -27,7 +25,9 @@ namespace DigiTransit10.Views
             NavigationCacheMode = NavigationCacheMode.Enabled;
             this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
             this.Loaded += MainPage_Loaded;
-        }
+
+            Messenger.Default.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
+        }        
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -91,6 +91,26 @@ namespace DigiTransit10.Views
         private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }       
+        }
+
+        private void PlanFound(MessageTypes.PlanFoundMessage obj)
+        {           
+            if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
+            {
+                return;
+            }
+
+            ScrollToTripResultHubSection();
+        }
+
+        public async void ScrollToTripResultHubSection()
+        {
+            if (WideHub == null || WideHub.Sections.Count < 2)
+            {
+                return;
+            }
+            await Task.Delay(250); //Without this, the XAML renderer occasionally adds a duplicate TripPlanStrip for some reason.
+            WideHub.ScrollToSection(WideHub.Sections[1]);
+        }
     }
 }
