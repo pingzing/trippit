@@ -216,4 +216,25 @@
   <data name="TripResults_TripPlansHeaderLowercase" xml:space="preserve">
     <value>Trip plans</value>
   </data>
+  <data name="DialogMessage_NoTripsFoundNoResults" xml:space="preserve">
+    <value>No routes found. Check your search parameters.</value>
+  </data>
+  <data name="DialogMessage_NoTripsFoundNoServer" xml:space="preserve">
+    <value>No routes found, because a connection with the server couldn't be established. Check your internet connection, or try again later.</value>
+  </data>
+  <data name="DialogMessage_NoTripsFoundUnknown" xml:space="preserve">
+    <value>No routes found. Please try again.</value>
+  </data>
+  <data name="DialogMessage_PlaceResolutionFailed" xml:space="preserve">
+    <value>We were unable to locate the following places:</value>
+  </data>
+  <data name="DialogMessage_UserLocationFailed" xml:space="preserve">
+    <value>We were unable to locate you. Are location services enabled for this app?</value>
+  </data>
+  <data name="DialogTitle_NoLocationFound" xml:space="preserve">
+    <value>Location failure</value>
+  </data>
+  <data name="DialogTitle_NoTripsFound" xml:space="preserve">
+    <value>No routes found</value>
+  </data>
 </root>

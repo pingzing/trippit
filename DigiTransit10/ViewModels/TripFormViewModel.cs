@@ -28,7 +28,7 @@ namespace DigiTransit10.ViewModels
         private readonly Services.SettingsServices.SettingsService _settingsService;
         private readonly IMessenger _messengerService;
         private readonly IGeolocationService _geolocationService;
-        private enum TripFormVisualState { VisualStateNarrow, VisualStateNormal, VisualStateWide };
+        private readonly IDialogService _dialogService;        
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -192,13 +192,14 @@ namespace DigiTransit10.ViewModels
             => _removePinnedFavoriteCommand ?? new RelayCommand<IFavorite>(RemovePinnedFavorite);        
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
-            Services.SettingsServices.SettingsService settings, 
-            IGeolocationService geolocationService)
+            Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
+            IDialogService dialogService)
         {
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
-            _geolocationService = geolocationService;                        
+            _geolocationService = geolocationService;
+            _dialogService = dialogService;
 
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
         }
@@ -228,11 +229,15 @@ namespace DigiTransit10.ViewModels
 
             Views.Busy.SetBusy(true, AppResources.TripFrom_GettingsAddresses);
 
-            List<IPlace> places = new List<IPlace>();
-            places.Add(FromPlace);
-            places.Add(ToPlace);
-
+            List<IPlace> places = new List<IPlace> {FromPlace, ToPlace};
             places = await ResolvePlaces(places, _cts.Token);
+
+            if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
+            {
+                await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList());
+                Views.Busy.SetBusy(false);
+                return;
+            }
             FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
             ToPlace = places[1]; // but for now, magic numbers wheee            
 
@@ -251,9 +256,16 @@ namespace DigiTransit10.ViewModels
             Views.Busy.SetBusy(true, AppResources.TripForm_PlanningTrip);
 
             var result = await _networkService.PlanTrip(details);
+            if (result.IsFailure)
+            {
+                await HandleTripFailure(result);
+                Views.Busy.SetBusy(false);
+                return;
+            }
+
             TripPlan newPlan = new TripPlan
             {
-                ApiPlan = result,
+                ApiPlan = result.Result,
                 StartingPlaceName = FromPlace.Name,
                 EndingPlaceName = ToPlace.Name
             };
@@ -272,38 +284,45 @@ namespace DigiTransit10.ViewModels
             Views.Busy.SetBusy(false);
         }        
 
+        /// <summary>
+        /// Takes a list of places, and resolves NameOnly or UserLocation places 
+        /// into a usable Place with lat/lon coordinates. Leaves other Place types alone.
+        /// </summary>
+        /// <param name="places">List of places to resolve.</param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async Task<List<IPlace>> ResolvePlaces(List<IPlace> places, CancellationToken token)
         {
             List<Task<bool>> getAddressTasks = new List<Task<bool>>();
             for (int i = places.Count - 1; i >= 0; i--)
             {                
                 int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
-                if (places[idx].Type == ModelEnums.PlaceType.NameOnly)
+                if (places[idx].Type == PlaceType.NameOnly)
                 {
-                    Task<GeocodingResponse> task = _networkService.SearchAddress(places[idx].Name, token);
+                    Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddress(places[idx].Name, token);
                     getAddressTasks.Add(task.ContinueWith(resp =>
                     {
-                        if (resp.Result == null || resp.Result.Features.Length == 0)
+                        if (resp.Result.IsFailure)
                         {
                             return false;
                         }
                         places[idx] = new Place
                         {
-                            Lon = (float)task.Result.Features[0].Geometry.Coordinates[0],
-                            Lat = (float)task.Result.Features[0].Geometry.Coordinates[1],
-                            Name = task.Result.Features[0].Properties.Name,
-                            Type = ModelEnums.PlaceType.Address,
-                            Id = task.Result.Features[0].Properties.Id,
-                            Confidence = task.Result.Features[0].Properties.Confidence
+                            Lon = (float)task.Result.Result.Features[0].Geometry.Coordinates[0],
+                            Lat = (float)task.Result.Result.Features[0].Geometry.Coordinates[1],
+                            Name = task.Result.Result.Features[0].Properties.Name,
+                            Type = PlaceType.Address,
+                            Id = task.Result.Result.Features[0].Properties.Id,
+                            Confidence = task.Result.Result.Features[0].Properties.Confidence
                         };
                         return true;
                     }));
                 }
-                else if (places[idx].Type == ModelEnums.PlaceType.UserCurrentLocation)
+                else if (places[idx].Type == PlaceType.UserCurrentLocation)
                 {
                     Task<Geoposition> task = _geolocationService.GetCurrentLocation();
                     getAddressTasks.Add(task.ContinueWith(resp => {
-                        if(resp == null || resp.Result?.Coordinate?.Point?.Position == null)
+                        if(resp?.Result?.Coordinate?.Point?.Position == null)
                         {
                             return false;
                         }
@@ -313,15 +332,14 @@ namespace DigiTransit10.ViewModels
                             Lon = (float)loc.Longitude,
                             Lat = (float)loc.Latitude,
                             Name = AppResources.SuggestBoxHeader_MyLocation,
-                            Type = ModelEnums.PlaceType.UserCurrentLocation
+                            Type = PlaceType.UserCurrentLocation
                         };
                         return true;
                     }));
                 }                
             }
 
-            await Task.WhenAll(getAddressTasks);
-
+            await Task.WhenAll(getAddressTasks);            
             return places;
         }
 
@@ -418,6 +436,47 @@ namespace DigiTransit10.ViewModels
         private void RemovePinnedFavorite(IFavorite favorite)
         {
             _settingsService.RemoveFavorite(favorite);
+        }
+
+        private async Task HandleTripFailure(ApiResult<ApiPlan> result)
+        {
+            string errorMessage = null;
+            if (!String.IsNullOrEmpty(result.Failure.FriendlyError))
+            {
+                errorMessage = result.Failure.FriendlyError;
+            }
+            else if (result.Failure.Reason == ApiFailureReason.NoResults)
+            {
+                errorMessage = AppResources.DialogMessage_NoTripsFoundNoResults;
+            }
+            else if (result.Failure.Reason == ApiFailureReason.InternalServerError
+                     || result.Failure.Reason == ApiFailureReason.NoConnection
+                     || result.Failure.Reason == ApiFailureReason.ServerDown)
+            {
+                errorMessage = AppResources.DialogMessage_NoTripsFoundNoServer;
+            }
+            else
+            {
+                errorMessage = AppResources.DialogMessage_NoTripsFoundUnknown;
+            }
+            await _dialogService.ShowDialog(errorMessage, AppResources.DialogTitle_NoTripsFound);
+        }
+
+        private async Task HandleTripFailure(IList<IPlace> resolutionFailures)
+        {
+            if (resolutionFailures.Any(x => x.Type == PlaceType.UserCurrentLocation))
+            {
+                await _dialogService.ShowDialog(AppResources.DialogMessage_UserLocationFailed, AppResources.DialogTitle_NoLocationFound);
+                return;
+            }
+
+            StringBuilder error = new StringBuilder();
+            error.AppendLine(AppResources.DialogMessage_PlaceResolutionFailed);
+            foreach (var place in resolutionFailures)
+            {
+                error.AppendLine($"● {place.Name}");
+            }
+            await _dialogService.ShowDialog(error.ToString(), AppResources.DialogTitle_NoLocationFound);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)

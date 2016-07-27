@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/26/2016 16:48:16
+// 	Generated: 07/28/2016 00:40:47
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -412,6 +412,83 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripResults_TripPlansHeaderLowercase");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "No routes found. Check your search parameters."
+        /// </summary>
+        public static string DialogMessage_NoTripsFoundNoResults
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_NoTripsFoundNoResults");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "No routes found, because a connection with the server couldn't be established. Check your internet connection, or try again later."
+        /// </summary>
+        public static string DialogMessage_NoTripsFoundNoServer
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_NoTripsFoundNoServer");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "No routes found. Please try again."
+        /// </summary>
+        public static string DialogMessage_NoTripsFoundUnknown
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_NoTripsFoundUnknown");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "We were unable to locate the following places:"
+        /// </summary>
+        public static string DialogMessage_PlaceResolutionFailed
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_PlaceResolutionFailed");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "We were unable to locate you. Are location services enabled for this app?"
+        /// </summary>
+        public static string DialogMessage_UserLocationFailed
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_UserLocationFailed");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Location failure"
+        /// </summary>
+        public static string DialogTitle_NoLocationFound
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogTitle_NoLocationFound");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "No routes found"
+        /// </summary>
+        public static string DialogTitle_NoTripsFound
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogTitle_NoTripsFound");
             }
         }
     }

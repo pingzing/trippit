@@ -138,6 +138,34 @@
           <source>Trip plans</source>
           <target state="new">Trip plans</target>
         </trans-unit>
+        <trans-unit id="DialogMessage_NoTripsFoundNoResults" translate="yes" xml:space="preserve">
+          <source>No routes found. Check your search parameters.</source>
+          <target state="new">No routes found. Check your search parameters.</target>
+        </trans-unit>
+        <trans-unit id="DialogMessage_NoTripsFoundNoServer" translate="yes" xml:space="preserve">
+          <source>No routes found, because a connection with the server couldn't be established. Check your internet connection, or try again later.</source>
+          <target state="new">No routes found, because a connection with the server couldn't be established. Check your internet connection, or try again later.</target>
+        </trans-unit>
+        <trans-unit id="DialogMessage_NoTripsFoundUnknown" translate="yes" xml:space="preserve">
+          <source>No routes found. Please try again.</source>
+          <target state="new">No routes found. Please try again.</target>
+        </trans-unit>
+        <trans-unit id="DialogMessage_PlaceResolutionFailed" translate="yes" xml:space="preserve">
+          <source>We were unable to locate the following places:</source>
+          <target state="new">We were unable to locate the following places:</target>
+        </trans-unit>
+        <trans-unit id="DialogMessage_UserLocationFailed" translate="yes" xml:space="preserve">
+          <source>We were unable to locate you. Are location services enabled for this app?</source>
+          <target state="new">We were unable to locate you. Are location services enabled for this app?</target>
+        </trans-unit>
+        <trans-unit id="DialogTitle_NoLocationFound" translate="yes" xml:space="preserve">
+          <source>Location failure</source>
+          <target state="new">Location failure</target>
+        </trans-unit>
+        <trans-unit id="DialogTitle_NoTripsFound" translate="yes" xml:space="preserve">
+          <source>No routes found</source>
+          <target state="new">No routes found</target>
+        </trans-unit>
       </group>
     </body>
   </file>

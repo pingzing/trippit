@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -12,7 +14,10 @@ using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services.SettingsServices;
 using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 using DigiTransit10.GraphQL;
+using DigiTransit10.Helpers;
 using DigiTransit10.Models.Geocoding;
+using static DigiTransit10.Models.ModelEnums;
+using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
 
 namespace DigiTransit10.Services
 {
@@ -21,10 +26,10 @@ namespace DigiTransit10.Services
         string DefaultGqlRequestUrl { get; }
         string DefaultGeocodingRequestUrl { get; }
 
-        Task<GeocodingResponse> SearchAddress(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<GeocodingResponse>> SearchAddress(string searchString, CancellationToken token = default(CancellationToken));
 
-        Task<List<ApiStop>> GetStops(string searchString, CancellationToken token = default(CancellationToken));
-        Task<ApiPlan> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<List<ApiStop>>> GetStops(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<ApiPlan>> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -45,7 +50,7 @@ namespace DigiTransit10.Services
 
         //---GEOCODING REQUESTS---
 
-        public async Task<GeocodingResponse> SearchAddress(string searchString, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<GeocodingResponse>> SearchAddress(string searchString, CancellationToken token = default(CancellationToken))
         {
             searchString = WebUtility.UrlEncode(searchString);
             string urlString = $"{DefaultGeocodingRequestUrl}" +
@@ -63,20 +68,20 @@ namespace DigiTransit10.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                LogFailure(response).DoNotAwait();
-                return null;
+                LogHttpFailure(response).DoNotAwait();
+                return ApiResult<GeocodingResponse>.Fail;
             }
 
             GeocodingResponse geoResponse = (await response.Content.ReadAsInputStreamAsync())
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<GeocodingResponse>();
 
-            return geoResponse;
+            return new ApiResult<GeocodingResponse>(geoResponse);
         }
 
         //---GRAPHQL REQUESTS---
 
-        public async Task<List<ApiStop>> GetStops(string searchString, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<List<ApiStop>>> GetStops(string searchString, CancellationToken token = default(CancellationToken))
         {
             searchString = WebUtility.UrlEncode(searchString);
             Uri uri = new Uri(DefaultGqlRequestUrl);
@@ -98,23 +103,39 @@ namespace DigiTransit10.Services
             string parsedQuery = query.ParseToJsonString();
 
             HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
-            var response = await _networkClient.PostAsync(uri, stringContent, token);
-            if(!response.IsSuccessStatusCode)
+            try
             {
-                LogFailure(response).DoNotAwait();
-                return null;
-            }
+                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure(response).DoNotAwait();
+                    return ApiResult<List<ApiStop>>.Fail;
+                }
 
-            return await UnwrapGqlResposne<List<ApiStop>>(response);
+                var result = await UnwrapGqlResposne<List<ApiStop>>(response);
+
+                if (result.Count == 0)
+                {
+                    LogLogicFailure(ApiFailureReason.NoResults);
+                    return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoResults);
+                }
+
+                return new ApiResult<List<ApiStop>>(result);
+            }
+            catch (HttpRequestException ex)
+            {
+                LogException(ex);
+                return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoConnection);
+            }
         }        
 
         /// <summary>
-        /// Returns a travel plan, or null on failure.
+        /// Returns a travel plan.
         /// </summary>
         /// <param name="details"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<ApiPlan> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<ApiPlan>> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
@@ -164,15 +185,31 @@ namespace DigiTransit10.Services
             string parsedQuery = query.ParseToJsonString();           
 
             HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
-            //todo: this needs to be wrapped in a try/catch with a generic handler, and a way to override/bypass that handler
-            var response = await _networkClient.PostAsync(uri, stringContent, token);
-            if (!response.IsSuccessStatusCode)
-            {
-                LogFailure(response).DoNotAwait();
-                return null;
-            }
 
-            return await UnwrapGqlResposne<ApiPlan>(response);
+            try
+            {
+                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure(response).DoNotAwait();
+                    return ApiResult<ApiPlan>.Fail;
+                }
+
+                var result = await UnwrapGqlResposne<ApiPlan>(response);
+
+                if (result.Itineraries.Count == 0)
+                {
+                    LogLogicFailure(ApiFailureReason.NoResults);
+                    return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoResults);
+                }
+
+                return new ApiResult<ApiPlan>(result);
+            }
+            catch (HttpRequestException ex)
+            {
+                LogException(ex);                
+                return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoConnection);
+            }
         }
 
         private HttpStringContent CreateJsonStringContent(string requestString)
@@ -188,19 +225,30 @@ namespace DigiTransit10.Services
                 .Data.First.First.ToObject<T>();
         }
 
-        private async Task LogFailure(HttpResponseMessage response)
+        private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method()")
         {
             //todo: add real logging
             if (response.Content != null)
             {
                 string errorResponse = await response?.Content?.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine(
-                    $"GetPlan response failed: Error code: {response.StatusCode}. Response message:\n{errorResponse}");
+                    $"{callerMethod} call failed. Response failed: Error code: {response.StatusCode}. Response message:\n{errorResponse}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"GetPlan failed: Error code: {response.StatusCode}. Did not receive a response message.");
+                System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed: Error code: {response.StatusCode}. Did not receive a response message.");
             }
-        }       
+        }
+
+        private void LogLogicFailure(ApiFailureReason reason, [CallerMemberName]string callerMethod = "Unknown method()")
+        {
+            //todo: add real logging
+            System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed. Reason: {reason}.");
+        }
+
+        private void LogException(Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}\n{ex.StackTrace}");
+        }
     }
 }

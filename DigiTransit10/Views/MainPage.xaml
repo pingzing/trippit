@@ -337,6 +337,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="NarrowTripView.Visibility" Value="Visible" />
+                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Compact"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateNormal">
@@ -346,6 +347,7 @@
                     <VisualState.Setters>
                         <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
+                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Hidden"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateWide">
@@ -355,6 +357,7 @@
                     <VisualState.Setters>
                         <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
+                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Hidden"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -601,7 +604,7 @@
     </RelativePanel>
 
     <Page.BottomAppBar>
-        <lclCtls:NavCommandBar />
+        <lclCtls:NavCommandBar x:Name="MainPageBottomBar" />
     </Page.BottomAppBar>
 
 </Page>

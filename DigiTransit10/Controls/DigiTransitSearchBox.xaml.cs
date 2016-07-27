@@ -215,7 +215,7 @@ namespace DigiTransit10.Controls
                 _stopList.Clear();
                 _addressList.Clear();                
 
-                // this has to happen after the list clearnig. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
+                // this has to happen after the list clearing. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
                 SearchText = "";
                 SelectedPlace = null;
                 return;
@@ -316,16 +316,13 @@ namespace DigiTransit10.Controls
         private async Task SearchAddresses(string searchString, CancellationToken token)
         {
             //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var result = await _networkService.SearchAddress(searchString);
-            if (token.IsCancellationRequested)
+            var response = await _networkService.SearchAddress(searchString);
+            if (token.IsCancellationRequested || response.IsFailure)
             {
                 return;
             }
 
-            if (result == null || result.Features.Length < 1)
-            {
-                return;
-            }
+            GeocodingResponse result = response.Result;
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Features.Select(x => x.Properties.Id).ToList();
@@ -364,16 +361,13 @@ namespace DigiTransit10.Controls
         private async Task SearchStops(string searchString, CancellationToken token)
         {
             //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var result = await _networkService.GetStops(searchString);
-            if (token.IsCancellationRequested)
+            var response = await _networkService.GetStops(searchString);
+            if (token.IsCancellationRequested || response.IsFailure)
             {
                 return;
             }
 
-            if (result == null || result.Count < 1)
-            {
-                return;
-            }
+            var result = response.Result;
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Select(x => x.Id).ToList();

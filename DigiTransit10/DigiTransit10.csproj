@@ -140,6 +140,7 @@
     <Compile Include="GraphQL\GqlReturnValue.cs" />
     <Compile Include="GraphQL\GqlTuple.cs" />
     <Compile Include="GraphQL\ParserHelpers.cs" />
+    <Compile Include="Helpers\ApiResult.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\FontIconGlyphs.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Models\TripPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
+    <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\GeolocationService.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
