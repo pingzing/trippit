@@ -122,7 +122,11 @@ namespace DigiTransit10.Controls
         }
 
         static DigiTransitSearchBox()
-        {            
+        {
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
             _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
             _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();
             _messengerService = ServiceLocator.Current.GetInstance<IMessenger>();
