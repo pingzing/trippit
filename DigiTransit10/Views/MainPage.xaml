@@ -275,6 +275,7 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="RootContentPanel.Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
                         <Setter Target="NarrowTripView.Visibility" Value="Visible" />
                         <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Compact"/>
                     </VisualState.Setters>

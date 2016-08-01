@@ -18,9 +18,12 @@ namespace DigiTransit10.Views
         {
             Instance = this;
             InitializeComponent();
+            this.Loaded += Shell_Loaded;              
+        }
 
-
-            if(HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay)
+        private void Shell_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay)
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Collapsed;
                 HamburgerMenu.HamburgerBackground.Opacity = 0;
@@ -29,7 +32,7 @@ namespace DigiTransit10.Views
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Visible;
                 HamburgerMenu.HamburgerBackground.Opacity = 1;
-            }           
+            }
         }
 
         public Shell(INavigationService navigationService) : this()
