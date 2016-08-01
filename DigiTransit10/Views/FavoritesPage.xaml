@@ -21,6 +21,10 @@
     </Page.Transitions>
 
     <Page.Resources>
+        <CollectionViewSource x:Key="FavoritesViewSourceKey"
+                              x:Name="FavoritesViewSource"
+                              IsSourceGrouped="True"/>
+
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
                 <Grid>
                     <TextBlock x:Name="EmptyListTextBlock"                    
@@ -28,9 +32,15 @@
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
                     <ListView x:Name="FavoritesListView"
+                              Header="{Binding Source={StaticResource Strings}, Path=Favorites_FavoritesHeader}"                              
                               ItemsSource="{x:Bind Favorites, Mode=OneWay}"
                               IsRightTapEnabled="True"                              
                               RightTapped="Favorite_RightTapped">
+                    <ListView.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"/>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -45,10 +55,8 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <FlyoutBase.AttachedFlyout>
-                            <MenuFlyout>
-                                
-        <!--CommandParameter set in Code-behind just before showing the Flyout.-->
-        
+                        <MenuFlyout>
+                            <!--CommandParameter set in Code-behind just before showing the Flyout.-->        
                                 <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
                                                 Command="{Binding FavoritesViewModel.DeleteFavoriteCommand, Mode=OneTime}"/>
                             </MenuFlyout>
@@ -67,8 +75,7 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <!--  TODO: change properties for narrow view  -->
-                        <Setter Target="FavoritesBottomBar.ClosedDisplayMode" Value="Compact"/>
+                        <Setter Target="FavoritesBottomBar.Visibility" Value="Visible"/>
                         <Setter Target="FavoritesMap.Height" Value="300"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -77,8 +84,6 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <!--  TODO: change properties for normal view  -->
-                        <Setter Target="FavoritesBottomBar.ClosedDisplayMode" Value="Hidden"/>
                         <Setter Target="FavoritesMap.(RelativePanel.AlignBottomWithPanel)" Value="True"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -87,8 +92,6 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <!--  TODO: change properties for wide view  -->
-                        <Setter Target="FavoritesBottomBar.ClosedDisplayMode" Value="Hidden"/>
                         <Setter Target="FavoritesMap.(RelativePanel.AlignBottomWithPanel)" Value="True"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -106,26 +109,32 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
+        <Grid x:Name="ContentRoot"
+              RelativePanel.Below="PageHeader"
+              RelativePanel.AlignLeftWithPanel="True"                                
+              RelativePanel.AlignRightWithPanel="True">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
         <lclCtls:DigiTransitMap x:Name="FavoritesMap"
-                                RelativePanel.Below="PageHeader"                                
-                                RelativePanel.AlignLeftWithPanel="True"                                
-                                RelativePanel.AlignRightWithPanel="True"/>
+                                Grid.Row="0"/>
 
         <ContentControl x:Name="NarrowFavoritesList"
-                        RelativePanel.Below="FavoritesMap"
-                        RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignLeftWithPanel="True"
-                        RelativePanel.AlignBottomWithPanel="True"
+                        Grid.Row="1"
                         DataContext="{x:Bind ViewModel, Mode=OneWay}"
                         ContentTemplate="{StaticResource FavoritesTemplate}"
                         HorizontalContentAlignment="Stretch"/>
+        </Grid>
 
 
     </RelativePanel>
 
     <Page.BottomAppBar>
-        <lclCtls:NavCommandBar x:Name="FavoritesBottomBar">
-            <AppBarButton Icon="SetLockScreen" Label="Whatever"/>
+        <lclCtls:NavCommandBar x:Name="FavoritesBottomBar" 
+                               x:DeferLoadStrategy="Lazy"
+                               Visibility="Collapsed">
             <AppBarButton Icon="Add" Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"/>
         </lclCtls:NavCommandBar>
     </Page.BottomAppBar>

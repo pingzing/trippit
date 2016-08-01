@@ -13,15 +13,21 @@ namespace DigiTransit10.Controls
 
         public NavCommandBar()
         {
-            this.InitializeComponent();            
-            Views.Busy.BusyChanged += BusyView_BusyChanged;
+            this.InitializeComponent();
 
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
+
+            Views.Busy.BusyChanged += BusyView_BusyChanged;
+           
             _navigationService = App.Current.NavigationService;
-            _navigationService.Frame.Navigated += Frame_Navigated;
+            _navigationService.Frame.Navigated += Frame_Navigated;        
         }
 
         private void Frame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
-        {
+        {            
             HomeButton.Tag = false;
             FavoritesButton.Tag = false;
 
@@ -33,6 +39,7 @@ namespace DigiTransit10.Controls
             {
                 FavoritesButton.Tag = true;
             }
+
         }
 
         private void BusyView_BusyChanged(object sender, bool newIsBusy)
@@ -42,11 +49,14 @@ namespace DigiTransit10.Controls
 
         private void GoHome()
         {
+            _navigationService.Frame.Navigated -= Frame_Navigated;
+            _navigationService.ClearHistory();
             _navigationService.NavigateAsync(typeof(Views.MainPage));
         }
 
         private void GoFavorites()
         {
+            _navigationService.Frame.Navigated -= Frame_Navigated;
             _navigationService.NavigateAsync(typeof(Views.FavoritesPage));
         }
     }

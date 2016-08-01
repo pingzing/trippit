@@ -125,7 +125,7 @@
                                 <TextBlock x:Name="TextLabel" Foreground="{TemplateBinding Foreground}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" Margin="0,0,0,6" TextAlignment="Center" TextWrapping="Wrap" Text="{TemplateBinding Label}"/>
                             </StackPanel>
                             <TextBlock x:Name="OverflowTextLabel" Foreground="{TemplateBinding Foreground}" FontSize="15" FontFamily="{TemplateBinding FontFamily}" HorizontalAlignment="Stretch" Margin="12,0,12,0" Padding="0,5,0,7" TextAlignment="Left" TextWrapping="NoWrap" Text="{TemplateBinding Label}" TextTrimming="Clip" Visibility="Collapsed" VerticalAlignment="Center"/>
-                            <Rectangle x:Name="SelectedRectangle" Fill="{TemplateBinding Foreground}" Height="2" VerticalAlignment="Bottom" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <Rectangle x:Name="SelectedRectangle" Fill="{ThemeResource ApplicationForegroundThemeBrush}" Height="2" VerticalAlignment="Bottom" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -141,14 +141,16 @@
                           Icon="Home"
                           IsCompact="{Binding IsOpen, ElementName=ThisNavCommandBar, Converter={StaticResource NegateBooleanConverter}}"
                           Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Home}"
-                          Style="{StaticResource SelectableAppBarButton}"/>
+                          Style="{StaticResource SelectableAppBarButton}"
+                          Tag="False"/>
             <AppBarButton x:Name="FavoritesButton"
                           Command="{x:Bind FavoritesCommand}"
                           Icon="Favorite"
                           IsCompact="{Binding IsOpen, ElementName=ThisNavCommandBar, Converter={StaticResource NegateBooleanConverter}}"
                           Foreground="{ThemeResource SystemAccentColor}"
                           Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Favorites}"
-                          Style="{StaticResource SelectableAppBarButton}"/>
+                          Style="{StaticResource SelectableAppBarButton}"
+                          Tag="False"/>
             <AppBarSeparator/>
         </StackPanel>
     </CommandBar.Content>

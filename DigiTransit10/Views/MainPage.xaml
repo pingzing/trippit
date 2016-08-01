@@ -277,7 +277,7 @@
                     <VisualState.Setters>
                         <Setter Target="RootContentPanel.Background" Value="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
                         <Setter Target="NarrowTripView.Visibility" Value="Visible" />
-                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Compact"/>
+                        <Setter Target="MainPageBottomBar.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateNormal">
@@ -287,7 +287,6 @@
                     <VisualState.Setters>
                         <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
-                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Hidden"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateWide">
@@ -297,7 +296,6 @@
                     <VisualState.Setters>
                         <Setter Target="WideHub.Visibility" Value="Visible" />
                         <Setter Target="OpacityRectangle.Visibility" Value="Visible"/>
-                        <Setter Target="MainPageBottomBar.ClosedDisplayMode" Value="Hidden"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -377,13 +375,13 @@
                 </Grid>
             </ScrollViewer>
 
-            <!--We're darkening the accent-colored background this way, because Brushes derived from SystemAccentColor
-            do NOT change when SystemAccentColor does. This way, we can use a background of SystemAccentColor, and darken it
-            without using a darkened brush, which would fail to change if the user changes accent color out from under us.-->
+            <!--We're shading the accent-colored background this way, because it allows us to 
+            use a background of SystemAccentColor, and shade it without using a shaded brush, 
+            which would fail to change if the user changed accent color while the app was running.-->
             <Grid x:Name="OpacityRectangle"
                   x:DeferLoadStrategy="Lazy"
                   Visibility="Collapsed"
-                  Opacity="0.3"
+                  Opacity="0.3"                     
                   Background="{ThemeResource ApplicationForegroundThemeBrush}"
                   IsHitTestVisible="False"
                   RelativePanel.AlignTopWithPanel="True"
@@ -524,7 +522,9 @@
     </RelativePanel>
 
     <Page.BottomAppBar>
-        <lclCtls:NavCommandBar x:Name="MainPageBottomBar" />
+        <lclCtls:NavCommandBar x:Name="MainPageBottomBar"
+                               x:DeferLoadStrategy="Lazy"
+                               Visibility="Collapsed"/>
     </Page.BottomAppBar>
 
 </Page>
