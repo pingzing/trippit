@@ -13,7 +13,8 @@
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:models="using:DigiTransit10.Models"
     xmlns:conv="using:DigiTransit10.Converters"
-    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"    
+    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"  
+    xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
     x:Class="DigiTransit10.Views.MainPage"    
     x:Name="ThisMainPage"
     mc:Ignorable="d"
@@ -24,15 +25,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ViewTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <Storyboard x:Name="NarrowRadioButtonAppearStoryboard">
-                <RepositionThemeAnimation TargetName="NarrowRadioButtonStackPanel" FromVerticalOffset="-50"/>
-                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="NarrowRadioButtonStackPanel"
-                                                           Storyboard.TargetProperty="Opacity">
-                    <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                </DoubleAnimationUsingKeyFrames>
-            </Storyboard>
 
             <DataTemplate x:Key="TopPanelHalf" x:DataType="vm:TripFormViewModel">
                 <StackPanel>
@@ -79,17 +71,6 @@
                         </TransitionCollection>
                     </Grid.ChildrenTransitions>
 
-                    <Grid.Resources>
-                        <Storyboard x:Name="TransitPanelAppearStoryboard">
-                            <RepositionThemeAnimation TargetName="TransitContentPanel" FromVerticalOffset="-50"/>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="TransitContentPanel"
-                                                           Storyboard.TargetProperty="Opacity">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </Grid.Resources>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -103,12 +84,7 @@
                               Margin="0 0 0 10">
 
                             <Interactivity:Interaction.Behaviors>
-                                <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=TransitContentPanel}"
-                                                          ComparisonCondition="Equal"
-                                                          Value="Visible">
-                                    <Media:ControlStoryboardAction Storyboard="{StaticResource TransitPanelAppearStoryboard}"
-                                                                   ControlStoryboardOption="Play"/>
-                                </Core:DataTriggerBehavior>
+                                <lclBhvrs:AnimateVisibilityBehavior/>
                             </Interactivity:Interaction.Behaviors>
 
                             <Grid.RowDefinitions>
@@ -409,12 +385,7 @@
                                     HorizontalAlignment="Center" 
                                     Margin="0 10 0 0">
                         <Interactivity:Interaction.Behaviors>
-                            <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=NarrowRadioButtonStackPanel}"
-                                                        ComparisonCondition="Equal"
-                                                        Value="Visible">
-                                <Media:ControlStoryboardAction Storyboard="{StaticResource NarrowRadioButtonAppearStoryboard}"
-                                                                ControlStoryboardOption="Play"/>
-                            </Core:DataTriggerBehavior>
+                            <lclBhvrs:AnimateVisibilityBehavior/>
                         </Interactivity:Interaction.Behaviors>
                         <RadioButton x:Name="DepartureRadioButonNarrow"
                                         GroupName="TimeTypeNarrow"
@@ -482,17 +453,7 @@
                                             VerticalAlignment="Stretch"
                                             VerticalContentAlignment="Stretch"
                                             Width="450">
-                                    <ContentControl.Resources>
-                                        <Storyboard x:Name="WideRadioButtonAppearStoryboard">
-                                            <RepositionThemeAnimation TargetName="WideRadioButtonStackPanel" FromVerticalOffset="-50"/>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="WideRadioButtonStackPanel"
-                                                           Storyboard.TargetProperty="Opacity">
-                                                <EasingDoubleKeyFrame KeyTime="0:0:0" Value="0"/>
-                                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                                            </DoubleAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </ContentControl.Resources>
-                                    
+
                                     <ContentControl.Content>
                                         <Grid VerticalAlignment="Stretch">
                                             <Grid.RowDefinitions>
@@ -519,12 +480,7 @@
                                                         HorizontalAlignment="Center" 
                                                         Margin="0 10 0 0">
                                                 <Interactivity:Interaction.Behaviors>
-                                                    <Core:DataTriggerBehavior Binding="{Binding Visibility, ElementName=WideRadioButtonStackPanel}"
-                                                                              ComparisonCondition="Equal"
-                                                                              Value="Visible">
-                                                        <Media:ControlStoryboardAction Storyboard="{StaticResource WideRadioButtonAppearStoryboard}"
-                                                                                       ControlStoryboardOption="Play"/>
-                                                    </Core:DataTriggerBehavior>
+                                                    <lclBhvrs:AnimateVisibilityBehavior/>
                                                 </Interactivity:Interaction.Behaviors>
                                                 
                                                 <RadioButton x:Name="DepartureRadioButonWide"

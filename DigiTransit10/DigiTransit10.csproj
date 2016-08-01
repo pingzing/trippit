@@ -99,6 +99,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Behaviors\AnimateVisibilityBehavior.cs" />
     <Compile Include="Controls\CurrentTimePicker.xaml.cs">
       <DependentUpon>CurrentTimePicker.xaml</DependentUpon>
     </Compile>
@@ -186,6 +187,7 @@
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Services\ViewModelLocator.cs" />
+    <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
