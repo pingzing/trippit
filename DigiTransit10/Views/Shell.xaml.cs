@@ -3,37 +3,42 @@ using System.Linq;
 using Template10.Common;
 using Template10.Controls;
 using Template10.Services.NavigationService;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace DigiTransit10.Views
 {
     public sealed partial class Shell : Page
     {
         public static Shell Instance { get; set; }
-        public static HamburgerMenu HamburgerMenu => Instance.MyHamburgerMenu;
+        public static HamburgerMenu HamburgerMenu => Instance.MyHamburgerMenu;      
 
         public Shell()
         {
             Instance = this;
             InitializeComponent();
-            this.Loaded += Shell_Loaded;              
+
+            HamburgerMenu.Loaded += HamburgerMenu_Loaded;
         }
 
-        private void Shell_Loaded(object sender, RoutedEventArgs e)
-        {
+        private void HamburgerMenu_Loaded(object sender, RoutedEventArgs e)
+        {            
             if (HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay)
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Collapsed;
-                HamburgerMenu.HamburgerBackground.Opacity = 0;
+                HamburgerMenu.HamburgerBackground = new SolidColorBrush(Colors.Transparent);
             }
             else
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Visible;
-                HamburgerMenu.HamburgerBackground.Opacity = 1;
+                HamburgerMenu.HamburgerBackground = (SolidColorBrush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
             }
-        }
+
+            HamburgerMenu.DisplayModeChanged += MyHamburgerMenu_OnDisplayModeChanged;                   
+        }        
 
         public Shell(INavigationService navigationService) : this()
         {
@@ -51,12 +56,12 @@ namespace DigiTransit10.Views
             if (HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay)
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Collapsed;
-                HamburgerMenu.HamburgerBackground.Opacity = 0;
+                HamburgerMenu.HamburgerBackground = new SolidColorBrush(Colors.Transparent);
             }
             else
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Visible;
-                HamburgerMenu.HamburgerBackground.Opacity = 1;
+                HamburgerMenu.HamburgerBackground = (SolidColorBrush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
             }
         }
     }
