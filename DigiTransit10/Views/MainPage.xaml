@@ -263,43 +263,6 @@
                     </Button>
                 </Grid>
             </DataTemplate>
-
-            <!--Todo: Move this to the as-yet nonexistent Favorites page, where we can reuse it.-->
-            <!--<DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
-                <Grid>
-                    <TextBlock x:Name="EmptyListTextBlock"                    
-                               Visibility="{Binding Items.Count, ElementName=FavoritesListView, Converter={StaticResource EmptyNullToVisibilityConverter}}"
-                               Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
-                               Style="{StaticResource EmptyListHeaderStyle}"/>
-                    <ListView x:Name="FavoritesListView"
-                              ItemsSource="{x:Bind Favorites, Mode=OneWay}"
-                              IsRightTapEnabled="True"                              
-                              RightTapped="Favorite_RightTapped">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="models:IFavorite">
-                                <TextBlock Text="{x:Bind UserChosenName}" 
-                                           Style="{StaticResource BodyTextBlockStyle}"
-                                           VerticalAlignment="Center">
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <FlyoutBase.AttachedFlyout>
-                            <MenuFlyout>
-                                -->
-            <!--CommandParameter set in Code-behind just before showing the Flyout.-->
-            <!--
-                                <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
-                                                Command="{Binding FavoritesViewModel.DeleteFavoriteCommand, Mode=OneTime}"/>
-                            </MenuFlyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </ListView>
-                </Grid>
-            </DataTemplate>-->
         </ResourceDictionary>
     </Page.Resources>
 
@@ -438,7 +401,7 @@
 
                 <HubSection x:Name="WideTripFormSection"                            
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                            Margin="10"
+                            Margin="10 10 10 20"
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Stretch">
                     <HubSection.ContentTemplate>
@@ -516,7 +479,7 @@
 
                 <HubSection x:Name="TripResultHubSection" 
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                            Margin="10"
+                            Margin="10 10 10 20"
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Stretch"                            
                             Visibility="Collapsed">

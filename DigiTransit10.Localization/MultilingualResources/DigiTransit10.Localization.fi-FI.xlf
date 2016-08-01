@@ -166,6 +166,22 @@
           <source>No routes found</source>
           <target state="new">No routes found</target>
         </trans-unit>
+        <trans-unit id="FavoritesPage_PageHeader" translate="yes" xml:space="preserve">
+          <source>FAVORITES</source>
+          <target state="new">FAVORITES</target>
+        </trans-unit>
+        <trans-unit id="FavoritesPage_CommandBarAddFavorite" translate="yes" xml:space="preserve">
+          <source>Add favorite</source>
+          <target state="new">Add favorite</target>
+        </trans-unit>
+        <trans-unit id="NavigationLabels_Favorites" translate="yes" xml:space="preserve">
+          <source>Favorites</source>
+          <target state="new">Favorites</target>
+        </trans-unit>
+        <trans-unit id="NavigationLabels_Home" translate="yes" xml:space="preserve">
+          <source>Home</source>
+          <target state="new">Home</target>
+        </trans-unit>
       </group>
     </body>
   </file>

@@ -237,4 +237,16 @@
   <data name="DialogTitle_NoTripsFound" xml:space="preserve">
     <value>No routes found</value>
   </data>
+  <data name="FavoritesPage_CommandBarAddFavorite" xml:space="preserve">
+    <value>Add favorite</value>
+  </data>
+  <data name="FavoritesPage_PageHeader" xml:space="preserve">
+    <value>FAVORITES</value>
+  </data>
+  <data name="NavigationLabels_Favorites" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="NavigationLabels_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
 </root>

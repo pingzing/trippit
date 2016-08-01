@@ -31,7 +31,7 @@
                 <planStrip:TripPlanStrip StartingPlaceName="{Binding StartingPlaceName}"
                                          EndingPlaceName="{Binding EndingPlaceName}"
                                          StripItinerary="{Binding BackingItinerary}"
-                                         Margin="0 0 0 10"/>
+                                         Margin="10 0 10 10"/>
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>

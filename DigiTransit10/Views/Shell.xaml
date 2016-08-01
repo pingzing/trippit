@@ -15,13 +15,26 @@
 
         <Controls:HamburgerMenu.PrimaryButtons>
             <!--  mainpage button  -->
-            <Controls:HamburgerButtonInfo ClearHistory="True" PageType="views:MainPage" 
+            <Controls:HamburgerButtonInfo ClearHistory="True" 
+                                          PageType="views:MainPage" 
                                           AutomationProperties.Name="Home">
                 <StackPanel Orientation="Horizontal">
                     <SymbolIcon Width="48" Height="48"
                                 Symbol="Home" />
-                    <TextBlock Margin="12,0,0,0" VerticalAlignment="Center"
+                    <TextBlock Margin="12,0,0,0" 
+                               VerticalAlignment="Center"
                                Text="Home" />
+                </StackPanel>
+            </Controls:HamburgerButtonInfo>
+
+            <Controls:HamburgerButtonInfo PageType="views:FavoritesPage" 
+                                          AutomationProperties.Name="Favorites">
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Width="48" Height="48" 
+                               Symbol="Favorite"/>
+                    <TextBlock Margin="12 0 0 0 "
+                               VerticalAlignment="Center"
+                               Text="Favorites"/>
                 </StackPanel>
             </Controls:HamburgerButtonInfo>
         </Controls:HamburgerMenu.PrimaryButtons>

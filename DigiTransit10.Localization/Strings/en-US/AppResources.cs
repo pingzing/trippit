@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 07/28/2016 00:40:47
+// 	Generated: 08/01/2016 13:17:54
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -489,6 +489,50 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("DialogTitle_NoTripsFound");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Add favorite"
+        /// </summary>
+        public static string FavoritesPage_CommandBarAddFavorite
+        {
+            get
+            {
+                return resourceLoader.GetString("FavoritesPage_CommandBarAddFavorite");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "FAVORITES"
+        /// </summary>
+        public static string FavoritesPage_PageHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("FavoritesPage_PageHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Favorites"
+        /// </summary>
+        public static string NavigationLabels_Favorites
+        {
+            get
+            {
+                return resourceLoader.GetString("NavigationLabels_Favorites");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Home"
+        /// </summary>
+        public static string NavigationLabels_Home
+        {
+            get
+            {
+                return resourceLoader.GetString("NavigationLabels_Home");
             }
         }
     }
