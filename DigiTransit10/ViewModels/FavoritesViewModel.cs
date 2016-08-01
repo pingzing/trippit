@@ -53,6 +53,12 @@ namespace DigiTransit10.ViewModels
             }
 
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
+            Favorites.CollectionChanged += Favorites_CollectionChanged;
+        }
+
+        private void Favorites_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(FavoritePlaces));
         }
 
         private void DeleteFavorite(IFavorite favorite)

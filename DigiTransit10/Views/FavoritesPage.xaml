@@ -79,7 +79,7 @@
                         <MenuFlyout>
                             <!--CommandParameter set in Code-behind just before showing the Flyout.-->        
                                 <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
-                                                Command="{Binding FavoritesViewModel.DeleteFavoriteCommand, Mode=OneTime}"/>
+                                                Command="{Binding DeleteFavoriteCommand, Mode=OneTime}"/>
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
                     </ListView>

@@ -1,4 +1,5 @@
-﻿using DigiTransit10.ViewModels;
+﻿using DigiTransit10.Models;
+using DigiTransit10.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +33,15 @@ namespace DigiTransit10.Views
 
         private void Favorite_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-
+            ListView list = sender as ListView;
+            IFavorite tappedItem = (IFavorite)((FrameworkElement)e.OriginalSource).DataContext;
+            if (list == null)
+            {
+                return;
+            }
+            MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(list) as MenuFlyout;
+            ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
+            flyout.ShowAt(this, e.GetPosition(this));            
         }
     }
 }
