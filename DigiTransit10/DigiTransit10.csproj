@@ -310,7 +310,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Images\" />
-    <Folder Include="ViewModels\SubViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DigiTransit10.Backend\DigiTransit10.Backend.csproj">
