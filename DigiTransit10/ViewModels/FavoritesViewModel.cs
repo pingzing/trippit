@@ -9,6 +9,8 @@ using System.Collections.ObjectModel;
 using Template10.Mvvm;
 using System;
 using GalaSoft.MvvmLight.Command;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace DigiTransit10.ViewModels
 {
@@ -22,8 +24,14 @@ namespace DigiTransit10.ViewModels
         public ObservableCollection<IFavorite> Favorites
         {
             get { return _favorites; }
-            set { Set(ref _favorites, value); }
+            set
+            {
+                Set(ref _favorites, value);
+                RaisePropertyChanged(nameof(FavoritePlaces));
+            }
         }
+
+        public List<IPlace> FavoritePlaces => Favorites.Where(x => x is IPlace).Select(x => x as IPlace).ToList();
 
         private RelayCommand<IFavorite> _deleteFavoriteCommand = null;
         public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);

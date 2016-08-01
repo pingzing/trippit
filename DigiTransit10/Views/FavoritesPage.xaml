@@ -30,7 +30,7 @@
                               IsSourceGrouped="True"/>
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
-                <Grid>
+                <Grid Margin="10">
                     <TextBlock x:Name="EmptyListTextBlock"                    
                                Visibility="{x:Bind Favorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
@@ -144,7 +144,8 @@
             
         <lclCtls:DigiTransitMap x:Name="FavoritesMap"
                                 Grid.Row="0"
-                                Grid.RowSpan="1"/>
+                                Grid.RowSpan="1"
+                                Places="{x:Bind ViewModel.FavoritePlaces, Mode=OneWay}"/>
 
         <ContentControl x:Name="NarrowFavoritesList"
                         x:DeferLoadStrategy="Lazy"
