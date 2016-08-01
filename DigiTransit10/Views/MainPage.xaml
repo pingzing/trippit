@@ -384,7 +384,7 @@
                   x:DeferLoadStrategy="Lazy"
                   Visibility="Collapsed"
                   Opacity="0.3"
-                  Background="Black"
+                  Background="{ThemeResource ApplicationForegroundThemeBrush}"
                   IsHitTestVisible="False"
                   RelativePanel.AlignTopWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
