@@ -10,11 +10,10 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <!--MapElements (contains MapIcons and MapPolylines) cannot be databound; it must have stuff added in code-behind.
         XAML stuff can live in the MapItemsControl, which _can_ be databound.-->
-        <Maps:MapControl x:Name="DigiTransitMapControl">
-        </Maps:MapControl>
+        <Maps:MapControl x:Name="DigiTransitMapControl"/>
 
     </Grid>
 </UserControl>

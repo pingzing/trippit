@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Threading;
 using Windows.ApplicationModel;
 using DigiTransit10.Helpers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.ViewManagement;
 
 namespace DigiTransit10
 {
@@ -54,6 +55,8 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };                
             }
+
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(300, 800));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
