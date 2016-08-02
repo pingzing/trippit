@@ -28,11 +28,11 @@ namespace DigiTransit10.Controls
         }
 
         public static readonly DependencyProperty IsSecondaryCommandProperty =
-            DependencyProperty.Register("IsSecondaryCommand", typeof(bool), typeof(NavAppBarButton), new PropertyMetadata(false,
+            DependencyProperty.Register("IsSecondaryCommand", typeof(bool), typeof(MovableAppBarButton), new PropertyMetadata(false,
                 new PropertyChangedCallback(IsSecondaryCommandChanged)));
         private static void IsSecondaryCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            NavAppBarButton _this = d as NavAppBarButton;
+            MovableAppBarButton _this = d as MovableAppBarButton;
             if (_this == null)
             {
                 return;

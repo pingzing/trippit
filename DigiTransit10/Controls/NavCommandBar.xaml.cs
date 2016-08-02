@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 
 namespace DigiTransit10.Controls
 {
@@ -22,6 +23,11 @@ namespace DigiTransit10.Controls
         public NavCommandBar()
         {
             this.InitializeComponent();
+            if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.CommandBar", "OverflowButtonVisibility"))
+            {
+                this.OverflowButtonVisibility = CommandBarOverflowButtonVisibility.Visible;
+            }
+
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -41,6 +47,7 @@ namespace DigiTransit10.Controls
              * we update each button's IsCompact property accordingly. 
              */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
+            this.SizeChanged += NavCommandBar_SizeChanged;
         }
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
@@ -54,9 +61,7 @@ namespace DigiTransit10.Controls
         {
             var currSize = new Size(this.ActualWidth, this.ActualHeight);
             UpdateNavSeparatorVisibility();
-            this.UpdateLayout();
-
-            this.SizeChanged += NavCommandBar_SizeChanged;
+            this.UpdateLayout();            
 
             ReflowCommands(currSize, currSize);
             UpdateSelectionVisual();
@@ -68,8 +73,7 @@ namespace DigiTransit10.Controls
         private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {            
             ReflowCommands(e.PreviousSize, e.NewSize);
-        }
-        
+        }        
 
         private void Frame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
@@ -91,6 +95,7 @@ namespace DigiTransit10.Controls
         private void ReflowCommands(Size oldSize, Size newSize)
         {
             double ellipsisButtonWidth = 48;
+            double separatorWidth = 32;
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
             var currWidth = this.ActualWidth;
             var navWidth = this.NavigationButtons.ActualWidth;
@@ -98,16 +103,18 @@ namespace DigiTransit10.Controls
             foreach (var cmd in this.PrimaryCommands)
             {
                 primaryCommandsWidth += appButtonWidth;
-            }
-            primaryCommandsWidth += ellipsisButtonWidth;
+            }            
+
+            primaryCommandsWidth += ellipsisButtonWidth;            
 
             if (newSize.Width <= oldSize.Width)
             {
                 //shrinking
                 while ((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
                 {
-                    if (this.NavigationButtons.Children.Count > 3) //we can still remove some NavButtons
+                    if (this.NavigationButtons.Children.Count > 3) //always leave 1.) Home, 2.) Current Page 3.) The AppBarSeparator
                     {
+                        //Leave the current page, otherwise grab the element with the highest-numbered position.
                         var buttonToMove = (NavAppBarButton)this.NavigationButtons.Children
                             .Where(x => x != _currentlySelected && !(x is AppBarSeparator))
                             .Max(x => x as ISortableAppBarButton);
@@ -135,6 +142,13 @@ namespace DigiTransit10.Controls
                 while (currWidth - navWidth - primaryCommandsWidth >= appButtonWidth
                     && this.SecondaryCommands.Count > 0) //the bar has space for at least one button, and there are buttons to add
                 {
+                    //If we're adding back the first PrimaryCommand, factor in the width of the separator we'll be adding too
+                    if(PrimaryCommands.Count == 0
+                        && currWidth - navWidth - primaryCommandsWidth - separatorWidth < appButtonWidth)
+                    {
+                        return;                        
+                    }
+
                     //start by adding by PrimaryCommands
                     var primaryCommand = (MovableAppBarButton)this.SecondaryCommands
                         .Where(x => x is MovableAppBarButton)
@@ -166,8 +180,7 @@ namespace DigiTransit10.Controls
 
         private void InsertToNavBar(NavAppBarButton navCommand)
         {
-            int navButtonsCount = this.NavigationButtons.Children.Count;
-            //insert at i = -2 because the last element is the AppBarSeparator
+            int navButtonsCount = this.NavigationButtons.Children.Count;            
             this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
             navCommand.IsSecondaryCommand = false;
             navCommand.IsEnabled = true;
@@ -255,10 +268,14 @@ namespace DigiTransit10.Controls
                 SecondaryCommands.Add(buttonToMove);
             }
         }
-
+        
         private void TryRemoveSecondarySeparator()
         {
-            if (SecondaryCommands.Any(x => x is AppBarSeparator))
+            if (SecondaryCommands.Any(x => x is AppBarSeparator) && ( 
+                    SecondaryCommands.Count == 0
+                    || !SecondaryCommands.Any(x => x is NavAppBarButton)
+                    || !SecondaryCommands.Any(x => x is MovableAppBarButton)
+                ))
             {
                 int separatorIndex = SecondaryCommands.IndexOf(SecondaryCommands.First(x => x is AppBarSeparator));
                 SecondaryCommands.RemoveAt(separatorIndex);
