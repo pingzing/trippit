@@ -1,5 +1,7 @@
-﻿using DigiTransit10.Models;
+﻿using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Controls.Maps;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,8 +31,8 @@ namespace DigiTransit10.Views
 
         public FavoritesPage()
         {
-            this.InitializeComponent();
-        }
+            this.InitializeComponent();            
+        }        
 
         private void Favorite_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -42,6 +45,20 @@ namespace DigiTransit10.Views
             MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(list) as MenuFlyout;
             ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
             flyout.ShowAt(this, e.GetPosition(this));            
+        }
+
+        private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {            
+            var boundingBox = this.FavoritesMap.GetMapElementsBoundingBox();
+            if (boundingBox != null)
+            {
+                await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(50), MapAnimationKind.Bow);
+            }
         }
     }
 }

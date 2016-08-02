@@ -37,23 +37,17 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService)
-        {
-            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-            {
-                Favorites.Add(new FavoriteRoute { UserChosenName = "Home -> Work" });
-                Favorites.Add(new FavoritePlace { UserChosenName = "Helsinki" });
-            }
-
+        {            
             _networkService = networkService;
             _messengerService = messengerService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
-            foreach(var place in _settingsService.Favorites)
-            {
-                Favorites.AddSorted(place);
-            }
-
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();            
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
             Favorites.CollectionChanged += Favorites_CollectionChanged;
+
+            foreach (var place in _settingsService.Favorites)
+            {
+                Favorites.AddSorted(place);
+            }            
         }
 
         private void Favorites_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

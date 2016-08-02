@@ -14,7 +14,8 @@
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:models="using:DigiTransit10.Models"
     DataContext="{Binding Source={StaticResource Locator}, Path=Favorites}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
 
     <Page.Transitions>
         <TransitionCollection>
@@ -44,7 +45,8 @@
                     <ListView x:Name="FavoritesListView"
                               Header="{Binding Source={StaticResource Strings}, Path=Favorites_FavoritesHeader}"                              
                               ItemsSource="{x:Bind Favorites, Mode=OneWay}"
-                              IsRightTapEnabled="True"                              
+                              IsRightTapEnabled="True"
+                              ItemClick="FavoritesListView_ItemClick"
                               RightTapped="Favorite_RightTapped">
                     <ListView.HeaderTemplate>
                         <DataTemplate>

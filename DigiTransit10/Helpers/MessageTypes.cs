@@ -11,10 +11,9 @@ namespace DigiTransit10.Helpers
 {
     public static class MessageTypes
     {
-        public class PlanFoundMessage
-        {
-            public PlanFoundMessage() { }
-        }
+        public class PlanFoundMessage { }
+        public class CenterAroundFavoritesOnMap { }
+
         public class FavoritesChangedMessage
         {
             public ReadOnlyCollection<IFavorite> AddedFavorites { get; }

@@ -20,7 +20,8 @@
 
         <!--MapElements (contains MapIcons and MapPolylines) cannot be databound; it must have stuff added in code-behind.
         XAML stuff can live in the MapItemsControl, which _can_ be databound.-->
-        <Maps:MapControl x:Name="DigiTransitMapControl" LayoutUpdated="DigiTransitMapControl_LayoutUpdated" />
+        <Maps:MapControl x:Name="DigiTransitMapControl"                          
+                         LayoutUpdated="DigiTransitMapControl_LayoutUpdated" />
 
         <!--Visibility updated from code-behind.-->
         <Rectangle x:Name="LoadingScreen" Fill="Black"/>

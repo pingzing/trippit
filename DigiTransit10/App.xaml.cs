@@ -56,7 +56,7 @@ namespace DigiTransit10
                 };                
             }
 
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(300, 800));
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 

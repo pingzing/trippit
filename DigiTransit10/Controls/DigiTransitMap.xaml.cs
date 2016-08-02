@@ -17,6 +17,8 @@ namespace DigiTransit10.Controls
     {
         private DispatcherTimer _layoutUpdateTimer = new DispatcherTimer();
 
+        public event EventHandler MapElementsChanged;
+
         public static readonly DependencyProperty MapElementsProperty =
             DependencyProperty.Register("MapElements", typeof(List<MapElement>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnMapElementsChanged)));
@@ -57,6 +59,8 @@ namespace DigiTransit10.Controls
                     _this.DigiTransitMapControl.MapElements.Remove(element);
                 }
             }
+
+            _this.MapElementsChanged?.Invoke(_this, EventArgs.Empty);
         }
         public List<MapElement> MapElements
         {
@@ -103,7 +107,11 @@ namespace DigiTransit10.Controls
         {
             this.InitializeComponent();
             _layoutUpdateTimer.Interval = TimeSpan.FromMilliseconds(750);
-            _layoutUpdateTimer.Tick += _layoutUpdateTimer_Tick;           
+            _layoutUpdateTimer.Tick += _layoutUpdateTimer_Tick;
+
+            //Default location of Helsinki's Rautatientori
+            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition {Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
+            DigiTransitMapControl.ZoomLevel = 10;                        
         }
 
         private void _layoutUpdateTimer_Tick(object sender, object e)
@@ -126,6 +134,48 @@ namespace DigiTransit10.Controls
         {
             _layoutUpdateTimer.Stop();
             _layoutUpdateTimer.Start();
+        }
+
+        public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
+        {
+            await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
+        }
+
+        public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
+        {            
+            await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
+        }
+
+        /// <summary>
+        /// Returns a GeoboundingBox around all the MapElements currently on the map, or null if there are none.
+        /// </summary>
+        /// <returns></returns>
+        public GeoboundingBox GetMapElementsBoundingBox()
+        {
+            if (MapElements.Count <= 0 || !MapElements.Any(x => x is MapIcon))
+            {
+                return null;
+            }
+
+            var topLeft = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = MapElements.Select(x => x as MapIcon)
+                                       .Min(x => x.Location.Position.Longitude),
+                Latitude = MapElements.Select(x => x as MapIcon)
+                                      .Max(x => x.Location.Position.Latitude)
+            };
+
+            var bottomRight = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = MapElements.Select(x => x as MapIcon)
+                                       .Max(x => x.Location.Position.Longitude),
+                Latitude = MapElements.Select(x => x as MapIcon)
+                                      .Min(x => x.Location.Position.Latitude)
+            };
+
+            return new GeoboundingBox(topLeft, bottomRight);
         }
     }
 }
