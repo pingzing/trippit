@@ -110,6 +110,13 @@
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GroupedPlaceList.cs" />
+    <Compile Include="Controls\ISortableAppBarButton.cs" />
+    <Compile Include="Controls\MovableAppBarButton.xaml.cs">
+      <DependentUpon>MovableAppBarButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NavAppBarButton.xaml.cs">
+      <DependentUpon>NavAppBarButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NavCommandBar.xaml.cs">
       <DependentUpon>NavCommandBar.xaml</DependentUpon>
     </Compile>
@@ -248,6 +255,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DigiTransitSearchBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MovableAppBarButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NavAppBarButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

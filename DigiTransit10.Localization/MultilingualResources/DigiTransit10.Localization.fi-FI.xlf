@@ -182,6 +182,14 @@
           <source>Home</source>
           <target state="new">Home</target>
         </trans-unit>
+        <trans-unit id="NavigationLabels_Search" translate="yes" xml:space="preserve">
+          <source>Search</source>
+          <target state="new">Search</target>
+        </trans-unit>
+        <trans-unit id="NavigationLabels_Settings" translate="yes" xml:space="preserve">
+          <source>Settings</source>
+          <target state="new">Settings</target>
+        </trans-unit>
       </group>
     </body>
   </file>

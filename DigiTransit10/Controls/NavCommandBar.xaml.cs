@@ -5,18 +5,19 @@ using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using System.Linq;
 using Windows.UI.Xaml;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.Foundation.Collections;
+using System.Threading.Tasks;
 
 namespace DigiTransit10.Controls
 {
-    public sealed partial class NavCommandBar : CommandBar
+    public sealed partial class NavCommandBar : CommandBar, INotifyPropertyChanged
     {
         private readonly INavigationService _navigationService;
-        private AppBarButton _currentlySelected = null;
-        private const string NavCommandTag = "NavCommandButton";
-        private const string PrimaryCommandTag = "PrimaryCommand";
+        private AppBarButton _currentlySelected = null;        
 
-        public RelayCommand HomeCommand => new RelayCommand(GoHome);
-        public RelayCommand FavoritesCommand => new RelayCommand(GoFavorites);
+        public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);        
 
         public NavCommandBar()
         {
@@ -31,132 +32,296 @@ namespace DigiTransit10.Controls
            
             _navigationService = App.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
-            this.Loaded += NavCommandBar_Loaded;            
+            this.Loaded += NavCommandBar_Loaded;
+            this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
+            
+            /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
+             * Visibility updated automatically when the AppBar opens. Doing it via binding is bizarrely 
+             * unreliable. So instead, we listen directly to the IsOpen property, and when it changes, 
+             * we update each button's IsCompact property accordingly. 
+             */
+            this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
         }
 
-        private void NavCommandBar_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            NavCommandBar _this = sender as NavCommandBar;
+            bool isOpen = (bool)_this.GetValue(dp);
+            _this.UpdateButtonLabels(isOpen);           
+        }
+
+        private async void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
         {
             var currSize = new Size(this.ActualWidth, this.ActualHeight);
-            ReflowCommands(currSize, currSize);
+            UpdateNavSeparatorVisibility();
+            this.UpdateLayout();
+
             this.SizeChanged += NavCommandBar_SizeChanged;
+
+            ReflowCommands(currSize, currSize);
+            UpdateSelectionVisual();
+
+            await Task.Delay(25);
+            UpdateButtonLabels(IsOpen);                        
         }
 
-        private void NavCommandBar_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs e)
+        private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {            
             ReflowCommands(e.PreviousSize, e.NewSize);
         }
+        
 
-        //todo: clean this up, refactor this to use subclasses of AppBarButton instead of just hacking things together with Tags
+        private void Frame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
+        {
+            UpdateSelectionVisual();
+            UpdateButtonLabels(IsOpen);                        
+        }
+
+        private void PrimaryCommands_VectorChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs evt)
+        {
+            UpdateNavSeparatorVisibility();
+        }
+
+        //Disable the bar when we have a Loading/Busy overlay visible.
+        private void BusyView_BusyChanged(object sender, bool newIsBusy)
+        {
+            this.IsEnabled = !newIsBusy;
+        }
+
         private void ReflowCommands(Size oldSize, Size newSize)
         {
+            double ellipsisButtonWidth = 48;
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
             var currWidth = this.ActualWidth;
             var navWidth = this.NavigationButtons.ActualWidth;
             double primaryCommandsWidth = 0;
-            foreach(var cmd in this.PrimaryCommands)
+            foreach (var cmd in this.PrimaryCommands)
             {
                 primaryCommandsWidth += appButtonWidth;
             }
-            primaryCommandsWidth += 48; //accounting for the Ellipsis button, which is 48 wide
+            primaryCommandsWidth += ellipsisButtonWidth;
 
-            if(newSize.Width <= oldSize.Width)
+            if (newSize.Width <= oldSize.Width)
             {
                 //shrinking
-                while((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
-                {                    
-                    if(this.NavigationButtons.Children.Count > 3) //we can still remove some NavButtons
+                while ((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
+                {
+                    if (this.NavigationButtons.Children.Count > 3) //we can still remove some NavButtons
                     {
-                        var buttonToMove = (AppBarButton)this.NavigationButtons.Children
-                            .Last(x => x != _currentlySelected && !(x is AppBarSeparator));
+                        var buttonToMove = (NavAppBarButton)this.NavigationButtons.Children
+                            .Where(x => x != _currentlySelected && !(x is AppBarSeparator))
+                            .Max(x => x as ISortableAppBarButton);
 
                         this.NavigationButtons.Children.Remove(buttonToMove);
-                        buttonToMove.Tag = NavCommandTag;
-                        this.SecondaryCommands.Add(buttonToMove);
+                        InsertToSecondaryBar(buttonToMove);
                         navWidth -= appButtonWidth;
                     }
                     else //no more space, start removing PrimaryCommands
                     {
-                        AppBarButton buttonToMove = (AppBarButton)this.PrimaryCommands.LastOrDefault();
-                        if(buttonToMove == null)
+                        var buttonToMove = (MovableAppBarButton)this.PrimaryCommands.Max(x => x as ISortableAppBarButton);
+                        if (buttonToMove == null)
                         {
                             break;
                         }
-                        buttonToMove.Tag = PrimaryCommandTag;
                         this.PrimaryCommands.Remove(buttonToMove);
-                        this.SecondaryCommands.Add(buttonToMove);
+                        InsertToSecondaryBar(buttonToMove);
                         primaryCommandsWidth -= appButtonWidth;
                     }
                 }
             }
             else
             {
-                while(currWidth - navWidth - primaryCommandsWidth >= appButtonWidth 
+                //growing
+                while (currWidth - navWidth - primaryCommandsWidth >= appButtonWidth
                     && this.SecondaryCommands.Count > 0) //the bar has space for at least one button, and there are buttons to add
                 {
                     //start by adding by PrimaryCommands
-                    var primaryCommand = (AppBarButton)this.SecondaryCommands
-                        .FirstOrDefault(x => x is AppBarButton && (string)((AppBarButton)x).Tag == PrimaryCommandTag);
+                    var primaryCommand = (MovableAppBarButton)this.SecondaryCommands
+                        .Where(x => x is MovableAppBarButton)
+                        .Min(x => x as ISortableAppBarButton);
+
                     if (primaryCommand != null)
                     {
                         this.SecondaryCommands.Remove(primaryCommand);
-                        this.PrimaryCommands.Add(primaryCommand);
-                        primaryCommand.IsEnabled = true;
+                        InsertToPrimaryBar(primaryCommand);
                         primaryCommandsWidth += appButtonWidth;
                     }
                     else
                     {
                         //After all those are back, start adding NavCommands
-                        var navCommand = (AppBarButton)this.SecondaryCommands
-                            .FirstOrDefault(x => x is AppBarButton && (string)((AppBarButton)x).Tag == NavCommandTag);
+                        var navCommand = (NavAppBarButton)this.SecondaryCommands
+                            .Where(x => x is NavAppBarButton)
+                            .Min(x => x as ISortableAppBarButton);
+
                         if (navCommand != null)
                         {
                             this.SecondaryCommands.Remove(navCommand);
-                            navCommand.Tag = false;
-                            int navButtonsCount = this.NavigationButtons.Children.Count;
-                            //insert at i = -2 because the last element is the AppBarSeparator
-                            this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
-                            navCommand.IsEnabled = true;
+                            InsertToNavBar(navCommand);
                             navWidth += appButtonWidth;
                         }
                     }
                 }
+            }            
+        }
+
+        private void InsertToNavBar(NavAppBarButton navCommand)
+        {
+            int navButtonsCount = this.NavigationButtons.Children.Count;
+            //insert at i = -2 because the last element is the AppBarSeparator
+            this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
+            navCommand.IsSecondaryCommand = false;
+            navCommand.IsEnabled = true;
+                
+            TryRemoveSecondarySeparator();
+            UpdateButtonLabels(IsOpen);
+        }
+
+        private void InsertToPrimaryBar(MovableAppBarButton primaryCommand)
+        {
+            this.PrimaryCommands.Add(primaryCommand);
+            primaryCommand.IsEnabled = true;
+            primaryCommand.IsSecondaryCommand = false;
+
+            TryRemoveSecondarySeparator();
+        }
+
+        private void InsertToSecondaryBar(NavAppBarButton buttonToMove)
+        {
+            buttonToMove.IsSecondaryCommand = true;
+
+            if (SecondaryCommands.Any(x => x is MovableAppBarButton) && !SecondaryCommands.Any(x => x is AppBarSeparator))
+            {
+                SecondaryCommands.Insert(0, new AppBarSeparator());
+            }
+
+            int separatorIndex = -1;
+            if (SecondaryCommands.Any(x => x is AppBarSeparator))
+            {
+                separatorIndex = SecondaryCommands.IndexOf(SecondaryCommands.First(x => x is AppBarSeparator));
+            }
+
+            int endIndex = separatorIndex != -1 ? separatorIndex - 1 : SecondaryCommands.Count - 1;
+            if (endIndex == -1) //nothing in the SecondaryCommands list yet
+            {
+                SecondaryCommands.Add(buttonToMove);
+            }
+            else //we've got at least one other SecondaryCommand, maybe more
+            {
+                for (int i = 0; i <= endIndex; i++)
+                {
+                    int currCommandPosition = ((ISortableAppBarButton)SecondaryCommands[i]).Position;
+                    if (buttonToMove.Position < currCommandPosition)
+                    {
+                        SecondaryCommands.Insert(i, buttonToMove);                        
+                        return;
+                    }
+                }
+                //if we get through the entire list and we don't find anything of a lesser priority, the new button belongs at the end
+                SecondaryCommands.Insert(endIndex, buttonToMove);
             }
         }
 
-        private void Frame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
-        {            
-            HomeButton.Tag = false;
-            FavoritesButton.Tag = false;
-
-            if(_navigationService.CurrentPageType == typeof(Views.MainPage))
+        private void InsertToSecondaryBar(MovableAppBarButton buttonToMove)
+        {
+            buttonToMove.IsSecondaryCommand = true;
+            if (SecondaryCommands.Any(x => x is NavAppBarButton) && !SecondaryCommands.Any(x => x is AppBarSeparator))
             {
-                HomeButton.Tag = true;
+                SecondaryCommands.Add(new AppBarSeparator());
+            }
+
+            int separatorIndex = -1;
+            if (SecondaryCommands.Any(x => x is AppBarSeparator))
+            {
+                separatorIndex = SecondaryCommands.IndexOf(SecondaryCommands.First(x => x is AppBarSeparator));
+            }
+
+            int startIndex = separatorIndex != -1 ? separatorIndex + 1 : 0;
+            if (startIndex == 0)
+            {
+                SecondaryCommands.Add(buttonToMove);
+            }
+            else
+            {
+                for (int i = startIndex; i < SecondaryCommands.Count; i++)
+                {
+                    int currCommandPosition = ((ISortableAppBarButton)SecondaryCommands[i]).Position;
+                    if (buttonToMove.Position < currCommandPosition)
+                    {
+                        SecondaryCommands.Insert(i, buttonToMove);                        
+                        return;
+                    }
+                }
+                //if we get through the entire list and we don't find anything of a lesser priority, the new button belongs at the end
+                SecondaryCommands.Add(buttonToMove);
+            }
+        }
+
+        private void TryRemoveSecondarySeparator()
+        {
+            if (SecondaryCommands.Any(x => x is AppBarSeparator))
+            {
+                int separatorIndex = SecondaryCommands.IndexOf(SecondaryCommands.First(x => x is AppBarSeparator));
+                SecondaryCommands.RemoveAt(separatorIndex);
+            }
+        }
+
+        private void UpdateSelectionVisual()
+        {
+            HomeButton.IsSelected = false;
+            FavoritesButton.IsSelected = false;
+            SearchButton.IsSelected = false;
+            SettingsButton.IsSelected = false;
+
+            if (_navigationService.CurrentPageType == typeof(Views.MainPage))
+            {
+                HomeButton.IsSelected = true;
                 _currentlySelected = HomeButton;
             }
-            if(_navigationService.CurrentPageType == typeof(Views.FavoritesPage))
+            if (_navigationService.CurrentPageType == typeof(Views.FavoritesPage))
             {
-                FavoritesButton.Tag = true;
+                FavoritesButton.IsSelected = true;
                 _currentlySelected = FavoritesButton;
             }
-
         }
 
-        private void BusyView_BusyChanged(object sender, bool newIsBusy)
+        private void UpdateButtonLabels(bool isOpen)
         {
-            this.IsEnabled = !newIsBusy;
+            foreach (var button in NavigationButtons.Children.Where(x => x is NavAppBarButton))
+            {
+                ((NavAppBarButton)button).IsCompact = !isOpen;
+            }            
         }
 
-        private void GoHome()
+        private void UpdateNavSeparatorVisibility()
+        {
+            if (PrimaryCommands.Count > 0
+                && NavButtonSeparator.Visibility == Visibility.Collapsed)
+            {
+                NavButtonSeparator.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                if (NavButtonSeparator.Visibility == Visibility.Visible)
+                {
+                    NavButtonSeparator.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void Navigate(Type destination)
         {
             _navigationService.Frame.Navigated -= Frame_Navigated;
-            _navigationService.ClearHistory();
-            _navigationService.NavigateAsync(typeof(Views.MainPage));
+            if(destination == typeof(Views.MainPage))
+            {
+                _navigationService.ClearHistory();
+            }
+            _navigationService.NavigateAsync(destination);
         }
 
-        private void GoFavorites()
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
-            _navigationService.Frame.Navigated -= Frame_Navigated;
-            _navigationService.NavigateAsync(typeof(Views.FavoritesPage));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

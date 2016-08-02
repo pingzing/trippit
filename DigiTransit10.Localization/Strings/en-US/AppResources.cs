@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/01/2016 13:17:54
+// 	Generated: 08/02/2016 16:36:39
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -533,6 +533,28 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("NavigationLabels_Home");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Search"
+        /// </summary>
+        public static string NavigationLabels_Search
+        {
+            get
+            {
+                return resourceLoader.GetString("NavigationLabels_Search");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Settings"
+        /// </summary>
+        public static string NavigationLabels_Settings
+        {
+            get
+            {
+                return resourceLoader.GetString("NavigationLabels_Settings");
             }
         }
     }

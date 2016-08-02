@@ -249,4 +249,10 @@
   <data name="NavigationLabels_Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="NavigationLabels_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="NavigationLabels_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>
