@@ -6,6 +6,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.Devices.Geolocation;
+using System.Threading.Tasks;
+using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -13,6 +15,8 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitMap : UserControl
     {
+        private DispatcherTimer _layoutUpdateTimer = new DispatcherTimer();
+
         public static readonly DependencyProperty MapElementsProperty =
             DependencyProperty.Register("MapElements", typeof(List<MapElement>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnMapElementsChanged)));
@@ -98,6 +102,30 @@ namespace DigiTransit10.Controls
         public DigiTransitMap()
         {
             this.InitializeComponent();
+            _layoutUpdateTimer.Interval = TimeSpan.FromMilliseconds(750);
+            _layoutUpdateTimer.Tick += _layoutUpdateTimer_Tick;           
+        }
+
+        private void _layoutUpdateTimer_Tick(object sender, object e)
+        {
+            HideLoadingScreenStoryboard.Begin();
+            HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
+        }
+
+        private void HideLoadingScreenStoryboard_Completed(object sender, object e)
+        {
+            _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
+            _layoutUpdateTimer.Stop();
+            this.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;   
+                     
+            LoadingScreen.Visibility = Visibility.Collapsed;
+            LoadingRing.Visibility = Visibility.Collapsed;            
+        }
+
+        private void DigiTransitMapControl_LayoutUpdated(object sender, object e)
+        {
+            _layoutUpdateTimer.Stop();
+            _layoutUpdateTimer.Start();
         }
     }
 }

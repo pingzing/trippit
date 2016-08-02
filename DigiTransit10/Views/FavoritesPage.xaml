@@ -19,7 +19,7 @@
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition>
-                <EntranceNavigationTransitionInfo/>
+                <SuppressNavigationTransitionInfo />
             </NavigationThemeTransition>
         </TransitionCollection>
     </Page.Transitions>
@@ -31,6 +31,12 @@
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
                 <Grid Margin="10">
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+                    
                     <TextBlock x:Name="EmptyListTextBlock"                    
                                Visibility="{x:Bind Favorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
@@ -130,6 +136,11 @@
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
             </controls:PageHeader.SecondaryCommands>
+            <controls:PageHeader.Transitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                </TransitionCollection>
+            </controls:PageHeader.Transitions>
         </controls:PageHeader>
 
         <Grid x:Name="ContentRoot"
@@ -142,18 +153,24 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             
-        <lclCtls:DigiTransitMap x:Name="FavoritesMap"
+        <lclCtls:DigiTransitMap x:Name="FavoritesMap"                                
                                 Grid.Row="0"
                                 Grid.RowSpan="1"
                                 Places="{x:Bind ViewModel.FavoritePlaces, Mode=OneWay}"/>
 
-        <ContentControl x:Name="NarrowFavoritesList"
+            <ContentControl x:Name="NarrowFavoritesList"
                         x:DeferLoadStrategy="Lazy"
                         Grid.Row="1"
                         DataContext="{x:Bind ViewModel, Mode=OneWay}"
                         ContentTemplate="{StaticResource FavoritesTemplate}"
                         HorizontalContentAlignment="Stretch"
-                        Visibility="Collapsed"/>
+                        Visibility="Collapsed">
+                <ContentControl.Transitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                    </TransitionCollection>
+                </ContentControl.Transitions>
+            </ContentControl>
 
             <Grid x:Name="WideFavoritesPanel" 
                   x:DeferLoadStrategy="Lazy"
@@ -166,6 +183,16 @@
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
                   Visibility="Collapsed">
+                <Grid.Transitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                    </TransitionCollection>
+                </Grid.Transitions>
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
                 
                 <ContentControl x:Name="WideFavoritesList"                                                
                                 DataContext="{x:Bind ViewModel, Mode=OneWay}"
@@ -181,7 +208,9 @@
         <lclCtls:NavCommandBar x:Name="FavoritesBottomBar" 
                                x:DeferLoadStrategy="Lazy"
                                Visibility="Collapsed">
-            <AppBarButton Icon="Add" Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"/>
+            <lclCtls:MovableAppBarButton Icon="Add" 
+                                         Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"
+                                         Position="0"/>
         </lclCtls:NavCommandBar>
     </Page.BottomAppBar>
     

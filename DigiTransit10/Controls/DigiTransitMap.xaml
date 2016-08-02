@@ -9,11 +9,21 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <Storyboard x:Name="HideLoadingScreenStoryboard">
+            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="LoadingRing" d:IsOptimized="True"/>
+            <DoubleAnimation Duration="0:0:0.5" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="LoadingScreen" d:IsOptimized="True"/>
+        </Storyboard>
+    </UserControl.Resources>
 
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+
         <!--MapElements (contains MapIcons and MapPolylines) cannot be databound; it must have stuff added in code-behind.
         XAML stuff can live in the MapItemsControl, which _can_ be databound.-->
-        <Maps:MapControl x:Name="DigiTransitMapControl"/>
+        <Maps:MapControl x:Name="DigiTransitMapControl" LayoutUpdated="DigiTransitMapControl_LayoutUpdated" />
 
+        <!--Visibility updated from code-behind.-->
+        <Rectangle x:Name="LoadingScreen" Fill="Black"/>
+        <ProgressRing x:Name="LoadingRing" Foreground="White" IsActive="True" Width="50" Height="50"/>
     </Grid>
 </UserControl>
