@@ -28,7 +28,8 @@
     <Page.Resources>
         <CollectionViewSource x:Key="FavoritesViewSourceKey"
                               x:Name="FavoritesViewSource"
-                              IsSourceGrouped="True"/>
+                              IsSourceGrouped="True"
+                              Source="{x:Bind ViewModel.Favorites, Mode=OneWay}"/>
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
                 <Grid Margin="10">
@@ -42,17 +43,35 @@
                                Visibility="{x:Bind Favorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
-                    <ListView x:Name="FavoritesListView"
-                              Header="{Binding Source={StaticResource Strings}, Path=Favorites_FavoritesHeader}"                              
-                              ItemsSource="{x:Bind Favorites, Mode=OneWay}"
+                <ListView x:Name="FavoritesListView"                                                            
+                              Margin="-10"                              
+                              Padding="10"
+                              ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"
                               IsRightTapEnabled="True"
                               ItemClick="FavoritesListView_ItemClick"
                               RightTapped="Favorite_RightTapped">
-                    <ListView.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" Style="{StaticResource TitleTextBlockStyle}"/>
-                        </DataTemplate>
-                    </ListView.HeaderTemplate>
+                    <ListView.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.HeaderContainerStyle>
+                                <Style TargetType="ListViewHeaderItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </GroupStyle.HeaderContainerStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="-25 -20 -25 0" HorizontalAlignment="Stretch">
+                                        <Border Background="{ThemeResource SystemControlBackgroundAccentBrush}" HorizontalAlignment="Stretch">
+                                            <TextBlock Foreground="White"
+                                                       HorizontalAlignment="Stretch"
+                                                       Margin="15 10 15 5"
+                                                       Text="{Binding Key}" 
+                                                       Style="{StaticResource TitleTextBlockStyle}"/>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                        </ListView.GroupStyle>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -158,7 +177,7 @@
         <lclCtls:DigiTransitMap x:Name="FavoritesMap"                                
                                 Grid.Row="0"
                                 Grid.RowSpan="1"
-                                Places="{x:Bind ViewModel.FavoritePlaces, Mode=OneWay}"/>
+                                Places="{Binding FavoritePlaces}"/>
 
             <ContentControl x:Name="NarrowFavoritesList"
                         x:DeferLoadStrategy="Lazy"
@@ -179,12 +198,13 @@
                   Grid.Row="0"
                   Grid.RowSpan="2"
                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                  BorderBrush="{ThemeResource SystemControlBackgroundAccentBrush}"
+                  BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
                   BorderThickness="2"
-                  Margin="20"
+                  Margin="10"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch"
-                  Visibility="Collapsed">
+                  Visibility="Collapsed"
+                  Width="400">
                 <Grid.Transitions>
                     <TransitionCollection>
                         <EntranceThemeTransition IsStaggeringEnabled="True"/>

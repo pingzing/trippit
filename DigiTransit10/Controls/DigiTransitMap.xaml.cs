@@ -79,14 +79,14 @@ namespace DigiTransit10.Controls
                 return;
             }
             
-            var newList = e.NewValue as List<IPlace>;
+            var newList = e.NewValue as IList<IFavorite>;
             if(newList == null || newList.Count == 0)
             {
                 return;
             }
 
             List<MapElement> elements = new List<MapElement>();
-            foreach(var place in newList)
+            foreach(var place in newList.OfType<IPlace>())
             {
                 MapIcon element = new MapIcon();
                 element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
@@ -124,9 +124,9 @@ namespace DigiTransit10.Controls
         {
             _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
             _layoutUpdateTimer.Stop();
-            this.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;   
-                     
-            LoadingScreen.Visibility = Visibility.Collapsed;
+            this.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;
+
+            DigiTransitMapControl.Opacity = 1;
             LoadingRing.Visibility = Visibility.Collapsed;            
         }
 
@@ -143,7 +143,7 @@ namespace DigiTransit10.Controls
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
         {            
-            await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
+            await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);            
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace DigiTransit10.Controls
         /// <returns></returns>
         public GeoboundingBox GetMapElementsBoundingBox()
         {
-            if (MapElements.Count <= 0 || !MapElements.Any(x => x is MapIcon))
+            if (MapElements == null || MapElements.Count <= 0 || !MapElements.Any(x => x is MapIcon))
             {
                 return null;
             }

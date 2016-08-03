@@ -57,7 +57,7 @@ namespace DigiTransit10.Views
             var boundingBox = this.FavoritesMap.GetMapElementsBoundingBox();
             if (boundingBox != null)
             {
-                await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(50), MapAnimationKind.Bow);
+                await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);
             }
         }
     }

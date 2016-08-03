@@ -65,8 +65,7 @@ namespace DigiTransit10.Controls
 
             ReflowCommands(currSize, currSize);
             UpdateSelectionVisual();
-
-            await Task.Delay(25);
+            
             UpdateButtonLabels(IsOpen);                        
         }
 
@@ -306,6 +305,9 @@ namespace DigiTransit10.Controls
             foreach (var button in NavigationButtons.Children.Where(x => x is NavAppBarButton))
             {
                 ((NavAppBarButton)button).IsCompact = !isOpen;
+                string label = ((NavAppBarButton) button).Label;
+                ((NavAppBarButton) button).Label = "";
+                ((NavAppBarButton) button).Label = label;
             }            
         }
 

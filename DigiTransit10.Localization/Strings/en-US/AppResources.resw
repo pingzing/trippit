@@ -255,4 +255,10 @@
   <data name="NavigationLabels_Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="Favorites_PlacesGroupHeader" xml:space="preserve">
+    <value>Places</value>
+  </data>
+  <data name="Favorites_RoutesGroupHeader" xml:space="preserve">
+    <value>Routes</value>
+  </data>
 </root>

@@ -190,6 +190,14 @@
           <source>Settings</source>
           <target state="new">Settings</target>
         </trans-unit>
+        <trans-unit id="Favorites_PlacesGroupHeader" translate="yes" xml:space="preserve">
+          <source>Places</source>
+          <target state="new">Places</target>
+        </trans-unit>
+        <trans-unit id="Favorites_RoutesGroupHeader" translate="yes" xml:space="preserve">
+          <source>Routes</source>
+          <target state="new">Routes</target>
+        </trans-unit>
       </group>
     </body>
   </file>

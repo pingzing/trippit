@@ -109,6 +109,7 @@
     <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GroupedFavoriteList.cs" />
     <Compile Include="Controls\GroupedPlaceList.cs" />
     <Compile Include="Controls\ISortableAppBarButton.cs" />
     <Compile Include="Controls\MovableAppBarButton.xaml.cs">
