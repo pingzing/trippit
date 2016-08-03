@@ -28,7 +28,6 @@ namespace DigiTransit10.Controls
                 this.OverflowButtonVisibility = CommandBarOverflowButtonVisibility.Visible;
             }
 
-
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 return;
@@ -57,7 +56,7 @@ namespace DigiTransit10.Controls
             _this.UpdateButtonLabels(isOpen);           
         }
 
-        private async void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
+        private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
         {
             var currSize = new Size(this.ActualWidth, this.ActualHeight);
             UpdateNavSeparatorVisibility();

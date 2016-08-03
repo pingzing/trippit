@@ -18,6 +18,7 @@
     x:Class="DigiTransit10.Views.MainPage"    
     x:Name="ThisMainPage"
     mc:Ignorable="d"
+    d:DesignHeight="775"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}">
 
     <Page.Resources>
@@ -29,182 +30,158 @@
             <DataTemplate x:Key="TopPanelHalf" x:DataType="vm:TripFormViewModel">
                 <StackPanel>
 
-                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"
+                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                  
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"
                                                   FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
-                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"
+                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"                                                  
                                                   Header="{Binding MainPage_ToHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
                                                   FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"
                                                   Margin="0 10 0 0" />
 
-                    <Grid Margin="0 10 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock x:Name="TimeHeader"                                                                       
-                                   Grid.Row="0" Grid.Column="0"
-                                   Margin="0 0 0 5"
-                                   Text="{Binding LiteralTime, Source={StaticResource Strings}}"/>
-                        <lclCtls:CurrentTimePicker x:Name="TimePicker"
-                                                   Grid.Row="1" Grid.Column="0"
-                                                   Grid.ColumnSpan="2"                                                   
-                                                   HorizontalAlignment="Stretch"                                    
-                                                   Time="{x:Bind SelectedTime, Mode=TwoWay}"
-                                                   UseCurrentTime="{x:Bind IsUsingCurrentTime, Mode=TwoWay}"/>
-                    </Grid>
+                    <TextBlock x:Name="TimeHeader"                                                                                                       
+                                Margin="0 10 0 5"
+                                Text="{Binding LiteralTime, Source={StaticResource Strings}}"/>
+                    <lclCtls:CurrentTimePicker x:Name="TimePicker"                                                                                         
+                                               HorizontalAlignment="Stretch"                                    
+                                               Time="{x:Bind SelectedTime, Mode=TwoWay}"
+                                               UseCurrentTime="{x:Bind IsUsingCurrentTime, Mode=TwoWay}"/>
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="BottomPanelHalf" x:DataType="vm:TripFormViewModel">
-                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-
-                    <Grid.ChildrenTransitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </Grid.ChildrenTransitions>
+                <Grid HorizontalAlignment="Stretch"
+                      Margin="0 10 0 0"
+                      VerticalAlignment="Stretch">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0">
 
-                        <Grid x:Name="TransitContentPanel" 
-                              Visibility="{x:Bind IsTransitPanelVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
-                              HorizontalAlignment="Stretch"
-                              Margin="0 0 0 10">
+                    <Grid x:Name="TransitContentPanel" 
+                          Grid.Row="0"
+                          Visibility="{x:Bind IsTransitPanelVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                          HorizontalAlignment="Stretch"
+                          Margin="0 0 0 10">
+                        
+                        <Interactivity:Interaction.Behaviors>
+                            <lclBhvrs:AnimateVisibilityBehavior/>
+                        </Interactivity:Interaction.Behaviors>
 
-                            <Interactivity:Interaction.Behaviors>
-                                <lclBhvrs:AnimateVisibilityBehavior/>
-                            </Interactivity:Interaction.Behaviors>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="65"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="65"/>
-                                <RowDefinition Height="65"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-
-                            <Grid Margin="0 10 0 0" 
-                                  Grid.ColumnSpan="3"
-                                  HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock x:Name="DateHeader"                                                                               
+                        <TextBlock x:Name="DateHeader"                                                                               
                                        Grid.Row="0" Grid.Column="0"
+                                       Grid.ColumnSpan="2"
                                        Text="{Binding LiteralDate, Source={StaticResource Strings}}"/>
-                                <HyperlinkButton Grid.Row="0" Grid.Column="1"
+                        
+                        <HyperlinkButton Grid.Row="0" Grid.Column="1"
+                                             Grid.ColumnSpan="2"
                                              HorizontalAlignment="Right"
                                              Padding="0"
                                              Command="{x:Bind SetDateToTodayCommand}">
-                                    <HyperlinkButton.ContentTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding TripForm_SetDateToNow, Source={StaticResource Strings}}"/>
-                                        </DataTemplate>
-                                    </HyperlinkButton.ContentTemplate>
-                                </HyperlinkButton>
+                            <HyperlinkButton.ContentTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TripForm_SetDateToNow, Source={StaticResource Strings}}"/>
+                                </DataTemplate>
+                            </HyperlinkButton.ContentTemplate>
+                        </HyperlinkButton>
 
-                                <DatePicker x:Name="DatePicker"
+                        <DatePicker x:Name="DatePicker"
                                     Grid.Row="1" Grid.Column="0"
-                                    Grid.ColumnSpan="2"
+                                    Grid.ColumnSpan="3"
                                     HorizontalAlignment="Stretch"
                                     Style="{StaticResource WideDatePickerStyle}"
                                     Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
-                            </Grid>
 
-                            <TextBlock x:Name="TransitTypeHeader" 
-                                       Grid.Row="1"
+                        <TextBlock x:Name="TransitTypeHeader" 
+                                       Grid.Row="2"
                                        Grid.Column="0"
                                        Grid.ColumnSpan="3"
                                        Margin="0 10 0 -5"
                                        Text="{Binding Source={StaticResource Strings}, Path=TripForm_TransitTypeHeader}"/>
 
-                            <CheckBox x:Name="BusCheckBox"                                                      
-                                      Grid.Row="2" Grid.Column="0" MinWidth="100"
+                        <CheckBox x:Name="BusCheckBox"                                                      
+                                      Grid.Row="3" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsBusChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslBusBlueBrush}"                                                              
                                           FontSize="50"                                                              
                                           Glyph="{Binding BusIcon, Source={StaticResource FontIcons}}"/>
-                            </CheckBox>
-                            <CheckBox x:Name="TramCheckBox"                                                       
-                                      Grid.Row="2" Grid.Column="1" MinWidth="100"
+                        </CheckBox>
+                        <CheckBox x:Name="TramCheckBox"                                                       
+                                      Grid.Row="3" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsTramChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslTramGreenBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TramIcon, Source={StaticResource FontIcons}}"/>
-                            </CheckBox>
-                            <CheckBox x:Name="TrainCheckBox" 
-                                      Grid.Row="2" Grid.Column="2" MinWidth="100"
+                        </CheckBox>
+                        <CheckBox x:Name="TrainCheckBox" 
+                                      Grid.Row="3" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsTrainChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
                                           Foreground="{StaticResource HslTrainPurpleBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TrainIcon, Source={StaticResource FontIcons}}"/>
-                            </CheckBox>
-                            <CheckBox x:Name="MetroCheckBox" 
-                                      Grid.Row="3" Grid.Column="0" MinWidth="100"
+                        </CheckBox>
+                        <CheckBox x:Name="MetroCheckBox" 
+                                      Grid.Row="4" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsMetroChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}"
+                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}"
                                           Foreground="{Binding Source={StaticResource HslMetroOrangeBrush}}"
                                           FontSize="50"
                                           Glyph="{Binding MetroIcon, Source={StaticResource FontIcons}}" />
-                            </CheckBox>
-                            <CheckBox x:Name="FerryCheckBox"
-                                      Grid.Row="3" Grid.Column="1" MinWidth="100"
+                        </CheckBox>
+                        <CheckBox x:Name="FerryCheckBox"
+                                      Grid.Row="4" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsFerryChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
+                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
                                           Foreground="{Binding Source={StaticResource HslFerryBlueBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding FerryIcon, Source={StaticResource FontIcons}}"/>
-                            </CheckBox>
-                            <CheckBox x:Name="BikeCheckBox"
-                                      Grid.Row="3" Grid.Column="2" MinWidth="100"
+                        </CheckBox>
+                        <CheckBox x:Name="BikeCheckBox"
+                                      Grid.Row="4" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsBikeChecked, Mode=TwoWay}">
-                                <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
+                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
                                           Foreground="{Binding Source={StaticResource HslBikeGoldenrodBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding BikeIcon, Source={StaticResource FontIcons}}"/>
-                            </CheckBox>
-                        </Grid>
+                        </CheckBox>
+                    </Grid>
 
-                        <HyperlinkButton x:Name="HideShowOptionsButton" 
-                                         Margin="0 10 0 0"
-                                     Click="HideShowOptionsButton_Click">
-                            <HyperlinkButton.Transitions>
-                                <TransitionCollection>
-                                    <RepositionThemeTransition/>
-                                </TransitionCollection>
-                            </HyperlinkButton.Transitions>
-                            <TextBlock>
+                    <HyperlinkButton x:Name="HideShowOptionsButton"                                          
+                                         Grid.Row="1"
+                                         Click="HideShowOptionsButton_Click">
+                        <HyperlinkButton.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </HyperlinkButton.Transitions>
+                        
+                        <TextBlock>
                                 <Run FontSize="20" Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/> <Run FontFamily="Segoe MDL2 Assets" Text="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
-                            </TextBlock>
-                        </HyperlinkButton>
-                    </StackPanel>
+                        </TextBlock>
+                    </HyperlinkButton>
 
                     <ListView x:Name="PinnedFavoritesControl"
-                              Grid.Row="1"
+                              Grid.Row="2"
                               AllowDrop="True"
                               CanReorderItems="True"                                  
                               IsItemClickEnabled="True"
@@ -214,6 +191,11 @@
                               Margin="0 10 0 0"
                               SelectionMode="None"
                               RightTapped="PinnedFavoritesControl_OnRightTapped">
+                        <ListView.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </ListView.Transitions>
                         <ListView.Header>
                             <TextBlock>
                                 <Run FontFamily="{ThemeResource SymbolThemeFontFamily}" 
@@ -252,7 +234,7 @@
                     </ListView>
 
                     <Button x:Name="PlanTripButton"
-                            Grid.Row="2"
+                            Grid.Row="3"
                             VerticalAlignment="Bottom"
                             Margin="0 10 0 10" 
                             Background="{ThemeResource SystemControlBackgroundAccentBrush}"
@@ -260,6 +242,11 @@
                             HorizontalAlignment="Stretch"
                             Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
                             Command="{x:Bind PlanTripCommand}">
+                        <Button.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </Button.Transitions>
                     </Button>
                 </Grid>
             </DataTemplate>
@@ -334,33 +321,47 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
                     <ContentControl Grid.Row="0" 
-                                            HorizontalAlignment="Stretch" 
-                                            HorizontalContentAlignment="Stretch"
-                                            ContentTemplate="{StaticResource TopPanelHalf}"/>
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Stretch" 
+                                    HorizontalContentAlignment="Stretch"
+                                    ContentTemplate="{StaticResource TopPanelHalf}"/>
 
-                    <StackPanel x:Name="NarrowRadioButtonStackPanel" 
-                                    Grid.Row="1"
-                                    Visibility="{x:Bind ViewModel.TripFormViewModel.IsUsingCurrentTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"
-                                    Orientation="Horizontal" 
-                                    HorizontalAlignment="Center" 
-                                    Margin="0 10 0 0">
+                    <RadioButton x:Name="DepartureRadioButonNarrow"
+                                 Grid.Row="1"                                     
+                                 Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
+                                 GroupName="TimeTypeNarrow"
+                                 HorizontalAlignment="Center" 
+                                 IsChecked="{x:Bind ViewModel.TripFormViewModel.IsDepartureChecked, Mode=TwoWay}"                                                                          
+                                 Visibility="{x:Bind ViewModel.TripFormViewModel.IsUsingCurrentTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"
+                                 Margin="0 10 0 0">
                         <Interactivity:Interaction.Behaviors>
                             <lclBhvrs:AnimateVisibilityBehavior/>
                         </Interactivity:Interaction.Behaviors>
-                        <RadioButton x:Name="DepartureRadioButonNarrow"
-                                        GroupName="TimeTypeNarrow"
-                                        Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
-                                        IsChecked="{x:Bind ViewModel.TripFormViewModel.IsDepartureChecked, Mode=TwoWay}" />
-                        <RadioButton x:Name="ArrivalRadioButtonNarrow"
-                                        GroupName="TimeTypeNarrow"
-                                        Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
-                                        IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}" />
-                    </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton x:Name="ArrivalRadioButtonNarrow"
+                                 Grid.Row="1"
+                                 Grid.Column="1"
+                                 Content="{Binding TimeType_Arrival, Source={StaticResource Strings}}"
+                                 GroupName="TimeTypeNarrow"                                        
+                                 HorizontalAlignment="Center" 
+                                 IsChecked="{x:Bind ViewModel.TripFormViewModel.IsArrivalChecked, Mode=TwoWay}"
+                                 Visibility="{x:Bind ViewModel.TripFormViewModel.IsUsingCurrentTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"
+                                 Margin="0 10 0 0">
+                        <Interactivity:Interaction.Behaviors>
+                            <lclBhvrs:AnimateVisibilityBehavior/>
+                        </Interactivity:Interaction.Behaviors>
+                    </RadioButton>
 
                     <ContentControl x:Name="BottomPanelHalfContent" 
                                     Grid.Row="2" 
+                                    Grid.ColumnSpan="2"
                                     ContentTemplate="{StaticResource BottomPanelHalf}"
                                     DataContext="{x:Bind ViewModel.TripFormViewModel, Mode=OneWay}"
                                     HorizontalAlignment="Stretch" 
@@ -378,11 +379,11 @@
             <!--We're shading the accent-colored background this way, because it allows us to 
             use a background of SystemAccentColor, and shade it without using a shaded brush, 
             which would fail to change if the user changed accent color while the app was running.-->
-            <Grid x:Name="OpacityRectangle"
+            <Rectangle x:Name="OpacityRectangle"
                   x:DeferLoadStrategy="Lazy"
                   Visibility="Collapsed"
-                  Opacity="0.3"                     
-                  Background="{ThemeResource ApplicationForegroundThemeBrush}"
+                  Opacity="0.3"
+                  Fill="{ThemeResource ApplicationForegroundThemeBrush}"
                   IsHitTestVisible="False"
                   RelativePanel.AlignTopWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
@@ -444,7 +445,7 @@
                                                 <Interactivity:Interaction.Behaviors>
                                                     <lclBhvrs:AnimateVisibilityBehavior/>
                                                 </Interactivity:Interaction.Behaviors>
-                                                
+
                                                 <RadioButton x:Name="DepartureRadioButonWide"
                                                              GroupName="TimeTypeWide"
                                                              Content="{Binding TimeType_Departure, Source={StaticResource Strings}}"
@@ -514,7 +515,7 @@
                                                    MethodName="ScrollToTripResultHubSection"/>
                         </Core:DataTriggerBehavior>
                     </Interactivity:Interaction.Behaviors>
-                    
+
                 </HubSection>
 
             </Hub>

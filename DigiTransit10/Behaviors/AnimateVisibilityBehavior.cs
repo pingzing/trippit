@@ -16,11 +16,12 @@ namespace DigiTransit10.Behaviors
         {
             AssociatedObject = associatedObject;
             _callbackToken = AssociatedObject.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, OnVisibilityChanged);
+            _animationStoryboard = FadeInDownwardFactory.GetAnimation(associatedObject);
         }
 
         public void Detach()
         {
-            AssociatedObject.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, _callbackToken);
+            AssociatedObject.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, _callbackToken);            
         }
 
         private void OnVisibilityChanged(DependencyObject sender, DependencyProperty dp)
@@ -35,11 +36,6 @@ namespace DigiTransit10.Behaviors
             {
                 return;
             }
-
-            if (_animationStoryboard == null)
-            {
-                _animationStoryboard = FadeInDownwardFactory.GetAnimation(_this);
-            }            
 
             _animationStoryboard.Begin();            
         }

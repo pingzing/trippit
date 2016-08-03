@@ -21,8 +21,8 @@
         <!--MapElements (contains MapIcons and MapPolylines) cannot be databound; it must have stuff added in code-behind.
         XAML stuff can live in the MapItemsControl, which _can_ be databound.-->
         <Maps:MapControl x:Name="DigiTransitMapControl"
-                         Opacity="0"
-                         LayoutUpdated="DigiTransitMapControl_LayoutUpdated" />
+                         Visibility="Collapsed"
+                         Opacity="0"/>
 
         <!--Visibility updated from code-behind.-->        
         <ProgressRing x:Name="LoadingRing" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" IsActive="True" Width="50" Height="50"/>

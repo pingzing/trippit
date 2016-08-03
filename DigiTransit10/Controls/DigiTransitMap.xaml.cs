@@ -108,26 +108,17 @@ namespace DigiTransit10.Controls
             this.InitializeComponent();
             _layoutUpdateTimer.Interval = TimeSpan.FromMilliseconds(750);
             _layoutUpdateTimer.Tick += _layoutUpdateTimer_Tick;
+            this.Loaded += DigiTransitMap_Loaded;
 
             //Default location of Helsinki's Rautatientori
             DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition {Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
             DigiTransitMapControl.ZoomLevel = 10;                        
         }
 
-        private void _layoutUpdateTimer_Tick(object sender, object e)
+        private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
         {
-            HideLoadingScreenStoryboard.Begin();
-            HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
-        }
-
-        private void HideLoadingScreenStoryboard_Completed(object sender, object e)
-        {
-            _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
-            _layoutUpdateTimer.Stop();
-            this.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;
-
-            DigiTransitMapControl.Opacity = 1;
-            LoadingRing.Visibility = Visibility.Collapsed;            
+            DigiTransitMapControl.Visibility = Visibility.Visible;
+            DigiTransitMapControl.LayoutUpdated += DigiTransitMapControl_LayoutUpdated;
         }
 
         private void DigiTransitMapControl_LayoutUpdated(object sender, object e)
@@ -135,6 +126,21 @@ namespace DigiTransit10.Controls
             _layoutUpdateTimer.Stop();
             _layoutUpdateTimer.Start();
         }
+
+        private void _layoutUpdateTimer_Tick(object sender, object e)
+        {
+            DigiTransitMapControl.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;
+            HideLoadingScreenStoryboard.Begin();
+            HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
+        }
+
+        private void HideLoadingScreenStoryboard_Completed(object sender, object e)
+        {
+            _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
+            _layoutUpdateTimer.Stop();            
+            DigiTransitMapControl.Opacity = 1;
+            LoadingRing.Visibility = Visibility.Collapsed;                        
+        }        
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
         {
