@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
+using DigiTransit10.ExtensionMethods;
 
 namespace DigiTransit10.Controls
 {
@@ -41,9 +42,9 @@ namespace DigiTransit10.Controls
             this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
             
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
-             * Visibility updated automatically when the AppBar opens. Doing it via binding is bizarrely 
-             * unreliable. So instead, we listen directly to the IsOpen property, and when it changes, 
-             * we update each button's IsCompact property accordingly. 
+             * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
+             * to the IsOpen property, and when it changes, we update each button's IsCompact property 
+             * accordingly. 
              */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
@@ -306,13 +307,10 @@ namespace DigiTransit10.Controls
 
         private void UpdateButtonLabels(bool isOpen)
         {
-            foreach (var button in NavigationButtons.Children.Where(x => x is NavAppBarButton))
-            {
-                ((NavAppBarButton)button).IsCompact = !isOpen;
-                string label = ((NavAppBarButton) button).Label;
-                ((NavAppBarButton) button).Label = "";
-                ((NavAppBarButton) button).Label = label;
-            }            
+            foreach (var button in NavigationButtons.Children.OfType<NavAppBarButton>())
+            {                
+                (button).IsCompact = !isOpen;                                
+            }
         }
 
         private void UpdateNavSeparatorVisibility()

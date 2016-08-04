@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigiTransit10.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,8 +77,39 @@ namespace DigiTransit10.Controls
         public NavAppBarButton()
         {
             this.InitializeComponent();
-        }        
-        
+            this.RegisterPropertyChangedCallback(IsCompactProperty, IsCompactChanged);
+        }
+
+        // This is necessary because sometimes the AppBarButton control forgets to do it's FREAKIN' JOB
+        // and actually update the text labels when the IsCompact property changes. So we have to go in
+        // and holds its hand for it...
+        TextBlock labelTextBlock = null;
+        private void IsCompactChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            if (!IsCompact)
+            {
+
+                if(labelTextBlock == null)
+                {
+                    labelTextBlock = this.FindChild<TextBlock>("TextLabel");
+                }
+                if (labelTextBlock?.Visibility == Visibility.Collapsed)
+                {                    
+                    labelTextBlock.Visibility = Visibility.Visible;
+                }
+            }
+            if(IsCompact)
+            {
+                if (labelTextBlock == null)
+                {
+                    labelTextBlock = this.FindChild<TextBlock>("TextLabel");
+                }
+                if(labelTextBlock?.Visibility == Visibility.Visible)
+                {                    
+                    labelTextBlock.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
 
         public int CompareTo(ISortableAppBarButton other)
         {
