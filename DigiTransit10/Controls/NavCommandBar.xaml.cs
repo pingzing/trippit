@@ -92,6 +92,11 @@ namespace DigiTransit10.Controls
 
         private void ReflowCommands(Size oldSize, Size newSize)
         {
+            //Always leave Home, the currently selected page, and the AppBarSeparator in the Nav panel
+            int navElementsToKeep = (_currentlySelected == null || _currentlySelected == HomeButton) 
+                ? 2 
+                : 3;
+
             double ellipsisButtonWidth = 48;
             double separatorWidth = 32;
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
@@ -110,7 +115,7 @@ namespace DigiTransit10.Controls
                 //shrinking
                 while ((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
                 {
-                    if (this.NavigationButtons.Children.Count > 3) //always leave 1.) Home, 2.) Current Page 3.) The AppBarSeparator
+                    if (this.NavigationButtons.Children.Count > navElementsToKeep)
                     {
                         //Leave the current page, otherwise grab the element with the highest-numbered position.
                         var buttonToMove = (NavAppBarButton)this.NavigationButtons.Children
@@ -312,18 +317,20 @@ namespace DigiTransit10.Controls
 
         private void UpdateNavSeparatorVisibility()
         {
-            if (PrimaryCommands.Count > 0
-                && NavButtonSeparator.Visibility == Visibility.Collapsed)
+            if (PrimaryCommands.Count > 0)
             {
-                NavButtonSeparator.Visibility = Visibility.Visible;
+                if (NavButtonSeparator.Visibility == Visibility.Collapsed)
+                {
+                    NavButtonSeparator.Visibility = Visibility.Visible;
+                }
             }
             else
             {
-                if (NavButtonSeparator.Visibility == Visibility.Visible)
+                if(NavButtonSeparator.Visibility == Visibility.Visible)
                 {
                     NavButtonSeparator.Visibility = Visibility.Collapsed;
                 }
-            }
+            }        
         }
 
         private void Navigate(Type destination)
