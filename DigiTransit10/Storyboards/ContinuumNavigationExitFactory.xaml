@@ -7,25 +7,46 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Storyboard x:Name="ContinuumNavigationExitStoryboard">
-        <DoubleAnimation x:Name="TranslateXComponent" Duration="0:0:0.5" To="10" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
-        <DoubleAnimation x:Name="TranslateYComponent" Duration="0:0:0.5" To="198" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
-        <DoubleAnimation x:Name="ScaleXComponent" Duration="0:0:0.5" To="2" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
-        <DoubleAnimation x:Name="ScaleYComponent" Duration="0:0:0.5" To="2" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
+        <DoubleAnimationUsingKeyFrames x:Name="TranslateXComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="10">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="TranslateYComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="201"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.617" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="ScaleXComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
+            <EasingDoubleKeyFrame x:Name="easingDoubleKeyFrame" KeyTime="0:0:0.5" Value="2">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="2"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.617" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="ScaleYComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="2">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="2"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.617" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="OpacityComponent" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.51" Value="0"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
     </Storyboard>
 </ResourceDictionary>

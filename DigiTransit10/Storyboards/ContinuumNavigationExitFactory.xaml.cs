@@ -20,7 +20,8 @@ namespace DigiTransit10.Storyboards
             Storyboard.SetTarget(this.ScaleXComponent, mover);
             Storyboard.SetTarget(this.ScaleYComponent, mover);
             Storyboard.SetTarget(this.TranslateXComponent, mover);
-            Storyboard.SetTarget(this.TranslateYComponent, mover);                       
+            Storyboard.SetTarget(this.TranslateYComponent, mover);
+            Storyboard.SetTarget(this.OpacityComponent, mover);                
         }
 
         public static Storyboard GetAnimation(FrameworkElement mover)
