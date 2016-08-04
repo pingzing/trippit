@@ -396,9 +396,9 @@ namespace DigiTransit10.ViewModels
 
         private void FillPinnedFavorites()
         {
-            //if(_settingsService.PinnedFavorites is null, or empty, or less than three
-            // fill, or partially fill the PinnedFavoritesCollection from the lsit in order
-            //otherwise, grab in order from the PinnedFavorites List
+            // If _settingsService.PinnedFavorites is null, or empty, or has fewer than 3 entries,
+            // fill, or partially fill the PinnedFavoritesCollection from the list in order.
+            // Otherwise, grab in order from the PinnedFavorites List
             if(_settingsService.Favorites.Count == 0)
             {
                 PinnedFavorites.Clear();

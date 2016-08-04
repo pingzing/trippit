@@ -20,13 +20,26 @@ namespace DigiTransit10.ViewModels
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
-        private bool _isFirstNavigation = true;
 
         public ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
         public ObservableCollection<ItineraryModel> TripResults
         {
             get { return _tripResults; }
             set { Set(ref _tripResults, value); }
+        }
+
+        private string _fromName;
+        public string FromName
+        {
+            get { return _fromName; }
+            set { Set(ref _fromName, value); }
+        }
+
+        private string _toName;
+        public string ToName
+        {
+            get { return _toName; }
+            set { Set(ref _toName, value); }
         }
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService)
@@ -55,7 +68,10 @@ namespace DigiTransit10.ViewModels
             }
                                     
             TripResults.Clear();
-            foreach (var itinerary in plan?.ApiPlan?.Itineraries)
+
+            FromName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
+            ToName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
+            foreach (var itinerary in plan.ApiPlan.Itineraries)
             {
                 TripResults.Add(new ItineraryModel
                 {

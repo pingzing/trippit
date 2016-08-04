@@ -8,19 +8,12 @@
     xmlns:controls="using:Template10.Controls"
     xmlns:lclCtls="using:DigiTransit10.Controls"
     mc:Ignorable="d"
-    DataContext="{Binding Source={StaticResource Locator}, Path=TripResult}">
+    DataContext="{Binding Source={StaticResource Locator}, Path=TripResult}"
+    Loaded="Page_Loaded">
 
     <Page.Resources>
         <ResourceDictionary Source="ViewTemplates.xaml"/>
     </Page.Resources>
-
-    <Page.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <DrillInNavigationTransitionInfo/>
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </Page.Transitions>
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -56,7 +49,7 @@
         <controls:PageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True"                             
+                             RelativePanel.AlignTopWithPanel="True"                                                          
                              Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}">
 
             <!--  secondary commands  -->
@@ -64,8 +57,18 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
+        <TextBlock x:Name="DestinationHeader"
+                   RelativePanel.Below="PageHeader"                   
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Margin="10"
+                   Opacity="0"
+                   Style="{StaticResource SubheaderTextBlockStyle}">
+            <Run Text="{x:Bind ViewModel.FromName, Mode=OneWay}"/><Run Text=" → "/><Run Text="{x:Bind ViewModel.ToName, Mode=OneWay}"/>
+        </TextBlock>
+
         <lclCtls:TripResultsList x:Name="ContentRoot"
-                                 RelativePanel.Below="PageHeader"
+                                 RelativePanel.Below="DestinationHeader"
                                  RelativePanel.AlignLeftWithPanel="True"
                                  RelativePanel.AlignRightWithPanel="True"
                                  RelativePanel.AlignBottomWithPanel="True"

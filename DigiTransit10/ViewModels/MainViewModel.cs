@@ -10,6 +10,7 @@ using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Common;
 using DigiTransit10.Views;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace DigiTransit10.ViewModels
 {

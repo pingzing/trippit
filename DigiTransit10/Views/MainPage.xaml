@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Behaviors="using:Template10.Behaviors"
@@ -27,14 +27,14 @@
                 <ResourceDictionary Source="ViewTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="TopPanelHalf" x:DataType="vm:TripFormViewModel">
+            <DataTemplate x:Key="TopPanelHalf" x:Name="TopPanelHalfTemplate" x:DataType="vm:TripFormViewModel">
                 <StackPanel>
 
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                  
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"
                                                   FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
-                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"                                                  
+                    <lclCtls:DigiTransitSearchBox x:Name="ToBox"
                                                   Header="{Binding MainPage_ToHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
                                                   FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"
@@ -182,15 +182,42 @@
 
                     <ListView x:Name="PinnedFavoritesControl"
                               Grid.Row="2"
+                              ContinuumNavigationTransitionInfo.ExitElementContainer="True"
                               AllowDrop="True"
                               CanReorderItems="True"                                  
                               IsItemClickEnabled="True"
-                              ItemClick="PinnedFavoritesControl_OnItemClick"
-                              ItemTemplate="{StaticResource FavoritePlaceTemplate}"
+                              ItemClick="PinnedFavoritesControl_OnItemClick"                              
                               ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
                               Margin="0 10 0 0"
-                              SelectionMode="None"
+                              SelectionMode="None"                              
                               RightTapped="PinnedFavoritesControl_OnRightTapped">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                 <Grid ContinuumNavigationTransitionInfo.IsExitElement="True">
+                                     <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="Auto"/>
+                                         <ColumnDefinition Width="9*"/>
+                                         <ColumnDefinition Width="1*"/>
+                                     </Grid.ColumnDefinitions>
+                                     <FontIcon x:Name="FavoriteIcon"
+                                               Grid.Column="0"
+                                               FontFamily="{Binding IconFontFace}" 
+                                               Glyph="{Binding FontIconGlyph}"/>
+                                     <TextBlock x:Name="FavoriteName" 
+                                                Grid.Column="1"                              
+                                                Margin="10 0 0 0"
+                                                Text="{Binding UserChosenName}"
+                                                TextTrimming="CharacterEllipsis"
+                                                VerticalAlignment="Center"/>
+                                     <FontIcon x:Name="ArrowIcon"
+                                               Grid.Column="2"                     
+                                               Foreground="{ThemeResource SystemAccentColor}"
+                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                               Glyph="{Binding Source={StaticResource FontIcons}, Path=RightArrow}"
+                                               HorizontalAlignment="Right"/>
+                                 </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
                         <ListView.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -326,7 +353,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <ContentControl Grid.Row="0" 
+                    <ContentControl x:Name="NarrowTopPanelHalfControl"
+                                    Grid.Row="0" 
                                     Grid.ColumnSpan="2"
                                     HorizontalAlignment="Stretch" 
                                     HorizontalContentAlignment="Stretch"
@@ -401,9 +429,15 @@
 
                 <HubSection x:Name="WideTripFormSection"                            
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                            Header="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}"
                             Margin="10 10 10 20"
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Stretch">
+                    <HubSection.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource HeaderTextBlockStyle}"/>
+                        </DataTemplate>
+                    </HubSection.HeaderTemplate>
                     <HubSection.ContentTemplate>
                         <DataTemplate x:DataType="vm:MainViewModel">
                             <ScrollViewer Margin="-10 -15 -10 5"
@@ -425,11 +459,6 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition/>
                                             </Grid.RowDefinitions>
-
-                                            <TextBlock x:Name="TripFormHeader"                                           
-                                                   Grid.Row="0"
-                                                   Style="{StaticResource HeaderTextBlockStyle}"
-                                                   Text="{Binding TripForm_PlanATripHeader, Source={StaticResource Strings}}"/>
 
                                             <ContentControl Grid.Row="1"
                                                 HorizontalAlignment="Stretch" 
@@ -480,9 +509,15 @@
                 <HubSection x:Name="TripResultHubSection" 
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                             Margin="10 10 10 20"
+                            Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeaderLowercase}"
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Stretch"                            
                             Visibility="Collapsed">
+                    <HubSection.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{StaticResource HeaderTextBlockStyle}"/>
+                        </DataTemplate>
+                    </HubSection.HeaderTemplate>
                     <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:MainViewModel">
                         <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"                              
                               VerticalAlignment="Stretch">
@@ -490,10 +525,16 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" 
-                                       Margin="0 0 0 9"
-                                       Style="{StaticResource HeaderTextBlockStyle}" 
-                                       Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeaderLowercase}"/>
+
+                            <TextBlock x:Name="DestinationHeader"
+                                       Grid.Row="0"                   
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Margin="10"
+                                       Style="{StaticResource SubheaderTextBlockStyle}">
+                                <Run Text="{x:Bind TripResultViewModel.FromName, Mode=OneWay}"/><Run Text=" → "/><Run Text="{x:Bind TripResultViewModel.ToName, Mode=OneWay}"/>
+                            </TextBlock>
+
                             <lclCtls:TripResultsList x:Name="TripResultsPanel"
                                                      Grid.Row="1"
                                                      DataContext="{x:Bind TripResultViewModel, Mode=OneWay}"

@@ -12,12 +12,16 @@ using Windows.UI.Xaml.Media;
 using Template10.Common;
 using DigiTransit10.Helpers;
 using GalaSoft.MvvmLight.Messaging;
+using Windows.UI.Xaml.Media.Animation;
+using DigiTransit10.Storyboards;
+using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Controls;
 
 namespace DigiTransit10.Views
 {
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public MainViewModel ViewModel => this.DataContext as MainViewModel;        
+        public MainViewModel ViewModel => this.DataContext as MainViewModel;            
 
         public MainPage()
         {
@@ -70,6 +74,16 @@ namespace DigiTransit10.Views
             FavoritePlace clickedPlace = e.ClickedItem as FavoritePlace;
             if (clickedPlace != null)
             {
+                if (AdaptiveVisualStateGroup.CurrentState.Name == Constants.VisualStateNarrow)
+                {
+                    ListView list = sender as ListView;
+                    if (list != null)
+                    {
+                        var clickedItem = (FrameworkElement)list.ContainerFromItem(e.ClickedItem);
+                        var storyboard = ContinuumNavigationExitFactory.GetAnimation(clickedItem);
+                        storyboard.Begin();
+                    }
+                }
                 ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(clickedPlace);
             }
         }

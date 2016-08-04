@@ -141,6 +141,7 @@
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
+    <Compile Include="ExtensionMethods\DependencyObjectExtensions.cs" />
     <Compile Include="ExtensionMethods\GridExtensions.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
@@ -196,6 +197,12 @@
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Services\ViewModelLocator.cs" />
+    <Compile Include="Storyboards\ContinuumNavigationEntranceFactory.xaml.cs">
+      <DependentUpon>ContinuumNavigationEntranceFactory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Storyboards\ContinuumNavigationExitFactory.xaml.cs">
+      <DependentUpon>ContinuumNavigationExitFactory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
@@ -289,6 +296,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Controls\TripResultsList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Storyboards\ContinuumNavigationEntranceFactory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Storyboards\ContinuumNavigationExitFactory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,31 @@
+﻿<ResourceDictionary
+    x:Class="DigiTransit10.Storyboards.ContinuumNavigationExitFactory"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DigiTransit10.Storyboards"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Storyboard x:Name="ContinuumNavigationExitStoryboard">
+        <DoubleAnimation x:Name="TranslateXComponent" Duration="0:0:0.5" To="10" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" d:IsOptimized="True">
+            <DoubleAnimation.EasingFunction>
+                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation x:Name="TranslateYComponent" Duration="0:0:0.5" To="198" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" d:IsOptimized="True">
+            <DoubleAnimation.EasingFunction>
+                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation x:Name="ScaleXComponent" Duration="0:0:0.5" To="2" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" d:IsOptimized="True">
+            <DoubleAnimation.EasingFunction>
+                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation x:Name="ScaleYComponent" Duration="0:0:0.5" To="2" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" d:IsOptimized="True">
+            <DoubleAnimation.EasingFunction>
+                <BackEase Amplitude="0.35" EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+</ResourceDictionary>
