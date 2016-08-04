@@ -18,6 +18,18 @@
     <Style x:Key="EmptyListHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
         <Setter Property="Foreground" Value="Gray"/>
     </Style>
+
+    <Style x:Key="PageHeaderBoldStyle" TargetType="controls:PageHeader">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"                                
+                               Style="{StaticResource BaseTextBlockStyle}"
+                               FontWeight="Bold"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     
     <Style x:Key="WideTimePickerStyle" TargetType="TimePicker">
         <Setter Property="IsTabStop" Value="False"/>
@@ -311,17 +323,6 @@
                 <Setter Property="Foreground" Value="{ThemeResource ContrastColorBrush}" />
                 <Setter Property="VisualStateNarrowMinWidth" Value="{StaticResource NarrowMinWidth}" />
                 <Setter Property="VisualStateNormalMinWidth" Value="{StaticResource NormalMinWidth}" />
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"
-                                       Margin="-6 0 0 0"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       Style="{StaticResource BaseTextBlockStyle}"
-                                       FontWeight="Bold"/>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
             <Style TargetType="controls:Resizer">
@@ -368,17 +369,6 @@
                 <Setter Property="Foreground" Value="{ThemeResource ContrastColorBrush}" />
                 <Setter Property="VisualStateNarrowMinWidth" Value="{StaticResource NarrowMinWidth}" />
                 <Setter Property="VisualStateNormalMinWidth" Value="{StaticResource NormalMinWidth}" />
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" 
-                                       Margin="-6 0 0 0"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       Style="{StaticResource BaseTextBlockStyle}"
-                                       FontWeight="Bold"/>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
             <Style TargetType="controls:Resizer">
@@ -411,16 +401,6 @@
                 <Setter Property="Foreground" Value="{ThemeResource SystemColorWindowTextColor}" />
                 <Setter Property="VisualStateNarrowMinWidth" Value="{ThemeResource NarrowMinWidth}" />
                 <Setter Property="VisualStateNormalMinWidth" Value="{ThemeResource NormalMinWidth}" />
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" 
-                                       Foreground="{TemplateBinding Foreground}"
-                                       Style="{StaticResource BaseTextBlockStyle}"
-                                       FontWeight="Bold"/>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
         </ResourceDictionary>

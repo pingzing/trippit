@@ -30,14 +30,14 @@ namespace DigiTransit10.Views
 
         public TripResultPage()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();                        
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             await Task.Delay(200); //delay while the page finishes animating
-            DestinationHeader.Opacity = 1;
-            Storyboard storyboard = ContinuumNavigationEntranceFactory.GetAnimation(DestinationHeader);
+            ToTextBlock.Opacity = 1;
+            Storyboard storyboard = ContinuumNavigationEntranceFactory.GetAnimation(ToTextBlock);
             storyboard.Begin();
         }
     }

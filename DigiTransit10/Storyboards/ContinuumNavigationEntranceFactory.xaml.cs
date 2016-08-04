@@ -16,10 +16,11 @@ namespace DigiTransit10.Storyboards
             this.InitializeComponent();           
                         
             mover.RenderTransform = new CompositeTransform();
+            mover.Projection = new PlaneProjection();            
                         
             Storyboard.SetTarget(this.ScaleXComponent, mover);
             Storyboard.SetTarget(this.ScaleYComponent, mover);
-            Storyboard.SetTarget(this.TranslateXComponent, mover);
+            Storyboard.SetTarget(this.ProjectXComponent, mover);
             Storyboard.SetTarget(this.TranslateYComponent, mover);                       
         }
 

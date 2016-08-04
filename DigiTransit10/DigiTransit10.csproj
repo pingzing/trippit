@@ -138,6 +138,7 @@
     <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
+    <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />

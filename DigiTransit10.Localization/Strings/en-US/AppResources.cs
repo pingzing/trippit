@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/03/2016 16:20:30
+// 	Generated: 08/04/2016 20:34:12
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -577,6 +577,28 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("Favorites_RoutesGroupHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Details"
+        /// </summary>
+        public static string TripResultCommandBar_Details
+        {
+            get
+            {
+                return resourceLoader.GetString("TripResultCommandBar_Details");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Map"
+        /// </summary>
+        public static string TripResultCommandBar_Map
+        {
+            get
+            {
+                return resourceLoader.GetString("TripResultCommandBar_Map");
             }
         }
     }

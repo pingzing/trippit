@@ -151,7 +151,8 @@
         <controls:PageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
-                             RelativePanel.AlignTopWithPanel="True"                             
+                             RelativePanel.AlignTopWithPanel="True"   
+                             Style="{StaticResource PageHeaderBoldStyle}"
                              Text="{Binding Source={StaticResource Strings}, Path=FavoritesPage_PageHeader}">
 
             <!--  secondary commands  -->

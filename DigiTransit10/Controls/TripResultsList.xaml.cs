@@ -12,34 +12,23 @@ namespace DigiTransit10.Controls
     {
         public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
 
-        private bool _isLoading = true;
-        public bool IsLoading
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(TripResultsList), new PropertyMetadata(null));
+        public object SelectedItem
         {
-            get { return _isLoading; }
-            set
-            {
-                if(_isLoading != value)
-                {
-                    _isLoading = value;
-                    RaisePropertyChanged();
-                }
-            }
+            get { return (object)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
         }
 
         public TripResultsList()
         {
             this.InitializeComponent();
-        }        
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
-        private void TripPlanStrip_Loaded(object sender, RoutedEventArgs e)
-        {
-            IsLoading = false;
         }
     }
 }

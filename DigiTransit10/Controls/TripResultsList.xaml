@@ -18,14 +18,15 @@
     d:DesignWidth="400">
 
     <ListView x:Name="TripResultList"                                    
-                ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                ScrollViewer.HorizontalScrollMode="Auto"
-                ScrollViewer.IsHorizontalRailEnabled="True"
-                ScrollViewer.IsVerticalRailEnabled="False"                         
-                ItemsSource="{Binding TripResults, Mode=OneWay}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch">
+              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              ScrollViewer.HorizontalScrollMode="Auto"
+              ScrollViewer.IsHorizontalRailEnabled="True"
+              ScrollViewer.IsVerticalRailEnabled="False"                         
+              ItemsSource="{Binding TripResults, Mode=OneWay}"
+              SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <planStrip:TripPlanStrip StartingPlaceName="{Binding StartingPlaceName}"

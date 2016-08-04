@@ -7,25 +7,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Storyboard x:Name="ContinuumNavigationEntranceStoryboard">
-        <DoubleAnimation x:Name="TranslateXComponent" Duration="0:0:0.45" From="10" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" d:IsOptimized="True">
+        <DoubleAnimation x:Name="ScaleXComponent" Duration="0:0:0.45" From="2" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
             <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseOut"/>
+                <QuarticEase EasingMode="EaseOut"/>
             </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
-        <DoubleAnimation x:Name="TranslateYComponent" Duration="0:0:0.45" From="200" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" d:IsOptimized="True">
+        <DoubleAnimation x:Name="ScaleYComponent" Duration="0:0:0.45" From="2" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)">
             <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseOut"/>
+                <QuarticEase EasingMode="EaseOut"/>
             </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
-        <DoubleAnimation x:Name="ScaleXComponent" Duration="0:0:0.45" From="2" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
-        <DoubleAnimation x:Name="ScaleYComponent" Duration="0:0:0.45" From="2" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" d:IsOptimized="True">
-            <DoubleAnimation.EasingFunction>
-                <BackEase Amplitude="0.35" EasingMode="EaseOut"/>
-            </DoubleAnimation.EasingFunction>
-        </DoubleAnimation>
+        <DoubleAnimationUsingKeyFrames x:Name="TranslateYComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+            <EasingDoubleKeyFrame KeyTime="0" Value="-5">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <PowerEase EasingMode="EaseOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="-25"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0">
+                <EasingDoubleKeyFrame.EasingFunction>
+                    <PowerEase EasingMode="EaseOut"/>
+                </EasingDoubleKeyFrame.EasingFunction>
+            </EasingDoubleKeyFrame>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="ProjectXComponent" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)">
+            <EasingDoubleKeyFrame KeyTime="0" Value="50"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
     </Storyboard>
 </ResourceDictionary>

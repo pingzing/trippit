@@ -26,9 +26,9 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-            bool useCurrentTime = (bool)e.NewValue;
+            bool newUseCurrentTime = (bool)e.NewValue;
 
-            if(useCurrentTime)
+            if(newUseCurrentTime)
             {
                 _this.UnderPicker.IsEnabled = false;
                 _this.CustomToCurrentWidthAnimatioin.KeyFrames[1].Value = _this.ControlRoot.ActualWidth;
@@ -43,6 +43,7 @@ namespace DigiTransit10.Controls
             }
             else
             {
+                _this.Time = DateTime.Now.TimeOfDay;
                 _this.UnderPicker.IsEnabled = true;
                 _this.CurrentToCustomWidthAnimation.KeyFrames[0].Value = _this.CurrentTimeButton.ActualWidth;
                 if (_this.Common.CurrentState.Name == "UseCustomTimeState")

@@ -31,14 +31,14 @@ namespace DigiTransit10.ViewModels
         private string _fromName;
         public string FromName
         {
-            get { return _fromName; }
+            get { return _fromName.ToUpperInvariant(); }
             set { Set(ref _fromName, value); }
         }
 
         private string _toName;
         public string ToName
         {
-            get { return _toName; }
+            get { return _toName.ToUpperInvariant(); }
             set { Set(ref _toName, value); }
         }
 

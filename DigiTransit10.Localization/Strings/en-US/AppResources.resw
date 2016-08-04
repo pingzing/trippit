@@ -261,4 +261,10 @@
   <data name="Favorites_RoutesGroupHeader" xml:space="preserve">
     <value>Routes</value>
   </data>
+  <data name="TripResultCommandBar_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="TripResultCommandBar_Map" xml:space="preserve">
+    <value>Map</value>
+  </data>
 </root>

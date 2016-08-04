@@ -37,6 +37,10 @@
                  Width="{StaticResource TripPlanStripCircleWidth}" Height="{StaticResource TripPlanStripCircleHeight}" 
                  HorizontalAlignment="Center"
                  Fill="{ThemeResource TripPlanStripRectangleBrush}"/>
+        <Ellipse Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                 Width="10" Height="10"
+                 Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
+
         <TextBlock x:Name="NameBlock"
                    Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                    Text="{x:Bind PlaceName}"

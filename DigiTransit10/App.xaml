@@ -28,6 +28,7 @@
             <conv:TransitModeToForegroundBrushConverter x:Key="TransitModeToForegroundBrushConverter"/>
             <conv:UnixTimeToLocalTimeConverter x:Key="UnixTimeToLocalTimeConverter"/>
             <conv:EmptyNullToVisibilityConverterInverted x:Key="EmptyNullToVisibilityConverterInverted"/>
+            <conv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
 
             <Style x:Key="NoStyleButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
