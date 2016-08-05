@@ -144,17 +144,11 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isBikeChecked, value); }
         }
 
-        public bool IsPinnedFavoritesVisible => PinnedFavorites.Count > 0;
-
         private ObservableCollection<IFavorite> _pinnedFavorites = new ObservableCollection<IFavorite>();
         public ObservableCollection<IFavorite> PinnedFavorites
         {
             get { return _pinnedFavorites; }
-            set
-            {
-                Set(ref _pinnedFavorites, value);
-                RaisePropertyChanged(nameof(IsPinnedFavoritesVisible));
-            }
+            set { Set(ref _pinnedFavorites, value); }
         }
 
         private RelayCommand _planTripCommand = null;
@@ -401,33 +395,52 @@ namespace DigiTransit10.ViewModels
         }
 
         private void FillPinnedFavorites()
-        {
-            // If _settingsService.PinnedFavorites is null, or empty, or has fewer than 3 entries,
-            // fill, or partially fill the PinnedFavoritesCollection from the list in order.
-            // Otherwise, grab in order from the PinnedFavorites List
-            if(_settingsService.Favorites.Count == 0)
+        {                        
+            if(_settingsService.PinnedFavorites.Count == 0)
             {
                 PinnedFavorites.Clear();
                 return;
-            }
-            List<IFavorite> favorites = null;
-            if(_settingsService.Favorites.Count >= 3)
+            }            
+
+            int numPinnedToDisplay = _settingsService.PinnedFavoritesDisplayNumber;
+            var pinned = _settingsService.PinnedFavorites.Count >= numPinnedToDisplay 
+                ? new List<IFavorite>(_settingsService.PinnedFavorites.Take(numPinnedToDisplay)) 
+                : new List<IFavorite>(_settingsService.PinnedFavorites);
+
+            var toRemove = PinnedFavorites.Except(pinned).ToList();
+            foreach(var staleFave in toRemove)
             {
-                favorites = new List<IFavorite>(_settingsService.Favorites.Take(3));
+                PinnedFavorites.Remove(staleFave);
             }
-            else
+            foreach (var newFace in pinned.Except(PinnedFavorites))
             {
-                favorites = new List<IFavorite>(_settingsService.Favorites);
-            }
-            PinnedFavorites = new ObservableCollection<IFavorite>(favorites);
+                PinnedFavorites.Add(newFace);
+            }            
         }
 
         private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
         {
+            if (obj.AddedFavorites?.Count > 0
+                && _settingsService.PinnedFavorites?.Count < _settingsService.PinnedFavoritesDisplayNumber)
+            {
+                int maxToAdd = _settingsService.PinnedFavoritesDisplayNumber - _settingsService.PinnedFavorites.Count;
+                int toAdd = Math.Min(maxToAdd, obj.AddedFavorites.Count);
+                foreach(var newPinned in obj.AddedFavorites.Take(toAdd))
+                {
+                    _settingsService.PinnedFavorites.Add(newPinned);
+                }
+            }
+            if (obj.RemovedFavorites?.Count > 0 && _settingsService.PinnedFavorites?.Count > 0)
+            {
+                foreach (var removed in obj.RemovedFavorites)
+                {
+                    _settingsService.PinnedFavorites.Remove(removed);
+                }
+            }
             if(obj.RemovedFavorites?.Count > 0 || obj.AddedFavorites?.Count > 0)
             {
                 FillPinnedFavorites();
-            }            
+            }
         }
 
         private void FavoritePlaceClicked(FavoritePlace obj)
@@ -441,7 +454,8 @@ namespace DigiTransit10.ViewModels
 
         private void RemovePinnedFavorite(IFavorite favorite)
         {
-            _settingsService.RemoveFavorite(favorite);
+            _settingsService.PinnedFavorites.Remove(favorite);
+            FillPinnedFavorites();
         }
 
         private async Task HandleTripFailure(ApiResult<ApiPlan> result)

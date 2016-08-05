@@ -134,6 +134,56 @@ namespace DigiTransit10.Services.SettingsServices
             return success;
         }
 
+        private List<IFavorite> _pinnedFavorites;
+        public List<IFavorite> PinnedFavorites
+        {
+            get
+            {
+                if (_pinnedFavorites == null)
+                {
+                    string serialized = _helper.Read(nameof(PinnedFavorites), "", SettingsStrategies.Roam);
+                    if (String.IsNullOrEmpty(serialized) || serialized == "null")
+                    {
+                        _pinnedFavorites = new List<IFavorite>();
+                        return _pinnedFavorites;
+                    }
+                    else
+                    {
+                        _pinnedFavorites = JsonConvert.DeserializeObject<List<IFavorite>>(serialized,
+                            new JsonSerializerSettings
+                            {
+                                TypeNameHandling = TypeNameHandling.Objects,
+                                TypeNameAssemblyFormat =
+                                    System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
+                            });
+                        return _pinnedFavorites;
+                    }
+                }
+                else
+                {
+                    return _pinnedFavorites;
+                }
+            }
+            set
+            {
+                _pinnedFavorites = value;                
+                _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites, 
+                        new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects}),
+                    SettingsStrategies.Roam);
+            }
+        }
+
+        /// <summary>
+        /// The number of favorites to show in the Pinned Favorites on MainPage. Defaults to 3.
+        /// </summary>
+        public int PinnedFavoritesDisplayNumber
+        {
+            //local, because this is going to differ greatly on display size, and roaming it doesn't make a lot of sense.
+            get { return _helper.Read(nameof(PinnedFavorites), 3, SettingsStrategies.Local); }
+            set { _helper.Write(nameof(PinnedFavorites), value, SettingsStrategies.Local); }
+        }
+
+        //todo: make this persist somehow
         public string CurrentLanguage
         {
             get

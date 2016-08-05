@@ -186,10 +186,10 @@
                               CanReorderItems="True"                                  
                               IsItemClickEnabled="True"
                               ItemClick="PinnedFavoritesControl_OnItemClick"                              
-                              ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
+                              ItemsSource="{Binding PinnedFavorites, Mode=TwoWay}"
                               Margin="0 10 0 0"
                               SelectionMode="None"                          
-                              Visibility="{x:Bind IsPinnedFavoritesVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                              Visibility="{x:Bind PinnedFavorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}"
                               RightTapped="PinnedFavoritesControl_OnRightTapped">
                         <ListView.ItemTemplate>
                             <DataTemplate>
