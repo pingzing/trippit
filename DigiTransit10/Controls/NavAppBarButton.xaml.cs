@@ -1,18 +1,7 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -47,7 +36,7 @@ namespace DigiTransit10.Controls
 
         public static readonly DependencyProperty IsSecondaryCommandProperty =
             DependencyProperty.Register("IsSecondaryCommand", typeof(bool), typeof(NavAppBarButton), new PropertyMetadata(false,
-                new PropertyChangedCallback(IsSecondaryCommandChanged)));
+                IsSecondaryCommandChanged));
         private static void IsSecondaryCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavAppBarButton _this = d as NavAppBarButton;
@@ -80,33 +69,32 @@ namespace DigiTransit10.Controls
             this.RegisterPropertyChangedCallback(IsCompactProperty, IsCompactChanged);
         }
 
-        // This is necessary because sometimes the AppBarButton control forgets to do it's FREAKIN' JOB
+        // This is necessary because sometimes the AppBarButton control forgets to do its FREAKIN' JOB
         // and actually update the text labels when the IsCompact property changes. So we have to go in
         // and holds its hand for it...
-        TextBlock labelTextBlock = null;
+        TextBlock _labelTextBlock = null;
         private void IsCompactChanged(DependencyObject sender, DependencyProperty dp)
         {
             if (!IsCompact)
             {
-
-                if(labelTextBlock == null)
+                if(_labelTextBlock == null)
                 {
-                    labelTextBlock = this.FindChild<TextBlock>("TextLabel");
+                    _labelTextBlock = this.FindChild<TextBlock>("TextLabel");
                 }
-                if (labelTextBlock?.Visibility == Visibility.Collapsed)
+                if (_labelTextBlock?.Visibility == Visibility.Collapsed)
                 {                    
-                    labelTextBlock.Visibility = Visibility.Visible;
+                    _labelTextBlock.Visibility = Visibility.Visible;
                 }
             }
             if(IsCompact)
             {
-                if (labelTextBlock == null)
+                if (_labelTextBlock == null)
                 {
-                    labelTextBlock = this.FindChild<TextBlock>("TextLabel");
+                    _labelTextBlock = this.FindChild<TextBlock>("TextLabel");
                 }
-                if(labelTextBlock?.Visibility == Visibility.Visible)
+                if(_labelTextBlock?.Visibility == Visibility.Visible)
                 {                    
-                    labelTextBlock.Visibility = Visibility.Collapsed;
+                    _labelTextBlock.Visibility = Visibility.Collapsed;
                 }
             }
         }
