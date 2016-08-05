@@ -79,7 +79,7 @@ namespace DigiTransit10.ViewModels
                 {
                     FavoritePlaces.Remove(deletedFave);
                 }
-                foreach (var deletedRoute in message.AddedFavorites.OfType<FavoriteRoute>())
+                foreach (var deletedRoute in message.RemovedFavorites.OfType<FavoriteRoute>())
                 {
                     //todo:remove from favorite routes
                 }
