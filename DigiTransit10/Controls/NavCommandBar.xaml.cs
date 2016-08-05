@@ -103,13 +103,7 @@ namespace DigiTransit10.Controls
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
             var currWidth = this.ActualWidth;
             var navWidth = this.NavigationButtons.ActualWidth;
-            double primaryCommandsWidth = 0;
-            foreach (var cmd in this.PrimaryCommands)
-            {
-                primaryCommandsWidth += appButtonWidth;
-            }            
-
-            primaryCommandsWidth += ellipsisButtonWidth;            
+            double primaryCommandsWidth = this.PrimaryCommands.Count*appButtonWidth + ellipsisButtonWidth;            
 
             if (newSize.Width <= oldSize.Width)
             {
@@ -309,7 +303,7 @@ namespace DigiTransit10.Controls
         {
             foreach (var button in NavigationButtons.Children.OfType<NavAppBarButton>())
             {                
-                (button).IsCompact = !isOpen;                                
+                button.IsCompact = !isOpen;                                
             }
         }
 
