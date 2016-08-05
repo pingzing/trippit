@@ -181,19 +181,19 @@
                     </HyperlinkButton>
 
                     <ListView x:Name="PinnedFavoritesControl"
-                              Grid.Row="2"
-                              ContinuumNavigationTransitionInfo.ExitElementContainer="True"
+                              Grid.Row="2"                              
                               AllowDrop="True"
                               CanReorderItems="True"                                  
                               IsItemClickEnabled="True"
                               ItemClick="PinnedFavoritesControl_OnItemClick"                              
                               ItemsSource="{x:Bind PinnedFavorites, Mode=OneWay}"
                               Margin="0 10 0 0"
-                              SelectionMode="None"                              
+                              SelectionMode="None"                          
+                              Visibility="{x:Bind IsPinnedFavoritesVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                               RightTapped="PinnedFavoritesControl_OnRightTapped">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                 <Grid ContinuumNavigationTransitionInfo.IsExitElement="True">
+                                 <Grid>
                                      <Grid.ColumnDefinitions>
                                          <ColumnDefinition Width="Auto"/>
                                          <ColumnDefinition Width="9*"/>
@@ -242,22 +242,6 @@
                                                     Command="{x:Bind RemovePinnedFavoriteCommand}"/>
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
-                        <Interactivity:Interaction.Behaviors>
-                            <Core:DataTriggerBehavior Binding="{x:Bind PinnedFavorites.Count, Mode=OneWay}"
-                                                        ComparisonCondition="GreaterThan"
-                                                        Value="0">
-                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=PinnedFavoritesControl}"
-                                                           PropertyName="Visibility"
-                                                           Value="Visible"/>
-                            </Core:DataTriggerBehavior>
-                            <Core:DataTriggerBehavior Binding="{x:Bind PinnedFavorites.Count, Mode=OneWay}"
-                                                        ComparisonCondition="Equal"
-                                                        Value="0">
-                                <Core:ChangePropertyAction TargetObject="{Binding ElementName=PinnedFavoritesControl}"
-                                                           PropertyName="Visibility"
-                                                           Value="Collapsed"/>
-                            </Core:DataTriggerBehavior>
-                        </Interactivity:Interaction.Behaviors>
                     </ListView>
 
                     <Button x:Name="PlanTripButton"

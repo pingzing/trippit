@@ -239,14 +239,53 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\NewStoreLogo.scale-100.png" />
+    <Content Include="Assets\Images\NewStoreLogo.scale-125.png" />
+    <Content Include="Assets\Images\NewStoreLogo.scale-150.png" />
+    <Content Include="Assets\Images\NewStoreLogo.scale-200.png" />
+    <Content Include="Assets\Images\NewStoreLogo.scale-400.png" />
+    <Content Include="Assets\Images\SplashScreen.scale-100.png" />
+    <Content Include="Assets\Images\SplashScreen.scale-125.png" />
+    <Content Include="Assets\Images\SplashScreen.scale-150.png" />
+    <Content Include="Assets\Images\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Images\SplashScreen.scale-400.png" />
+    <Content Include="Assets\Images\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\Images\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\Images\Square150x150Logo.scale-150.png" />
+    <Content Include="Assets\Images\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Images\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Images\Square310x310Logo.scale-100.png" />
+    <Content Include="Assets\Images\Square310x310Logo.scale-125.png" />
+    <Content Include="Assets\Images\Square310x310Logo.scale-150.png" />
+    <Content Include="Assets\Images\Square310x310Logo.scale-200.png" />
+    <Content Include="Assets\Images\Square310x310Logo.scale-400.png" />
+    <Content Include="Assets\Images\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\Images\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\Images\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\Images\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Images\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-16_altform-unplated.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-256_altform-unplated.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-32_altform-unplated.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-48_altform-unplated.png" />
+    <Content Include="Assets\Images\Square71x71Logo.scale-100.png" />
+    <Content Include="Assets\Images\Square71x71Logo.scale-125.png" />
+    <Content Include="Assets\Images\Square71x71Logo.scale-150.png" />
+    <Content Include="Assets\Images\Square71x71Logo.scale-200.png" />
+    <Content Include="Assets\Images\Square71x71Logo.scale-400.png" />
+    <Content Include="Assets\Images\trip_icon.svg" />
+    <Content Include="Assets\Images\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\Images\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\Images\Wide310x150Logo.scale-150.png" />
+    <Content Include="Assets\Images\Wide310x150Logo.scale-200.png" />
+    <Content Include="Assets\Images\Wide310x150Logo.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -348,9 +387,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\Images\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DigiTransit10.Backend\DigiTransit10.Backend.csproj">
       <Project>{2de64562-5327-403c-b77b-be2c21fcbe31}</Project>

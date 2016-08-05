@@ -144,11 +144,17 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isBikeChecked, value); }
         }
 
+        public bool IsPinnedFavoritesVisible => PinnedFavorites.Count > 0;
+
         private ObservableCollection<IFavorite> _pinnedFavorites = new ObservableCollection<IFavorite>();
         public ObservableCollection<IFavorite> PinnedFavorites
         {
             get { return _pinnedFavorites; }
-            set { Set(ref _pinnedFavorites, value); }
+            set
+            {
+                Set(ref _pinnedFavorites, value);
+                RaisePropertyChanged(nameof(IsPinnedFavoritesVisible));
+            }
         }
 
         private RelayCommand _planTripCommand = null;
