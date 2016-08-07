@@ -10,6 +10,7 @@
     <Color x:Key="HslMetroOrange">#FF6319</Color>
     <Color x:Key="HslFerryBlue">#00B9E4</Color>
     <Color x:Key="HslBikeGoldenrod">#FCB614</Color>
+    <Color x:Key="HslWalkGray">#666666</Color>
     
     <!--HSL Pictographic Fonts-->
     <FontFamily x:Key="HslPictoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto</FontFamily>
@@ -22,5 +23,6 @@
     <SolidColorBrush x:Key="HslMetroOrangeBrush" Color="{StaticResource HslMetroOrange}"/>
     <SolidColorBrush x:Key="HslFerryBlueBrush" Color="{StaticResource HslFerryBlue}"/>
     <SolidColorBrush x:Key="HslBikeGoldenrodBrush" Color="{StaticResource HslBikeGoldenrod}"/>
+    <SolidColorBrush x:Key="HslWalkGrayBrush" Color="{StaticResource HslWalkGray}"/>
 
 </ResourceDictionary>

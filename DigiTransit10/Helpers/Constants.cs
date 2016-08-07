@@ -28,6 +28,11 @@ namespace DigiTransit10.Helpers
         public const string MetroBrushName = "HslMetroOrangeBrush";
         public const string FerryBrushName = "HslFerryBlueBrush";
         public const string BikeBrushName = "HslBikeGoldenrodBrush";
+        public const string WalkBrushName = "HslWalkGrayBrush";
+
+        //Font names
+        public const string HslPictoNormalFontName = "HslPictoNormalFont";
+        public const string HslPictoFrameFontName = "HslPictoFrameFont";
 
         //Global dictionary Current Visual State keys
         public const string CurrentMainPageVisualStateKey = "CurrentMainPageVisualState";

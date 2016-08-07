@@ -35,7 +35,7 @@ namespace DigiTransit10.Converters
                 case ApiMode.Tram:
                     return Application.Current.Resources[Constants.TramBrushName];
                 case ApiMode.Walk:
-                    return Application.Current.Resources["ApplicationForegroundThemeBrush"];
+                    return Application.Current.Resources[Constants.WalkBrushName];
                 default:
                     return DependencyProperty.UnsetValue;
             }

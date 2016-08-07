@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/04/2016 20:34:12
+// 	Generated: 08/05/2016 15:45:53
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -218,17 +218,6 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "TRIP PLANS"
-        /// </summary>
-        public static string TripResults_TripPlansHeader
-        {
-            get
-            {
-                return resourceLoader.GetString("TripResults_TripPlansHeader");
-            }
-        }
-        
-        /// <summary>
         /// Localized resource similar to "Fewer options"
         /// </summary>
         public static string TripForm_FewerOptions
@@ -394,24 +383,13 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "Remove"
-        /// </summary>
-        public static string FavoritesList_RemoveItem
-        {
-            get
-            {
-                return resourceLoader.GetString("FavoritesList_RemoveItem");
-            }
-        }
-        
-        /// <summary>
         /// Localized resource similar to "Trip plans"
         /// </summary>
-        public static string TripResults_TripPlansHeaderLowercase
+        public static string TripResults_TripPlansHeader
         {
             get
             {
-                return resourceLoader.GetString("TripResults_TripPlansHeaderLowercase");
+                return resourceLoader.GetString("TripResults_TripPlansHeader");
             }
         }
         
@@ -599,6 +577,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripResultCommandBar_Map");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Unpin"
+        /// </summary>
+        public static string PinnedFavoritesList_Unpin
+        {
+            get
+            {
+                return resourceLoader.GetString("PinnedFavoritesList_Unpin");
             }
         }
     }

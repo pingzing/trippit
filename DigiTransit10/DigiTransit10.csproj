@@ -130,8 +130,8 @@
     <Compile Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml.cs">
       <DependentUpon>TripPlanTransitIcon.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TripResultsList.xaml.cs">
-      <DependentUpon>TripResultsList.xaml</DependentUpon>
+    <Compile Include="Controls\TripResultContent.xaml.cs">
+      <DependentUpon>TripResultContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
@@ -335,7 +335,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Controls\TripResultsList.xaml">
+    <Page Include="Controls\TripResultContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

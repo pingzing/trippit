@@ -1,7 +1,9 @@
 ﻿using System;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using DigiTransit10.Helpers;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -11,7 +13,56 @@ namespace DigiTransit10.Controls.TripPlanStrip
     public sealed partial class TripPlanTransitIcon : UserControl
     {
         public static readonly DependencyProperty TransitModeProperty =
-            DependencyProperty.Register("TransitMode", typeof(ApiMode), typeof(TripPlanTransitIcon), new PropertyMetadata(0));
+            DependencyProperty.Register("TransitMode", typeof(ApiMode), typeof(TripPlanTransitIcon), new PropertyMetadata(0, 
+                TransitModeChanged));
+        private static void TransitModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var _this = d as TripPlanTransitIcon;
+            if (_this == null)
+            {
+                return;
+            }
+
+            if (!(e.NewValue is ApiMode))
+            {
+                return;
+            }
+
+            ApiMode newMode = (ApiMode)e.NewValue;
+            switch (newMode)
+            {
+                case ApiMode.Bicycle:
+                    _this.TransitModeIcon.Foreground =  (Brush)Application.Current.Resources[Constants.BikeBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.BikeIcon;
+                    break;
+                case ApiMode.Bus:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.BusBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.BusIcon;
+                    break;
+                case ApiMode.Ferry:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.FerryBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.FerryIcon;
+                    break;                
+                case ApiMode.Rail:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.TrainBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.TrainIcon;
+                    break;
+                case ApiMode.Subway:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.MetroBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.MetroIcon;
+                    break;
+                case ApiMode.Tram:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.TramBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.TramIcon;
+                    break;
+                case ApiMode.Walk:
+                    _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.WalkBrushName];
+                    _this.TransitModeIcon.Glyph = FontIconGlyphs.WalkIcon;
+                    _this.TransitModeIcon.FontFamily = (FontFamily)Application.Current.Resources[Constants.HslPictoNormalFontName];                    
+                    _this.NameOrDistanceBlock.FontWeight = FontWeights.Normal;
+                    break;
+            }           
+        }
         public ApiMode TransitMode
         {
             get { return (ApiMode)GetValue(TransitModeProperty); }

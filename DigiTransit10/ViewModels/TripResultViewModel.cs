@@ -21,6 +21,12 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
 
+        private RelayCommand<ItineraryModel> _showTripDetailsCommand;
+        public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
+
+        private RelayCommand<ItineraryModel> _showTripOnMapCommand;
+        public RelayCommand<ItineraryModel> ShowTripOnMapCommand => new RelayCommand<ItineraryModel>(ShowTripOnMap);
+
         public ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
         public ObservableCollection<ItineraryModel> TripResults
         {
@@ -31,14 +37,14 @@ namespace DigiTransit10.ViewModels
         private string _fromName;
         public string FromName
         {
-            get { return _fromName.ToUpperInvariant(); }
+            get { return _fromName?.ToUpperInvariant(); }
             set { Set(ref _fromName, value); }
         }
 
         private string _toName;
         public string ToName
         {
-            get { return _toName.ToUpperInvariant(); }
+            get { return _toName?.ToUpperInvariant(); }
             set { Set(ref _toName, value); }
         }
 
@@ -80,6 +86,16 @@ namespace DigiTransit10.ViewModels
                     EndingPlaceName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
             });
             }
-        }              
+        }
+
+        private void ShowTripDetails(ItineraryModel obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ShowTripOnMap(ItineraryModel obj)
+        {
+            
+        }
     }
 }

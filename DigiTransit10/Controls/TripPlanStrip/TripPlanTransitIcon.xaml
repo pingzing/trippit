@@ -18,19 +18,19 @@
         <!---Text and TranslateTransform set in Code-Behind.-->
         <TextBlock x:Name="NameOrDistanceBlock"
                    Grid.Row="0"
+                   Foreground="{ThemeResource TripPlanStripRectangleBrush}"
+                   FontWeight="Bold"
                    HorizontalAlignment="Center">
             <TextBlock.RenderTransform>
                 <TranslateTransform/>
             </TextBlock.RenderTransform>
         </TextBlock>
-        <!--TranslateTransform set in Code -Behind.-->
+        <!--TranslateTransform, Foreground, Glyph (and sometimes FontFamily) set in Code -Behind.-->
         <FontIcon x:Name="TransitModeIcon"
                   Grid.Row="1"
                   HorizontalAlignment="Center"
                   FontFamily="{StaticResource HslPictoFrameFont}"
-                  FontSize="35"
-                  Foreground="{x:Bind TransitMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                  Glyph="{x:Bind TransitMode, Converter={StaticResource TransitModeToFontIconConverter}}">
+                  FontSize="35">
             <FontIcon.RenderTransform>
                 <TranslateTransform/>
             </FontIcon.RenderTransform>
@@ -39,7 +39,7 @@
                    Grid.Row="2"
                    VerticalAlignment="Top"
                    Height="{StaticResource TripPlanStripRectangleHeight}"
-                   Margin="0 6 0 0"
+                   Margin="0 7.5 0 0"
                    Fill="{ThemeResource TripPlanStripRectangleBrush}"/>
     </Grid>
 </UserControl>

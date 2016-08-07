@@ -24,6 +24,7 @@
         <TextBlock x:Name="TimeBlock" 
                    Grid.Column="0" Grid.ColumnSpan="2"
                    Text="{x:Bind PointTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"
+                   FontWeight="Bold"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"/>
         <!--Grid.Column and Grid.ColumnSpan for the PlanStripRectangle are modified in Code-Behind by the IsEnd and IsStart properties.-->
@@ -38,12 +39,15 @@
                  HorizontalAlignment="Center"
                  Fill="{ThemeResource TripPlanStripRectangleBrush}"/>
         <Ellipse Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-                 Width="10" Height="10"
+                 Width="6" Height="6"
                  Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}"/>
 
         <TextBlock x:Name="NameBlock"
                    Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                   Text="{x:Bind PlaceName}"
+                   Foreground="{ThemeResource TripPlanStripRectangleBrush}"
+                   MaxWidth="100"
+                   TextTrimming="CharacterEllipsis"
+                   Text="{x:Bind PlaceName}"                   
                    HorizontalAlignment="Center"/>
 
     </Grid>

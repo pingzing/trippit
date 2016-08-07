@@ -83,7 +83,7 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
-        <lclCtls:TripResultsList x:Name="TripList"
+        <lclCtls:TripResultContent x:Name="TripList"
                                  RelativePanel.Below="PageHeader"
                                  RelativePanel.AlignLeftWithPanel="True"
                                  RelativePanel.AlignRightWithPanel="True"
@@ -97,13 +97,16 @@
                                          Icon="List"
                                          Position="0"
                                          IsEnabled="{x:Bind TripList.SelectedItem, Mode=OneWay, Converter={StaticResource NullToBooleanConverter}}"
-                                         Label="{Binding Source={StaticResource Strings}, Path=TripResultCommandBar_Details}"/>
+                                         Label="{Binding Source={StaticResource Strings}, Path=TripResultCommandBar_Details}"
+                                         Command="{x:Bind ViewModel.ShowTripDetailsCommand}"
+                                         CommandParameter="{x:Bind TripList.SelectedItem, Mode=OneWay}"/>
             <lclCtls:MovableAppBarButton x:Name="MapButton"
                                          Icon="Map"
                                          Position="1"
                                          IsEnabled="{x:Bind TripList.SelectedItem, Mode=OneWay, Converter={StaticResource NullToBooleanConverter}}"
-                                         Label="{Binding Source={StaticResource Strings}, Path=TripResultCommandBar_Map}"/>
-
+                                         Label="{Binding Source={StaticResource Strings}, Path=TripResultCommandBar_Map}"
+                                         Command="{x:Bind ViewModel.ShowTripOnMapCommand}"
+                                         CommandParameter="{x:Bind TripList.SelectedItem, Mode=OneWay}"/>
         </lclCtls:NavCommandBar>
     </Page.BottomAppBar>
 

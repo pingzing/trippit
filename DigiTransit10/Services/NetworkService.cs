@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
@@ -122,7 +123,7 @@ namespace DigiTransit10.Services
 
                 return new ApiResult<List<ApiStop>>(result);
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
                 LogException(ex);
                 return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoConnection);
@@ -205,7 +206,7 @@ namespace DigiTransit10.Services
 
                 return new ApiResult<ApiPlan>(result);
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
                 LogException(ex);                
                 return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoConnection);

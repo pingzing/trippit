@@ -114,6 +114,11 @@ namespace DigiTransit10.Views
                 return;
             }
 
+            if (WideHub == null)
+            {
+                return;
+            }
+            TripResultTripResultHubSection.Visibility = Visibility.Visible;
             ScrollToTripResultHubSection();
         }
 

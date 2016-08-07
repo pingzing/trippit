@@ -238,7 +238,7 @@
                         <FlyoutBase.AttachedFlyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem x:Name="RemoveItem"
-                                                    Text="{Binding Source={StaticResource Strings}, Path=FavoritesList_RemoveItem}"
+                                                    Text="{Binding Source={StaticResource Strings}, Path=PinnedFavoritesList_Unpin}"
                                                     Command="{x:Bind RemovePinnedFavoriteCommand}"/>
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
@@ -491,10 +491,11 @@
                     </HubSection.ContentTemplate>
                 </HubSection>
 
-                <HubSection x:Name="TripResultHubSection" 
+                <HubSection x:Name="TripResultTripResultHubSection" 
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                            DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
                             Margin="10 10 10 20"
-                            Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeaderLowercase}"
+                            Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
                             HorizontalAlignment="Center"
                             VerticalContentAlignment="Stretch"                            
                             Visibility="Collapsed">
@@ -503,7 +504,7 @@
                             <TextBlock Text="{Binding}" Style="{StaticResource HeaderTextBlockStyle}"/>
                         </DataTemplate>
                     </HubSection.HeaderTemplate>
-                    <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:MainViewModel">
+                    <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:TripResultViewModel">
                         <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"                              
                               VerticalAlignment="Stretch">
                             <Grid.RowDefinitions>
@@ -517,31 +518,15 @@
                                        FontWeight="Bold"
                                        Margin="10"
                                        Style="{StaticResource SubheaderTextBlockStyle}">
-                                <Run Text="{x:Bind TripResultViewModel.FromName, Mode=OneWay}"/><Run Text=" → "/><Run Text="{x:Bind TripResultViewModel.ToName, Mode=OneWay}"/>
+                                <Run Text="{x:Bind FromName, Mode=OneWay}"/><Run Text=" → "/><Run Text="{x:Bind ToName, Mode=OneWay}"/>
                             </TextBlock>
 
-                            <lclCtls:TripResultsList x:Name="TripResultsPanel"
+                            <lclCtls:TripResultContent x:Name="TripResultsPanel"
                                                      Grid.Row="1"
-                                                     DataContext="{x:Bind TripResultViewModel, Mode=OneWay}"
+                                                     DataContext="{x:Bind Mode=OneWay}"
                                                      Margin="-10 0 -10 5"/>
                         </Grid>
                     </DataTemplate>
-                    <Interactivity:Interaction.Behaviors>
-                        <Core:DataTriggerBehavior Binding="{x:Bind ViewModel.TripResultViewModel.TripResults.Count, Mode=OneWay}"
-                                                  ComparisonCondition="Equal"
-                                                  Value="1">
-                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=TripResultHubSection}"
-                                                       PropertyName="Visibility"
-                                                       Value="Visible"/>
-                        </Core:DataTriggerBehavior>
-                        <Core:DataTriggerBehavior Binding="{Binding ElementName=TripResultHubSection, Path=Visibility}"
-                                                  ComparisonCondition="Equal"
-                                                  Value="Visible">
-                            <Core:CallMethodAction TargetObject="{Binding ElementName=ThisMainPage}"
-                                                   MethodName="ScrollToTripResultHubSection"/>
-                        </Core:DataTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>
-
                 </HubSection>
 
             </Hub>

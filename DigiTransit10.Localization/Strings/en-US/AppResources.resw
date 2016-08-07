@@ -162,9 +162,6 @@
   <data name="TripFrom_GettingsAddresses" xml:space="preserve">
     <value>Resolving locations...</value>
   </data>
-  <data name="TripResults_TripPlansHeader" xml:space="preserve">
-    <value>TRIP PLANS</value>
-  </data>
   <data name="TripForm_FewerOptions" xml:space="preserve">
     <value>Fewer options</value>
   </data>
@@ -210,10 +207,7 @@
   <data name="TripForm_PinnedFavoritesHeader" xml:space="preserve">
     <value>Pinned favorites</value>
   </data>
-  <data name="FavoritesList_RemoveItem" xml:space="preserve">
-    <value>Remove</value>
-  </data>
-  <data name="TripResults_TripPlansHeaderLowercase" xml:space="preserve">
+  <data name="TripResults_TripPlansHeader" xml:space="preserve">
     <value>Trip plans</value>
   </data>
   <data name="DialogMessage_NoTripsFoundNoResults" xml:space="preserve">
@@ -266,5 +260,8 @@
   </data>
   <data name="TripResultCommandBar_Map" xml:space="preserve">
     <value>Map</value>
+  </data>
+  <data name="PinnedFavoritesList_Unpin" xml:space="preserve">
+    <value>Unpin</value>
   </data>
 </root>
