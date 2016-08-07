@@ -1,6 +1,6 @@
 ﻿using DigiTransit10.Models.ApiModels;
 
-namespace DigiTransit10.Models.TripPlanStrip
+namespace DigiTransit10.Models
 {
     public class ItineraryModel
     {

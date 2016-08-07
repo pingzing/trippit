@@ -10,10 +10,10 @@
     d:DesignHeight="109"
     d:DesignWidth="460">
 
-    <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}" >
+    <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
+                <StackPanel Orientation="Horizontal" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
 
@@ -21,26 +21,30 @@
             <DataTemplate x:DataType="local:TripLegViewModel">
                 <Grid x:Name="LegContentRoot" Loaded="LegContentRoot_Loaded" Tag="{x:Bind}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <local:TripPlanPoint x:Name="StartPoint" PointTime="{x:Bind BackingLeg.StartTime.Value}"
+                    <local:TripPlanPoint x:Name="StartPoint"
+                                         x:Phase="1"
+                                         PointTime="{x:Bind BackingLeg.StartTime.Value}"
                                          Grid.Column="0"
-                                         IsStart="{x:Bind IsStart}"                                         
-                                         PlaceName="{x:Bind StartPlaceName}"/>
-                    <local:TripPlanTransitIcon x:Name="TransitIcon" 
-                                                 Grid.Column="1"
-                                                 TransitMode="{x:Bind BackingLeg.Mode.Value}"
-                                                 ShortName="{x:Bind BackingLeg.Route.ShortName}"
-                                                 Distance="{x:Bind BackingLeg.Distance}"                                                 
-                                                 HorizontalAlignment="Center"/>
-                    <local:TripPlanPoint x:Name="OptionalEndPoint" 
+                                         IsStart="{x:Bind IsStart}"
+                                         PlaceName="{x:Bind StartPlaceName}" />
+                    <local:TripPlanTransitIcon x:Name="TransitIcon"
+                                               x:Phase="2"
+                                               Grid.Column="1"
+                                               TransitMode="{x:Bind BackingLeg.Mode.Value}"
+                                               ShortName="{x:Bind BackingLeg.Route.ShortName}"
+                                               Distance="{x:Bind BackingLeg.Distance}"
+                                               HorizontalAlignment="Center" />
+                    <local:TripPlanPoint x:Name="OptionalEndPoint"
+                                         x:Phase="3"
                                          Grid.Column="2"
-                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"                                         
+                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
                                          IsEnd="{x:Bind IsEnd}"
                                          PlaceName="{x:Bind EndPlaceName}"
-                                         PointTime="{x:Bind BackingLeg.EndTime.Value}"/>
+                                         PointTime="{x:Bind BackingLeg.EndTime.Value}" />
                 </Grid>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

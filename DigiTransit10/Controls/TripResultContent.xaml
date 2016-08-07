@@ -7,6 +7,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tripPlanStrip="using:DigiTransit10.Controls.TripPlanStrip"
+    xmlns:Behaviors="using:Template10.Behaviors"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media"
+    xmlns:models="using:DigiTransit10.Models"
+    xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -16,56 +23,79 @@
             <VisualStateGroup x:Name="TripStateGroup">
                 <VisualStateGroup.Transitions>
                     <VisualTransition From="TripsList" GeneratedDuration="0" To="DetailsList">
-                        <Storyboard/>
+                        <Storyboard />
                     </VisualTransition>
-                    <VisualTransition From="DetailsList" GeneratedDuration="0" To="TripsList"/>
+                    <VisualTransition From="DetailsList" GeneratedDuration="0" To="TripsList" />
                 </VisualStateGroup.Transitions>
-                <VisualState x:Name="TripsList"/>
+                <VisualState x:Name="TripsList" />
                 <VisualState x:Name="DetailsList">
                     <VisualState.Setters>
-                        <Setter Target="TripResultList.(UIElement.Visibility)" Value="Collapsed"/>
-                        <Setter Target="SingleMap.(UIElement.Visibility)" Value="Visible"/>
-                        <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible"/>
+                        <Setter Target="TripResultList.(UIElement.Visibility)" Value="Collapsed" />
+                        <Setter Target="SingleMap.(UIElement.Visibility)" Value="Visible" />
+                        <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <ListView x:Name="TripResultList"                                    
-              ScrollViewer.HorizontalScrollBarVisibility="Auto"
-              ScrollViewer.VerticalScrollBarVisibility="Auto"
-              ScrollViewer.HorizontalScrollMode="Auto"
-              ScrollViewer.IsHorizontalRailEnabled="True"
-              ScrollViewer.IsVerticalRailEnabled="False"       
+        <ListView x:Name="TripResultList"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollMode="Auto"
+                  ScrollViewer.IsHorizontalRailEnabled="True"
+                  ScrollViewer.IsVerticalRailEnabled="False"
                   DataContext="{Binding ElementName=ThisTripResultContent, Path=DataContext}"
-              ItemsSource="{x:Bind ViewModel.TripResults, Mode=OneWay}"
-              SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch">
+                  ItemsSource="{x:Bind ViewModel.TripResults, Mode=OneWay}"
+                  SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
+                  ShowsScrollingPlaceholders="False"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <tripPlanStrip:TripPlanStrip StartingPlaceName="{Binding StartingPlaceName}"
-                                         EndingPlaceName="{Binding EndingPlaceName}"
-                                         StripItinerary="{Binding BackingItinerary}"
-                                         Margin="10 0 10 15"/>
+                                                 EndingPlaceName="{Binding EndingPlaceName}"
+                                                 StripItinerary="{Binding BackingItinerary}"
+                                                 Margin="10 0 10 15" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
         <local:DigiTransitMap x:Name="SingleMap"
-                              x:DeferLoadStrategy="Lazy"
-                              Opacity="0"
-                              Visibility="Collapsed"/>
-        
+                              x:DeferLoadStrategy="Lazy"                                                       
+                              Visibility="Collapsed" />
+
         <Grid x:Name="DirectionsFloatingPanel"
               x:DeferLoadStrategy="Lazy"
-              Visibility="Collapsed">
+              Visibility="Collapsed"
+              Background="#88FFFFFF">
             <Grid.RenderTransform>
-                <TranslateTransform Y="200"/>
+                <TranslateTransform Y="200" />
             </Grid.RenderTransform>
-            <ListView x:Name="DetailedTripList"
-                      >
-                
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Rectangle x:Name="GridGrabHeader"
+                       Height="4"
+                       HorizontalAlignment="Stretch"
+                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+            
+            <!--ItemsSource set in code-behind -->
+            <ListView x:Name="DetailedTripList"                      
+                      Grid.Row="1"
+                      IsItemClickEnabled="True">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="apiModels:ApiLeg">
+                        <TextBlock Text="{x:Bind From.Name}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
 

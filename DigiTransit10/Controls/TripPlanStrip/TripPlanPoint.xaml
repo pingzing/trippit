@@ -45,7 +45,7 @@
         <TextBlock x:Name="NameBlock"
                    Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                    Foreground="{ThemeResource TripPlanStripRectangleBrush}"
-                   MaxWidth="100"
+                   MaxWidth="125"
                    TextTrimming="CharacterEllipsis"
                    Text="{x:Bind PlaceName}"                   
                    HorizontalAlignment="Center"/>

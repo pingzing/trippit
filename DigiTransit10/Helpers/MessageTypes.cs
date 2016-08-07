@@ -25,5 +25,15 @@ namespace DigiTransit10.Helpers
                 if (removed != null) RemovedFavorites = new ReadOnlyCollection<IFavorite>(removed);
             }
         }
+
+        public class ViewPlanDetails
+        {
+            public ItineraryModel BackingModel { get; private set; }
+
+            public ViewPlanDetails(ItineraryModel model)
+            {
+                BackingModel = model;
+            }
+        }
     }
 }

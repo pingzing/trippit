@@ -114,22 +114,16 @@ namespace DigiTransit10.Views
                 return;
             }
 
-            if (WideHub == null)
+            if (WideHub != null)
             {
-                return;
-            }
-            TripResultTripResultHubSection.Visibility = Visibility.Visible;
-            ScrollToTripResultHubSection();
-        }
-
-        public async void ScrollToTripResultHubSection()
-        {
-            if (WideHub == null || WideHub.Sections.Count < 2)
-            {
-                return;
-            }
-            await Task.Delay(250); //Without this, the XAML renderer occasionally adds a duplicate TripPlanStrip for some reason.
-            WideHub.ScrollToSection(WideHub.Sections[1]);
-        }
+                TripResultTripResultHubSection.Visibility = Visibility.Visible;                
+                if (WideHub == null || WideHub.Sections.Count < 2)
+                {
+                    return;
+                }
+                //await Task.Delay(250); //Without this, the XAML renderer occasionally adds a duplicate TripPlanStrip for some reason.
+                WideHub.ScrollToSection(WideHub.Sections[1]);
+            }            
+        }        
     }
 }

@@ -8,7 +8,6 @@ using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Mvvm;
 using Template10.Common;
-using DigiTransit10.Models.TripPlanStrip;
 using DigiTransit10.Models;
 using DigiTransit10.Localization.Strings;
 using GalaSoft.MvvmLight.Command;
@@ -46,7 +45,7 @@ namespace DigiTransit10.ViewModels
         {
             get { return _toName?.ToUpperInvariant(); }
             set { Set(ref _toName, value); }
-        }
+        }        
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService)
         {
@@ -90,7 +89,7 @@ namespace DigiTransit10.ViewModels
 
         private void ShowTripDetails(ItineraryModel obj)
         {
-            throw new NotImplementedException();
+           _messengerService.Send(new MessageTypes.ViewPlanDetails(obj));
         }
 
         private void ShowTripOnMap(ItineraryModel obj)
