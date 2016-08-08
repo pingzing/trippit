@@ -30,9 +30,9 @@
                 <VisualState x:Name="TripsList" />
                 <VisualState x:Name="DetailsList">
                     <VisualState.Setters>
+                        <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible" />
                         <Setter Target="TripResultList.(UIElement.Visibility)" Value="Collapsed" />
                         <Setter Target="SingleMap.(UIElement.Visibility)" Value="Visible" />
-                        <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -65,9 +65,9 @@
                               Visibility="Collapsed" />
 
         <Grid x:Name="DirectionsFloatingPanel"
-              x:DeferLoadStrategy="Lazy"
+              x:DeferLoadStrategy="Lazy"              
               Visibility="Collapsed"
-              Background="#88FFFFFF">
+              Background="{ThemeResource HalfTransparentPageBackgroundBrush}">
             <Grid.RenderTransform>
                 <TranslateTransform Y="200" />
             </Grid.RenderTransform>
@@ -78,13 +78,14 @@
             </Grid.RowDefinitions>
             
             <Rectangle x:Name="GridGrabHeader"
-                       Height="4"
+                       Height="10"
                        HorizontalAlignment="Stretch"
                        Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
             
             <!--ItemsSource set in code-behind -->
             <ListView x:Name="DetailedTripList"                      
                       Grid.Row="1"
+                      SelectionMode="None"
                       IsItemClickEnabled="True">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">

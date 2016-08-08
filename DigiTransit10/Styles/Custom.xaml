@@ -12,8 +12,9 @@
     <Color x:Key="CustomColor">SteelBlue</Color>
     <Color x:Key="ContrastColorDark">White</Color>
     <Color x:Key="ContrastColorLight">Black</Color>
-    
+
     <SolidColorBrush x:Key="HighlightColorBrush" Color="{ThemeResource SystemAccentColor}"/>
+    <SolidColorBrush x:Key="HalfTransparentPageBackgroundBrush" Color="{ThemeResource SystemAltHighColor}" Opacity=".5"/>
 
     <Style x:Key="EmptyListHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
         <Setter Property="Foreground" Value="Gray"/>

@@ -45,9 +45,16 @@ namespace DigiTransit10.Controls
         }                
         private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
         {
-            //var list = this.FindName(nameof(DirectionsFloatingPanel));            
-            VisualStateManager.GoToState(this, this.TripStateGroup.States[DetailedStateIndex].Name, true);
-            DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs;
+            if (TripStateGroup.CurrentState == TripStateGroup.States[TripListStateIndex]
+                || TripStateGroup.CurrentState == null)
+            {
+                VisualStateManager.GoToState(this, this.TripStateGroup.States[DetailedStateIndex].Name, true);
+                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs;
+            }
+            else if(TripStateGroup.CurrentState == TripStateGroup.States[DetailedStateIndex])
+            {
+                VisualStateManager.GoToState(this, this.TripStateGroup.States[TripListStateIndex].Name, true);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
