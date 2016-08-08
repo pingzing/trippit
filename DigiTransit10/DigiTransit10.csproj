@@ -109,7 +109,6 @@
     <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
       <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FloatingPanel.cs" />
     <Compile Include="Controls\GroupedFavoriteList.cs" />
     <Compile Include="Controls\GroupedPlaceList.cs" />
     <Compile Include="Controls\ISortableAppBarButton.cs" />
@@ -358,10 +357,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Busy.xaml">
       <Generator>MSBuild:Compile</Generator>
