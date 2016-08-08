@@ -17,6 +17,16 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <Storyboard x:Name="FloatingPanelOpenStoryboard">
+            <DoubleAnimation Duration="0:0:0.5" To="-200" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="DirectionsFloatingPanel" d:IsOptimized="True">
+                <DoubleAnimation.EasingFunction>
+                    <QuarticEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+        </Storyboard>
+    </UserControl.Resources>
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -67,21 +77,24 @@
         <Grid x:Name="DirectionsFloatingPanel"
               x:DeferLoadStrategy="Lazy"              
               Visibility="Collapsed"
+              VerticalAlignment="Bottom"
+              MaxHeight="200"
               Background="{ThemeResource HalfTransparentPageBackgroundBrush}">
             <Grid.RenderTransform>
-                <TranslateTransform Y="200" />
+                <CompositeTransform/>
             </Grid.RenderTransform>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            
+
             <Rectangle x:Name="GridGrabHeader"
                        Height="10"
                        HorizontalAlignment="Stretch"
-                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-            
+                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Tapped="GridGrabHeader_Tapped"
+                       />
+
             <!--ItemsSource set in code-behind -->
             <ListView x:Name="DetailedTripList"                      
                       Grid.Row="1"

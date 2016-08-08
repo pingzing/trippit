@@ -42,7 +42,9 @@ namespace DigiTransit10.Controls
            this.InitializeComponent();
            this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
-        }                
+            this.FloatingPanelOpenStoryboard.Completed += FloatingPanelOpenStoryboard_Completed;
+        }        
+
         private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
         {
             if (TripStateGroup.CurrentState == TripStateGroup.States[TripListStateIndex]
@@ -62,6 +64,18 @@ namespace DigiTransit10.Controls
         private void RaisePropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }        
+        }
+
+        private void GridGrabHeader_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            this.FloatingPanelOpenStoryboard.Begin();
+        }
+
+        private void FloatingPanelOpenStoryboard_Completed(object sender, object e)
+        {
+            ((CompositeTransform) this.DirectionsFloatingPanel.RenderTransform).TranslateY = 0;
+            this.DirectionsFloatingPanel.MaxHeight += 200;
+            this.DirectionsFloatingPanel.Height = this.DirectionsFloatingPanel.ActualHeight + 200;
+        }
     }
 }
