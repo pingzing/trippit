@@ -147,6 +147,7 @@
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />
     <Compile Include="ExtensionMethods\TaskExtensions.cs" />
+    <Compile Include="GraphQL\GqlInlineMethodReturnValue.cs" />
     <Compile Include="GraphQL\GqlParameter.cs" />
     <Compile Include="GraphQL\GqlQuery.cs" />
     <Compile Include="GraphQL\GqlReturnValue.cs" />

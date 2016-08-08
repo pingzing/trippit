@@ -4,20 +4,29 @@ using static DigiTransit10.Models.ApiModels.ApiEnums;
 namespace DigiTransit10.Models.ApiModels
 {
     public class ApiStoptime
-    {
-        /// <summary>
-        /// Nullable.
-        /// </summary>
+    {        
         [JsonProperty("stop")]
         public ApiStop Stop { get; set; }
+        /// <summary>
+        /// Seconds since 00:00 of this day.
+        /// </summary>
         [JsonProperty("scheduledArrival")]
         public int? ScheduledArrival { get; set; }
+        /// <summary>
+        /// Seconds since 00:00 of this day.
+        /// </summary>
         [JsonProperty("realtimeArrival")]
-        public int? RealtimeArrival { get; set; }
-        [JsonProperty("arrivalDelay")]
+        public int? RealtimeArrival { get; set; }        
+        [JsonProperty("arrivalDelay")]        
         public int? ArrivalDelay { get; set; }
+        /// <summary>
+        /// Seconds since 00:00 of this day.
+        /// </summary>
         [JsonProperty("scheduledDeparture")]
         public int? ScheduledDeparture { get; set; }
+        /// <summary>
+        /// Seconds since 00:00 of this day.
+        /// </summary>
         [JsonProperty("realtimeDeparture")]
         public int? RealtimeDeparture { get; set; }
         [JsonProperty("departureDelay")]
@@ -33,10 +42,7 @@ namespace DigiTransit10.Models.ApiModels
         [JsonProperty("dropoffType")]
         public ApiPickupDropoffType? DropoffType { get; set; }
         [JsonProperty("serviceDay")]
-        public long? ServiceDay { get; set; }
-        /// <summary>
-        /// Nullable.
-        /// </summary>
+        public long? ServiceDay { get; set; }        
         [JsonProperty("trip")]
         public ApiTrip Trip { get; set; }
     }

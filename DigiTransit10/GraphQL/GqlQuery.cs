@@ -74,6 +74,21 @@ namespace DigiTransit10.GraphQL
         private StringBuilder ParseReturnValueRecursively(StringBuilder sb, GqlReturnValue retVal)
         {
             sb.Append($"{retVal.Name} ");
+
+            var inlineMethod = retVal as GqlInlineMethodReturnValue;
+            if (inlineMethod != null && inlineMethod.MethodParameters?.Count > 0)
+            {
+                sb.Append("(");
+                int paramCount = inlineMethod.MethodParameters.Count;
+                foreach (var param in inlineMethod.MethodParameters)
+                {
+                    bool isLast = inlineMethod.MethodParameters.IndexOf(param) == paramCount - 1;
+                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value)}");
+                    if (!isLast) sb.Append(",");
+                }
+                sb.Append(")");
+            }
+
             if(retVal.Descendants != null)
             {
                 sb.Append("{");

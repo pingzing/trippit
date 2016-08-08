@@ -166,6 +166,14 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.realTime),
                             new GqlReturnValue(ApiGqlMembers.distance),
                             new GqlReturnValue(ApiGqlMembers.transitLeg),
+                            new GqlReturnValue(ApiGqlMembers.intermediateStops,
+                                new GqlReturnValue(ApiGqlMembers.name),
+                                new GqlReturnValue(ApiGqlMembers.lat),
+                                new GqlReturnValue(ApiGqlMembers.lon),
+                                new GqlInlineMethodReturnValue(ApiGqlMembers.stoptimesWithoutPatterns, new List<GqlParameter> { new GqlParameter(ApiGqlMembers.numberOfDepartures, 1)},
+                                    new GqlReturnValue(ApiGqlMembers.scheduledArrival)
+                                )
+                            ),
                             new GqlReturnValue(ApiGqlMembers.from,
                                 new GqlReturnValue(ApiGqlMembers.name)
                             ),

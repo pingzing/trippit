@@ -39,5 +39,9 @@ namespace DigiTransit10.Models.ApiModels
         public static string fares => "fares";
         public static string currency => "currency";
         public static string cents => "cents";
+        public static string intermediateStops => nameof(intermediateStops);
+        public static string stoptimesWithoutPatterns => nameof(stoptimesWithoutPatterns);
+        public static string scheduledArrival => nameof(scheduledArrival);
+        public static string numberOfDepartures => nameof(numberOfDepartures);
     }
 }
