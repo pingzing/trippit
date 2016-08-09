@@ -143,7 +143,7 @@ namespace DigiTransit10.Controls
         }        
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
-        {
+        {            
             await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
         }
 
@@ -179,6 +179,26 @@ namespace DigiTransit10.Controls
                                        .Max(x => x.Location.Position.Longitude),
                 Latitude = MapElements.Select(x => x as MapIcon)
                                       .Min(x => x.Location.Position.Latitude)
+            };
+
+            return new GeoboundingBox(topLeft, bottomRight);
+        }
+
+        public GeoboundingBox GetMapViewBoundingBox()
+        {
+            var geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
+
+            var topLeft = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = geopath.Positions.Min(x => x.Longitude),
+                Latitude = geopath.Positions.Max(x => x.Latitude)
+            };
+            var bottomRight = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = geopath.Positions.Max(x => x.Longitude),
+                Latitude = geopath.Positions.Min(x => x.Latitude)
             };
 
             return new GeoboundingBox(topLeft, bottomRight);

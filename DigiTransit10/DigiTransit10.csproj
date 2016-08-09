@@ -143,6 +143,7 @@
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
     <Compile Include="ExtensionMethods\DependencyObjectExtensions.cs" />
+    <Compile Include="ExtensionMethods\DictionaryExtensions.cs" />
     <Compile Include="ExtensionMethods\GridExtensions.cs" />
     <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
     <Compile Include="ExtensionMethods\StreamExtensions.cs" />

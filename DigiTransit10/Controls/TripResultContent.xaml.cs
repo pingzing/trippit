@@ -41,8 +41,7 @@ namespace DigiTransit10.Controls
         {
            this.InitializeComponent();
            this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
-            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
-            this.FloatingPanelOpenStoryboard.Completed += FloatingPanelOpenStoryboard_Completed;
+            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);            
         }        
 
         private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
@@ -66,16 +65,44 @@ namespace DigiTransit10.Controls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+        private double _expandedHeight;
+        private double _collapsedHeight;
         private void GridGrabHeader_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            this.FloatingPanelOpenStoryboard.Begin();
-        }
+            if (this.FloatingPanelStateGroup.CurrentState == null ||
+                this.FloatingPanelStateGroup.CurrentState.Name == this.FloatingPanelStateGroup.States[0].Name)
+            {
+                double translationDelta = _expandedHeight - _collapsedHeight;
+                ExpandedTranslationAnimation.To = translationDelta;
+                VisualStateManager.GoToState(this, this.FloatingPanelStateGroup.States[1].Name, true);
+            }
+            else
+            {
+                double translationDelta = _expandedHeight - _collapsedHeight;
+                PanelExpandHeightValue.Value = _expandedHeight;
+                PanelExpandTranslateStart.From = translationDelta;
+                VisualStateManager.GoToState(this, this.FloatingPanelStateGroup.States[0].Name, true);
+            }
+        }        
 
-        private void FloatingPanelOpenStoryboard_Completed(object sender, object e)
+        private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            ((CompositeTransform) this.DirectionsFloatingPanel.RenderTransform).TranslateY = 0;
-            this.DirectionsFloatingPanel.MaxHeight += 200;
-            this.DirectionsFloatingPanel.Height = this.DirectionsFloatingPanel.ActualHeight + 200;
+            _expandedHeight = this.ActualHeight * .75;
+            _collapsedHeight = this.ActualHeight * .25;
+
+            ExpandedHeightKeyFrame.Value = _expandedHeight;
+            CollapsedHeightKeyFrame.Value = _collapsedHeight;
+
+            ExpandedHeightStoryboard.Completed += (s, args) =>
+            {
+                this.DirectionsFloatingPanel.Height = _expandedHeight;
+            };
+            CollapsedHeightStoryboard.Completed += (s2, args2) =>
+            {
+                this.DirectionsFloatingPanel.Height = _collapsedHeight;
+            };
+
+            VisualStateManager.GoToState(this, this.FloatingPanelStateGroup.States[0].Name, false);                        
         }
     }
 }

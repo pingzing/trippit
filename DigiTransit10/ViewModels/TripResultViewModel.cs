@@ -12,11 +12,14 @@ using DigiTransit10.Models;
 using DigiTransit10.Localization.Strings;
 using GalaSoft.MvvmLight.Command;
 using System;
+using System.Linq;
+using DigiTransit10.ExtensionMethods;
+using Newtonsoft.Json;
 
 namespace DigiTransit10.ViewModels
 {
     public class TripResultViewModel : ViewModelBase
-    {
+    {            
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
 
@@ -53,12 +56,7 @@ namespace DigiTransit10.ViewModels
             _messengerService = messengerService;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
-        }
-
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {            
-            await Task.CompletedTask;
-        }
+        }        
 
         private void PlanFound(MessageTypes.PlanFoundMessage _)
         {
@@ -95,6 +93,16 @@ namespace DigiTransit10.ViewModels
         private void ShowTripOnMap(ItineraryModel obj)
         {
             
+        }
+
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {            
+            await Task.CompletedTask;
+        }
+
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
+        {            
+            await Task.CompletedTask;
         }
     }
 }

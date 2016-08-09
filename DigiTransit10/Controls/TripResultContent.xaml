@@ -18,14 +18,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <Storyboard x:Name="FloatingPanelOpenStoryboard">
-            <DoubleAnimation Duration="0:0:0.5" To="-200" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="DirectionsFloatingPanel" d:IsOptimized="True">
-                <DoubleAnimation.EasingFunction>
-                    <QuarticEase EasingMode="EaseInOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
 
-        </Storyboard>
     </UserControl.Resources>
 
     <Grid>
@@ -43,6 +36,55 @@
                         <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible" />
                         <Setter Target="TripResultList.(UIElement.Visibility)" Value="Collapsed" />
                         <Setter Target="SingleMap.(UIElement.Visibility)" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            
+            <VisualStateGroup x:Name="FloatingPanelStateGroup">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition From="PanelExpanded" GeneratedDuration="0:0:0.5" To="PanelCollapsed">
+                        <Storyboard>
+                            <DoubleAnimation x:Name="ExpandedTranslationAnimation" Duration="0:0:0.5" To="300" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuarticEase EasingMode="EaseInOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </VisualTransition>
+                    <VisualTransition From="PanelCollapsed" GeneratedDuration="0:0:0.5" To="PanelExpanded">
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetProperty="(FrameworkElement.Height)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <EasingDoubleKeyFrame x:Name="PanelExpandHeightValue" KeyTime="0" Value="400"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimation x:Name="PanelExpandTranslateStart" Duration="0:0:0.5" From="200" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuarticEase EasingMode="EaseInOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
+
+                <VisualState x:Name="PanelExpanded">
+                    <Storyboard x:Name="ExpandedHeightStoryboard">
+                        <ObjectAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetName="DirectionsFloatingPanel" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame x:Name="ExpandedHeightKeyFrame" KeyTime="0" Value="400"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="PanelCollapsed">
+                    <Storyboard x:Name="CollapsedHeightStoryboard">
+                        <ObjectAnimationUsingKeyFrames EnableDependentAnimation="True" Duration="0:0:0" Storyboard.TargetName="DirectionsFloatingPanel" Storyboard.TargetProperty="Height">
+                            <DiscreteObjectKeyFrame x:Name="CollapsedHeightKeyFrame" KeyTime="0" Value="100"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="GrabHandleStateGroup">
+                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="MouseOver">
+                    <VisualState.Setters>
+                        <Setter Target="GrabHandleHighlight.(UIElement.Visibility)" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -74,12 +116,14 @@
                               x:DeferLoadStrategy="Lazy"                                                       
                               Visibility="Collapsed" />
 
+        <!--Height set at runtime in code-behind to 3/4 available vertical space.-->
         <Grid x:Name="DirectionsFloatingPanel"
               x:DeferLoadStrategy="Lazy"              
-              Visibility="Collapsed"
+              Background="{ThemeResource HalfTransparentPageBackgroundBrush}"
+              Height="400"              
               VerticalAlignment="Bottom"
-              MaxHeight="200"
-              Background="{ThemeResource HalfTransparentPageBackgroundBrush}">
+              Visibility="Collapsed"
+              Loaded="DirectionsFloatingPanel_Loaded">
             <Grid.RenderTransform>
                 <CompositeTransform/>
             </Grid.RenderTransform>
@@ -89,11 +133,40 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Rectangle x:Name="GridGrabHeader"
-                       Height="10"
-                       HorizontalAlignment="Stretch"
-                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}" Tapped="GridGrabHeader_Tapped"
-                       />
+            <Grid x:Name="GridGrabHeader"
+                       Height="15"
+                       HorizontalAlignment="Stretch"                        
+                       Background="{ThemeResource SystemControlBackgroundAccentBrush}" 
+                       Tapped="GridGrabHeader_Tapped">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Rectangle x:Name="GrabHandleHighlight" 
+                           Grid.RowSpan="2" 
+                           Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                           Height="13"                           
+                           Opacity=".5"
+                           Visibility="Collapsed"/>
+                <Rectangle Grid.Row="0" 
+                           Fill="White"                           
+                           Height="1"                           
+                           Margin="0 4 0 0"
+                           Width="20"/>
+                <Rectangle Grid.Row="1" 
+                           Fill="White"
+                           Height="1"
+                           Margin="0 0 0 4"
+                           Width="20"/>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="PointerEntered">
+                        <Core:GoToStateAction StateName="MouseOver"/>
+                    </Core:EventTriggerBehavior>
+                    <Core:EventTriggerBehavior EventName="PointerExited">
+                        <Core:GoToStateAction StateName="Normal"/>
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </Grid>
 
             <!--ItemsSource set in code-behind -->
             <ListView x:Name="DetailedTripList"                      
