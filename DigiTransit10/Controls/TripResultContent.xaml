@@ -67,6 +67,7 @@
                               x:DeferLoadStrategy="Lazy"                                                       
                               Visibility="Collapsed" />
 
+        <!--ExpandedHeight set in code-behind.-->
         <local:FloatingPanel x:Name="DirectionsFloatingPanel"
                              x:DeferLoadStrategy="Lazy" 
                              Background="{ThemeResource HalfTransparentPageBackgroundBrush}"                         

@@ -13,10 +13,10 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
-    
+
+
     <Grid x:Name="PanelGrid"
-          Background="{x:Bind Background, Mode=OneWay}"
-          Height="10">
+          Background="{x:Bind Background, Mode=OneWay}">
         <Grid.RenderTransform>
             <CompositeTransform/>
         </Grid.RenderTransform>
@@ -24,22 +24,22 @@
             <VisualStateGroup x:Name="FloatingPanelStateGroup">
                 <VisualStateGroup.Transitions>
                     <VisualTransition From="PanelExpanded" GeneratedDuration="0:0:0.5" To="PanelCollapsed">
-                        <Storyboard>
-                            <DoubleAnimation x:Name="ExpandedTranslationAnimation" Duration="0:0:0.5" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="PanelGrid">
+                        <Storyboard x:Name="ExpandedToCollapsedStoryboard">
+                            <DoubleAnimation x:Name="CollapsingTranslationAnimation" Duration="0:0:0.5" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="PanelGrid">
                                 <DoubleAnimation.EasingFunction>
-                                    <QuarticEase EasingMode="EaseInOut"/>
+                                    <QuarticEase EasingMode="EaseOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
                     </VisualTransition>
                     <VisualTransition From="PanelCollapsed" GeneratedDuration="0:0:0.5" To="PanelExpanded">
-                        <Storyboard>
+                        <Storyboard x:Name="CollapsedToExpandedStoryboard">
                             <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetProperty="(FrameworkElement.Height)" Storyboard.TargetName="PanelGrid">
                                 <EasingDoubleKeyFrame x:Name="PanelExpandHeightValue" KeyTime="0"/>
                             </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimation x:Name="PanelExpandTranslateStart" Duration="0:0:0.5" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="PanelGrid">
+                            <DoubleAnimation x:Name="ExpandingTranslationAnimation" Duration="0:0:0.5" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="PanelGrid">
                                 <DoubleAnimation.EasingFunction>
-                                    <QuarticEase EasingMode="EaseInOut"/>
+                                    <QuarticEase EasingMode="EaseOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                         </Storyboard>
@@ -79,7 +79,7 @@
 
         <Grid x:Name="GridGrabHeader"
               Grid.Row="0"
-              Height="15"
+              Height="{x:Bind DefaultCollapsedPanelHeight}"
               HorizontalAlignment="Stretch"                        
               Background="{ThemeResource SystemControlBackgroundAccentBrush}" 
               ManipulationMode="TranslateY"

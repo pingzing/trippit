@@ -55,8 +55,7 @@ namespace DigiTransit10.Controls
 
         private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;
-            DirectionsFloatingPanel.CollapsedHeight = this.ActualHeight * .25;     
+            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;                
             
             //await adjust map view bounds
         }

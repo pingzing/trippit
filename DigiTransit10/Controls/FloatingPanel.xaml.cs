@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -11,7 +12,12 @@ namespace DigiTransit10.Controls
 {
     [ContentProperty(Name = "InnerContent")]
     public sealed partial class FloatingPanel : UserControl
-    {
+    {        
+        // Divided into static and non-static so we can use it as both a Dependency Property's default
+        // value AND reference it in XAML.
+        public static double DefaultCollapsedPanelHeightStatic = 15;
+        public double DefaultCollapsedPanelHeight => DefaultCollapsedPanelHeightStatic;
+
         private const int ExpandedPanelStateIndex = 0;
         private const int CollapsedPanelStateIndex = 1;
 
@@ -20,7 +26,7 @@ namespace DigiTransit10.Controls
         private VisualState _collapsedState;
 
         public static readonly DependencyProperty CollapsedHeightProperty =
-                    DependencyProperty.Register("CollapsedHeight", typeof(double), typeof(FloatingPanel), new PropertyMetadata(0.0,
+                    DependencyProperty.Register("CollapsedHeight", typeof(double), typeof(FloatingPanel), new PropertyMetadata(DefaultCollapsedPanelHeightStatic,
                         OnCollapsedHeightChanged));
         private static void OnCollapsedHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -68,7 +74,6 @@ namespace DigiTransit10.Controls
             get { return (object)GetValue(InnerContentProperty); }
             set { SetValue(InnerContentProperty, value); }
         }               
-
         public double ExpandedHeight
         {
             get { return (double)GetValue(ExpandedHeightProperty); }
@@ -112,22 +117,26 @@ namespace DigiTransit10.Controls
                 _currentState == _expandedState)
             {
                 double translationDelta = ExpandedHeight - CollapsedHeight;
-                ExpandedTranslationAnimation.To = translationDelta;
+                CollapsingTranslationAnimation.To = translationDelta;
                 VisualStateManager.GoToState(this, _collapsedState.Name, true);
             }
             else
             {
                 double translationDelta = ExpandedHeight - CollapsedHeight;
                 PanelExpandHeightValue.Value = ExpandedHeight;
-                PanelExpandTranslateStart.From = translationDelta;
+                ExpandingTranslationAnimation.From = translationDelta;
                 VisualStateManager.GoToState(this, _expandedState.Name, true);
             }
         }
-
-        private Point _manipStartedPoint = new Point();
+        
         private void GridGrabHeader_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            _manipStartedPoint = e.Position;            
+            //if in Collapsed state, crank height up to ExpandedHeight and adjust RenderTransform to compensate
+            if(_currentState == _collapsedState)
+            {
+                PanelGrid.Height = ExpandedHeight;
+                ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = ExpandedHeight - CollapsedHeight;
+            }
         }
 
         private void GridGrabHeader_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -148,7 +157,52 @@ namespace DigiTransit10.Controls
 
         private void GridGrabHeader_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            //snap to collapsed or expanded based on where the user stopped dragging            
+            //snap to collapsed or expanded based on where the user stopped dragging                        
+            double midPoint = (ExpandedHeight - CollapsedHeight) / 2;
+            double currentTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;
+
+            if(currentTrans > midPoint)
+            {
+                CollapsingTranslationAnimation.To = ExpandedHeight - CollapsedHeight;
+                ExpandedToCollapsedStoryboard.Completed += CollapsedAfterManipulation_Completed;
+                ExpandedToCollapsedStoryboard.Begin();
+            }
+            else
+            {
+                PanelExpandHeightValue.Value = ExpandedHeight;
+                ExpandingTranslationAnimation.From = currentTrans;                
+                CollapsedToExpandedStoryboard.Completed += ExpandedAfterManipulation_Completed;
+                CollapsedToExpandedStoryboard.Begin();
+            }
+
+        }        
+
+        private void CollapsedAfterManipulation_Completed(object sender, object e)
+        {
+            ExpandedToCollapsedStoryboard.Completed -= CollapsedAfterManipulation_Completed;
+            if(_currentState != _collapsedState)
+            {
+                VisualStateManager.GoToState(this, _collapsedState.Name, false);
+            }
+            else
+            {
+                PanelGrid.Height = CollapsedHeight;                
+            }
+            ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = 0;
+        }
+
+        private void ExpandedAfterManipulation_Completed(object sender, object e)
+        {
+            CollapsedToExpandedStoryboard.Completed -= ExpandedAfterManipulation_Completed;
+            if(_currentState != _expandedState)
+            {
+                VisualStateManager.GoToState(this, _expandedState.Name, false);
+            }
+            else
+            {
+                PanelGrid.Height = ExpandedHeight;                
+            }
+            ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = 0;
         }
     }
 }
