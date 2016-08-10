@@ -28,7 +28,7 @@ namespace DigiTransit10.Controls
         public TripResultContent()
         {
            this.InitializeComponent();
-           this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
+           this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));            
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);            
         }        
 
@@ -55,9 +55,15 @@ namespace DigiTransit10.Controls
 
         private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;                
-            
+            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;
+            this.SizeChanged += TripResultContent_SizeChanged;
+
             //await adjust map view bounds
+        }
+
+        private void TripResultContent_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;
         }
     }
 }

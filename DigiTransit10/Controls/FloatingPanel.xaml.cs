@@ -131,7 +131,8 @@ namespace DigiTransit10.Controls
         
         private void GridGrabHeader_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            //if in Collapsed state, crank height up to ExpandedHeight and adjust RenderTransform to compensate
+            // We crank up the Height here so that when the user drags the panel up, it's not visibly tiny and short.
+            // The RenderTransform to is adjust back downward, and compensate for its sudden growth spurt.
             if(_currentState == _collapsedState)
             {
                 PanelGrid.Height = ExpandedHeight;
@@ -150,32 +151,54 @@ namespace DigiTransit10.Controls
             if (PanelGrid.Height - proposedNewTrans <= GridGrabHeader.ActualHeight)
             {
                 return;
-            }
+            }            
 
             ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = proposedNewTrans;
         }
 
         private void GridGrabHeader_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {            
+            double snapPoint = (ExpandedHeight - CollapsedHeight) * .3; //found by trial and error. "feels" right.
+            double currentTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;            
+
+            if (_currentState == _expandedState)
+            {
+                if(currentTrans > snapPoint) 
+                {
+                    SnapCollapsedAfterManipulate();
+                }
+                else 
+                {
+                    SnapExpandedAfterManipulate(currentTrans);
+                }
+            }
+            else //current state is collapsedState
+            {
+                if(ExpandedHeight - CollapsedHeight - currentTrans > snapPoint) 
+                {
+                    SnapExpandedAfterManipulate(currentTrans);
+                }
+                else
+                {
+                    SnapCollapsedAfterManipulate();
+                }
+            }          
+        }
+
+        private void SnapCollapsedAfterManipulate()
         {
-            //snap to collapsed or expanded based on where the user stopped dragging                        
-            double midPoint = (ExpandedHeight - CollapsedHeight) / 2;
-            double currentTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;
+            CollapsingTranslationAnimation.To = ExpandedHeight - CollapsedHeight;
+            ExpandedToCollapsedStoryboard.Completed += CollapsedAfterManipulation_Completed;
+            ExpandedToCollapsedStoryboard.Begin();
+        }
 
-            if(currentTrans > midPoint)
-            {
-                CollapsingTranslationAnimation.To = ExpandedHeight - CollapsedHeight;
-                ExpandedToCollapsedStoryboard.Completed += CollapsedAfterManipulation_Completed;
-                ExpandedToCollapsedStoryboard.Begin();
-            }
-            else
-            {
-                PanelExpandHeightValue.Value = ExpandedHeight;
-                ExpandingTranslationAnimation.From = currentTrans;                
-                CollapsedToExpandedStoryboard.Completed += ExpandedAfterManipulation_Completed;
-                CollapsedToExpandedStoryboard.Begin();
-            }
-
-        }        
+        private void SnapExpandedAfterManipulate(double endTrans)
+        {
+            PanelExpandHeightValue.Value = ExpandedHeight;
+            ExpandingTranslationAnimation.From = endTrans;
+            CollapsedToExpandedStoryboard.Completed += ExpandedAfterManipulation_Completed;
+            CollapsedToExpandedStoryboard.Begin();
+        }
 
         private void CollapsedAfterManipulation_Completed(object sender, object e)
         {
