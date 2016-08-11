@@ -135,7 +135,7 @@ namespace DigiTransit10.Services.SettingsServices
         }
 
         private List<IFavorite> _pinnedFavorites;
-        public List<IFavorite> PinnedFavorites
+        public IReadOnlyList<IFavorite> PinnedFavorites
         {
             get
             {
@@ -145,7 +145,7 @@ namespace DigiTransit10.Services.SettingsServices
                     if (String.IsNullOrEmpty(serialized) || serialized == "null")
                     {
                         _pinnedFavorites = new List<IFavorite>();
-                        return _pinnedFavorites;
+                        return _pinnedFavorites.AsReadOnly();
                     }
                     else
                     {
@@ -156,21 +156,40 @@ namespace DigiTransit10.Services.SettingsServices
                                 TypeNameAssemblyFormat =
                                     System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
                             });
-                        return _pinnedFavorites;
+                        return _pinnedFavorites.AsReadOnly();
                     }
                 }
                 else
                 {
-                    return _pinnedFavorites;
+                    return _pinnedFavorites.AsReadOnly();
                 }
             }
             set
             {
-                _pinnedFavorites = value;                
+                _pinnedFavorites = value.ToList();                
                 _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites, 
                         new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects}),
                     SettingsStrategies.Roam);
             }
+        }
+
+        public void AddPinnedFavorite(IFavorite newPinned)
+        {
+            _pinnedFavorites.Add(newPinned);
+            FlushPinnedFavoritesToStorage();
+        }
+
+        public void RemovePinnedFavorite(IFavorite removedPinned)
+        {
+            _pinnedFavorites.Remove(removedPinned);
+            FlushPinnedFavoritesToStorage();
+        }
+
+        public void FlushPinnedFavoritesToStorage()
+        {
+            _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites,
+                        new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects }),
+                    SettingsStrategies.Roam);
         }
 
         /// <summary>

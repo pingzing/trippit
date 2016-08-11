@@ -427,14 +427,14 @@ namespace DigiTransit10.ViewModels
                 int toAdd = Math.Min(maxToAdd, obj.AddedFavorites.Count);
                 foreach(var newPinned in obj.AddedFavorites.Take(toAdd))
                 {
-                    _settingsService.PinnedFavorites.Add(newPinned);
+                    _settingsService.AddPinnedFavorite(newPinned);
                 }
             }
             if (obj.RemovedFavorites?.Count > 0 && _settingsService.PinnedFavorites?.Count > 0)
             {
                 foreach (var removed in obj.RemovedFavorites)
                 {
-                    _settingsService.PinnedFavorites.Remove(removed);
+                    _settingsService.RemovePinnedFavorite(removed);
                 }
             }
             if(obj.RemovedFavorites?.Count > 0 || obj.AddedFavorites?.Count > 0)
@@ -454,7 +454,7 @@ namespace DigiTransit10.ViewModels
 
         private void RemovePinnedFavorite(IFavorite favorite)
         {
-            _settingsService.PinnedFavorites.Remove(favorite);
+            _settingsService.RemovePinnedFavorite(favorite);
             FillPinnedFavorites();
         }
 
