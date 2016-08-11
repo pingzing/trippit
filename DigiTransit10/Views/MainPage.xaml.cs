@@ -96,26 +96,28 @@ namespace DigiTransit10.Views
                 && _pinnedFavoritesList != null
                 && _isPlayingExitAnimation)
             {
-                e.Cancel = true;
+                e.Cancel = true;                
+
                 var clickedItem = (FrameworkElement)_pinnedFavoritesList.ContainerFromItem(_pinnedFavoriteClicked);
                 clickedItem = clickedItem.FindChild<TextBlock>("FavoriteName");
                 var storyboard = ContinuumNavigationExitFactory.GetAnimation(clickedItem);
                 storyboard.Completed += ExitAnimation_Completed;
-                storyboard.Begin();                
+                storyboard.Begin();
+
+                this.IsEnabled = false;
+                this.MainPageBottomBar.IsEnabled = false;
             }
         }
         
         private void ExitAnimation_Completed(object sender, object e)
-        {
-            this.IsEnabled = false;
-            this.MainPageBottomBar.IsEnabled = false;
+        {            
             Storyboard storyboard = (Storyboard)sender;
             storyboard.Completed -= ExitAnimation_Completed;
 
             _isPlayingExitAnimation = false;
 
             BootStrapper.Current.NavigationService.Navigate(typeof(TripResultPage));
-            
+
             this.IsEnabled = true;
             this.MainPageBottomBar.IsEnabled = true;
         }

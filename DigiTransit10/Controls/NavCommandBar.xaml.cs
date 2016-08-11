@@ -39,6 +39,7 @@ namespace DigiTransit10.Controls
             _navigationService = App.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
+            this.Unloaded += NavCommandBar_Unloaded;
             this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
             
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
@@ -48,7 +49,7 @@ namespace DigiTransit10.Controls
              */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
-        }
+        }        
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
         {
@@ -67,6 +68,11 @@ namespace DigiTransit10.Controls
             UpdateSelectionVisual();
             
             UpdateButtonLabels(IsOpen);                        
+        }
+
+        private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Views.Busy.BusyChanged -= BusyView_BusyChanged;
         }
 
         private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
