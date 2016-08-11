@@ -34,5 +34,9 @@
             <EasingDoubleKeyFrame KeyTime="0" Value="50"/>
             <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
         </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames x:Name="OpacityComponent" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.0" Value="0"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
     </Storyboard>
 </ResourceDictionary>

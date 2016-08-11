@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media.Animation;
 using DigiTransit10.Storyboards;
 using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Controls;
+using System;
 
 namespace DigiTransit10.Views
 {
@@ -28,7 +29,7 @@ namespace DigiTransit10.Views
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
             this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
-            this.Loaded += MainPage_Loaded;
+            this.Loaded += MainPage_Loaded;            
 
             Messenger.Default.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }        
@@ -67,25 +68,72 @@ namespace DigiTransit10.Views
             }
 
             ViewModel?.TripFormViewModel?.ToggleTransitPanelCommand.Execute(null);
-        }        
+        }
 
+        FavoritePlace _pinnedFavoriteClicked;
+        ListView _pinnedFavoritesList;
+        bool _isPlayingExitAnimation;        
         private void PinnedFavoritesControl_OnItemClick(object sender, ItemClickEventArgs e)
         {
-            FavoritePlace clickedPlace = e.ClickedItem as FavoritePlace;
-            if (clickedPlace != null)
+            _pinnedFavoriteClicked = e.ClickedItem as FavoritePlace;
+            if(_pinnedFavoritesList == null)
             {
-                if (AdaptiveVisualStateGroup.CurrentState.Name == Constants.VisualStateNarrow)
-                {
-                    ListView list = sender as ListView;
-                    if (list != null)
-                    {
-                        var clickedItem = (FrameworkElement)list.ContainerFromItem(e.ClickedItem);
-                        var storyboard = ContinuumNavigationExitFactory.GetAnimation(clickedItem);
-                        storyboard.Begin();
-                    }
-                }
-                ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(clickedPlace);
+                _pinnedFavoritesList = sender as ListView;
             }
+            if (_pinnedFavoriteClicked != null)
+            {                
+                ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(_pinnedFavoriteClicked);
+                if(AdaptiveVisualStateGroup.CurrentState.Name == Constants.VisualStateNarrow)
+                {
+                    _isPlayingExitAnimation = true;
+                }
+            }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            if (_pinnedFavoriteClicked != null
+                && _pinnedFavoritesList != null
+                && _isPlayingExitAnimation)
+            {
+                e.Cancel = true;
+                var clickedItem = (FrameworkElement)_pinnedFavoritesList.ContainerFromItem(_pinnedFavoriteClicked);
+                clickedItem = clickedItem.FindChild<TextBlock>("FavoriteName");
+                var storyboard = ContinuumNavigationExitFactory.GetAnimation(clickedItem);
+                storyboard.Completed += ExitAnimation_Completed;
+                storyboard.Begin();                
+            }
+        }
+        
+        private void ExitAnimation_Completed(object sender, object e)
+        {
+            this.IsEnabled = false;
+            this.MainPageBottomBar.IsEnabled = false;
+            Storyboard storyboard = (Storyboard)sender;
+            storyboard.Completed -= ExitAnimation_Completed;
+
+            _isPlayingExitAnimation = false;
+
+            BootStrapper.Current.NavigationService.Navigate(typeof(TripResultPage));
+            
+            this.IsEnabled = true;
+            this.MainPageBottomBar.IsEnabled = true;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(_pinnedFavoriteClicked != null
+                && _pinnedFavoritesList != null)
+            {
+                var clickedItem = (FrameworkElement)_pinnedFavoritesList.ContainerFromItem(_pinnedFavoriteClicked);
+
+                _pinnedFavoritesList = null;
+                _pinnedFavoriteClicked = null;
+                
+                clickedItem = clickedItem.FindChild<TextBlock>("FavoriteName");
+                var storyboard = ContinuumNavigationEntranceFactory.GetAnimation(clickedItem);
+                storyboard.Begin();
+            }            
         }
 
         private void PinnedFavoritesControl_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -120,8 +168,7 @@ namespace DigiTransit10.Views
                 if (WideHub == null || WideHub.Sections.Count < 2)
                 {
                     return;
-                }
-                //await Task.Delay(250); //Without this, the XAML renderer occasionally adds a duplicate TripPlanStrip for some reason.
+                }                
                 WideHub.ScrollToSection(WideHub.Sections[1]);
             }            
         }        
