@@ -19,8 +19,7 @@ namespace DigiTransit10.Storyboards
             mover.Projection = new PlaneProjection();
 
             Storyboard.SetTarget(this.ScaleXComponent, mover);
-            Storyboard.SetTarget(this.ScaleYComponent, mover);
-            Storyboard.SetTarget(this.ProjectXComponent, mover);
+            Storyboard.SetTarget(this.ScaleYComponent, mover);            
             Storyboard.SetTarget(this.TranslateYComponent, mover);
             Storyboard.SetTarget(this.OpacityComponent, mover);                
         }

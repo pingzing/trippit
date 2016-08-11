@@ -18,7 +18,7 @@
             </EasingDoubleKeyFrame>
         </DoubleAnimationUsingKeyFrames>
         <DoubleAnimationUsingKeyFrames x:Name="ScaleXComponent" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)">
-            <EasingDoubleKeyFrame x:Name="easingDoubleKeyFrame" KeyTime="0:0:0.3" Value="2">
+            <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="2">
                 <EasingDoubleKeyFrame.EasingFunction>
                     <PowerEase EasingMode="EaseOut"/>
                 </EasingDoubleKeyFrame.EasingFunction>
@@ -31,16 +31,8 @@
                 </EasingDoubleKeyFrame.EasingFunction>
             </EasingDoubleKeyFrame>
         </DoubleAnimationUsingKeyFrames>
-        <DoubleAnimationUsingKeyFrames x:Name="ProjectXComponent" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)">
-            <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-            <EasingDoubleKeyFrame KeyTime="0:0:0.30" Value="65">
-                <EasingDoubleKeyFrame.EasingFunction>
-                    <PowerEase EasingMode="EaseOut"/>
-                </EasingDoubleKeyFrame.EasingFunction>
-            </EasingDoubleKeyFrame>
-        </DoubleAnimationUsingKeyFrames>
         <DoubleAnimationUsingKeyFrames x:Name="OpacityComponent" Storyboard.TargetProperty="(UIElement.Opacity)">
-            <EasingDoubleKeyFrame KeyTime="0:0:0.20" Value="1"/>
+            <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="1"/>
             <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
         </DoubleAnimationUsingKeyFrames>
     </Storyboard>
