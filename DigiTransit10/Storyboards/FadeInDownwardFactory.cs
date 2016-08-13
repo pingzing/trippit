@@ -25,13 +25,17 @@ namespace DigiTransit10.Storyboards
             Storyboard.SetTarget(repositionAnimation, target);
 
             var opacityAnimation = new DoubleAnimationUsingKeyFrames();
-            var opacityStartFrame = new EasingDoubleKeyFrame();
-            opacityStartFrame.KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0));
-            opacityStartFrame.Value = 0;
+            var opacityStartFrame = new EasingDoubleKeyFrame
+            {
+                KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0)),
+                Value = 0
+            };
 
-            var opacityEndFrame = new EasingDoubleKeyFrame();
-            opacityEndFrame.KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(250));
-            opacityEndFrame.Value = 1;
+            var opacityEndFrame = new EasingDoubleKeyFrame
+            {
+                KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(250)),
+                Value = 1
+            };
 
             opacityAnimation.KeyFrames.Add(opacityStartFrame);
             opacityAnimation.KeyFrames.Add(opacityEndFrame);

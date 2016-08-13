@@ -76,17 +76,18 @@ namespace DigiTransit10.ViewModels
             ToName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
             foreach (var itinerary in plan.ApiPlan.Itineraries)
             {
-                TripResults.Add(new ItineraryModel
+                var model = new ItineraryModel
                 {
                     BackingItinerary = itinerary,
                     StartingPlaceName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault,
                     EndingPlaceName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
-            });
+                };                
+                TripResults.Add(model);
             }
         }
 
         private void ShowTripDetails(ItineraryModel obj)
-        {
+        {            
            _messengerService.Send(new MessageTypes.ViewPlanDetails(obj));
         }
 

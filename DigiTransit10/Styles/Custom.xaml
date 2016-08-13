@@ -14,7 +14,7 @@
     <Color x:Key="ContrastColorLight">Black</Color>
 
     <SolidColorBrush x:Key="HighlightColorBrush" Color="{ThemeResource SystemAccentColor}"/>
-    <SolidColorBrush x:Key="HalfTransparentPageBackgroundBrush" Color="{ThemeResource SystemAltHighColor}" Opacity=".5"/>
+    <SolidColorBrush x:Key="HighOpacityBackgroundBrush" Color="{ThemeResource SystemAltHighColor}" Opacity=".8"/>
 
     <Style x:Key="EmptyListHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
         <Setter Property="Foreground" Value="Gray"/>

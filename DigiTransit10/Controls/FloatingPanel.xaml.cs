@@ -15,7 +15,7 @@ namespace DigiTransit10.Controls
     {        
         // Divided into static and non-static so we can use it as both a Dependency Property's default
         // value AND reference it in XAML.
-        public static double DefaultCollapsedPanelHeightStatic = 15;
+        public static double DefaultCollapsedPanelHeightStatic = 18;
         public double DefaultCollapsedPanelHeight => DefaultCollapsedPanelHeightStatic;
 
         private const int ExpandedPanelStateIndex = 0;
@@ -128,7 +128,8 @@ namespace DigiTransit10.Controls
                 VisualStateManager.GoToState(this, _expandedState.Name, true);
             }
         }
-        
+
+        private CompositeTransform _panelTransform = null;        
         private void GridGrabHeader_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             // We crank up the Height here so that when the user drags the panel up, it's not visibly tiny and short.
@@ -136,13 +137,22 @@ namespace DigiTransit10.Controls
             if(_currentState == _collapsedState)
             {
                 PanelGrid.Height = ExpandedHeight;
-                ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = ExpandedHeight - CollapsedHeight;
+                if (_panelTransform == null)
+                {
+                    _panelTransform = (CompositeTransform) PanelGrid.RenderTransform;
+                }
+                _panelTransform.TranslateY = ExpandedHeight - CollapsedHeight;
             }
         }
 
+        //todo: replace this series of manipulations with Composition namespace stuff. Perf on mobile SUCKS
         private void GridGrabHeader_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            double proposedNewTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY + e.Delta.Translation.Y;
+            if (_panelTransform == null)
+            {
+                _panelTransform = (CompositeTransform) PanelGrid.RenderTransform;
+            }
+            double proposedNewTrans = _panelTransform.TranslateY + e.Delta.Translation.Y;
 
             if(PanelGrid.Height - proposedNewTrans >= ExpandedHeight)
             {
@@ -151,15 +161,20 @@ namespace DigiTransit10.Controls
             if (PanelGrid.Height - proposedNewTrans <= GridGrabHeader.ActualHeight)
             {
                 return;
-            }            
+            }
 
-            ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = proposedNewTrans;
+            _panelTransform.TranslateY = proposedNewTrans;
         }
 
         private void GridGrabHeader_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
-        {            
+        {
+            if (_panelTransform == null)
+            {
+                _panelTransform = (CompositeTransform)PanelGrid.RenderTransform;
+            }
+
             double snapPoint = (ExpandedHeight - CollapsedHeight) * .3; //found by trial and error. "feels" right.
-            double currentTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;            
+            double currentTrans = _panelTransform.TranslateY;            
 
             if (_currentState == _expandedState)
             {

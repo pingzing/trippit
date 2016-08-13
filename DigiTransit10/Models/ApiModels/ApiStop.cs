@@ -68,5 +68,7 @@ namespace DigiTransit10.Models.ApiModels
         /// </summary>
         [JsonProperty("stoptimesWithoutPatterns")]        
         public List<ApiStoptime> StoptimesWithoutPatterns { get; set; }
-    }
+        [JsonProperty("stoptimesForServiceDate")]
+        public List<ApiStoptimesInPattern> StoptimesForServiceDate { get; set; }
+    }    
 }

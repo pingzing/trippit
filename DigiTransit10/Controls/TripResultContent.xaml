@@ -26,9 +26,186 @@
             <VisualStateGroup x:Name="TripStateGroup">
                 <VisualStateGroup.Transitions>
                     <VisualTransition From="TripsList" GeneratedDuration="0" To="DetailsList">
-                        <Storyboard />
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.35" To="3" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="TripResultList" d:IsOptimized="True">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseIn"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Duration="0:0:0.35" To="3" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="TripResultList" d:IsOptimized="True">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseIn"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Duration="0:0:0.35" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="TripResultList" d:IsOptimized="True"/>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.1">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.33">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.33">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SingleMap">
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.1">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="0.3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
                     </VisualTransition>
-                    <VisualTransition From="DetailsList" GeneratedDuration="0" To="TripsList" />
+                    <VisualTransition From="DetailsList" GeneratedDuration="0" To="TripsList" >
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.35" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="DirectionsFloatingPanel" d:IsOptimized="True"/>
+                            <DoubleAnimation Duration="0:0:0.35" To="0.33" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="DirectionsFloatingPanel" d:IsOptimized="True">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Duration="0:0:0.35" To="0.33" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="DirectionsFloatingPanel" d:IsOptimized="True">
+                                <DoubleAnimation.EasingFunction>
+                                    <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="DirectionsFloatingPanel">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.35">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="TripResultList">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="TripResultList">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="TripResultList">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.433" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="SingleMap">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.35">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="0.3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="SingleMap">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="1">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="0.3">
+                                    <EasingDoubleKeyFrame.EasingFunction>
+                                        <ExponentialEase EasingMode="EaseOut" Exponent="4"/>
+                                    </EasingDoubleKeyFrame.EasingFunction>
+                                </EasingDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualTransition>
                 </VisualStateGroup.Transitions>
                 <VisualState x:Name="TripsList" />
                 <VisualState x:Name="DetailsList">
@@ -52,7 +229,10 @@
                   SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
                   ShowsScrollingPlaceholders="False"
                   HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch">
+                  VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5">
+            <ListView.RenderTransform>
+                <CompositeTransform/>
+            </ListView.RenderTransform>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <tripPlanStrip:TripPlanStrip StartingPlaceName="{Binding StartingPlaceName}"
@@ -65,16 +245,24 @@
 
         <local:DigiTransitMap x:Name="SingleMap"
                               x:DeferLoadStrategy="Lazy"                                                       
-                              Visibility="Collapsed" />
+                              Visibility="Collapsed" RenderTransformOrigin="0.5,0.5" >
+            <local:DigiTransitMap.RenderTransform>
+                <CompositeTransform/>
+            </local:DigiTransitMap.RenderTransform>
+        </local:DigiTransitMap>
 
         <!--ExpandedHeight set in code-behind.-->
         <local:FloatingPanel x:Name="DirectionsFloatingPanel"
-                             x:DeferLoadStrategy="Lazy" 
-                             Background="{ThemeResource HalfTransparentPageBackgroundBrush}"                         
+                             x:DeferLoadStrategy="Lazy"
+                             Background="{ThemeResource HighOpacityBackgroundBrush}"                         
                              Loaded="DirectionsFloatingPanel_Loaded"
                              VerticalAlignment="Bottom"
+                             RenderTransformOrigin="0.5,0.5"
                              Visibility="Collapsed">
-            
+            <local:FloatingPanel.RenderTransform>
+                <CompositeTransform/>
+            </local:FloatingPanel.RenderTransform>
+
             <!--ItemsSource set in code-behind -->
             <ListView x:Name="DetailedTripList"                      
                       Grid.Row="1"
@@ -87,11 +275,74 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="apiModels:ApiLeg">
-                        <TextBlock Text="{x:Bind From.Name}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="18*"/>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="70*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="TimeBlock"
+                                       Grid.Row="0" Grid.Column="0"                                       
+                                       Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
+
+                            <Rectangle x:Name="VerticalLine"
+                                       Grid.Row="0" Grid.Column="1"                                      
+                                       Width="3"
+                                       HorizontalAlignment="Center"
+                                       Margin="0 10 0 0"
+                                       VerticalAlignment="Stretch"
+                                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                            <Ellipse x:Name="Circle"
+                                     Grid.Row="0" Grid.Column="1"                                     
+                                     Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                     Height="10" Width="10"
+                                     HorizontalAlignment="Center"
+                                     Margin="5 0 5 0"/>
+                            <Ellipse x:Name="InnerCircle"
+                                     Grid.Row="0" Grid.Column="1"
+                                     Fill="{ThemeResource HighOpacityBackgroundBrush}"
+                                     Height="5" Width="5"
+                                     HorizontalAlignment="Center"/>
+
+                            <TextBlock x:Name="StartPlaceBlock"
+                                       Grid.Row="0" Grid.Column="2"
+                                       Margin="5 0 0 0"
+                                       Text="{x:Bind From.Name}"
+                                       Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                            <!--Second row-->                            
+                            <local:TripDetailListTransitIcon x:Name="TransitIcon"
+                                                             Grid.Row="1" Grid.Column="0"
+                                                             Margin="0 10 0 10"
+                                                             VerticalAlignment="Top"
+                                                             TripLeg="{x:Bind }"/>
+                            <Rectangle x:Name="SecondRowVerticalLine"
+                                       Grid.Row="1" Grid.Column="1"
+                                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                       Margin="5 0 5 -10"
+                                       HorizontalAlignment="Center"
+                                       Width="3"
+                                       VerticalAlignment="Stretch"/>
+                            <ItemsControl x:Name="IntermediateStops"
+                                          Grid.Row="1" Grid.Column="2"
+                                          Margin="15 10 0 10"
+                                          ItemsSource="{x:Bind IntermediateStops}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="apiModels:ApiStop">
+                                        <TextBlock x:Name="IntermediateStopPanel" Text="{x:Bind Name}"/>                                        
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </local:FloatingPanel>
-        
-    </Grid>        
+
+    </Grid>
 </UserControl>

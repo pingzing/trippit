@@ -8,6 +8,8 @@ namespace DigiTransit10.Models.ApiModels
     /// </summary>
     public static class ApiGqlMembers
     {
+        public static string stoptimes => nameof(stoptimes);
+        public static string stoptimesForServiceDate => nameof(stoptimesForServiceDate);
         public static string id => "id";
         public static string plan => "plan";
         public static string from => "from";

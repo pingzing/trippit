@@ -124,6 +124,9 @@
     <Compile Include="Controls\NavCommandBar.xaml.cs">
       <DependentUpon>NavCommandBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TripDetailListTransitIcon.xaml.cs">
+      <DependentUpon>TripDetailListTransitIcon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TripPlanStrip\TripPlanPoint.xaml.cs">
       <DependentUpon>TripPlanPoint.xaml</DependentUpon>
     </Compile>
@@ -142,6 +145,7 @@
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="Converters\NullToBooleanConverter.cs" />
+    <Compile Include="Converters\SecondsSinceDayStartToTimeConverter.cs" />
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
@@ -181,6 +185,7 @@
     <Compile Include="Models\ApiModels\ApiStop.cs" />
     <Compile Include="Models\ApiModels\ApiStopAtDistance.cs" />
     <Compile Include="Models\ApiModels\ApiStoptime.cs" />
+    <Compile Include="Models\ApiModels\ApiStoptimesInPattern.cs" />
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
@@ -324,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NavCommandBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripDetailListTransitIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

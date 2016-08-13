@@ -1,7 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using DigiTransit10.Helpers;
 using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
@@ -14,6 +16,8 @@ namespace DigiTransit10.Controls
     {
         private const int TripListStateIndex = 0;
         private const int DetailedStateIndex = 1;
+        private VisualState _tripListState;
+        private VisualState _detailedTripState;
 
         public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
 
@@ -27,35 +31,32 @@ namespace DigiTransit10.Controls
 
         public TripResultContent()
         {
-           this.InitializeComponent();
-           this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));            
+            this.InitializeComponent();
+            _tripListState = TripStateGroup.States[TripListStateIndex];
+            _detailedTripState = TripStateGroup.States[DetailedStateIndex];
+            VisualStateManager.GoToState(this, _tripListState.Name, false);
+
+            this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));            
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);            
         }        
 
-        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
+        private async void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
         {
-            if (TripStateGroup.CurrentState == TripStateGroup.States[TripListStateIndex]
-                || TripStateGroup.CurrentState == null)
-            {
-                VisualStateManager.GoToState(this, this.TripStateGroup.States[DetailedStateIndex].Name, true);
+            if (TripStateGroup.CurrentState == _tripListState)
+            {                               
+                VisualStateManager.GoToState(this, _detailedTripState.Name, true);
                 DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs;
             }
-            else if(TripStateGroup.CurrentState == TripStateGroup.States[DetailedStateIndex])
+            else if(TripStateGroup.CurrentState == _detailedTripState)
             {
-                VisualStateManager.GoToState(this, this.TripStateGroup.States[TripListStateIndex].Name, true);
+                
+                VisualStateManager.GoToState(this, _tripListState.Name, true);
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RaisePropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;
+            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .66;
             this.SizeChanged += TripResultContent_SizeChanged;
 
             //await adjust map view bounds
@@ -63,7 +64,13 @@ namespace DigiTransit10.Controls
 
         private void TripResultContent_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .75;
+            DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .66;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }        
     }
 }

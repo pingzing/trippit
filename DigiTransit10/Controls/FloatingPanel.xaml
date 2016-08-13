@@ -94,7 +94,7 @@
             <Rectangle x:Name="GrabHandleHighlight" 
                        Grid.RowSpan="2" 
                        Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                       Height="13"                           
+                       Height="18"                           
                        Opacity=".4"
                        Visibility="Collapsed"/>
             <Rectangle Grid.Row="0" 
