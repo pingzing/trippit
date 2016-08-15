@@ -124,8 +124,8 @@
     <Compile Include="Controls\NavCommandBar.xaml.cs">
       <DependentUpon>NavCommandBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TripDetailListTransitIcon.xaml.cs">
-      <DependentUpon>TripDetailListTransitIcon.xaml</DependentUpon>
+    <Compile Include="Controls\TripDetailListIntermediates.xaml.cs">
+      <DependentUpon>TripDetailListIntermediates.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TripPlanStrip\TripPlanPoint.xaml.cs">
       <DependentUpon>TripPlanPoint.xaml</DependentUpon>
@@ -189,6 +189,7 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
+    <Compile Include="Models\DetailedTripListLeg.cs" />
     <Compile Include="Models\Geocoding\Geocoding.cs" />
     <Compile Include="Models\Geocoding\GeocodingConstants.cs" />
     <Compile Include="Models\Geocoding\GeocodingEngine.cs" />
@@ -332,7 +333,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TripDetailListTransitIcon.xaml">
+    <Page Include="Controls\TripDetailListIntermediates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -405,9 +406,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\TripPlanStrip\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DigiTransit10.Backend\DigiTransit10.Backend.csproj">
       <Project>{2de64562-5327-403c-b77b-be2c21fcbe31}</Project>

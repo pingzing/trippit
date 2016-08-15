@@ -202,6 +202,14 @@
           <source>Unpin</source>
           <target state="new">Unpin</target>
         </trans-unit>
+        <trans-unit id="TripDetailListIntermediates_IntermediateStopsNumber" translate="yes" xml:space="preserve">
+          <source>intermediate stop(s)</source>
+          <target state="new">intermediate stop(s)</target>
+        </trans-unit>
+        <trans-unit id="TripDetailListIntermediates_WalkDistance" translate="yes" xml:space="preserve">
+          <source>Walk {0} meters</source>
+          <target state="new">Walk {0} meters</target>
+        </trans-unit>
       </group>
     </body>
   </file>

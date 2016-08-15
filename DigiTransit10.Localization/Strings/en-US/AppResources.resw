@@ -264,4 +264,10 @@
   <data name="PinnedFavoritesList_Unpin" xml:space="preserve">
     <value>Unpin</value>
   </data>
+  <data name="TripDetailListIntermediates_IntermediateStopsNumber" xml:space="preserve">
+    <value>intermediate stop(s)</value>
+  </data>
+  <data name="TripDetailListIntermediates_WalkDistance" xml:space="preserve">
+    <value>Walk {0} meters</value>
+  </data>
 </root>

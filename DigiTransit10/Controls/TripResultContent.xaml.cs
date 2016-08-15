@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
 
@@ -16,8 +20,8 @@ namespace DigiTransit10.Controls
     {
         private const int TripListStateIndex = 0;
         private const int DetailedStateIndex = 1;
-        private VisualState _tripListState;
-        private VisualState _detailedTripState;
+        private readonly VisualState _tripListState;
+        private readonly VisualState _detailedTripState;
 
         public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
 
@@ -40,16 +44,15 @@ namespace DigiTransit10.Controls
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);            
         }        
 
-        private async void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
+        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
         {
             if (TripStateGroup.CurrentState == _tripListState)
             {                               
-                VisualStateManager.GoToState(this, _detailedTripState.Name, true);
-                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs;
+                VisualStateManager.GoToState(this, _detailedTripState.Name, true);                
+                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs.Select(DetailedTripListLeg.FromApiLeg);
             }
             else if(TripStateGroup.CurrentState == _detailedTripState)
-            {
-                
+            {                
                 VisualStateManager.GoToState(this, _tripListState.Name, true);
             }
         }
@@ -71,6 +74,18 @@ namespace DigiTransit10.Controls
         private void RaisePropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }        
+        }
+
+        private void DetailedTripList_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            ListView list = sender as ListView;
+            if (list == null)
+            {
+                return;
+            }
+            var element = list.ContainerFromItem(e.ClickedItem);
+            var intermediatesControl = element.FindChild<TripDetailListIntermediates>("IntermediateStops");
+            intermediatesControl.ToggleViewState();
+        }
     }
 }

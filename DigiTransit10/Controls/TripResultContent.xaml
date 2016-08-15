@@ -262,86 +262,103 @@
             <local:FloatingPanel.RenderTransform>
                 <CompositeTransform/>
             </local:FloatingPanel.RenderTransform>
+            
+                <!--ItemsSource set in code-behind -->
+                <ListView x:Name="DetailedTripList"                      
+                              Grid.Row="1"
+                              SelectionMode="None"
+                              IsItemClickEnabled="True"
+                              ItemClick="DetailedTripList_OnItemClick">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DetailedTripListLeg">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="18*"/>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="70*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
 
-            <!--ItemsSource set in code-behind -->
-            <ListView x:Name="DetailedTripList"                      
-                      Grid.Row="1"
-                      SelectionMode="None"
-                      IsItemClickEnabled="True">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="apiModels:ApiLeg">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="18*"/>
-                                <ColumnDefinition Width="5*"/>
-                                <ColumnDefinition Width="70*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
+                                <Grid.ChildrenTransitions>
+                                    <TransitionCollection>
+                                        <ContentThemeTransition/>
+                                        <RepositionThemeTransition/>
+                                    </TransitionCollection>
+                                </Grid.ChildrenTransitions>
 
-                            <TextBlock x:Name="TimeBlock"
-                                       Grid.Row="0" Grid.Column="0"                                       
-                                       Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
+                                <TextBlock x:Name="TimeBlock"
+                                           Grid.Row="0" Grid.Column="0"                  
+                                           HorizontalAlignment="Right"
+                                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                                           Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
 
-                            <Rectangle x:Name="VerticalLine"
-                                       Grid.Row="0" Grid.Column="1"                                      
-                                       Width="3"
-                                       HorizontalAlignment="Center"
-                                       Margin="0 10 0 0"
-                                       VerticalAlignment="Stretch"
-                                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                            <Ellipse x:Name="Circle"
-                                     Grid.Row="0" Grid.Column="1"                                     
-                                     Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
-                                     Height="10" Width="10"
-                                     HorizontalAlignment="Center"
-                                     Margin="5 0 5 0"/>
-                            <Ellipse x:Name="InnerCircle"
-                                     Grid.Row="0" Grid.Column="1"
-                                     Fill="{ThemeResource HighOpacityBackgroundBrush}"
-                                     Height="5" Width="5"
-                                     HorizontalAlignment="Center"/>
+                                <Rectangle x:Name="VerticalLine"
+                                           Grid.Row="0" Grid.Column="1"                                      
+                                           Width="3"
+                                           HorizontalAlignment="Center"
+                                           Margin="0 10 0 0"
+                                           VerticalAlignment="Stretch"
+                                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                                <Ellipse x:Name="Circle"
+                                         Grid.Row="0" Grid.Column="1"                                     
+                                         Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                         Height="10" Width="10"
+                                         HorizontalAlignment="Center"
+                                         Margin="5 0 5 0"/>
+                                <Ellipse x:Name="InnerCircle"
+                                         Grid.Row="0" Grid.Column="1"
+                                         Fill="{ThemeResource HighOpacityBackgroundBrush}"
+                                         Height="5" Width="5"
+                                         HorizontalAlignment="Center"/>
 
-                            <TextBlock x:Name="StartPlaceBlock"
-                                       Grid.Row="0" Grid.Column="2"
-                                       Margin="5 0 0 0"
-                                       Text="{x:Bind From.Name}"
-                                       Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                                <TextBlock x:Name="StartPlaceBlock"
+                                           Grid.Row="0" Grid.Column="2"
+                                           Margin="5 0 0 0"
+                                           Text="{x:Bind FromName}"
+                                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
 
-                            <!--Second row-->                            
-                            <local:TripDetailListTransitIcon x:Name="TransitIcon"
-                                                             Grid.Row="1" Grid.Column="0"
-                                                             Margin="0 10 0 10"
-                                                             VerticalAlignment="Top"
-                                                             TripLeg="{x:Bind }"/>
-                            <Rectangle x:Name="SecondRowVerticalLine"
-                                       Grid.Row="1" Grid.Column="1"
-                                       Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
-                                       Margin="5 0 5 -10"
-                                       HorizontalAlignment="Center"
-                                       Width="3"
-                                       VerticalAlignment="Stretch"/>
-                            <ItemsControl x:Name="IntermediateStops"
-                                          Grid.Row="1" Grid.Column="2"
-                                          Margin="15 10 0 10"
-                                          ItemsSource="{x:Bind IntermediateStops}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="apiModels:ApiStop">
-                                        <TextBlock x:Name="IntermediateStopPanel" Text="{x:Bind Name}"/>                                        
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                <!--Second row-->
+                                <StackPanel x:Name="TranitIconPanel"
+                                            Grid.Row="1" Grid.Column="0"
+                                            HorizontalAlignment="Right"
+                                            Margin="0 10 0 10"
+                                            VerticalAlignment="Top">
+                                    <TextBlock x:Name="TransitIconLineName"
+                                               HorizontalAlignment="Center"
+                                               Text="{x:Bind ShortName}"
+                                               TextAlignment="Center"
+                                               Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
+                                    <FontIcon x:Name="TransitIcon"                                          
+                                              Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                                              FontFamily="{StaticResource HslPictoFrameFont}"
+                                              FontSize="40"
+                                              Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+                                </StackPanel>
+                                <Rectangle x:Name="SecondRowVerticalLine"
+                                           Grid.Row="1" Grid.Column="1"
+                                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                           Margin="5 0 5 -10"
+                                           HorizontalAlignment="Center"
+                                           Width="3"
+                                           VerticalAlignment="Stretch"/>
+                                <local:TripDetailListIntermediates x:Name="IntermediateStops"
+                                                                   Grid.Row="1"
+                                                                   Grid.Column="2"
+                                                                   Margin="15 10 0 10"
+                                                                   TripLeg="{x:Bind }"
+                                                                   VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
         </local:FloatingPanel>
 
     </Grid>
