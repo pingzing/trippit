@@ -10,17 +10,16 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
-        <ItemsControl x:Name="IntermediateStopsControl"
-                      x:DeferLoadStrategy="Lazy"                        
-                      Visibility="Collapsed">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="apiModels:ApiStop">
-                    <TextBlock x:Name="IntermediateStopPanel" Text="{x:Bind Name}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <TextBlock x:Name="SimpleTextBlock"
-                   VerticalAlignment="Center"/>
-    </Grid>
+    <ItemsControl x:Name="IntermediateStopsControl">
+        <ItemsControl.ItemContainerTransitions>
+            <TransitionCollection>
+                <ContentThemeTransition HorizontalOffset="50" VerticalOffset="0"/>
+            </TransitionCollection>
+        </ItemsControl.ItemContainerTransitions>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="apiModels:ApiStop">
+                <TextBlock x:Name="IntermediateStopPanel" Foreground="Gray" Text="{x:Bind Name}" Style="{StaticResource BaseTextBlockStyle}"/>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </UserControl>

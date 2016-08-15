@@ -1,29 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
+using System.Collections.ObjectModel;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace DigiTransit10.Controls
 {
     public sealed partial class TripDetailListIntermediates : UserControl
-    {
-        //Attached via binding, but doesn't need to fire NotifyPropertyChanged, because the ItemsControl that binds to it used a Lazy LoadStrategy.
-        private List<ApiStop> _backingStopList = null;
+    {        
+        private ObservableCollection<ApiStop> ItemsBackingCollection = new ObservableCollection<ApiStop>();
+
+        private List<ApiStop> _backingIntermediatesList = null;
+        private string _backingSimpleText = null;        
         private bool _isShowingIntermediateStops = false;
 
         public static readonly DependencyProperty TripLegProperty = DependencyProperty.Register(
@@ -45,14 +38,33 @@ namespace DigiTransit10.Controls
 
             if (newLeg.IntermediateStops?.Count > 0)
             {
-                _this._backingStopList = new List<ApiStop>(newLeg.IntermediateStops);
-                _this.SimpleTextBlock.Text = $"{newLeg.IntermediateStops.Count} {AppResources.TripDetailListIntermediates_IntermediateStopsNumber}";
+                _this._backingIntermediatesList = new List<ApiStop>(newLeg.IntermediateStops);
+                _this._backingSimpleText = $"{newLeg.IntermediateStops.Count} {AppResources.TripDetailListIntermediates_IntermediateStopsNumber}";                                
             }
             else
             {
-                var distanceString = newLeg.Distance.ToString("N0");                    
-                _this.SimpleTextBlock.Text = String.Format(AppResources.TripDetailListIntermediates_WalkDistance, distanceString);
+                var distanceString = newLeg.Distance.ToString("N0");
+                if (newLeg.Mode == ApiEnums.ApiMode.Walk)
+                {
+                    _this._backingSimpleText = String.Format(AppResources.TripDetailListIntermediates_WalkDistance, distanceString);
+                }
+                else
+                {
+                    _this._backingSimpleText = String.Format(AppResources.TripDetailListIntermediates_TransitDistance, distanceString);
+                }
             }
+            
+            if(_this._isShowingIntermediateStops)
+            {
+                _this.ItemsBackingCollection = new ObservableCollection<ApiStop>(_this._backingIntermediatesList);
+            }
+            else
+            {
+                ApiStop simpleTextProxy = new ApiStop { Name = _this._backingSimpleText };
+                _this.ItemsBackingCollection = new ObservableCollection<ApiStop>();
+                _this.ItemsBackingCollection.Add(simpleTextProxy);
+            }
+            _this.IntermediateStopsControl.ItemsSource = _this.ItemsBackingCollection;
         }
         public DetailedTripListLeg TripLeg
         {
@@ -62,31 +74,28 @@ namespace DigiTransit10.Controls
 
         public TripDetailListIntermediates()
         {
-            this.InitializeComponent();
+            this.InitializeComponent();            
         }
 
         public void ToggleViewState()
         {
-            if (!(_backingStopList?.Count > 0))
+            if (!(_backingIntermediatesList?.Count > 0))
             {
                 return;
             }
 
-            if (IntermediateStopsControl == null)
-            {
-                FindName(nameof(IntermediateStopsControl));
-                IntermediateStopsControl.ItemsSource = _backingStopList;
-            }
-
             if (_isShowingIntermediateStops)
             {
-                IntermediateStopsControl.Visibility = Visibility.Collapsed;
-                SimpleTextBlock.Visibility = Visibility.Visible;
+                ItemsBackingCollection.Clear();
+                ItemsBackingCollection.Add(new ApiStop { Name = _backingSimpleText });                
             }
             else
             {
-                IntermediateStopsControl.Visibility = Visibility.Visible;
-                SimpleTextBlock.Visibility = Visibility.Collapsed;
+                ItemsBackingCollection.Clear();
+                foreach (var item in _backingIntermediatesList)
+                {
+                    ItemsBackingCollection.Add(item);
+                }
             }
             _isShowingIntermediateStops = !_isShowingIntermediateStops;
         }

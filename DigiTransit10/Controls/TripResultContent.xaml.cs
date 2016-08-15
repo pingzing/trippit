@@ -49,7 +49,16 @@ namespace DigiTransit10.Controls
             if (TripStateGroup.CurrentState == _tripListState)
             {                               
                 VisualStateManager.GoToState(this, _detailedTripState.Name, true);                
-                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs.Select(DetailedTripListLeg.FromApiLeg);
+                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs.Select(x => 
+                {
+                    var listLeg = DetailedTripListLeg.FromApiLeg(x);
+                    if(obj.BackingModel.BackingItinerary.Legs.Last() == x)
+                    {
+                        listLeg.IsEnd = true;
+                        listLeg.ToName = obj.BackingModel.EndingPlaceName;
+                    }
+                    return listLeg;
+                });
             }
             else if(TripStateGroup.CurrentState == _detailedTripState)
             {                

@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/14/2016 22:36:09
+// 	Generated: 08/15/2016 23:55:53
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -610,6 +610,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripDetailListIntermediates_WalkDistance");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Travel {0} meters"
+        /// </summary>
+        public static string TripDetailListIntermediates_TransitDistance
+        {
+            get
+            {
+                return resourceLoader.GetString("TripDetailListIntermediates_TransitDistance");
             }
         }
     }

@@ -210,6 +210,10 @@
           <source>Walk {0} meters</source>
           <target state="new">Walk {0} meters</target>
         </trans-unit>
+        <trans-unit id="TripDetailListIntermediates_TransitDistance" translate="yes" xml:space="preserve">
+          <source>Travel {0} meters</source>
+          <target state="new">Travel {0} meters</target>
+        </trans-unit>
       </group>
     </body>
   </file>

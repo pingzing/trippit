@@ -16,17 +16,19 @@ namespace DigiTransit10.Models
                 ShortName = leg.Route?.ShortName,
                 Distance = leg.Distance.Value,
                 Mode = leg.Mode.Value,
-                IntermediateStops = leg.IntermediateStops
+                IntermediateStops = leg.IntermediateStops                
             };
         }
 
         public long StartTime { get; set; }
-        public long EndTime { get; set; }
+        public long EndTime { get; set; }        
         public string FromName { get; set; }
         public string ToName { get; set; }
         public string ShortName { get; set; }
         public float Distance { get; set; }
         public ApiEnums.ApiMode Mode { get; set; }
-        public List<ApiStop> IntermediateStops { get; set; }        
+        public List<ApiStop> IntermediateStops { get; set; }
+
+        public bool IsEnd { get; set; }
     }
 }
