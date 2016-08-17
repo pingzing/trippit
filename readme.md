@@ -3,13 +3,12 @@ It's an HSL DigiTransit app for Helsinki. Written as a UWA.
 
 ##Building
 Requirements
-* [Multilingual App Toolkit v4.0](https://developer.microsoft.com/en-us/windows/develop/multilingual-app-toolkit)
 * [Resw Code File Generator](https://reswcodegen.codeplex.com/)
 
 ##Feature Epics
 - [x] Trip planning
 - [x] Favorites (partially completed)
-- [ ] Detailed trip plan
+- [x] Detailed trip plan (partially completed, still need markers on map)
 - [ ] Line search
 - [ ] Stop search
 - [ ] Versioned data formats (see [MSDN article](https://msdn.microsoft.com/en-us/windows/uwp/app-settings/store-and-retrieve-app-data) for more details)
@@ -54,6 +53,7 @@ Example:
 #####Transit Modes-The `mode` parameter
 Contrary to the documentation, it's not a string that gets coerced to a masked enum (i.e. `"WALK | BUS"`) but rather a comma-separated list of strings with no spaces (i.e. `modes:"BUS,TRAM,RAIL,SUBWAY,FERRY,WALK"`). 
 
-##Stupid Platform Bugs Log
+##Stupid Platform Bugs and Gotchas Log
  * When using a `CollectionViewSource` as a `ListView`'s `ItemSource` and a `GroupStyle` with a `GroupStyleHeader` set to `HideIfEmpty=True`, if (any of?) the underlying lists backing the `CollectionViewSource` are ever emptied, the next time an element is added to them, the app will hard crash with no exception. Further information on [StackOverflow](http://stackoverflow.com/questions/24398252/is-there-a-bug-inside-groupstyle-hidesifempty).
  * `AutoSuggestBox` causes a "Catastrophic failure" exception with no further information if its `DisplayMemberPath` is set to anything, and the AutoSuggetBox is using an `ItemTemplate`. Further information found on [TechNet](https://social.msdn.microsoft.com/Forums/sqlserver/en-US/194e87b9-312e-4282-ac5d-a240a917cbaa/uwp-setting-autosuggestbox-items-results-in-catastrophic-failure-because-of-itemtemplate?forum=wpdevelop).
+ * When using localized resources in a separate DLL, the project's `.appxmanifest` needs to be edited manually to declare supported languages. The magic `x-generate` token doesn't look in other assemblies to determine what languages the app supports.

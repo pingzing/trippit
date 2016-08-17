@@ -17,6 +17,7 @@ using DigiTransit10.Storyboards;
 using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Controls;
 using System;
+using Windows.Globalization;
 
 namespace DigiTransit10.Views
 {
@@ -25,7 +26,8 @@ namespace DigiTransit10.Views
         public MainViewModel ViewModel => this.DataContext as MainViewModel;
 
         public MainPage()
-        {
+        {            
+            var resCtx = new Windows.ApplicationModel.Resources.Core.ResourceContext();
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
             this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
