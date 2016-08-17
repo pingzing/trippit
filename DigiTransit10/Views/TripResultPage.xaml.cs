@@ -30,7 +30,7 @@ namespace DigiTransit10.Views
 
         public TripResultPage()
         {
-            this.InitializeComponent();                        
+            this.InitializeComponent();
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)

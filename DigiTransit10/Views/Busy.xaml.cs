@@ -31,7 +31,7 @@ namespace DigiTransit10.Views
             set { SetValue(IsBusyProperty, value); }
         }
         public static readonly DependencyProperty IsBusyProperty =
-            DependencyProperty.Register(nameof(IsBusy), typeof(bool), typeof(Busy), new PropertyMetadata(false, 
+            DependencyProperty.Register(nameof(IsBusy), typeof(bool), typeof(Busy), new PropertyMetadata(false,
                 IsBusyChanged));
         private static void IsBusyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

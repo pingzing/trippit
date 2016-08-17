@@ -93,7 +93,7 @@ namespace DigiTransit10.GraphQL
             {
                 sb.Append("{");
                 foreach (var innerRetVal in retVal.Descendants)
-                {                    
+                {
                     ParseReturnValueRecursively(sb, innerRetVal);
                 }
             }

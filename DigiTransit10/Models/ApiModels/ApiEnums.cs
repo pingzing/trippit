@@ -16,7 +16,7 @@ namespace DigiTransit10.Models.ApiModels
             [EnumMember(Value = "BIKEPARK")]
             BikePark,
             [EnumMember(Value = "BIKESHARE")]
-            BikeShare               
+            BikeShare
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -110,7 +110,7 @@ namespace DigiTransit10.Models.ApiModels
             [EnumMember(Value = "TRAINISH")]
             Trainish,
             [EnumMember(Value = "TRAM")]
-            Tram,            
+            Tram,
             [EnumMember(Value = "TRANSIT")]
             Transit,
             [EnumMember(Value = "WALK")]

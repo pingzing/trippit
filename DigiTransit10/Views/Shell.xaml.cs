@@ -14,7 +14,7 @@ namespace DigiTransit10.Views
     public sealed partial class Shell : Page
     {
         public static Shell Instance { get; set; }
-        public static HamburgerMenu HamburgerMenu => Instance.MyHamburgerMenu;      
+        public static HamburgerMenu HamburgerMenu => Instance.MyHamburgerMenu;
 
         public Shell()
         {
@@ -25,7 +25,7 @@ namespace DigiTransit10.Views
         }
 
         private void HamburgerMenu_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             if (HamburgerMenu.DisplayMode == SplitViewDisplayMode.Overlay)
             {
                 HamburgerMenu.HamburgerButtonVisibility = Visibility.Collapsed;
@@ -37,8 +37,8 @@ namespace DigiTransit10.Views
                 HamburgerMenu.HamburgerBackground = (SolidColorBrush)Application.Current.Resources["SystemControlHighlightAccentBrush"];
             }
 
-            HamburgerMenu.DisplayModeChanged += MyHamburgerMenu_OnDisplayModeChanged;                   
-        }        
+            HamburgerMenu.DisplayModeChanged += MyHamburgerMenu_OnDisplayModeChanged;
+        }
 
         public Shell(INavigationService navigationService) : this()
         {
@@ -47,7 +47,7 @@ namespace DigiTransit10.Views
 
         public void SetNavigationService(INavigationService navigationService)
         {
-            MyHamburgerMenu.NavigationService = navigationService;            
+            MyHamburgerMenu.NavigationService = navigationService;
         }
 
         //We don't use the Hamburger menu on the phone, so hide the button in narrow view.

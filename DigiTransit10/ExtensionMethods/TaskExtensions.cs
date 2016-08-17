@@ -13,6 +13,6 @@ namespace DigiTransit10.ExtensionMethods
 
         public static void DoNotAwait<T>(this Task<T> task) { }
 
-        public static void DoNotAwait(this IAsyncAction task) { }               
+        public static void DoNotAwait(this IAsyncAction task) { }
     }
 }

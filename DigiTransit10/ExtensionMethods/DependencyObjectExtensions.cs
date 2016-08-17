@@ -6,7 +6,7 @@ namespace DigiTransit10.ExtensionMethods
     public static class DependencyObjectExtensions
     {
         public static T FindParent<T>(this DependencyObject child) where T : DependencyObject
-        {            
+        {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
 
             //we've reached the end of the tree
@@ -14,7 +14,7 @@ namespace DigiTransit10.ExtensionMethods
             {
                 return null;
             }
-            
+
             T parent = parentObject as T;
             if (parent != null)
             {

@@ -30,15 +30,14 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);            
+            SplashFactory = (e) => new Views.Splash(e);
 
             #region App settings
 
-            var _settings = SettingsService.Instance;            
+            var _settings = SettingsService.Instance;
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
             RequestedTheme = SettingsService.Instance.AppTheme;
-            
 
             #endregion
         }
@@ -46,9 +45,9 @@ namespace DigiTransit10
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
             if (Window.Current.Content as ModalDialog == null)
-            {                
+            {
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
+                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -56,14 +55,14 @@ namespace DigiTransit10
                     DisableBackButtonWhenModal = true,
                     Content = new Views.Shell(nav),
                     ModalContent = new Views.Busy(),
-                };                
+                };
             }
 
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
-            if(ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
             }
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
@@ -84,7 +83,7 @@ namespace DigiTransit10
         public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
             Locator.Cleanup();
-            
+
             await base.OnSuspendingAsync(s, e, prelaunchActivated);
         }
     }

@@ -18,7 +18,7 @@ namespace DigiTransit10.Models.ApiModels
         [JsonProperty("walkDistance")]
         public long? WalkDistance { get; set; }
         [JsonProperty("legs")]
-        public List<ApiLeg> Legs { get; set; }        
+        public List<ApiLeg> Legs { get; set; }
         [JsonProperty("fares")]
         public List<ApiFare> Fares { get; set; }
     }

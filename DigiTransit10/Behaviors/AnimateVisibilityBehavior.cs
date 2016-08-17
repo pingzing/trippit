@@ -21,7 +21,7 @@ namespace DigiTransit10.Behaviors
 
         public void Detach()
         {
-            AssociatedObject.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, _callbackToken);            
+            AssociatedObject.UnregisterPropertyChangedCallback(UIElement.VisibilityProperty, _callbackToken);
         }
 
         private void OnVisibilityChanged(DependencyObject sender, DependencyProperty dp)
@@ -37,7 +37,7 @@ namespace DigiTransit10.Behaviors
                 return;
             }
 
-            _animationStoryboard.Begin();            
+            _animationStoryboard.Begin();
         }
     }
 }

@@ -30,8 +30,8 @@ namespace DigiTransit10.Services
         }
 
         public async Task ShowDialog(string message, string title)
-        {            
-            var dialog = title == null ? new MessageDialog(message) : new MessageDialog(message, title);            
+        {
+            var dialog = title == null ? new MessageDialog(message) : new MessageDialog(message, title);
             await ShowDialog(dialog);
         }
 
@@ -43,7 +43,7 @@ namespace DigiTransit10.Services
         }
 
         public async Task<IUICommand> ShowDialog(string message, string okText, string cancelText, string title)
-        {          
+        {
             var dialog = title == null ? new MessageDialog(message) : new MessageDialog(message, title);
             dialog.Commands.Add(new UICommand(okText));
             dialog.Commands.Add(new UICommand(cancelText));
@@ -63,6 +63,6 @@ namespace DigiTransit10.Services
 
             return result;
         }
-        
+
     }
 }

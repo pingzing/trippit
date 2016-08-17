@@ -11,7 +11,7 @@ using static DigiTransit10.Models.ApiModels.ApiEnums;
 namespace DigiTransit10.Converters
 {
     public class TransitModeToForegroundBrushConverter : IValueConverter
-    {              
+    {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if(!(value is ApiMode))

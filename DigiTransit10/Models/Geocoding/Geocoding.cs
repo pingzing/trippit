@@ -12,7 +12,7 @@ namespace DigiTransit10.Models.Geocoding
         [JsonProperty("version")]
         public string Version { get; set; }
         [JsonProperty("attribution")]
-        public string Attribution { get; set; }        
+        public string Attribution { get; set; }
         [JsonProperty("query")]
         public GeocodingQuery Query { get; set; }
         [JsonProperty("engine")]

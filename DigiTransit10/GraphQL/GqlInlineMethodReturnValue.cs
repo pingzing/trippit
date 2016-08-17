@@ -4,7 +4,7 @@ namespace DigiTransit10.GraphQL
 {
     public class GqlInlineMethodReturnValue : GqlReturnValue
     {
-        public List<GqlParameter> MethodParameters { get; private set; } 
+        public List<GqlParameter> MethodParameters { get; private set; }
 
         public GqlInlineMethodReturnValue(string name) : base(name) { }
 

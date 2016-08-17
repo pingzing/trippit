@@ -21,7 +21,7 @@ namespace DigiTransit10.Controls
         private readonly VisualState _tripListState;
         private readonly VisualState _detailedTripState;
 
-        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;        
+        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
 
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(TripResultContent), new PropertyMetadata(null));

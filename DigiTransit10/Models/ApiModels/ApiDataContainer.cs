@@ -12,5 +12,5 @@ namespace DigiTransit10.Models.ApiModels
     {
         [JsonProperty("data")]
         public JObject Data { get; set; }
-    }    
+    }
 }

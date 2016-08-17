@@ -41,7 +41,7 @@ namespace DigiTransit10.Helpers
         public static ApiResult<TValue> FailWithMessage(string message, ApiFailureReason reason)
         {
             return new ApiResult<TValue>(new ApiFailure(message, reason));
-        } 
+        }
     }
 
     public struct ApiFailure
@@ -64,6 +64,6 @@ namespace DigiTransit10.Helpers
             FriendlyError = message;
             Reason = reason;
             IsNone = false;
-        }        
+        }
     }
 }

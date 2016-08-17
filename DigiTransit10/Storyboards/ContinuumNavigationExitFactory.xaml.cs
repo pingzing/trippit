@@ -13,15 +13,15 @@ namespace DigiTransit10.Storyboards
     {
         private ContinuumNavigationExitFactory(FrameworkElement mover)
         {
-            this.InitializeComponent();           
-                        
+            this.InitializeComponent();
+
             mover.RenderTransform = new CompositeTransform();
             mover.Projection = new PlaneProjection();
 
             Storyboard.SetTarget(this.ScaleXComponent, mover);
-            Storyboard.SetTarget(this.ScaleYComponent, mover);            
+            Storyboard.SetTarget(this.ScaleYComponent, mover);
             Storyboard.SetTarget(this.TranslateYComponent, mover);
-            Storyboard.SetTarget(this.OpacityComponent, mover);                
+            Storyboard.SetTarget(this.OpacityComponent, mover);
         }
 
         public static Storyboard GetAnimation(FrameworkElement mover)

@@ -22,17 +22,17 @@ namespace DigiTransit10.Views
 {
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public MainViewModel ViewModel => this.DataContext as MainViewModel;            
+        public MainViewModel ViewModel => this.DataContext as MainViewModel;
 
         public MainPage()
         {
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
             this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
-            this.Loaded += MainPage_Loaded;            
+            this.Loaded += MainPage_Loaded;
 
             Messenger.Default.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
-        }        
+        }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -57,7 +57,7 @@ namespace DigiTransit10.Views
             {
                 BootStrapper.Current.SessionState.Add(Constants.CurrentMainPageVisualStateKey, e.NewState.Name);
             }
-        }        
+        }
 
         private void HideShowOptionsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -70,9 +70,9 @@ namespace DigiTransit10.Views
             ViewModel?.TripFormViewModel?.ToggleTransitPanelCommand.Execute(null);
         }
 
-        FavoritePlace _pinnedFavoriteClicked;
-        ListView _pinnedFavoritesList;
-        bool _isPlayingExitAnimation;        
+        private FavoritePlace _pinnedFavoriteClicked;
+        private ListView _pinnedFavoritesList;
+        private bool _isPlayingExitAnimation;
         private void PinnedFavoritesControl_OnItemClick(object sender, ItemClickEventArgs e)
         {
             _pinnedFavoriteClicked = e.ClickedItem as FavoritePlace;
@@ -81,7 +81,7 @@ namespace DigiTransit10.Views
                 _pinnedFavoritesList = sender as ListView;
             }
             if (_pinnedFavoriteClicked != null)
-            {                
+            {
                 ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(_pinnedFavoriteClicked);
                 if(AdaptiveVisualStateGroup.CurrentState.Name == Constants.VisualStateNarrow)
                 {
@@ -96,7 +96,7 @@ namespace DigiTransit10.Views
                 && _pinnedFavoritesList != null
                 && _isPlayingExitAnimation)
             {
-                e.Cancel = true;                
+                e.Cancel = true;
 
                 var clickedItem = (FrameworkElement)_pinnedFavoritesList.ContainerFromItem(_pinnedFavoriteClicked);
                 clickedItem = clickedItem.FindChild<TextBlock>("FavoriteName");
@@ -108,9 +108,9 @@ namespace DigiTransit10.Views
                 this.MainPageBottomBar.IsEnabled = false;
             }
         }
-        
+
         private void ExitAnimation_Completed(object sender, object e)
-        {            
+        {
             Storyboard storyboard = (Storyboard)sender;
             storyboard.Completed -= ExitAnimation_Completed;
 
@@ -131,11 +131,11 @@ namespace DigiTransit10.Views
 
                 _pinnedFavoritesList = null;
                 _pinnedFavoriteClicked = null;
-                
+
                 clickedItem = clickedItem.FindChild<TextBlock>("FavoriteName");
                 var storyboard = ContinuumNavigationEntranceFactory.GetAnimation(clickedItem);
                 storyboard.Begin();
-            }            
+            }
         }
 
         private void PinnedFavoritesControl_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
@@ -145,7 +145,7 @@ namespace DigiTransit10.Views
 
             if (item != null)
             {
-                MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;                
+                MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;
                 ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
                 flyout.ShowAt(this, e.GetPosition(this));
             }
@@ -158,7 +158,7 @@ namespace DigiTransit10.Views
         }
 
         private void PlanFound(MessageTypes.PlanFoundMessage obj)
-        {           
+        {
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
                 return;
@@ -166,13 +166,13 @@ namespace DigiTransit10.Views
 
             if (WideHub != null)
             {
-                TripResultTripResultHubSection.Visibility = Visibility.Visible;                
+                TripResultTripResultHubSection.Visibility = Visibility.Visible;
                 if (WideHub == null || WideHub.Sections.Count < 2)
                 {
                     return;
-                }                
+                }
                 WideHub.ScrollToSection(WideHub.Sections[1]);
-            }            
-        }        
+            }
+        }
     }
 }

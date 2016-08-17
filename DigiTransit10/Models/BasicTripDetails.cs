@@ -28,7 +28,7 @@ namespace DigiTransit10.Models
             TransitModes = transit;
             Time = time;
             Date = date;
-            IsTimeTypeArrival = isTimeTypeArrival;            
+            IsTimeTypeArrival = isTimeTypeArrival;
         }
-    }    
+    }
 }

@@ -13,7 +13,7 @@ namespace DigiTransit10.Services
         private const string RoamingSettingsService = "RoamingSettingsService";
         static ViewModelLocator()
         {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);            
+            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             if(GalaSoft.MvvmLight.ViewModelBase.IsInDesignModeStatic)
             {
@@ -28,7 +28,7 @@ namespace DigiTransit10.Services
                 INetworkClient networkClient = new NetworkClient();
                 SimpleIoc.Default.Register<INetworkClient>(() => networkClient);
 
-                SimpleIoc.Default.Register<INetworkService>(() => new NetworkService(networkClient, settingsService));                                
+                SimpleIoc.Default.Register<INetworkService>(() => new NetworkService(networkClient, settingsService));
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
                 SimpleIoc.Default.Register<IGeolocationService>(() => new GeolocationService());
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
@@ -49,9 +49,6 @@ namespace DigiTransit10.Services
         {
             //Serialize data that needs serializing, etc etc
             SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushFavoritesToStorage();
-
         }
     }
-
-
 }

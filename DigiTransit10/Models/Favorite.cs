@@ -9,7 +9,7 @@ namespace DigiTransit10.Models
 {
     public interface IFavorite : IComparable<IFavorite>
     {
-        string UserChosenName { get; set; }       
+        string UserChosenName { get; set; }
         string FontIconGlyph { get; set; }
         string IconFontFace { get; set; }
     }
@@ -34,7 +34,7 @@ namespace DigiTransit10.Models
         }
 
         public int CompareTo(IPlace other)
-        {            
+        {
             return _comparer.Compare(this, other);
         }
     }

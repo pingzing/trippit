@@ -13,7 +13,7 @@ namespace DigiTransit10.GraphQL
         {
             Add(new KeyValuePair<string, object>(key, value));
         }
-        
+
         public GqlTuple(params KeyValuePair<string, object>[] items)
         {
             this.AddRange(items);

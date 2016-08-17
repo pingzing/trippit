@@ -17,7 +17,7 @@ namespace DigiTransit10.Models.ApiModels
         [JsonProperty("messageEnums")]
         public List<string> MessageEnums { get; set; }
         [JsonProperty("messageStrings")]
-        public List<string> MessageStrings { get; set; }        
+        public List<string> MessageStrings { get; set; }
         [JsonProperty("debugOutput")]
         public ApiDebugOutput? DebugOutput { get; set; }
     }

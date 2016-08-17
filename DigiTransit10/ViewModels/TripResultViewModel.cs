@@ -15,12 +15,10 @@ using System.Linq;
 namespace DigiTransit10.ViewModels
 {
     public class TripResultViewModel : ViewModelBase
-    {            
+    {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
 
-        private enum TripState { TripsList, DetailsList };
-        
         public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
 
@@ -38,7 +36,7 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _fromName, value); }
         }
 
-        private string _toName;        
+        private string _toName;
         public string ToName
         {
             get { return _toName?.ToUpperInvariant(); }
@@ -64,7 +62,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
 
         private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
@@ -72,7 +70,7 @@ namespace DigiTransit10.ViewModels
             if(IsInDetailedState)
             {
                 e.Handled = true;
-                GoBackToTripList();                
+                GoBackToTripList();
             }
         }
 
@@ -82,12 +80,12 @@ namespace DigiTransit10.ViewModels
             {
                 return;
             }
-            var plan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;            
+            var plan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
             if (plan?.ApiPlan?.Itineraries == null)
             {
                 return;
             }
-                                    
+
             TripResults.Clear();
 
             FromName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
@@ -99,13 +97,13 @@ namespace DigiTransit10.ViewModels
                     BackingItinerary = itinerary,
                     StartingPlaceName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault,
                     EndingPlaceName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
-                };                
+                };
                 TripResults.Add(model);
             }
         }
 
         private void ShowTripDetails(ItineraryModel model)
-        {            
+        {
             SelectedDetailLegs = model.BackingItinerary.Legs.Select(x =>
             {
                 var listLeg = DetailedTripListLeg.FromApiLeg(x);

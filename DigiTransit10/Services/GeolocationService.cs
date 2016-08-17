@@ -27,7 +27,7 @@ namespace DigiTransit10.Services
         /// </summary>
         /// <returns></returns>
         public async Task<Geoposition> GetCurrentLocation()
-        {            
+        {
             if(await GetAccessStatus() == GeolocationAccessStatus.Allowed)
             {
                 return await _geolocator.GetGeopositionAsync();
@@ -35,7 +35,7 @@ namespace DigiTransit10.Services
             else
             {
                 //todo: pop up a reason explaining why it didn't work.
-                return null;                
+                return null;
             }
         }
 

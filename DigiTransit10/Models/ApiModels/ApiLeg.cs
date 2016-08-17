@@ -9,13 +9,13 @@ namespace DigiTransit10.Models.ApiModels
         [JsonProperty("startTime")]
         public long? StartTime { get; set; }
         [JsonProperty("endTime")]
-        public long? EndTime { get; set; }        
+        public long? EndTime { get; set; }
         [JsonProperty("mode")]
         public ApiMode? Mode { get; set; }
         [JsonProperty("duration")]
-        public long? Duration { get; set; }       
+        public long? Duration { get; set; }
         [JsonProperty("legGeometry")]
-        public ApiLegGeometry LegGeometry { get; set; }       
+        public ApiLegGeometry LegGeometry { get; set; }
         [JsonProperty("agency")]
         public ApiAgency Agency { get; set; }
         [JsonProperty("realtime")]
@@ -29,11 +29,11 @@ namespace DigiTransit10.Models.ApiModels
         [JsonProperty("from")]
         public ApiPlace From { get; set; }
         [JsonProperty("to")]
-        public ApiPlace To { get; set; }        
+        public ApiPlace To { get; set; }
         [JsonProperty("route")]
-        public ApiRoute Route { get; set; }        
+        public ApiRoute Route { get; set; }
         [JsonProperty("trip")]
-        public ApiTrip Trip { get; set; }        
+        public ApiTrip Trip { get; set; }
         [JsonProperty("intermediateStops")]
         public List<ApiStop> IntermediateStops { get; set; }
     }

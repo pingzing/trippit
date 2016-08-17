@@ -25,20 +25,20 @@ namespace DigiTransit10.ViewModels
         {
             _networkService = networkService;
             _messengerService = messengerService;
-            _settingsService = settings;           
+            _settingsService = settings;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 //set up design-time values
             }
-        }        
+        }
 
         public TripFormViewModel TripFormViewModel => ((App) BootStrapper.Current).Locator.TripForm;
         public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
         public FavoritesViewModel FavoritesViewModel => ((App)BootStrapper.Current).Locator.Favorites;
-        
+
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
             if(!SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
@@ -50,7 +50,7 @@ namespace DigiTransit10.ViewModels
             {
                 NavigationService.NavigateAsync(typeof(TripResultPage));
             }
-        }        
+        }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
@@ -63,7 +63,7 @@ namespace DigiTransit10.ViewModels
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {                        
+        {
             if (suspending)
             {
                 //store cacheable values into the suspensionState dict
@@ -76,7 +76,7 @@ namespace DigiTransit10.ViewModels
         {
             args.Cancel = false;
             await Task.CompletedTask;
-        }        
+        }
 
     }
 }

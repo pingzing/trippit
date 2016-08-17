@@ -22,7 +22,7 @@ namespace DigiTransit10.VisualStateFramework
                 _viewModel = value;
                 _viewModel.VmStateChangeRequested += VmStateChangeRequested;
             }
-        }        
+        }
 
         private void VmStateChangeRequested(StateAwareViewModel viewModel, VmStateChangedEventArgs args)
         {

@@ -8,7 +8,7 @@ namespace DigiTransit10.Storyboards
     /// A helper class for creating FadeInDownward storyboard animations.
     /// </summary>
     public static class FadeInDownwardFactory
-    {                 
+    {
         /// <summary>
         /// Returns a storyboard object that applies a gentle fade-and-downward-swoop to the input element.
         /// </summary>
@@ -41,7 +41,7 @@ namespace DigiTransit10.Storyboards
             opacityAnimation.KeyFrames.Add(opacityEndFrame);
 
             Storyboard.SetTargetProperty(opacityAnimation, "Opacity");
-            Storyboard.SetTarget(opacityAnimation, target);            
+            Storyboard.SetTarget(opacityAnimation, target);
 
             storyboard.Children.Add(repositionAnimation);
             storyboard.Children.Add(opacityAnimation);

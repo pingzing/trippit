@@ -30,6 +30,6 @@ namespace DigiTransit10.ExtensionMethods
             {
                 return serializer.Deserialize<T>(jsonTextReader);
             }
-        }        
+        }
     }
 }

@@ -31,8 +31,8 @@ namespace DigiTransit10.Views
 
         public FavoritesPage()
         {
-            this.InitializeComponent();            
-        }        
+            this.InitializeComponent();
+        }
 
         private void Favorite_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
@@ -44,7 +44,7 @@ namespace DigiTransit10.Views
             }
             MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(list) as MenuFlyout;
             ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
-            flyout.ShowAt(this, e.GetPosition(this));            
+            flyout.ShowAt(this, e.GetPosition(this));
         }
 
         private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -53,7 +53,7 @@ namespace DigiTransit10.Views
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             var boundingBox = this.FavoritesMap.GetMapElementsBoundingBox();
             if (boundingBox != null)
             {

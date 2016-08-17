@@ -34,25 +34,25 @@ namespace DigiTransit10.ViewModels
         {
             get { return _favorites; }
             set { Set(ref _favorites, value); }
-        }        
+        }
 
         private readonly RelayCommand<IFavorite> _deleteFavoriteCommand = null;
         public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService)
-        {            
+        {
             _networkService = networkService;
             _messengerService = messengerService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();            
-            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);            
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
+            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
 
             foreach (var place in _settingsService.Favorites)
             {
                 FavoritePlaces.AddSorted(place);
-            }            
+            }
 
-            Favorites.Add(FavoritePlaces);            
-        }        
+            Favorites.Add(FavoritePlaces);
+        }
 
         private void DeleteFavorite(IFavorite favorite)
         {

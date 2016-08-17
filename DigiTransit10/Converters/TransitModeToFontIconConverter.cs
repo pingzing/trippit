@@ -38,7 +38,7 @@ namespace DigiTransit10.Converters
                     return FontIconGlyphs.WalkIcon;
                 default:
                     return DependencyProperty.UnsetValue;
-            }            
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -81,7 +81,7 @@ namespace DigiTransit10.Converters
             else
             {
                 return DependencyProperty.UnsetValue;
-            }            
+            }
         }
     }
 }

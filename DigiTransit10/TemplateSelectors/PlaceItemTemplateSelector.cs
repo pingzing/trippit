@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10.TemplateSelectors
-{    
+{
     public class PlaceItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate AddressTemplate { get; set; }

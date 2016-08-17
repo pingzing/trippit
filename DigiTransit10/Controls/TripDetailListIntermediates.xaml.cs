@@ -12,11 +12,11 @@ using System.Collections.ObjectModel;
 namespace DigiTransit10.Controls
 {
     public sealed partial class TripDetailListIntermediates : UserControl
-    {        
+    {
         private ObservableCollection<ApiStop> ItemsBackingCollection = new ObservableCollection<ApiStop>();
 
         private List<ApiStop> _backingIntermediatesList = null;
-        private string _backingSimpleText = null;        
+        private string _backingSimpleText = null;
         private bool _isShowingIntermediateStops = false;
 
         public static readonly DependencyProperty TripLegProperty = DependencyProperty.Register(
@@ -39,7 +39,7 @@ namespace DigiTransit10.Controls
             if (newLeg.IntermediateStops?.Count > 0)
             {
                 _this._backingIntermediatesList = new List<ApiStop>(newLeg.IntermediateStops);
-                _this._backingSimpleText = $"{newLeg.IntermediateStops.Count} {AppResources.TripDetailListIntermediates_IntermediateStopsNumber}";                                
+                _this._backingSimpleText = $"{newLeg.IntermediateStops.Count} {AppResources.TripDetailListIntermediates_IntermediateStopsNumber}";
             }
             else
             {
@@ -53,7 +53,7 @@ namespace DigiTransit10.Controls
                     _this._backingSimpleText = String.Format(AppResources.TripDetailListIntermediates_TransitDistance, distanceString);
                 }
             }
-            
+
             if(_this._isShowingIntermediateStops)
             {
                 _this.ItemsBackingCollection = new ObservableCollection<ApiStop>(_this._backingIntermediatesList);
@@ -74,7 +74,7 @@ namespace DigiTransit10.Controls
 
         public TripDetailListIntermediates()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
         }
 
         public void ToggleViewState()
@@ -87,7 +87,7 @@ namespace DigiTransit10.Controls
             if (_isShowingIntermediateStops)
             {
                 ItemsBackingCollection.Clear();
-                ItemsBackingCollection.Add(new ApiStop { Name = _backingSimpleText });                
+                ItemsBackingCollection.Add(new ApiStop { Name = _backingSimpleText });
             }
             else
             {
