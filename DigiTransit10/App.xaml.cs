@@ -11,6 +11,8 @@ using Windows.ApplicationModel;
 using DigiTransit10.Helpers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.ViewManagement;
+using Windows.Foundation.Metadata;
+using DigiTransit10.ExtensionMethods;
 
 namespace DigiTransit10
 {
@@ -36,6 +38,7 @@ namespace DigiTransit10
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
             RequestedTheme = SettingsService.Instance.AppTheme;
+            
 
             #endregion
         }
@@ -57,6 +60,10 @@ namespace DigiTransit10
             }
 
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
+            if(ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
+            }
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
