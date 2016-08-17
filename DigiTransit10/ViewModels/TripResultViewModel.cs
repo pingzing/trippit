@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 using DigiTransit10.Helpers;
-using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Messaging;
 using Template10.Mvvm;
@@ -11,10 +10,7 @@ using Template10.Common;
 using DigiTransit10.Models;
 using DigiTransit10.Localization.Strings;
 using GalaSoft.MvvmLight.Command;
-using System;
 using System.Linq;
-using DigiTransit10.ExtensionMethods;
-using Newtonsoft.Json;
 
 namespace DigiTransit10.ViewModels
 {
@@ -23,11 +19,10 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
 
-        private RelayCommand<ItineraryModel> _showTripDetailsCommand;
+        private enum TripState { TripsList, DetailsList };
+        
         public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
-
-        private RelayCommand<ItineraryModel> _showTripOnMapCommand;
-        public RelayCommand<ItineraryModel> ShowTripOnMapCommand => new RelayCommand<ItineraryModel>(ShowTripOnMap);
+        public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
 
         public ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
         public ObservableCollection<ItineraryModel> TripResults
@@ -43,20 +38,43 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _fromName, value); }
         }
 
-        private string _toName;
+        private string _toName;        
         public string ToName
         {
             get { return _toName?.ToUpperInvariant(); }
             set { Set(ref _toName, value); }
-        }        
+        }
+
+        private bool _isinDetailedState = false;
+        public bool IsInDetailedState
+        {
+            get { return _isinDetailedState; }
+            set { Set(ref _isinDetailedState, value); }
+        }
+
+        private List<DetailedTripListLeg> _selectedDetailLegs = null;
+        public List<DetailedTripListLeg> SelectedDetailLegs
+        {
+            get { return _selectedDetailLegs; }
+            set { Set(ref _selectedDetailLegs, value); }
+        }
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
-        }        
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
+        }
+
+        private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
+        {
+            if(IsInDetailedState)
+            {
+                e.Handled = true;
+                GoBackToTripList();                
+            }
+        }
 
         private void PlanFound(MessageTypes.PlanFoundMessage _)
         {
@@ -86,23 +104,38 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private void ShowTripDetails(ItineraryModel obj)
+        private void ShowTripDetails(ItineraryModel model)
         {            
-           _messengerService.Send(new MessageTypes.ViewPlanDetails(obj));
+            SelectedDetailLegs = model.BackingItinerary.Legs.Select(x =>
+            {
+                var listLeg = DetailedTripListLeg.FromApiLeg(x);
+                if (model.BackingItinerary.Legs.Last() == x)
+                {
+                    listLeg.IsEnd = true;
+                    listLeg.ToName = model.EndingPlaceName;
+                }
+                return listLeg;
+            }).ToList();
+
+            _messengerService.Send(new MessageTypes.ViewPlanDetails(model));
+            IsInDetailedState = true;
         }
 
-        private void ShowTripOnMap(ItineraryModel obj)
+        private void GoBackToTripList()
         {
-            
+            _messengerService.Send(new MessageTypes.ViewPlanStrips());
+            IsInDetailedState = false;
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {            
+        {
+            BootStrapper.BackRequested += BootStrapper_BackRequested;
             await Task.CompletedTask;
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {            
+        {
+            BootStrapper.BackRequested -= BootStrapper_BackRequested;
             await Task.CompletedTask;
         }
     }

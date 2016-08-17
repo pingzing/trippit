@@ -18,7 +18,8 @@
     x:Class="DigiTransit10.Views.MainPage"    
     x:Name="ThisMainPage"
     mc:Ignorable="d"
-    d:DesignHeight="775"
+    d:DesignHeight="900"
+    d:DesignWidth="900"
     DataContext="{Binding Path=Main, Source={StaticResource Locator}}">
 
     <Page.Resources>
@@ -493,15 +494,29 @@
 
                 <HubSection x:Name="TripResultTripResultHubSection" 
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                            DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"
-                            Margin="10 10 10 20"
-                            Header="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}"
+                            DataContext="{x:Bind ViewModel.TripResultViewModel, Mode=OneWay}"                            
+                            Margin="10 10 10 20"                            
                             HorizontalAlignment="Center"
-                            VerticalContentAlignment="Stretch"                            
+                            VerticalContentAlignment="Stretch"  
+                            Style="{StaticResource HubSectionCustomHeaderStyle}"
                             Visibility="Collapsed">
                     <HubSection.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" Style="{StaticResource HeaderTextBlockStyle}"/>
+                        <DataTemplate x:DataType="vm:TripResultViewModel">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.ChildrenTransitions>
+                                    <TransitionCollection>
+                                        <RepositionThemeTransition/>
+                                    </TransitionCollection>
+                                </StackPanel.ChildrenTransitions>
+                                <Button Content="&#xE830;"                                                                                 
+                                        Command="{x:Bind GoBackToTripListCommand}"
+                                        FontSize="35"
+                                        Height="50" Width="50"
+                                        Margin="0 0 9 0"
+                                        Style="{ThemeResource NavigationBackButtonNormalStyle}"                                                                        
+                                        Visibility="{x:Bind IsInDetailedState, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding Source={StaticResource Strings}, Path=TripResults_TripPlansHeader}" Style="{StaticResource HeaderTextBlockStyle}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </HubSection.HeaderTemplate>
                     <DataTemplate x:Name="TripResultTemplate" x:DataType="vm:TripResultViewModel">

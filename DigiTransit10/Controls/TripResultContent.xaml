@@ -14,6 +14,7 @@
     xmlns:models="using:DigiTransit10.Models"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
+    xmlns:vsf="using:DigiTransit10.VisualStateFramework"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -207,7 +208,7 @@
                         </Storyboard>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
-                <VisualState x:Name="TripsList" />
+                <VisualState x:Name="TripsList"/>
                 <VisualState x:Name="DetailsList">
                     <VisualState.Setters>
                         <Setter Target="DirectionsFloatingPanel.(UIElement.Visibility)" Value="Visible" />
@@ -223,13 +224,15 @@
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.HorizontalScrollMode="Auto"
                   ScrollViewer.IsHorizontalRailEnabled="True"
-                  ScrollViewer.IsVerticalRailEnabled="False"
+                  ScrollViewer.IsVerticalRailEnabled="False"                  
                   DataContext="{Binding ElementName=ThisTripResultContent, Path=DataContext}"
-                  ItemsSource="{x:Bind ViewModel.TripResults, Mode=OneWay}"
-                  SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
-                  ShowsScrollingPlaceholders="False"
                   HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch" RenderTransformOrigin="0.5,0.5">
+                  IsItemClickEnabled="True"
+                  ItemsSource="{x:Bind ViewModel.TripResults, Mode=OneWay}"
+                  RenderTransformOrigin="0.5,0.5"
+                  VerticalAlignment="Stretch"                   
+                  ShowsScrollingPlaceholders="False"
+                  ItemClick="TripResultList_ItemClick">
             <ListView.RenderTransform>
                 <CompositeTransform/>
             </ListView.RenderTransform>
@@ -254,7 +257,7 @@
         <!--ExpandedHeight set in code-behind.-->
         <local:FloatingPanel x:Name="DirectionsFloatingPanel"
                              x:DeferLoadStrategy="Lazy"
-                             Background="{ThemeResource HighOpacityBackgroundBrush}"                         
+                             Background="{ThemeResource HighOpacityBackgroundBrush}"                             
                              Loaded="DirectionsFloatingPanel_Loaded"
                              VerticalAlignment="Bottom"
                              RenderTransformOrigin="0.5,0.5"
@@ -262,13 +265,13 @@
             <local:FloatingPanel.RenderTransform>
                 <CompositeTransform/>
             </local:FloatingPanel.RenderTransform>
-            
-                <!--ItemsSource set in code-behind -->
+                            
                 <ListView x:Name="DetailedTripList"                      
-                              Grid.Row="1"
-                              SelectionMode="None"
-                              IsItemClickEnabled="True"
-                              ItemClick="DetailedTripList_OnItemClick">
+                          Grid.Row="1"
+                          SelectionMode="None"
+                          IsItemClickEnabled="True"
+                          ItemsSource="{x:Bind ViewModel.SelectedDetailLegs, Mode=OneWay}"
+                          ItemClick="DetailedTripList_OnItemClick">
                 <ListView.ItemContainerTransitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>

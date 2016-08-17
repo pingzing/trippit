@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
+using DigiTransit10.Helpers;
+using System;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -23,7 +21,7 @@ namespace DigiTransit10.Controls
         private readonly VisualState _tripListState;
         private readonly VisualState _detailedTripState;
 
-        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
+        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;        
 
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(TripResultContent), new PropertyMetadata(null));
@@ -40,30 +38,47 @@ namespace DigiTransit10.Controls
             _detailedTripState = TripStateGroup.States[DetailedStateIndex];
             VisualStateManager.GoToState(this, _tripListState.Name, false);
 
-            this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));            
-            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);            
-        }        
+            this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
+            this.Loaded += TripResultContent_Loaded;
+            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
+            Messenger.Default.Register<MessageTypes.ViewPlanStrips>(this, SwitchToListState);
+        }
 
-        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails obj)
+        private void ClipToBounds()
+        {
+            this.Clip = new Windows.UI.Xaml.Media.RectangleGeometry()
+            {
+                Rect = new Windows.Foundation.Rect(0, 0, this.ActualWidth, this.ActualHeight)
+            };
+        }
+
+        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails details)
         {
             if (TripStateGroup.CurrentState == _tripListState)
-            {                               
-                VisualStateManager.GoToState(this, _detailedTripState.Name, true);                
-                DetailedTripList.ItemsSource = obj.BackingModel.BackingItinerary.Legs.Select(x => 
-                {
-                    var listLeg = DetailedTripListLeg.FromApiLeg(x);
-                    if(obj.BackingModel.BackingItinerary.Legs.Last() == x)
-                    {
-                        listLeg.IsEnd = true;
-                        listLeg.ToName = obj.BackingModel.EndingPlaceName;
-                    }
-                    return listLeg;
-                });
+            {
+                VisualStateManager.GoToState(this, _detailedTripState.Name, true);
             }
-            else if(TripStateGroup.CurrentState == _detailedTripState)
-            {                
+            else
+            {
+                VisualStateManager.GoToState(this, _detailedTripState.Name, false);
+            }
+        }
+
+        private void SwitchToListState(MessageTypes.ViewPlanStrips obj)
+        {
+            if (TripStateGroup.CurrentState == _detailedTripState)
+            {
                 VisualStateManager.GoToState(this, _tripListState.Name, true);
             }
+            else
+            {
+                VisualStateManager.GoToState(this, _tripListState.Name, false);
+            }
+        }
+
+        private void TripResultContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            ClipToBounds();
         }
 
         private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
@@ -77,6 +92,7 @@ namespace DigiTransit10.Controls
         private void TripResultContent_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .66;
+            ClipToBounds();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -95,6 +111,15 @@ namespace DigiTransit10.Controls
             var element = list.ContainerFromItem(e.ClickedItem);
             var intermediatesControl = element.FindChild<TripDetailListIntermediates>("IntermediateStops");
             intermediatesControl.ToggleViewState();
+        }
+
+        private void TripResultList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ItineraryModel model = e.ClickedItem as ItineraryModel;
+            if (ViewModel.ShowTripDetailsCommand.CanExecute(model))
+            {
+                ViewModel.ShowTripDetailsCommand.Execute(model);
+            }
         }
     }
 }

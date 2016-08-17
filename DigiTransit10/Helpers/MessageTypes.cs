@@ -35,5 +35,7 @@ namespace DigiTransit10.Helpers
                 BackingModel = model;
             }
         }
+
+        public class ViewPlanStrips { }
     }
 }
