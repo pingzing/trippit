@@ -9,7 +9,6 @@ namespace DigiTransit10.VisualStateFramework
         /// </summary>
         protected StateAwareViewModel() : base()
         {
-
         }
 
         /// <summary>
