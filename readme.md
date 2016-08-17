@@ -1,5 +1,5 @@
 #DigiTransit 10 (name not final)
-<img src=https://mcalistern.visualstudio.com/_apis/public/build/definitions/b45d5b7f-8cbd-4cba-8b35-c9414b788af4/1/badge/>
+<img src=https://mcalistern.visualstudio.com/_apis/public/build/definitions/b45d5b7f-8cbd-4cba-8b35-c9414b788af4/2/badge>
 
 It's an HSL DigiTransit app for Helsinki. Written as a UWA.
 
