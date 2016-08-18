@@ -11,6 +11,7 @@ using DigiTransit10.Models;
 using DigiTransit10.Localization.Strings;
 using GalaSoft.MvvmLight.Command;
 using System.Linq;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.ViewModels
 {
@@ -22,11 +23,18 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
 
-        public ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
+        private ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
         public ObservableCollection<ItineraryModel> TripResults
         {
             get { return _tripResults; }
             set { Set(ref _tripResults, value); }
+        }
+
+        private IEnumerable<BasicGeoposition> _mapLinePoints = new List<BasicGeoposition>();
+        public IEnumerable<BasicGeoposition> MapLinePoints
+        {
+            get { return _mapLinePoints; }
+            set { Set(ref _mapLinePoints, value); }
         }
 
         private string _fromName;
@@ -114,6 +122,9 @@ namespace DigiTransit10.ViewModels
                 }
                 return listLeg;
             }).ToList();
+
+            MapLinePoints = model.BackingItinerary.Legs
+                .SelectMany(x => GooglePolineDecoder.Decode(x.LegGeometry.Points));                
 
             _messengerService.Send(new MessageTypes.ViewPlanDetails(model));
             IsInDetailedState = true;

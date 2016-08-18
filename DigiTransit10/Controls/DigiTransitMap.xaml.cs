@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls.Maps;
 using Windows.Devices.Geolocation;
 using System.Threading.Tasks;
 using System;
+using Windows.UI;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -19,6 +20,47 @@ namespace DigiTransit10.Controls
 
         public event EventHandler MapElementsChanged;
 
+        public static readonly DependencyProperty MapLinePointsProperty =
+                    DependencyProperty.Register("MapLinePoints", typeof(IEnumerable<BasicGeoposition>), typeof(DigiTransitMap), new PropertyMetadata(null,
+                        OnMapLinePointsChanged));
+        private static void OnMapLinePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DigiTransitMap _this = d as DigiTransitMap;
+            if (_this == null)
+            {
+                return;
+            }
+
+            IEnumerable<BasicGeoposition> newLinePoints = e.NewValue as IEnumerable<BasicGeoposition>;
+            if(newLinePoints == null)
+            {
+                var existingPolyLine = _this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().FirstOrDefault();
+                if (existingPolyLine != null)
+                {
+                    _this.DigiTransitMapControl.MapElements.Remove(existingPolyLine);
+                }
+                return;
+            }
+
+            MapPolyline polyline = new MapPolyline();
+            polyline.Path = new Geopath(newLinePoints);
+            polyline.StrokeColor = Color.FromArgb(128, 0, 0, 255); //half-transparent blue
+            polyline.StrokeThickness = 2;
+
+            var oldPolyLine = _this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().FirstOrDefault();
+            if(oldPolyLine != null)
+            {
+                _this.DigiTransitMapControl.MapElements.Remove(oldPolyLine);
+            }
+
+            _this.DigiTransitMapControl.MapElements.Add(polyline);
+        }
+        public IEnumerable<BasicGeoposition> MapLinePoints
+        {
+            get { return (IEnumerable<BasicGeoposition>)GetValue(MapLinePointsProperty); }
+            set { SetValue(MapLinePointsProperty, value); }
+        }
+                
         public static readonly DependencyProperty MapElementsProperty =
             DependencyProperty.Register("MapElements", typeof(List<MapElement>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnMapElementsChanged)));

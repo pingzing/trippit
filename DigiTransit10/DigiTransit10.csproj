@@ -11,7 +11,7 @@
     <AssemblyName>DigiTransit10</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
@@ -165,6 +165,7 @@
     <Compile Include="Helpers\ApiResult.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\FontIconGlyphs.cs" />
+    <Compile Include="Helpers\GooglePolineDecoder.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />
@@ -408,11 +409,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="WindowsMobile, Version=10.0.10586.0">
-      <Name>Windows Mobile Extensions for the UWP %28WindowsMobile, Version=10.0.10586.0%29</Name>
-    </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DigiTransit10.Backend\DigiTransit10.Backend.csproj">
       <Project>{2de64562-5327-403c-b77b-be2c21fcbe31}</Project>
       <Name>DigiTransit10.Backend</Name>
@@ -421,6 +417,11 @@
       <Project>{79d20a80-cd61-433b-92f6-8410b5e9a6c8}</Project>
       <Name>DigiTransit10.Localization</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
+      <Name>Windows Mobile Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

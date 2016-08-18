@@ -248,7 +248,9 @@
 
         <local:DigiTransitMap x:Name="SingleMap"
                               x:DeferLoadStrategy="Lazy"                                                       
-                              Visibility="Collapsed" RenderTransformOrigin="0.5,0.5" >
+                              RenderTransformOrigin="0.5,0.5"
+                              MapLinePoints="{x:Bind ViewModel.MapLinePoints, Mode=OneWay}"
+                              Visibility="Collapsed">
             <local:DigiTransitMap.RenderTransform>
                 <CompositeTransform/>
             </local:DigiTransitMap.RenderTransform>
