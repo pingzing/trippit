@@ -249,6 +249,7 @@
         <local:DigiTransitMap x:Name="SingleMap"
                               x:DeferLoadStrategy="Lazy"                                                       
                               RenderTransformOrigin="0.5,0.5"
+                              Places="{x:Bind ViewModel.MapStops, Mode=OneWay}"
                               MapLinePoints="{x:Bind ViewModel.MapLinePoints, Mode=OneWay}"
                               Visibility="Collapsed">
             <local:DigiTransitMap.RenderTransform>

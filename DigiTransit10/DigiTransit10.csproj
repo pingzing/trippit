@@ -200,6 +200,7 @@
     <Compile Include="Models\Geocoding\GeocodingProperties.cs" />
     <Compile Include="Models\Geocoding\GeocodingQuery.cs" />
     <Compile Include="Models\Geocoding\GeocodingResponse.cs" />
+    <Compile Include="Models\IMapPoi.cs" />
     <Compile Include="Models\ModelEnums.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Place.cs" />

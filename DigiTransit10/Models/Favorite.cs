@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
@@ -27,6 +25,7 @@ namespace DigiTransit10.Models
         public float Lon { get; set; }
         public PlaceType Type { get; set; }
         public double? Confidence { get; set; }
+        public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
 
         public int CompareTo(IFavorite other)
         {

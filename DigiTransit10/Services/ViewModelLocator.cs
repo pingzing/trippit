@@ -8,7 +8,6 @@ namespace DigiTransit10.Services
 {
     public class ViewModelLocator
     {
-
         private const string LocalSettingsService = "LocalSettingsService";
         private const string RoamingSettingsService = "RoamingSettingsService";
         static ViewModelLocator()

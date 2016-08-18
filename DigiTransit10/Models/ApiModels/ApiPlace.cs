@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.Models.ApiModels
 {
-    public class ApiPlace
+    public class ApiPlace : IMapPoi
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -24,5 +26,8 @@ namespace DigiTransit10.Models.ApiModels
         /// </summary>
         [JsonProperty("bikeRentalStation")]
         public ApiBikeRentalStation BikeRentalStation { get; set; }
+
+        [JsonIgnore]
+        public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
     }
 }

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
-    public interface IPlace : IComparable<IPlace>
+    public interface IPlace : IComparable<IPlace>, IMapPoi
     {
         /// <summary>
         /// Optional.
         /// </summary>
         string Id { get; set; }
-        string Name { get; set; }
+        new string Name { get; set; }
         float Lat { get; set; }
         float Lon { get; set; }
         PlaceType Type { get; set; }
@@ -23,7 +22,7 @@ namespace DigiTransit10.Models
     }
 
     public class Place : IPlace
-    {        
+    {
         private static IPlaceComparer _comparer = new IPlaceComparer();
 
         public string Id { get; set; }
@@ -31,7 +30,8 @@ namespace DigiTransit10.Models
         public float Lat { get; set; }
         public float Lon { get; set; }
         public PlaceType Type { get; set; }
-        public double? Confidence { get; set; }        
+        public double? Confidence { get; set; }
+        public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
 
         public override bool Equals(object obj)
         {

@@ -44,8 +44,8 @@ namespace DigiTransit10.Controls
 
             MapPolyline polyline = new MapPolyline();
             polyline.Path = new Geopath(newLinePoints);
-            polyline.StrokeColor = Color.FromArgb(128, 0, 0, 255); //half-transparent blue
-            polyline.StrokeThickness = 2;
+            polyline.StrokeColor = Color.FromArgb(128, 0, 0, 200); //half-transparent blue
+            polyline.StrokeThickness = 6;
 
             var oldPolyLine = _this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().FirstOrDefault();
             if(oldPolyLine != null)
@@ -60,9 +60,9 @@ namespace DigiTransit10.Controls
             get { return (IEnumerable<BasicGeoposition>)GetValue(MapLinePointsProperty); }
             set { SetValue(MapLinePointsProperty, value); }
         }
-                
+
         public static readonly DependencyProperty MapElementsProperty =
-            DependencyProperty.Register("MapElements", typeof(List<MapElement>), typeof(DigiTransitMap), new PropertyMetadata(null,
+            DependencyProperty.Register("MapElements", typeof(IEnumerable<MapElement>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnMapElementsChanged)));
         private static void OnMapElementsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -72,9 +72,9 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            var oldList = e.OldValue as List<MapElement>;
-            var newList = e.NewValue as List<MapElement>;
-            if(newList == null || newList.Count == 0)
+            var oldList = e.OldValue as IEnumerable<MapElement>;
+            var newList = e.NewValue as IEnumerable<MapElement>;
+            if(newList == null || !newList.Any())
             {
                 return;
             }
@@ -104,14 +104,14 @@ namespace DigiTransit10.Controls
 
             _this.MapElementsChanged?.Invoke(_this, EventArgs.Empty);
         }
-        public List<MapElement> MapElements
+        public IEnumerable<MapElement> MapElements
         {
-            get { return (List<MapElement>)GetValue(MapElementsProperty); }
+            get { return (IEnumerable<MapElement>)GetValue(MapElementsProperty); }
             set { SetValue(MapElementsProperty, value); }
         }
 
         public static readonly DependencyProperty PlacesProperty =
-            DependencyProperty.Register("Places", typeof(List<IPlace>), typeof(DigiTransitMap), new PropertyMetadata(null,
+            DependencyProperty.Register("Places", typeof(IEnumerable<IMapPoi>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnPlacesChanged)));
         private static void OnPlacesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -120,31 +120,31 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-            
-            var newList = e.NewValue as IList<IFavorite>;
-            if(newList == null || newList.Count == 0)
+
+            var newList = e.NewValue as IEnumerable<IMapPoi>;
+            if(newList == null || !newList.Any())
             {
                 return;
             }
 
             List<MapElement> elements = new List<MapElement>();
-            foreach(var place in newList.OfType<IPlace>())
+            foreach(var place in newList.OfType<IMapPoi>())
             {
                 MapIcon element = new MapIcon();
                 element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
-                element.Location = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = place.Lat, Longitude = place.Lon });
+                element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
                 element.NormalizedAnchorPoint = new Point(0.5, 1.0);
                 elements.Add(element);
             }
             _this.MapElements = elements;
         }
-        public List<IPlace> Places
+        public IEnumerable<IMapPoi> Places
         {
-            get { return (List<IPlace>)GetValue(PlacesProperty); }
+            get { return (IEnumerable<IMapPoi>)GetValue(PlacesProperty); }
             set { SetValue(PlacesProperty, value); }
         }
-                
+
         public DigiTransitMap()
         {
             this.InitializeComponent();
@@ -154,7 +154,7 @@ namespace DigiTransit10.Controls
 
             //Default location of Helsinki's Rautatientori
             DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition {Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
-            DigiTransitMapControl.ZoomLevel = 10;                        
+            DigiTransitMapControl.ZoomLevel = 10;
         }
 
         private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
@@ -179,19 +179,19 @@ namespace DigiTransit10.Controls
         private void HideLoadingScreenStoryboard_Completed(object sender, object e)
         {
             _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
-            _layoutUpdateTimer.Stop();            
+            _layoutUpdateTimer.Stop();
             DigiTransitMapControl.Opacity = 1;
-            LoadingRing.Visibility = Visibility.Collapsed;                        
-        }        
+            LoadingRing.Visibility = Visibility.Collapsed;
+        }
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
-        {            
+        {
             await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
         }
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
-        {            
-            await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);            
+        {
+            await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace DigiTransit10.Controls
         /// <returns></returns>
         public GeoboundingBox GetMapElementsBoundingBox()
         {
-            if (MapElements == null || MapElements.Count <= 0 || !MapElements.Any(x => x is MapIcon))
+            if (MapElements == null || MapElements.Count() <= 0 || !MapElements.Any(x => x is MapIcon))
             {
                 return null;
             }

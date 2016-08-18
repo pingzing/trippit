@@ -12,6 +12,7 @@ using DigiTransit10.Localization.Strings;
 using GalaSoft.MvvmLight.Command;
 using System.Linq;
 using Windows.Devices.Geolocation;
+using DigiTransit10.Models.ApiModels;
 
 namespace DigiTransit10.ViewModels
 {
@@ -35,6 +36,13 @@ namespace DigiTransit10.ViewModels
         {
             get { return _mapLinePoints; }
             set { Set(ref _mapLinePoints, value); }
+        }
+
+        private IEnumerable<IMapPoi> _mapStops = new List<IMapPoi>();
+        public IEnumerable<IMapPoi> MapStops
+        {
+            get { return _mapStops; }
+            set { Set(ref _mapStops, value); }
         }
 
         private string _fromName;
@@ -82,7 +90,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private void PlanFound(MessageTypes.PlanFoundMessage _)
+        private async void PlanFound(MessageTypes.PlanFoundMessage _)
         {
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
@@ -94,10 +102,22 @@ namespace DigiTransit10.ViewModels
                 return;
             }
 
+            //todo: leaking abstraction here, see if we can move this to the view
+            Task waitForAnimationTask = null;
+            if (IsInDetailedState)
+            {
+                GoBackToTripList();
+                waitForAnimationTask = Task.Delay(450);
+            }
             TripResults.Clear();
 
             FromName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
             ToName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
+
+            // Give the control enough time to animate back from the DetailedState, 
+            // so that when the TripPlanStrip does it's second render pass, it gets accurate values.
+            if (waitForAnimationTask != null) await waitForAnimationTask;
+
             foreach (var itinerary in plan.ApiPlan.Itineraries)
             {
                 var model = new ItineraryModel
@@ -124,7 +144,17 @@ namespace DigiTransit10.ViewModels
             }).ToList();
 
             MapLinePoints = model.BackingItinerary.Legs
-                .SelectMany(x => GooglePolineDecoder.Decode(x.LegGeometry.Points));                
+                .SelectMany(x => GooglePolineDecoder.Decode(x.LegGeometry.Points));
+
+            var stops = new List<IMapPoi>();
+            ApiPlace startPoint = model.BackingItinerary.Legs.First().From;
+            startPoint.Name = model.StartingPlaceName;
+            stops.Add(startPoint);
+
+            stops.AddRange(model.BackingItinerary.Legs.Select(x => x.To));
+            stops.Last().Name = model.EndingPlaceName;
+
+            MapStops = stops;
 
             _messengerService.Send(new MessageTypes.ViewPlanDetails(model));
             IsInDetailedState = true;

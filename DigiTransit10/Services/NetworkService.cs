@@ -128,7 +128,7 @@ namespace DigiTransit10.Services
                 LogException(ex);
                 return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoConnection);
             }
-        }        
+        }
 
         /// <summary>
         /// Returns a travel plan.
@@ -157,9 +157,9 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.to,
                         new GqlReturnValue(ApiGqlMembers.name)
                     ),
-                    new GqlReturnValue(ApiGqlMembers.itineraries,                        
+                    new GqlReturnValue(ApiGqlMembers.itineraries,
                         new GqlReturnValue(ApiGqlMembers.legs,
-                            new GqlReturnValue(ApiGqlMembers.startTime), 
+                            new GqlReturnValue(ApiGqlMembers.startTime),
                             new GqlReturnValue(ApiGqlMembers.endTime),
                             new GqlReturnValue(ApiGqlMembers.mode),
                             new GqlReturnValue(ApiGqlMembers.duration),
@@ -173,18 +173,22 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.intermediateStops,
                                 new GqlReturnValue(ApiGqlMembers.name),
                                 new GqlReturnValue(ApiGqlMembers.lat),
-                                new GqlReturnValue(ApiGqlMembers.lon)                                
+                                new GqlReturnValue(ApiGqlMembers.lon)
                             ),
                             new GqlReturnValue(ApiGqlMembers.from,
-                                new GqlReturnValue(ApiGqlMembers.name)
+                                new GqlReturnValue(ApiGqlMembers.name),
+                                new GqlReturnValue(ApiGqlMembers.lat),
+                                new GqlReturnValue(ApiGqlMembers.lon)
                             ),
                             new GqlReturnValue(ApiGqlMembers.to,
-                                new GqlReturnValue(ApiGqlMembers.name)
+                                new GqlReturnValue(ApiGqlMembers.name),
+                                new GqlReturnValue(ApiGqlMembers.lat),
+                                new GqlReturnValue(ApiGqlMembers.lon)
                             ),
                             new GqlReturnValue(ApiGqlMembers.route,
                                 new GqlReturnValue(ApiGqlMembers.shortName)
                             )
-                        ),                    
+                        ),
                     new GqlReturnValue(ApiGqlMembers.fares,
                             new GqlReturnValue(ApiGqlMembers.type),
                             new GqlReturnValue(ApiGqlMembers.currency),
@@ -192,7 +196,7 @@ namespace DigiTransit10.Services
                         )
                     )
                 );
-            string parsedQuery = query.ParseToJsonString();           
+            string parsedQuery = query.ParseToJsonString();
 
             HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
 
@@ -217,7 +221,7 @@ namespace DigiTransit10.Services
             }
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
-                LogException(ex);                
+                LogException(ex);
                 return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoConnection);
             }
         }
@@ -228,7 +232,7 @@ namespace DigiTransit10.Services
         }
 
         private async Task<T> UnwrapGqlResposne<T>(HttpResponseMessage response)
-        {                        
+        {
             return (await response.Content.ReadAsInputStreamAsync())
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<ApiDataContainer>()
