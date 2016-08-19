@@ -32,7 +32,8 @@ namespace DigiTransit10.ViewModels
         private readonly IGeolocationService _geolocationService;
         private readonly IDialogService _dialogService;
 
-        private bool _isBusy;      
+        private bool _isBusy;
+        private string _currentBusyMessage;
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -230,71 +231,73 @@ namespace DigiTransit10.ViewModels
                 _cts.Cancel();
             }
             _cts = new CancellationTokenSource();
+            _cts.Token.ThrowIfCancellationRequested();
 
-            SetBusy(true, AppResources.TripFrom_GettingsAddresses);
-
-            List<IPlace> places = new List<IPlace> {FromPlace, ToPlace};
-            places = await ResolvePlaces(places, _cts.Token);
-
-            if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
+            try
             {
-                await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList());
+                SetBusy(true, AppResources.TripFrom_GettingsAddresses);
+
+                List<IPlace> places = new List<IPlace> { FromPlace, ToPlace };
+                places = await ResolvePlaces(places, _cts.Token);
+
+                if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
+                {
+                    await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList());
+                    SetBusy(false);
+                    return;
+                }
+                FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
+                ToPlace = places[1]; // but for now, magic numbers wheee            
+
+                ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
+                ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
+                BasicTripDetails details = new BasicTripDetails(
+                    fromCoords,
+                    toCoords,
+                    IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
+                    SelectedDate.DateTime,
+                    IsArrivalChecked == true,
+                    ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
+                                          (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
+                );
+
+                SetBusy(true, AppResources.TripForm_PlanningTrip);
+
+                var result = await _networkService.PlanTrip(details, _cts.Token);
+                if (result.IsFailure)
+                {
+                    await HandleTripFailure(result);
+                    SetBusy(false);
+                    return;
+                }
+
+                TripPlan newPlan = new TripPlan
+                {
+                    ApiPlan = result.Result,
+                    StartingPlaceName = FromPlace.Name,
+                    EndingPlaceName = ToPlace.Name
+                };
+                if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
+                {
+                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
+                }
+                else
+                {
+                    BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
+                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
+                }
+
+                _messengerService.Send(new MessageTypes.PlanFoundMessage());
+            }
+            catch (OperationCanceledException ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Cancellation requested.");
+                //Swallow otherwise. Cancellation should only happen on user request here.
+            }
+            finally
+            {
                 SetBusy(false);
-                return;
             }
-            FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
-            ToPlace = places[1]; // but for now, magic numbers wheee            
-
-            ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
-            ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };            
-            BasicTripDetails details = new BasicTripDetails(
-                fromCoords,
-                toCoords,
-                IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
-                SelectedDate.DateTime,
-                IsArrivalChecked == true,
-                ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
-                                      (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
-            );
-
-            SetBusy(true, AppResources.TripForm_PlanningTrip);
-
-            var result = await _networkService.PlanTrip(details, _cts.Token);
-            if (result.IsFailure)
-            {
-                await HandleTripFailure(result);
-                SetBusy(false);
-                return;
-            }
-
-            if(_cts.Token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            TripPlan newPlan = new TripPlan
-            {
-                ApiPlan = result.Result,
-                StartingPlaceName = FromPlace.Name,
-                EndingPlaceName = ToPlace.Name
-            };
-            if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
-            {                
-                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
-            }
-            else
-            {
-                BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
-                BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
-            }
-
-            if (_cts.Token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            _messengerService.Send(new MessageTypes.PlanFoundMessage());
-            SetBusy(false);
         }        
 
         /// <summary>
@@ -522,13 +525,14 @@ namespace DigiTransit10.ViewModels
 
         private void SetBusy(bool newBusy, string message = null)
         {
-            if(newBusy == _isBusy)
+            if(newBusy == _isBusy && message == _currentBusyMessage)
             {
                 return;
             }
             else
             {
                 _isBusy = newBusy;
+                _currentBusyMessage = message;
                 Views.Busy.SetBusy(newBusy, message);
             }
         }        
@@ -545,8 +549,9 @@ namespace DigiTransit10.ViewModels
             if (_isBusy)
             {
                 e.Handled = true;
-                _cts.Cancel();
+                _messengerService.Send(new MessageTypes.NavigationCanceled());
                 SetBusy(false);
+                _cts.Cancel();                
             }
         }
 

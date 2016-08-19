@@ -13,6 +13,8 @@ using GalaSoft.MvvmLight.Messaging;
 using Windows.UI.Xaml.Media.Animation;
 using DigiTransit10.Storyboards;
 using DigiTransit10.ExtensionMethods;
+using static DigiTransit10.Helpers.MessageTypes;
+using System;
 
 namespace DigiTransit10.Views
 {
@@ -28,6 +30,7 @@ namespace DigiTransit10.Views
             this.Loaded += MainPage_Loaded;
 
             Messenger.Default.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
+            Messenger.Default.Register<MessageTypes.NavigationCanceled>(this, NavigationCanceledByUser);
         }
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -132,6 +135,13 @@ namespace DigiTransit10.Views
                 var storyboard = ContinuumNavigationEntranceFactory.GetAnimation(clickedItem);
                 storyboard.Begin();
             }
+        }
+
+        private void NavigationCanceledByUser(NavigationCanceled _)
+        {
+            // Prevent hijacking of Navigation in OnNavigatedTo--the user canceled the previous navigation.
+            this._pinnedFavoriteClicked = null;
+            this._pinnedFavoritesList = null;
         }
 
         private void PinnedFavoritesControl_OnRightTapped(object sender, RightTappedRoutedEventArgs e)

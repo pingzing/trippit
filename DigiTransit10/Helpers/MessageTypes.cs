@@ -37,5 +37,7 @@ namespace DigiTransit10.Helpers
         }
 
         public class ViewPlanStrips { }
+
+        public class NavigationCanceled { }
     }
 }
