@@ -259,11 +259,16 @@ namespace DigiTransit10.ViewModels
 
             SetBusy(true, AppResources.TripForm_PlanningTrip);
 
-            var result = await _networkService.PlanTrip(details);
+            var result = await _networkService.PlanTrip(details, _cts.Token);
             if (result.IsFailure)
             {
                 await HandleTripFailure(result);
                 SetBusy(false);
+                return;
+            }
+
+            if(_cts.Token.IsCancellationRequested)
+            {
                 return;
             }
 
@@ -281,6 +286,11 @@ namespace DigiTransit10.ViewModels
             {
                 BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
                 BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
+            }
+
+            if (_cts.Token.IsCancellationRequested)
+            {
+                return;
             }
 
             _messengerService.Send(new MessageTypes.PlanFoundMessage());
@@ -481,6 +491,10 @@ namespace DigiTransit10.ViewModels
                      || result.Failure.Reason == FailureReason.ServerDown)
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoServer;
+            }
+            else if(result.Failure.Reason == FailureReason.Canceled)
+            {
+                return; //swallow cancellation, the only way it can happen here is user-triggered
             }
             else
             {

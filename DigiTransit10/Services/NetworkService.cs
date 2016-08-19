@@ -220,11 +220,16 @@ namespace DigiTransit10.Services
 
                 return new ApiResult<ApiPlan>(result);
             }
+            catch (OperationCanceledException ex)
+            {
+                LogException(ex);
+                return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
+            }
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
                 LogException(ex);
                 return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
-            }
+            }            
         }
 
         private HttpStringContent CreateJsonStringContent(string requestString)

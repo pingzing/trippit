@@ -17,6 +17,7 @@ namespace DigiTransit10.Helpers
             InternalServerError = 4,
             InvalidCredentials = 8,
             NoResults = 16,
+            Canceled = 32,
         }
     }
 }
