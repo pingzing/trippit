@@ -164,10 +164,15 @@
     <Compile Include="GraphQL\ParserHelpers.cs" />
     <Compile Include="Helpers\ApiResult.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\FontIconGlyphs.cs" />
     <Compile Include="Helpers\GooglePolineDecoder.cs" />
+    <Compile Include="Helpers\IFailure.cs" />
+    <Compile Include="Helpers\IFailureReason.cs" />
+    <Compile Include="Helpers\IResult.cs" />
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
+    <Compile Include="Helpers\GenericResult.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />
     <Compile Include="Models\ApiModels\ApiAlert.cs" />
     <Compile Include="Models\ApiModels\ApiBikeRentalStation.cs" />

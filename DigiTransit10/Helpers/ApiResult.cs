@@ -1,11 +1,11 @@
-﻿using static DigiTransit10.Models.ModelEnums;
+﻿using static DigiTransit10.Helpers.Enums;
 
 namespace DigiTransit10.Helpers
 {
-    public struct ApiResult<TValue>
+    public struct ApiResult<TValue> : IResult<TValue>
     {
         public TValue Result { get; }
-        public ApiFailure Failure { get; }
+        public IFailure Failure { get; }
 
         public bool HasResult { get; }
         public bool IsFailure { get; }
@@ -13,7 +13,7 @@ namespace DigiTransit10.Helpers
         public ApiResult(TValue successVal)
         {
             Result = successVal;
-            Failure = ApiFailure.None;
+            Failure = ApiFailure.ApiFailureNone;
 
             HasResult = true;
             IsFailure = false;
@@ -33,33 +33,34 @@ namespace DigiTransit10.Helpers
         /// </summary>
         public static ApiResult<TValue> Fail => new ApiResult<TValue>(new ApiFailure());
 
-        public static ApiResult<TValue> FailWithReason(ApiFailureReason reason)
+        public static ApiResult<TValue> FailWithReason(FailureReason reason)
         {
             return new ApiResult<TValue>(new ApiFailure(reason));
         }
 
-        public static ApiResult<TValue> FailWithMessage(string message, ApiFailureReason reason)
+        public static ApiResult<TValue> FailWithMessage(string message, FailureReason reason)
         {
             return new ApiResult<TValue>(new ApiFailure(message, reason));
         }
     }
 
-    public struct ApiFailure
+    public struct ApiFailure : IFailure
     {
         public bool IsNone { get; private set; }
-        public ApiFailureReason Reason { get; private set; }
+        public FailureReason Reason { get; private set; }
         public string FriendlyError { get; private set; }
+        public IFailure None => ApiFailure.ApiFailureNone;
 
-        public static ApiFailure None => new ApiFailure {IsNone = true, Reason = ApiFailureReason.Unspecified, FriendlyError = null};
+        public static IFailure ApiFailureNone => new ApiFailure {IsNone = true, Reason = FailureReason.Unspecified, FriendlyError = null};
 
-        public ApiFailure(ApiFailureReason reason)
+        public ApiFailure(FailureReason reason)
         {
             FriendlyError = "";
             Reason = reason;
             IsNone = false;
         }
 
-        public ApiFailure(string message, ApiFailureReason reason)
+        public ApiFailure(string message, FailureReason reason)
         {
             FriendlyError = message;
             Reason = reason;

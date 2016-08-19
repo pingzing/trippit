@@ -19,6 +19,8 @@ using DigiTransit10.VisualStateFramework;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
+using static DigiTransit10.Helpers.Enums;
+using Template10.Services.NavigationService;
 
 namespace DigiTransit10.ViewModels
 {
@@ -28,7 +30,9 @@ namespace DigiTransit10.ViewModels
         private readonly Services.SettingsServices.SettingsService _settingsService;
         private readonly IMessenger _messengerService;
         private readonly IGeolocationService _geolocationService;
-        private readonly IDialogService _dialogService;        
+        private readonly IDialogService _dialogService;
+
+        private bool _isBusy;      
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -227,7 +231,7 @@ namespace DigiTransit10.ViewModels
             }
             _cts = new CancellationTokenSource();
 
-            Views.Busy.SetBusy(true, AppResources.TripFrom_GettingsAddresses);
+            SetBusy(true, AppResources.TripFrom_GettingsAddresses);
 
             List<IPlace> places = new List<IPlace> {FromPlace, ToPlace};
             places = await ResolvePlaces(places, _cts.Token);
@@ -235,7 +239,7 @@ namespace DigiTransit10.ViewModels
             if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
             {
                 await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList());
-                Views.Busy.SetBusy(false);
+                SetBusy(false);
                 return;
             }
             FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
@@ -253,13 +257,13 @@ namespace DigiTransit10.ViewModels
                                       (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
             );
 
-            Views.Busy.SetBusy(true, AppResources.TripForm_PlanningTrip);
+            SetBusy(true, AppResources.TripForm_PlanningTrip);
 
             var result = await _networkService.PlanTrip(details);
             if (result.IsFailure)
             {
                 await HandleTripFailure(result);
-                Views.Busy.SetBusy(false);
+                SetBusy(false);
                 return;
             }
 
@@ -270,8 +274,7 @@ namespace DigiTransit10.ViewModels
                 EndingPlaceName = ToPlace.Name
             };
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
-            {
-                
+            {                
                 BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
             }
             else
@@ -281,7 +284,7 @@ namespace DigiTransit10.ViewModels
             }
 
             _messengerService.Send(new MessageTypes.PlanFoundMessage());
-            Views.Busy.SetBusy(false);
+            SetBusy(false);
         }        
 
         /// <summary>
@@ -320,13 +323,17 @@ namespace DigiTransit10.ViewModels
                 }
                 else if (places[idx].Type == PlaceType.UserCurrentLocation)
                 {
-                    Task<Geoposition> task = _geolocationService.GetCurrentLocation();
+                    Task<GenericResult<Geoposition>> task = _geolocationService.GetCurrentLocationAsync();
                     getAddressTasks.Add(task.ContinueWith(resp => {
-                        if(resp?.Result?.Coordinate?.Point?.Position == null)
+                        if(resp.Result.IsFailure)
                         {
                             return false;
                         }
-                        var loc = resp.Result.Coordinate.Point.Position;
+                        if(resp.Result.Result.Coordinate?.Point?.Position == null)
+                        {
+                            return false;
+                        }
+                        var loc = resp.Result.Result.Coordinate.Point.Position;
                         places[idx] = new Place
                         {
                             Lon = (float)loc.Longitude,
@@ -465,13 +472,13 @@ namespace DigiTransit10.ViewModels
             {
                 errorMessage = result.Failure.FriendlyError;
             }
-            else if (result.Failure.Reason == ApiFailureReason.NoResults)
+            else if (result.Failure.Reason == FailureReason.NoResults)
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoResults;
             }
-            else if (result.Failure.Reason == ApiFailureReason.InternalServerError
-                     || result.Failure.Reason == ApiFailureReason.NoConnection
-                     || result.Failure.Reason == ApiFailureReason.ServerDown)
+            else if (result.Failure.Reason == FailureReason.InternalServerError
+                     || result.Failure.Reason == FailureReason.NoConnection
+                     || result.Failure.Reason == FailureReason.ServerDown)
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoServer;
             }
@@ -480,7 +487,7 @@ namespace DigiTransit10.ViewModels
                 errorMessage = AppResources.DialogMessage_NoTripsFoundUnknown;
             }
             await _dialogService.ShowDialog(errorMessage, AppResources.DialogTitle_NoTripsFound);
-        }
+        }        
 
         private async Task HandleTripFailure(IList<IPlace> resolutionFailures)
         {
@@ -499,9 +506,44 @@ namespace DigiTransit10.ViewModels
             await _dialogService.ShowDialog(error.ToString(), AppResources.DialogTitle_NoLocationFound);
         }
 
+        private void SetBusy(bool newBusy, string message = null)
+        {
+            if(newBusy == _isBusy)
+            {
+                return;
+            }
+            else
+            {
+                _isBusy = newBusy;
+                Views.Busy.SetBusy(newBusy, message);
+            }
+        }        
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             FillPinnedFavorites();
+            BootStrapper.BackRequested += BootStrapper_BackRequested;
+            await Task.CompletedTask;
+        }
+
+        private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
+        {
+            if (_isBusy)
+            {
+                e.Handled = true;
+                _cts.Cancel();
+                SetBusy(false);
+            }
+        }
+
+        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
+        {            
+            await Task.CompletedTask;
+        }
+
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
+        {
+            BootStrapper.BackRequested -= BootStrapper_BackRequested;
             await Task.CompletedTask;
         }
     }

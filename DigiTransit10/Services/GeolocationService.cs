@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight.Threading;
+﻿using DigiTransit10.Helpers;
+using GalaSoft.MvvmLight.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace DigiTransit10.Services
 {
     public interface IGeolocationService
     {
-        Task<Geoposition> GetCurrentLocation();
+        Task<GenericResult<Geoposition>> GetCurrentLocationAsync();
     }
 
     public class GeolocationService : IGeolocationService
@@ -19,23 +20,30 @@ namespace DigiTransit10.Services
 
         public GeolocationService()
         {
-            _geolocator = new Geolocator();
+            _geolocator = new Geolocator();            
         }
 
         /// <summary>
         /// Gets the user's current Geoposition, and prompts for access if necessary. Returns null on failure.
         /// </summary>
         /// <returns></returns>
-        public async Task<Geoposition> GetCurrentLocation()
+        public async Task<GenericResult<Geoposition>> GetCurrentLocationAsync()
         {
             if(await GetAccessStatus() == GeolocationAccessStatus.Allowed)
             {
-                return await _geolocator.GetGeopositionAsync();
+                try
+                {
+                    return new GenericResult<Geoposition>(await _geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10)));
+                }
+                catch(Exception ex)
+                {
+                    return GenericResult<Geoposition>.Fail;
+                }
             }
             else
             {
                 //todo: pop up a reason explaining why it didn't work.
-                return null;
+                return GenericResult<Geoposition>.Fail;
             }
         }
 

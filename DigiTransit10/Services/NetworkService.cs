@@ -19,6 +19,7 @@ using DigiTransit10.Helpers;
 using DigiTransit10.Models.Geocoding;
 using static DigiTransit10.Models.ModelEnums;
 using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
+using static DigiTransit10.Helpers.Enums;
 
 namespace DigiTransit10.Services
 {
@@ -67,7 +68,7 @@ namespace DigiTransit10.Services
 
             var response = await _networkClient.GetAsync(uri, token);
 
-            if (!response.IsSuccessStatusCode)
+            if (response == null || !response.IsSuccessStatusCode)
             {
                 LogHttpFailure(response).DoNotAwait();
                 return ApiResult<GeocodingResponse>.Fail;
@@ -107,7 +108,7 @@ namespace DigiTransit10.Services
             try
             {
                 var response = await _networkClient.PostAsync(uri, stringContent, token);
-                if (!response.IsSuccessStatusCode)
+                if (response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
                     return ApiResult<List<ApiStop>>.Fail;
@@ -117,8 +118,8 @@ namespace DigiTransit10.Services
 
                 if (result.Count == 0)
                 {
-                    LogLogicFailure(ApiFailureReason.NoResults);
-                    return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoResults);
+                    LogLogicFailure(FailureReason.NoResults);
+                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoResults);
                 }
 
                 return new ApiResult<List<ApiStop>>(result);
@@ -126,7 +127,7 @@ namespace DigiTransit10.Services
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
                 LogException(ex);
-                return ApiResult<List<ApiStop>>.FailWithReason(ApiFailureReason.NoConnection);
+                return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoConnection);
             }
         }
 
@@ -203,7 +204,7 @@ namespace DigiTransit10.Services
             try
             {
                 var response = await _networkClient.PostAsync(uri, stringContent, token);
-                if (!response.IsSuccessStatusCode)
+                if (response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
                     return ApiResult<ApiPlan>.Fail;
@@ -213,8 +214,8 @@ namespace DigiTransit10.Services
 
                 if (result.Itineraries.Count == 0)
                 {
-                    LogLogicFailure(ApiFailureReason.NoResults);
-                    return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoResults);
+                    LogLogicFailure(FailureReason.NoResults);
+                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
                 }
 
                 return new ApiResult<ApiPlan>(result);
@@ -222,7 +223,7 @@ namespace DigiTransit10.Services
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
             {
                 LogException(ex);
-                return ApiResult<ApiPlan>.FailWithReason(ApiFailureReason.NoConnection);
+                return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
             }
         }
 
@@ -254,7 +255,7 @@ namespace DigiTransit10.Services
             }
         }
 
-        private void LogLogicFailure(ApiFailureReason reason, [CallerMemberName]string callerMethod = "Unknown method()")
+        private void LogLogicFailure(FailureReason reason, [CallerMemberName]string callerMethod = "Unknown method()")
         {
             //todo: add real logging
             System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed. Reason: {reason}.");
