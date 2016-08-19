@@ -83,7 +83,7 @@
               HorizontalAlignment="Stretch"                        
               Background="{ThemeResource SystemControlBackgroundAccentBrush}" 
               ManipulationMode="TranslateY"
-              ManipulationStarted="GridGrabHeader_ManipulationStarted"
+              ManipulationStarted="GridGrabHeader_ManipulationStarted"     
               ManipulationDelta="GridGrabHeader_ManipulationDelta"
               ManipulationCompleted="GridGrabHeader_ManipulationCompleted"
               Tapped="GridGrabHeader_Tapped">
