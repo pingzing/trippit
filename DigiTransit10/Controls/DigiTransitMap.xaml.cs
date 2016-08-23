@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System;
 using Windows.UI;
 using DigiTransit10.Helpers;
+using static DigiTransit10.Models.ApiModels.ApiEnums;
+using DigiTransit10.Styles;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -85,16 +87,25 @@ namespace DigiTransit10.Controls
            
 
             List<MapPolyline> newPolylines = new List<MapPolyline>();
+            List<BasicGeoposition> currentLinePositions = new List<BasicGeoposition>();            
             for (int i = 0; i <= newValue.Count() - 2; i++)
             {
                 var startPoint = newValue[i];
-                var endPoint = newValue[i + 1];
-                MapPolyline polyline = new MapPolyline();
-                polyline.Path = new Geopath(new List<BasicGeoposition> { startPoint.Coordinates, endPoint.Coordinates });
-                polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
-                polyline.StrokeDashed = startPoint.IsLineDashed;
-                polyline.StrokeThickness = 6;
-                newPolylines.Add(polyline);
+                var nextPoint = newValue[i + 1];
+                currentLinePositions.Add(startPoint.Coordinates);
+
+                Color nextColor = nextPoint.LineColor;
+                if (nextPoint == newValue.Last() || startPoint.LineColor != nextColor)
+                {
+                    MapPolyline polyline = new MapPolyline();
+                    polyline.Path = new Geopath(currentLinePositions);
+                    polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
+                    polyline.StrokeDashed = startPoint.IsLineDashed;
+                    polyline.StrokeThickness = 6;
+                    newPolylines.Add(polyline);
+
+                    currentLinePositions = new List<BasicGeoposition>();
+                }                                
             }
 
             _this.SetMapLines(newPolylines);
