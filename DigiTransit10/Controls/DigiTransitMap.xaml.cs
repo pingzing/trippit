@@ -16,7 +16,7 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitMap : UserControl
     {
-        private DispatcherTimer _layoutUpdateTimer = new DispatcherTimer();
+        private DispatcherTimer _loadingDelayTimer = new DispatcherTimer();        
 
         public event EventHandler MapElementsChanged;
 
@@ -148,8 +148,8 @@ namespace DigiTransit10.Controls
         public DigiTransitMap()
         {
             this.InitializeComponent();
-            _layoutUpdateTimer.Interval = TimeSpan.FromMilliseconds(750);
-            _layoutUpdateTimer.Tick += _layoutUpdateTimer_Tick;
+            _loadingDelayTimer.Interval = TimeSpan.FromMilliseconds(750);
+            _loadingDelayTimer.Tick += _layoutUpdateTimer_Tick;
             this.Loaded += DigiTransitMap_Loaded;
 
             //Default location of Helsinki's Rautatientori
@@ -159,38 +159,45 @@ namespace DigiTransit10.Controls
 
         private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
         {
-            DigiTransitMapControl.Visibility = Visibility.Visible;
-            DigiTransitMapControl.LayoutUpdated += DigiTransitMapControl_LayoutUpdated;
-        }
-
-        private void DigiTransitMapControl_LayoutUpdated(object sender, object e)
-        {
-            _layoutUpdateTimer.Stop();
-            _layoutUpdateTimer.Start();
+            DigiTransitMapControl.Visibility = Visibility.Visible;            
+            _loadingDelayTimer.Start();
         }
 
         private void _layoutUpdateTimer_Tick(object sender, object e)
-        {
-            DigiTransitMapControl.LayoutUpdated -= DigiTransitMapControl_LayoutUpdated;
+        {            
             HideLoadingScreenStoryboard.Begin();
             HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
         }
 
         private void HideLoadingScreenStoryboard_Completed(object sender, object e)
         {
-            _layoutUpdateTimer.Tick -= HideLoadingScreenStoryboard_Completed;
-            _layoutUpdateTimer.Stop();
+            _loadingDelayTimer.Tick -= HideLoadingScreenStoryboard_Completed;
+            _loadingDelayTimer.Stop();
             DigiTransitMapControl.Opacity = 1;
             LoadingRing.Visibility = Visibility.Collapsed;
         }
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
         {
-            await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
+            //If map movement fails, keep retrying until we get it right
+            bool moved = false;
+            while (!moved)
+            {
+                System.Diagnostics.Debug.WriteLine("Map position attmept...");                
+                moved = await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
+                if(moved)
+                {
+                    break;
+                }
+                else
+                {
+                    await Task.Delay(2000); //looong delay to acommodate slow mobile rendering
+                }
+            }
         }
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
-        {
+        {            
             await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
         }
 
@@ -198,7 +205,7 @@ namespace DigiTransit10.Controls
         /// Returns a GeoboundingBox around all the MapElements currently on the map, or null if there are none.
         /// </summary>
         /// <returns></returns>
-        public GeoboundingBox GetMapElementsBoundingBox()
+        public GeoboundingBox GetMapIconsBoundingBox()
         {
             if (MapElements == null || MapElements.Count() <= 0 || !MapElements.Any(x => x is MapIcon))
             {

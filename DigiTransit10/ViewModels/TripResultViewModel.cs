@@ -132,16 +132,17 @@ namespace DigiTransit10.ViewModels
 
         private void ShowTripDetails(ItineraryModel model)
         {
-            SelectedDetailLegs = model.BackingItinerary.Legs.Select(x =>
-            {
-                var listLeg = DetailedTripListLeg.FromApiLeg(x);
-                if (model.BackingItinerary.Legs.Last() == x)
-                {
-                    listLeg.IsEnd = true;
-                    listLeg.ToName = model.EndingPlaceName;
-                }
-                return listLeg;
-            }).ToList();
+            List<DetailedTripListLeg> legs = model.BackingItinerary.Legs
+                .Select(x => DetailedTripListLeg.FromApiLeg(x))
+                .ToList();
+
+            //Rename the From/To for the First/Last legs, as the API doesn't return the names for those
+            legs.First().FromName = model.StartingPlaceName;
+            DetailedTripListLeg leg = DetailedTripListLeg.ApiLegToEndLeg(model.BackingItinerary.Legs.Last());
+            leg.ToName = model.EndingPlaceName;
+            legs.Add(leg);
+
+            SelectedDetailLegs = legs;
 
             MapLinePoints = model.BackingItinerary.Legs
                 .SelectMany(x => GooglePolineDecoder.Decode(x.LegGeometry.Points));

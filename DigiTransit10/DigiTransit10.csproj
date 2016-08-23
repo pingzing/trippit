@@ -224,6 +224,7 @@
       <DependentUpon>ContinuumNavigationExitFactory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
+    <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

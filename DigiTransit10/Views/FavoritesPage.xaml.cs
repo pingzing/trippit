@@ -54,7 +54,7 @@ namespace DigiTransit10.Views
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var boundingBox = this.FavoritesMap.GetMapElementsBoundingBox();
+            var boundingBox = this.FavoritesMap.GetMapIconsBoundingBox();
             if (boundingBox != null)
             {
                 await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);

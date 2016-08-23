@@ -15,11 +15,125 @@
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
     xmlns:vsf="using:DigiTransit10.VisualStateFramework"
+    xmlns:selectors="using:DigiTransit10.TemplateSelectors"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
+        <DataTemplate x:Key="StartOrMiddleLegTemplate" x:DataType="models:DetailedTripListLeg">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="85"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="90*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
+                <TextBlock x:Name="TimeBlock"
+                           Grid.Row="0" Grid.Column="0"                  
+                           HorizontalAlignment="Right"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                           Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
+
+                <Rectangle x:Name="VerticalLine"
+                           Grid.Row="0" Grid.Column="1"                                      
+                           Width="4"
+                           HorizontalAlignment="Center"
+                           Margin="0 10 0 0"
+                           VerticalAlignment="Stretch"
+                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                <Ellipse x:Name="Circle"
+                         Grid.Row="0" Grid.Column="1"                                     
+                         Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                         Height="10" Width="10"
+                         HorizontalAlignment="Center"
+                         Margin="5 0 5 0"/>
+                <Ellipse x:Name="InnerCircle"
+                         Grid.Row="0" Grid.Column="1"
+                         Fill="{ThemeResource HighOpacityBackgroundBrush}"
+                         Height="4" Width="4"
+                         HorizontalAlignment="Center"/>
+
+                <TextBlock x:Name="StartPlaceBlock"
+                           Grid.Row="0" Grid.Column="2"
+                           Margin="5 0 0 0"
+                           Text="{x:Bind FromName}"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <!--Second row-->
+                <StackPanel x:Name="TranitIconPanel"
+                            Grid.Row="1" Grid.Column="0"
+                            HorizontalAlignment="Right"
+                            Margin="0 10 0 10"
+                            VerticalAlignment="Top">
+                    <TextBlock x:Name="TransitIconLineName"
+                               HorizontalAlignment="Center"
+                               Text="{x:Bind ShortName}"
+                               TextAlignment="Center"
+                               Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
+                    <FontIcon x:Name="TransitIcon"                                          
+                              Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                              FontFamily="{StaticResource HslPictoFrameFont}"
+                              FontSize="40"
+                              Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+                </StackPanel>
+                <Rectangle x:Name="SecondRowVerticalLine"
+                           Grid.Row="1" Grid.Column="1"
+                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                           Margin="5 0 5 -10"
+                           HorizontalAlignment="Center"
+                           Width="4"
+                           VerticalAlignment="Stretch"/>
+                <local:TripDetailListIntermediates x:Name="IntermediateStops"
+                                                   Grid.Row="1" Grid.Column="2"
+                                                   Margin="15 10 0 10"
+                                                   TripLeg="{x:Bind }"
+                                                   VerticalAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="EndLegTemplate" x:DataType="models:DetailedTripListLeg">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="85"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="90*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="TimeBlock"                          
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                           Text="{x:Bind EndTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
+                <Rectangle x:Name="VerticalLine"
+                           Grid.Column="1"
+                           Width="4"
+                           HorizontalAlignment="Center"                           
+                           VerticalAlignment="Stretch"
+                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                <Ellipse x:Name="Circle"
+                         Grid.Column="1"
+                         Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                         Height="10" Width="10"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Bottom"
+                         Margin="5 0 5 0"/>
+                <TextBlock x:Name="EndPlaceBlock"
+                           Grid.Column="2"
+                           Margin="5 0 0 0"
+                           Text="{x:Bind ToName}"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
+            </Grid>
+
+        </DataTemplate>
+
+        <selectors:DetailedTripListLegItemTemplateSelector x:Name="DetailedTripListLegSelector"
+                                                           StartOrMiddleLegTemplate="{StaticResource StartOrMiddleLegTemplate}"
+                                                           EndLegTemplate="{StaticResource EndLegTemplate}"/>
     </UserControl.Resources>
 
     <Grid>
@@ -274,118 +388,19 @@
                           SelectionMode="None"
                           IsItemClickEnabled="True"
                           ItemsSource="{x:Bind ViewModel.SelectedDetailLegs, Mode=OneWay}"
+                          ItemTemplateSelector="{StaticResource DetailedTripListLegSelector}"
                           ItemClick="DetailedTripList_OnItemClick">
                 <ListView.ItemContainerTransitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
                     </TransitionCollection>
                 </ListView.ItemContainerTransitions>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:DetailedTripListLeg">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="85"/>
-                                    <ColumnDefinition Width="10*"/>
-                                    <ColumnDefinition Width="90*"/>
-                                </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock x:Name="TimeBlock"
-                                           Grid.Row="0" Grid.Column="0"                  
-                                           HorizontalAlignment="Right"
-                                           Style="{ThemeResource SubtitleTextBlockStyle}"
-                                           Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
-
-                                <Rectangle x:Name="VerticalLine"
-                                           Grid.Row="0" Grid.Column="1"                                      
-                                           Width="3"
-                                           HorizontalAlignment="Center"
-                                           Margin="0 10 0 0"
-                                           VerticalAlignment="Stretch"
-                                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                                <Ellipse x:Name="Circle"
-                                         Grid.Row="0" Grid.Column="1"                                     
-                                         Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
-                                         Height="10" Width="10"
-                                         HorizontalAlignment="Center"
-                                         Margin="5 0 5 0"/>
-                                <Ellipse x:Name="InnerCircle"
-                                         Grid.Row="0" Grid.Column="1"
-                                         Fill="{ThemeResource HighOpacityBackgroundBrush}"
-                                         Height="4" Width="4"
-                                         HorizontalAlignment="Center"/>
-
-                                <TextBlock x:Name="StartPlaceBlock"
-                                           Grid.Row="0" Grid.Column="2"
-                                           Margin="5 0 0 0"
-                                           Text="{x:Bind FromName}"
-                                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
-
-                                <!--Second row-->
-                                <StackPanel x:Name="TranitIconPanel"
-                                            Grid.Row="1" Grid.Column="0"
-                                            HorizontalAlignment="Right"
-                                            Margin="0 10 0 10"
-                                            VerticalAlignment="Top">
-                                    <TextBlock x:Name="TransitIconLineName"
-                                               HorizontalAlignment="Center"
-                                               Text="{x:Bind ShortName}"
-                                               TextAlignment="Center"
-                                               Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
-                                    <FontIcon x:Name="TransitIcon"                                          
-                                              Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                                              FontFamily="{StaticResource HslPictoFrameFont}"
-                                              FontSize="40"
-                                              Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
-                                </StackPanel>
-                                <Rectangle x:Name="SecondRowVerticalLine"
-                                           Grid.Row="1" Grid.Column="1"
-                                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
-                                           Margin="5 0 5 -10"
-                                           HorizontalAlignment="Center"
-                                           Width="3"
-                                           VerticalAlignment="Stretch"/>
-                                <local:TripDetailListIntermediates x:Name="IntermediateStops"
-                                                                   Grid.Row="1"
-                                                                   Grid.Column="2"
-                                                                   Margin="15 10 0 10"
-                                                                   TripLeg="{x:Bind }"
-                                                                   VerticalAlignment="Center"/>
-                                <!--Todo: replace this stuff with a templateselector. This should should up as its own ListViewItem.-->
-                            <TextBlock x:Name="EndTimeBlock"
-                                       Grid.Row="2" Grid.Column="0"                  
-                                       HorizontalAlignment="Right"
-                                       Style="{ThemeResource SubtitleTextBlockStyle}"
-                                       Text="{x:Bind EndTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"
-                                       Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                            <Ellipse x:Name="EndCircle"
-                                     Grid.Row="2" Grid.Column="1"                                     
-                                     Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
-                                     Height="10" Width="10"
-                                     HorizontalAlignment="Center"
-                                     Margin="5 10 5 0"
-                                     Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                            <TextBlock x:Name="EndPlaceBlock"
-                                       Grid.Row="2" Grid.Column="2"
-                                       Margin="5 0 0 0"
-                                       Text="{x:Bind ToName}"
-                                       Style="{ThemeResource SubtitleTextBlockStyle}"
-                                       Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
         </local:FloatingPanel>
 
     </Grid>

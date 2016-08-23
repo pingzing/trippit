@@ -16,7 +16,18 @@ namespace DigiTransit10.Models
                 ShortName = leg.Route?.ShortName,
                 Distance = leg.Distance.Value,
                 Mode = leg.Mode.Value,
-                IntermediateStops = leg.IntermediateStops
+                IntermediateStops = leg.IntermediateStops,
+                IsEnd = false
+            };
+        }
+
+        public static DetailedTripListLeg ApiLegToEndLeg(ApiLeg leg)
+        {
+            return new DetailedTripListLeg
+            {
+                EndTime = leg.EndTime.Value,
+                ToName = leg.To.Name,
+                IsEnd = true
             };
         }
 

@@ -9,6 +9,7 @@ using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using DigiTransit10.Helpers;
 using System;
+using Windows.Devices.Geolocation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -52,7 +53,7 @@ namespace DigiTransit10.Controls
             };
         }
 
-        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails details)
+        private async void SwitchToDetailedState(MessageTypes.ViewPlanDetails details)
         {
             if (TripStateGroup.CurrentState == _tripListState)
             {
@@ -62,6 +63,10 @@ namespace DigiTransit10.Controls
             {
                 VisualStateManager.GoToState(this, _detailedTripState.Name, false);
             }
+
+            GeoboundingBox iconsBoundingBox = SingleMap.GetMapIconsBoundingBox();
+            var mapMargin = new Thickness(10, 10, 10, (this.ActualHeight * .66) + 10);
+            await SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, Windows.UI.Xaml.Controls.Maps.MapAnimationKind.None);
         }
 
         private void SwitchToListState(MessageTypes.ViewPlanStrips obj)
@@ -81,12 +86,10 @@ namespace DigiTransit10.Controls
             ClipToBounds();
         }
 
-        private async void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
+        private void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
             DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .66;
-            this.SizeChanged += TripResultContent_SizeChanged;
-
-            //await adjust map view bounds
+            this.SizeChanged += TripResultContent_SizeChanged;            
         }
 
         private void TripResultContent_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -108,9 +111,15 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-            var element = list.ContainerFromItem(e.ClickedItem);
+
+            //todo: adjust map view
+            
+            var element = list.ContainerFromItem(e.ClickedItem);            
             var intermediatesControl = element.FindChild<TripDetailListIntermediates>("IntermediateStops");
-            intermediatesControl.ToggleViewState();
+            if (intermediatesControl != null)
+            {
+                intermediatesControl.ToggleViewState();
+            }
         }
 
         private void TripResultList_ItemClick(object sender, ItemClickEventArgs e)
