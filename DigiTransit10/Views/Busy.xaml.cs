@@ -46,7 +46,7 @@ namespace DigiTransit10.Views
         }
 
         // hide and show busy dialog
-        public static void SetBusy(bool busy, string text = null)
+        public static void SetBusy(bool busy, bool dismissable = false, string text = null)
         {
             WindowWrapper.Current().Dispatcher.Dispatch(() =>
             {
@@ -54,6 +54,7 @@ namespace DigiTransit10.Views
                 var view = modal.ModalContent as Busy;
                 if (view == null)
                     modal.ModalContent = view = new Busy();
+                modal.CanBackButtonDismiss = dismissable;
                 modal.IsModal = view.IsBusy = busy;
                 view.BusyText = text;
             });

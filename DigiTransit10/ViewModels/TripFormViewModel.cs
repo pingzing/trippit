@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 using System.Text;
-using DigiTransit10.VisualStateFramework;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
@@ -533,7 +532,7 @@ namespace DigiTransit10.ViewModels
             {
                 _isBusy = newBusy;
                 _currentBusyMessage = message;
-                Views.Busy.SetBusy(newBusy, message);
+                Views.Busy.SetBusy(newBusy, true, message);                
             }
         }        
 
@@ -548,9 +547,8 @@ namespace DigiTransit10.ViewModels
         {
             if (_isBusy)
             {
-                e.Handled = true;
-                _messengerService.Send(new MessageTypes.NavigationCanceled());
-                SetBusy(false);
+                //don't mark this as handled, because the Busy control will do that when it dismisses itself.                
+                _messengerService.Send(new MessageTypes.NavigationCanceled());                
                 _cts.Cancel();                
             }
         }
