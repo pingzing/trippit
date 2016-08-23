@@ -21,6 +21,15 @@ namespace DigiTransit10.Helpers
         public const string BikeTransitMode = "BICYCLE";
         public const string WalkTransitMode = "WALK";
 
+        //Color names
+        public const string BusColorName = "HslBusBlue";
+        public const string TramColorName = "HslTramGreen";
+        public const string TrainColorName = "HslTrainPurple";
+        public const string MetroColorName = "HslMetroOrange";
+        public const string FerryColorName = "HslFerryBlue";
+        public const string BikeColorName = "HslBikeGoldenrod";
+        public const string WalkColorName = "HslWalkGray";
+
         //Resource brush names
         public const string BusBrushName = "HslBusBlueBrush";
         public const string TramBrushName = "HslTramGreenBrush";

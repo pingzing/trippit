@@ -359,13 +359,14 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
+        
         <local:DigiTransitMap x:Name="SingleMap"
-                              x:DeferLoadStrategy="Lazy"                                                       
-                              RenderTransformOrigin="0.5,0.5"
+                              x:DeferLoadStrategy="Lazy"       
+                              ColoredMapLinePoints="{x:Bind ViewModel.ColoredMapLinePoints, Mode=OneWay}"
                               Places="{x:Bind ViewModel.MapStops, Mode=OneWay}"
-                              MapLinePoints="{x:Bind ViewModel.MapLinePoints, Mode=OneWay}"
-                              Visibility="Collapsed">
+                              RenderTransformOrigin="0.5,0.5"
+                              Visibility="Collapsed"
+                              Width="{x:Bind MapWidth, Mode=OneWay}">
             <local:DigiTransitMap.RenderTransform>
                 <CompositeTransform/>
             </local:DigiTransitMap.RenderTransform>

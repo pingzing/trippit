@@ -9,6 +9,7 @@ using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using DigiTransit10.Helpers;
 using System;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.Devices.Geolocation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -22,7 +23,21 @@ namespace DigiTransit10.Controls
         private readonly VisualState _tripListState;
         private readonly VisualState _detailedTripState;
 
-        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
+        private double _mapWidth = Double.NaN;
+        public double MapWidth
+        {
+            get { return _mapWidth; }
+            set
+            {
+                if(_mapWidth != value)
+                {
+                    _mapWidth = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;        
 
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register("SelectedItem", typeof(object), typeof(TripResultContent), new PropertyMetadata(null));
@@ -53,8 +68,9 @@ namespace DigiTransit10.Controls
             };
         }
 
-        private async void SwitchToDetailedState(MessageTypes.ViewPlanDetails details)
+        private void SwitchToDetailedState(MessageTypes.ViewPlanDetails details)
         {
+            MapWidth = this.ActualWidth; //Otherwise MapControl sets its own width, which, in rare cases, is too wide.
             if (TripStateGroup.CurrentState == _tripListState)
             {
                 VisualStateManager.GoToState(this, _detailedTripState.Name, true);
@@ -66,7 +82,7 @@ namespace DigiTransit10.Controls
 
             GeoboundingBox iconsBoundingBox = SingleMap.GetMapIconsBoundingBox();
             var mapMargin = new Thickness(10, 10, 10, (this.ActualHeight * .66) + 10);
-            await SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, Windows.UI.Xaml.Controls.Maps.MapAnimationKind.None);
+            SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, MapAnimationKind.None).DoNotAwait();
         }
 
         private void SwitchToListState(MessageTypes.ViewPlanStrips obj)

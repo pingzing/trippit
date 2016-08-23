@@ -13,6 +13,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Linq;
 using Windows.Devices.Geolocation;
 using DigiTransit10.Models.ApiModels;
+using DigiTransit10.Styles;
 
 namespace DigiTransit10.ViewModels
 {
@@ -31,11 +32,11 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _tripResults, value); }
         }
 
-        private IEnumerable<BasicGeoposition> _mapLinePoints = new List<BasicGeoposition>();
-        public IEnumerable<BasicGeoposition> MapLinePoints
+        private IList<ColoredMapLinePoint> _coloredMapLinePoints = new List<ColoredMapLinePoint>();
+        public IList<ColoredMapLinePoint> ColoredMapLinePoints
         {
-            get { return _mapLinePoints; }
-            set { Set(ref _mapLinePoints, value); }
+            get { return _coloredMapLinePoints; }
+            set { Set(ref _coloredMapLinePoints, value); }
         }
 
         private IEnumerable<IMapPoi> _mapStops = new List<IMapPoi>();
@@ -144,8 +145,20 @@ namespace DigiTransit10.ViewModels
 
             SelectedDetailLegs = legs;
 
-            MapLinePoints = model.BackingItinerary.Legs
-                .SelectMany(x => GooglePolineDecoder.Decode(x.LegGeometry.Points));
+            ColoredMapLinePoints = model.BackingItinerary.Legs
+                .SelectMany(y => 
+                    GooglePolineDecoder.Decode(y.LegGeometry.Points)
+                    .Select(x => {
+                        if(y.Mode == ApiEnums.ApiMode.Walk)
+                        {
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode.Value), true);
+                        }
+                        else
+                        {
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode.Value));
+                        }
+                    })
+                ).ToList();
 
             var stops = new List<IMapPoi>();
             ApiPlace startPoint = model.BackingItinerary.Legs.First().From;

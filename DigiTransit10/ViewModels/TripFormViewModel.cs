@@ -262,7 +262,7 @@ namespace DigiTransit10.ViewModels
 
                 SetBusy(true, AppResources.TripForm_PlanningTrip);
 
-                var result = await _networkService.PlanTrip(details, _cts.Token);
+                var result = await _networkService.PlanTripAsync(details, _cts.Token);
                 if (result.IsFailure)
                 {
                     await HandleTripFailure(result);
@@ -314,7 +314,7 @@ namespace DigiTransit10.ViewModels
                 int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
                 if (places[idx].Type == PlaceType.NameOnly)
                 {
-                    Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddress(places[idx].Name, token);
+                    Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddressAsync(places[idx].Name, token);
                     getAddressTasks.Add(task.ContinueWith(resp =>
                     {
                         if (resp.Result.IsFailure)

@@ -196,6 +196,7 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicTripDetails.cs" />
+    <Compile Include="Models\ColoredMapLinePoint.cs" />
     <Compile Include="Models\DetailedTripListLeg.cs" />
     <Compile Include="Models\Geocoding\Geocoding.cs" />
     <Compile Include="Models\Geocoding\GeocodingConstants.cs" />
@@ -224,6 +225,7 @@
       <DependentUpon>ContinuumNavigationExitFactory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
+    <Compile Include="Styles\HslColors.cs" />
     <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
