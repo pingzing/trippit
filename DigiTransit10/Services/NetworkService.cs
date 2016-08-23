@@ -28,10 +28,10 @@ namespace DigiTransit10.Services
         string DefaultGqlRequestUrl { get; }
         string DefaultGeocodingRequestUrl { get; }
 
-        Task<ApiResult<GeocodingResponse>> SearchAddress(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<GeocodingResponse>> SearchAddressAsync(string searchString, CancellationToken token = default(CancellationToken));
 
-        Task<ApiResult<List<ApiStop>>> GetStops(string searchString, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<ApiPlan>> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<ApiPlan>> PlanTripAsync(BasicTripDetails details, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -52,9 +52,8 @@ namespace DigiTransit10.Services
 
         //---GEOCODING REQUESTS---
 
-        public async Task<ApiResult<GeocodingResponse>> SearchAddress(string searchString, CancellationToken token = default(CancellationToken))
-        {
-            searchString = WebUtility.UrlEncode(searchString);
+        public async Task<ApiResult<GeocodingResponse>> SearchAddressAsync(string searchString, CancellationToken token = default(CancellationToken))
+        {            
             string urlString = $"{DefaultGeocodingRequestUrl}" +
                 $"search?text={searchString}" +
                 $"&boundary.rect.min_lat={GeocodingConstants.BoundaryRectMinLat}" +
@@ -83,9 +82,8 @@ namespace DigiTransit10.Services
 
         //---GRAPHQL REQUESTS---
 
-        public async Task<ApiResult<List<ApiStop>>> GetStops(string searchString, CancellationToken token = default(CancellationToken))
-        {
-            searchString = WebUtility.UrlEncode(searchString);
+        public async Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken))
+        {            
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.stops)
@@ -137,7 +135,7 @@ namespace DigiTransit10.Services
         /// <param name="details"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<ApiResult<ApiPlan>> PlanTrip(BasicTripDetails details, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<ApiPlan>> PlanTripAsync(BasicTripDetails details, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
