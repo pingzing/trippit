@@ -174,7 +174,10 @@ namespace DigiTransit10.ViewModels
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
         {
-            BootStrapper.BackRequested -= BootStrapper_BackRequested;
+            if (!suspending)
+            {
+                BootStrapper.BackRequested -= BootStrapper_BackRequested;
+            }
             await Task.CompletedTask;
         }
     }
