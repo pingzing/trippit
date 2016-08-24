@@ -149,6 +149,7 @@
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
+    <Compile Include="ExtensionMethods\BasicGeopositionExtensions.cs" />
     <Compile Include="ExtensionMethods\DependencyObjectExtensions.cs" />
     <Compile Include="ExtensionMethods\DictionaryExtensions.cs" />
     <Compile Include="ExtensionMethods\GridExtensions.cs" />

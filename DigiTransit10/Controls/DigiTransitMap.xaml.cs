@@ -257,7 +257,7 @@ namespace DigiTransit10.Controls
             MapElementsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation)
+        public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation, bool retryOnFailure = false)
         {
             if(margin != null && DeviceTypeHelper.GetDeviceFormFactorType() != DeviceFormFactorType.Phone)
             {
@@ -268,10 +268,10 @@ namespace DigiTransit10.Controls
             }
             //If map movement fails, keep retrying until we get it right
             bool moved = false;
-            while (!moved)
-            {                             
+            do
+            {
                 moved = await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
-                if(moved)
+                if (moved)
                 {
                     break;
                 }
@@ -279,7 +279,7 @@ namespace DigiTransit10.Controls
                 {
                     await Task.Delay(2000); //looong delay to acommodate slow mobile rendering
                 }
-            }
+            } while (!moved && retryOnFailure);
         }
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
@@ -316,6 +316,36 @@ namespace DigiTransit10.Controls
                                        .Max(x => x.Location.Position.Longitude),
                 Latitude = DigiTransitMapControl.MapElements.OfType<MapIcon>()
                                       .Min(x => x.Location.Position.Latitude)
+            };
+
+            return new GeoboundingBox(topLeft, bottomRight);
+        }
+
+        public GeoboundingBox GetBoundingBoxForPois(IEnumerable<BasicGeoposition> pois)
+        {
+            if (DigiTransitMapControl.MapElements == null
+                || DigiTransitMapControl.MapElements.Count() <= 0
+                || !DigiTransitMapControl.MapElements.Any(x => x is MapIcon))
+            {
+                return null;
+            }
+
+            var poisInMap = DigiTransitMapControl.MapElements.OfType<MapIcon>().Join(pois,
+                x =>  new BasicGeoposition { Altitude = 0.0, Latitude = x.Location.Position.Latitude, Longitude = x.Location.Position.Longitude },
+                y =>  y,
+                (x, y) => x);
+
+            var topLeft = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = poisInMap.Min(x => x.Location.Position.Longitude),
+                Latitude = poisInMap.Max(x => x.Location.Position.Latitude)
+            };
+            var bottomRight = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = poisInMap.Max(x => x.Location.Position.Longitude),
+                Latitude = poisInMap.Min(x => x.Location.Position.Latitude)
             };
 
             return new GeoboundingBox(topLeft, bottomRight);

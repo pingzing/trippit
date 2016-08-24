@@ -11,6 +11,7 @@ using DigiTransit10.Helpers;
 using System;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.Devices.Geolocation;
+using System.Collections.Generic;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -82,7 +83,7 @@ namespace DigiTransit10.Controls
 
             GeoboundingBox iconsBoundingBox = SingleMap.GetMapIconsBoundingBox();
             var mapMargin = new Thickness(10, 10, 10, (this.ActualHeight * .66) + 10);
-            SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, MapAnimationKind.None).DoNotAwait();
+            SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, MapAnimationKind.None, true).DoNotAwait();
         }
 
         private void SwitchToListState(MessageTypes.ViewPlanStrips obj)
@@ -128,8 +129,18 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            //todo: adjust map view
+            //Frame clicked point on the map
+            DetailedTripListLeg clickedLeg = (DetailedTripListLeg)e.ClickedItem;
+            var poisToFrame = new List<BasicGeoposition> { clickedLeg.ToCoords };
+            if (!clickedLeg.FromCoords.Equals(default(BasicGeoposition)))
+            {
+                poisToFrame.Add(clickedLeg.FromCoords);
+            }
+            var boundingBox = SingleMap.GetBoundingBoxForPois(poisToFrame);
+            double bottomMargin = DirectionsFloatingPanel.IsOpen ? DirectionsFloatingPanel.ExpandedHeight + 10 : 10;
+            SingleMap.TrySetViewBoundsAsync(boundingBox, new Thickness(10, 10, 10, bottomMargin), MapAnimationKind.Bow).DoNotAwait();
             
+            //Expand intermediate stops of clicked leg
             var element = list.ContainerFromItem(e.ClickedItem);            
             var intermediatesControl = element.FindChild<TripDetailListIntermediates>("IntermediateStops");
             if (intermediatesControl != null)

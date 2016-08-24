@@ -19,6 +19,9 @@ namespace DigiTransit10.Controls
         public static double DefaultCollapsedPanelHeightStatic = 18;
         public double DefaultCollapsedPanelHeight => DefaultCollapsedPanelHeightStatic;
 
+        //todo: rework into a DependencyProperty that actually opens/closes the panel
+        public bool IsOpen => _currentState == _expandedState;
+
         private const int ExpandedPanelStateIndex = 0;
         private const int CollapsedPanelStateIndex = 1;
 

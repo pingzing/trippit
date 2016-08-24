@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DigiTransit10.Models.ApiModels;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.Models
 {
@@ -12,7 +13,9 @@ namespace DigiTransit10.Models
                 StartTime = leg.StartTime.Value,
                 EndTime = leg.EndTime.Value,
                 FromName = leg.From.Name,
+                FromCoords = leg.From.Coords,                
                 ToName = leg.To.Name,
+                ToCoords = leg.To.Coords,
                 ShortName = leg.Route?.ShortName,
                 Distance = leg.Distance.Value,
                 Mode = leg.Mode.Value,
@@ -27,6 +30,7 @@ namespace DigiTransit10.Models
             {
                 EndTime = leg.EndTime.Value,
                 ToName = leg.To.Name,
+                ToCoords = leg.To.Coords,
                 IsEnd = true
             };
         }
@@ -34,6 +38,8 @@ namespace DigiTransit10.Models
         public long StartTime { get; set; }
         public long EndTime { get; set; }
         public string FromName { get; set; }
+        public BasicGeoposition FromCoords { get; set; }
+        public BasicGeoposition ToCoords { get; set; }
         public string ToName { get; set; }
         public string ShortName { get; set; }
         public float Distance { get; set; }
