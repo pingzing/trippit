@@ -16,11 +16,14 @@ namespace DigiTransit10.Services
 
     public class GeolocationService : IGeolocationService
     {
-        private Geolocator _geolocator;
+        private readonly Geolocator _geolocator;
 
         public GeolocationService()
         {
-            _geolocator = new Geolocator();            
+            _geolocator = new Geolocator
+            {
+                ReportInterval = 10000 //once every 10 seconds should be sufficient. todo: revisit when we start implementing compass and realtime geotracking
+            };            
         }
 
         /// <summary>

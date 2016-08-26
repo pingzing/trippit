@@ -248,7 +248,7 @@ namespace DigiTransit10.Services
             //todo: add real logging
             if (response.Content != null)
             {
-                string errorResponse = await response?.Content?.ReadAsStringAsync();
+                string errorResponse = await response.Content?.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine(
                     $"{callerMethod} call failed. Response failed: Error code: {response.StatusCode}. Response message:\n{errorResponse}");
             }
