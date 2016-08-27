@@ -364,6 +364,7 @@
                               x:DeferLoadStrategy="Lazy"       
                               ColoredMapLinePoints="{x:Bind ViewModel.ColoredMapLinePoints, Mode=OneWay}"
                               Places="{x:Bind ViewModel.MapStops, Mode=OneWay}"
+                              ShowUserOnMap="{x:Bind ViewModel.IsInDetailedState, Mode=OneWay}"
                               RenderTransformOrigin="0.5,0.5"
                               Visibility="Collapsed"
                               Width="{x:Bind MapWidth, Mode=OneWay}">

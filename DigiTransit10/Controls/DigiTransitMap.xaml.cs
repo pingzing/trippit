@@ -12,6 +12,11 @@ using Windows.UI;
 using DigiTransit10.Helpers;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 using DigiTransit10.Styles;
+using Microsoft.Practices.ServiceLocation;
+using DigiTransit10.Services;
+using Template10.Common;
+using GalaSoft.MvvmLight.Ioc;
+using Windows.Devices.Sensors;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -19,9 +24,50 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class DigiTransitMap : UserControl
     {
-        private DispatcherTimer _loadingDelayTimer = new DispatcherTimer();        
+        private readonly IGeolocationService _geolocationService;
+
+        private DispatcherTimer _loadingDelayTimer = new DispatcherTimer();
+        private LiveGeolocationToken _liveUpdateToken;
+        private CompassReading _lastKnownHeading;
+        private Geopoint _lastKnownGeopoint;        
 
         public event EventHandler MapElementsChanged;
+
+        public static readonly DependencyProperty ShowUserOnMapProperty =
+            DependencyProperty.Register("ShowUserOnMap", typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(false,
+                ShowUserOnMapChanged));
+        private static void ShowUserOnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DigiTransitMap _this = d as DigiTransitMap;
+            if (_this == null)
+            {
+                return;
+            }
+
+            if(e.NewValue.Equals(e.OldValue))
+            {
+                return;
+            }
+
+            bool newBool = (bool)e.NewValue;            
+            if (newBool)
+            {
+                _this.SelfMarker.Visibility = Visibility.Visible;
+                MapControl.SetNormalizedAnchorPoint(_this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
+                _this.StartLiveUpdates();                
+            }
+            else
+            {
+                _this.SelfMarker.Visibility = Visibility.Collapsed;
+                _this.StopLiveUpdates();                
+            }
+        }        
+
+        public bool ShowUserOnMap
+        {
+            get { return (bool)GetValue(ShowUserOnMapProperty); }
+            set { SetValue(ShowUserOnMapProperty, value); }
+        }       
 
         public static readonly DependencyProperty MapLinePointsProperty =
                     DependencyProperty.Register("MapLinePoints", typeof(IEnumerable<BasicGeoposition>), typeof(DigiTransitMap), new PropertyMetadata(null,
@@ -165,6 +211,8 @@ namespace DigiTransit10.Controls
             //Default location of Helsinki's Rautatientori
             DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition {Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
             DigiTransitMapControl.ZoomLevel = 10;
+
+            _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
         }
 
         private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
@@ -255,6 +303,48 @@ namespace DigiTransit10.Controls
             }
 
             MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void StartLiveUpdates()
+        {
+            _liveUpdateToken = _geolocationService.BeginLiveUpdates();
+            _geolocationService.PositionChanged += GeopositionChanged;
+            _geolocationService.HeadingChanged += HeadingChanged;            
+        }
+
+        private void StopLiveUpdates()
+        {                        
+            _liveUpdateToken.Dispose();
+            _liveUpdateToken = null;
+            _geolocationService.PositionChanged -= GeopositionChanged;
+            _geolocationService.HeadingChanged -= HeadingChanged;
+        }
+
+        private void GeopositionChanged(PositionChangedEventArgs args)
+        {
+            _lastKnownGeopoint = args.Position.Coordinate.Point;
+            if (ShowUserOnMap)
+            {
+                MapControl.SetLocation(SelfMarker, args.Position.Coordinate.Point);
+            }
+        }
+        
+        private void HeadingChanged(CompassReadingChangedEventArgs args)
+        {
+            _lastKnownHeading = args.Reading;
+            if(ShowUserOnMap)                
+            {
+                SelfMarker.IsArrowVisible = true;
+                SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
+            }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (_liveUpdateToken != null)
+            {
+                StopLiveUpdates();
+            }
         }
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation, bool retryOnFailure = false)
@@ -369,6 +459,6 @@ namespace DigiTransit10.Controls
             };
 
             return new GeoboundingBox(topLeft, bottomRight);
-        }
+        }             
     }
 }
