@@ -4,9 +4,11 @@ platform:
     - x64
     - ARM
 
-configuration:
-    - Debug
+configuration:    
     - Release
     
 matrix:
     fast_finish: true
+    
+before_build:
+    - nuget restore
