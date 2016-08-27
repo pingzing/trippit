@@ -1,5 +1,5 @@
 #DigiTransit 10 (name not final)
-<img src=https://mcalistern.visualstudio.com/_apis/public/build/definitions/b45d5b7f-8cbd-4cba-8b35-c9414b788af4/2/badge>
+[![Build status](https://ci.appveyor.com/api/projects/status/lkk8wtd9gochr8fs/branch/master?svg=true)](https://ci.appveyor.com/project/pingzing/digi-transit-10/branch/master)
 
 It's an HSL DigiTransit app for Helsinki. Written as a UWA.
 
