@@ -22,11 +22,18 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
 
-        private GroupedFavoriteList _favoritePlaces = new GroupedFavoriteList(AppResources.Favorites_PlacesGroupHeader);
-        public GroupedFavoriteList FavoritePlaces
+        private ObservableCollection<IMapPoi> _mappableFavoritePlaces = new ObservableCollection<IMapPoi>();
+        public ObservableCollection<IMapPoi> MappableFavoritePlaces
         {
-            get { return _favoritePlaces; }
-            set { Set(ref _favoritePlaces, value); }
+            get { return _mappableFavoritePlaces; }
+            set { Set(ref _mappableFavoritePlaces, value); }
+        }
+
+        private GroupedFavoriteList _groupedFavoritePlaces = new GroupedFavoriteList(AppResources.Favorites_PlacesGroupHeader);
+        public GroupedFavoriteList GroupedFavoritePlaces
+        {
+            get { return _groupedFavoritePlaces; }
+            set { Set(ref _groupedFavoritePlaces, value); }
         }
 
         private ObservableCollection<GroupedFavoriteList> _favorites = new ObservableCollection<GroupedFavoriteList>();
@@ -48,10 +55,10 @@ namespace DigiTransit10.ViewModels
 
             foreach (var place in _settingsService.Favorites)
             {
-                FavoritePlaces.AddSorted(place);
+                AddFavoritePlace(place);                
             }
 
-            Favorites.Add(FavoritePlaces);
+            Favorites.Add(GroupedFavoritePlaces);
         }
 
         private void DeleteFavorite(IFavorite favorite)
@@ -65,7 +72,7 @@ namespace DigiTransit10.ViewModels
             {
                 foreach(var favePlace in message.AddedFavorites.OfType<FavoritePlace>())
                 {
-                    FavoritePlaces.AddSorted(favePlace);
+                    AddFavoritePlace(favePlace);
                 }
                 foreach (var faveRoute in message.AddedFavorites.OfType<FavoriteRoute>())
                 {
@@ -77,13 +84,25 @@ namespace DigiTransit10.ViewModels
             {
                 foreach(var deletedFave in message.RemovedFavorites.OfType<FavoritePlace>())
                 {
-                    FavoritePlaces.Remove(deletedFave);
+                    RemoveFavoritePlace(deletedFave);
                 }
                 foreach (var deletedRoute in message.RemovedFavorites.OfType<FavoriteRoute>())
                 {
                     //todo:remove from favorite routes
                 }
             }
+        }
+
+        private void AddFavoritePlace(IFavorite place)
+        {
+            GroupedFavoritePlaces.AddSorted(place);
+            MappableFavoritePlaces.Add(place as IMapPoi);
+        }
+
+        private void RemoveFavoritePlace(IFavorite deletedFave)
+        {
+            GroupedFavoritePlaces.Remove(deletedFave);
+            MappableFavoritePlaces.Remove(deletedFave as IMapPoi);
         }
     }
 }

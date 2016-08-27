@@ -17,6 +17,7 @@ using DigiTransit10.Services;
 using Template10.Common;
 using GalaSoft.MvvmLight.Ioc;
 using Windows.Devices.Sensors;
+using System.Collections.Specialized;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -176,6 +177,18 @@ namespace DigiTransit10.Controls
                 return;
             }
 
+            //set up INotifyCollectionChangeds
+            var oldCollection = e.OldValue as INotifyCollectionChanged;
+            var newCollection = e.NewValue as INotifyCollectionChanged;
+            if(oldCollection != null)
+            {
+                oldCollection.CollectionChanged -= _this.OnPlacesCollectionChanged;
+            }
+            if(newCollection != null)
+            {
+                newCollection.CollectionChanged += _this.OnPlacesCollectionChanged;
+            }
+
             var newList = e.NewValue as IEnumerable<IMapPoi>;
             if(newList == null || !newList.Any())
             {
@@ -201,16 +214,58 @@ namespace DigiTransit10.Controls
             set { SetValue(PlacesProperty, value); }
         }
 
+        private void OnPlacesCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            if(args.Action == NotifyCollectionChangedAction.Move)
+            {
+                return;
+            }
+
+            if (args.NewItems != null)
+            {
+                var newIcons = new List<MapIcon>();
+                foreach (IMapPoi place in args.NewItems.OfType<IMapPoi>())
+                {
+                    var element = new MapIcon();
+                    element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
+                    element.Location = new Geopoint(place.Coords);
+                    element.Title = place.Name;
+                    element.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                    newIcons.Add(element);
+                }
+                AddMapIcons(newIcons);
+            }
+
+            if (args.OldItems != null)
+            {
+                var removedIcons = new List<MapIcon>();
+                foreach (IMapPoi place in args.OldItems.OfType<IMapPoi>())
+                {
+                    var removedIcon = DigiTransitMapControl.MapElements
+                        .OfType<MapIcon>()
+                        .FirstOrDefault(x => x.Location.Position.Equals(place.Coords));
+                    removedIcons.Add(removedIcon);
+                }
+                RemoveMapIcons(removedIcons);
+            }
+        }
+
         public DigiTransitMap()
         {
             this.InitializeComponent();
-            _loadingDelayTimer.Interval = TimeSpan.FromMilliseconds(750);
-            _loadingDelayTimer.Tick += _layoutUpdateTimer_Tick;
-            this.Loaded += DigiTransitMap_Loaded;
 
             //Default location of Helsinki's Rautatientori
-            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition {Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
+            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
             DigiTransitMapControl.ZoomLevel = 10;
+
+            if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
+
+            _loadingDelayTimer.Interval = TimeSpan.FromMilliseconds(750);
+            _loadingDelayTimer.Tick += _layoutUpdateTimer_Tick;
+            this.Loaded += DigiTransitMap_Loaded;            
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
         }
@@ -270,6 +325,24 @@ namespace DigiTransit10.Controls
             MapElementsChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        private void AddMapIcons(IEnumerable<MapIcon> icons)
+        {
+            foreach (var newIcon in icons)
+            {
+                DigiTransitMapControl.MapElements.Add(newIcon);
+            }
+            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RemoveMapIcons(IEnumerable<MapIcon> icons)
+        {
+            foreach(var oldIcon in icons)
+            {
+                DigiTransitMapControl.MapElements.Remove(oldIcon);
+            }
+            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private void SetMapIcons(IEnumerable<MapIcon> icons)
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapIcon>().ToList();
@@ -281,28 +354,17 @@ namespace DigiTransit10.Controls
 
             if (oldList != null)
             {
-                foreach (var element in icons.Except(oldList))
-                {
-                    DigiTransitMapControl.MapElements.Add(element);
-                }
+                AddMapIcons(icons.Except(oldList));                
             }
             else
             {
-                foreach (var element in icons)
-                {
-                    DigiTransitMapControl.MapElements.Add(element);
-                }
+                AddMapIcons(icons);                
             }
 
             if (oldList != null)
             {
-                foreach (var element in oldList.Except(icons))
-                {
-                    DigiTransitMapControl.MapElements.Remove(element);
-                }
-            }
-
-            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+                RemoveMapIcons(oldList.Except(icons));                
+            }            
         }
 
         private void StartLiveUpdates()
