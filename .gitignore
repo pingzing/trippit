@@ -6,6 +6,10 @@ Style Resources/
 Raw Assets/
 Design Reference/
 
+#Ignore all .pfx files except for the temporary signing key.
+*.pfx
+!DigiTransit10_TemporaryKey.pfx
+
 # User-specific files
 *.suo
 *.user
@@ -191,7 +195,6 @@ ClientBin/
 *~
 *.dbmdl
 *.dbproj.schemaview
-*.pfx
 *.publishsettings
 node_modules/
 orleans.codegen.cs
