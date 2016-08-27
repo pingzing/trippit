@@ -1,0 +1,12 @@
+version: '1.0.{build}'
+platform:
+    - x86
+    - x64
+    - ARM
+
+configuration:
+    - Debug
+    - Release
+    
+matrix:
+    -fast_finish: true
