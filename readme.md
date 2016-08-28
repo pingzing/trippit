@@ -10,7 +10,7 @@ Requirements
 ##Feature Epics
 - [x] Trip planning
 - [x] Favorites (partially completed)
-- [x] Detailed trip plan (partially completed, still need markers on map)
+- [x] Detailed trip plan
 - [ ] Line search
 - [ ] Stop search
 - [ ] Versioned data formats (see [MSDN article](https://msdn.microsoft.com/en-us/windows/uwp/app-settings/store-and-retrieve-app-data) for more details)
