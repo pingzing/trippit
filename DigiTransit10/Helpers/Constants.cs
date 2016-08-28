@@ -8,6 +8,9 @@ namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
+        //Font faces
+        public const string SymbolFontFamily = "Segoe MDL2 Assets";
+
         //Misc keys
         public const string WideKey = "Wide";
         public const string NarrowKey = "Narrow";

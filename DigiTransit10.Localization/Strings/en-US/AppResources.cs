@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/28/2016 11:13:19
+// 	Generated: 08/28/2016 17:08:39
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -632,6 +632,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("MainPage_AddIntermediateDestination");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Save route"
+        /// </summary>
+        public static string TripResults_SaveRoute
+        {
+            get
+            {
+                return resourceLoader.GetString("TripResults_SaveRoute");
             }
         }
     }

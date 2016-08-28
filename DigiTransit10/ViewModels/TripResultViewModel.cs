@@ -14,6 +14,8 @@ using System.Linq;
 using Windows.Devices.Geolocation;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Styles;
+using System;
+using DigiTransit10.Services.SettingsServices;
 
 namespace DigiTransit10.ViewModels
 {
@@ -21,9 +23,11 @@ namespace DigiTransit10.ViewModels
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
+        private readonly SettingsService _settingsService;        
 
         public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
+        public RelayCommand<ItineraryModel> SaveRouteCommand => new RelayCommand<ItineraryModel>(SaveRoute); 
 
         private ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
         public ObservableCollection<ItineraryModel> TripResults
@@ -74,10 +78,11 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDetailLegs, value); }
         }
 
-        public TripResultViewModel(INetworkService networkService, IMessenger messengerService)
+        public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings)
         {
             _networkService = networkService;
             _messengerService = messengerService;
+            _settingsService = settings;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
@@ -97,8 +102,8 @@ namespace DigiTransit10.ViewModels
             {
                 return;
             }
-            var plan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
-            if (plan?.ApiPlan?.Itineraries == null)
+            var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
+            if (foundPlan?.ApiPlan?.Itineraries == null)
             {
                 return;
             }
@@ -112,20 +117,20 @@ namespace DigiTransit10.ViewModels
             }
             TripResults.Clear();
 
-            FromName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
-            ToName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
+            FromName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
+            ToName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
 
             // Give the control enough time to animate back from the DetailedState, 
             // so that when the TripPlanStrip does it's second render pass, it gets accurate values.
             if (waitForAnimationTask != null) await waitForAnimationTask;
 
-            foreach (var itinerary in plan.ApiPlan.Itineraries)
+            foreach (var itinerary in foundPlan.ApiPlan.Itineraries)
             {
                 var model = new ItineraryModel
                 {
                     BackingItinerary = itinerary,
-                    StartingPlaceName = plan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault,
-                    EndingPlaceName = plan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
+                    StartingPlaceName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault,
+                    EndingPlaceName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
                 };
                 TripResults.Add(model);
             }
@@ -172,6 +177,35 @@ namespace DigiTransit10.ViewModels
 
             _messengerService.Send(new MessageTypes.ViewPlanDetails(model));
             IsInDetailedState = true;
+        }
+
+        private void SaveRoute(ItineraryModel routeToSave)
+        {
+            var route = new FavoriteRoute
+            {
+                FontIconGlyph = FontIconGlyphs.FilledStar,
+                IconFontFace = Constants.SymbolFontFamily,
+                UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",
+            };            
+
+            var places = new List<FavoriteRoutePlace>();
+            ApiLeg fromPlace = routeToSave.BackingItinerary.Legs.First();
+            ApiLeg toPlace = routeToSave.BackingItinerary.Legs.Last();
+            places.Add(new FavoriteRoutePlace
+            {
+                Lat = fromPlace.From.Lat,
+                Lon = fromPlace.From.Lon,
+                Name = routeToSave.StartingPlaceName
+            });
+            places.Add(new FavoriteRoutePlace
+            {
+                Lat = toPlace.To.Lat,
+                Lon = toPlace.To.Lon,
+                Name = routeToSave.EndingPlaceName
+            });
+
+            route.RoutePlaces = places;
+            _settingsService.AddFavorite(route);
         }
 
         private void GoBackToTripList()

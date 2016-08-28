@@ -344,6 +344,7 @@
                   IsItemClickEnabled="True"
                   ItemsSource="{x:Bind ViewModel.TripResults, Mode=OneWay}"
                   RenderTransformOrigin="0.5,0.5"
+                  RightTapped="TripResultList_RightTapped"
                   VerticalAlignment="Stretch"                   
                   ShowsScrollingPlaceholders="False"
                   ItemClick="TripResultList_ItemClick">
@@ -358,6 +359,13 @@
                                                  Margin="10 0 10 15" />
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <FlyoutBase.AttachedFlyout>
+                <MenuFlyout>
+                    <!--CommandParameter set as flyout appears.-->
+                    <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=TripResults_SaveRoute}"
+                                    Command="{x:Bind ViewModel.SaveRouteCommand}"/>
+                </MenuFlyout>
+            </FlyoutBase.AttachedFlyout>
         </ListView>
         
         <local:DigiTransitMap x:Name="SingleMap"

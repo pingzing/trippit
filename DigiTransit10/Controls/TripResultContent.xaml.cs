@@ -12,6 +12,7 @@ using System;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.Devices.Geolocation;
 using System.Collections.Generic;
+using Windows.UI.Xaml.Controls.Primitives;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -155,6 +156,23 @@ namespace DigiTransit10.Controls
             if (ViewModel.ShowTripDetailsCommand.CanExecute(model))
             {
                 ViewModel.ShowTripDetailsCommand.Execute(model);
+            }
+        }
+
+        private void TripResultList_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            var item = sender as FrameworkElement;
+            var itinerary = (e.OriginalSource as FrameworkElement).DataContext as ItineraryModel;
+            if(itinerary == null)
+            {
+                itinerary = (e.OriginalSource as FrameworkElement).FindParent<TripPlanStrip.TripPlanStrip>().DataContext as ItineraryModel;
+            }            
+
+            if (item != null)
+            {
+                MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(item) as MenuFlyout;
+                ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = itinerary;
+                flyout.ShowAt(this, e.GetPosition(this));
             }
         }
     }

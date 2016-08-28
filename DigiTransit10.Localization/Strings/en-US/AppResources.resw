@@ -276,4 +276,7 @@
   <data name="MainPage_AddIntermediateDestination" xml:space="preserve">
     <value>+ Add intermediate destination</value>
   </data>
+  <data name="TripResults_SaveRoute" xml:space="preserve">
+    <value>Save route</value>
+  </data>
 </root>

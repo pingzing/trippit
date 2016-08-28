@@ -43,11 +43,19 @@ namespace DigiTransit10.Models
         public string UserChosenName { get; set; }
         public string FontIconGlyph { get; set; }
         public string IconFontFace { get; set; }
-        public List<Place> RoutePlaces { get; set; }
+        public List<FavoriteRoutePlace> RoutePlaces { get; set; }
 
         public int CompareTo(IFavorite other)
         {
             return this.UserChosenName.CompareTo(other.UserChosenName);
         }
+    }
+
+    //Only used for seralization due to its small footprint.
+    public struct FavoriteRoutePlace
+    {
+        public string Name { get; set; }
+        public float Lat { get; set; }
+        public float Lon { get; set; }
     }
 }

@@ -462,7 +462,7 @@ namespace DigiTransit10.ViewModels
                 return;
             }            
 
-            int numPinnedToDisplay = _settingsService.PinnedFavoritesDisplayNumber;
+            int numPinnedToDisplay = _settingsService.PinnedFavoritePlacesDisplayNumber;
             var pinned = _settingsService.PinnedFavorites.Count >= numPinnedToDisplay 
                 ? new List<IFavorite>(_settingsService.PinnedFavorites.Take(numPinnedToDisplay)) 
                 : new List<IFavorite>(_settingsService.PinnedFavorites);
@@ -481,9 +481,9 @@ namespace DigiTransit10.ViewModels
         private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
         {
             if (obj.AddedFavorites?.Count > 0
-                && _settingsService.PinnedFavorites?.Count < _settingsService.PinnedFavoritesDisplayNumber)
+                && _settingsService.PinnedFavorites?.Count < _settingsService.PinnedFavoritePlacesDisplayNumber)
             {
-                int maxToAdd = _settingsService.PinnedFavoritesDisplayNumber - _settingsService.PinnedFavorites.Count;
+                int maxToAdd = _settingsService.PinnedFavoritePlacesDisplayNumber - _settingsService.PinnedFavorites.Count;
                 int toAdd = Math.Min(maxToAdd, obj.AddedFavorites.Count);
                 foreach(var newPinned in obj.AddedFavorites.Take(toAdd))
                 {

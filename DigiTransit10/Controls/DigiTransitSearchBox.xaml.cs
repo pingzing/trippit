@@ -408,18 +408,16 @@ namespace DigiTransit10.Controls
         {
             if(obj.AddedFavorites?.Count > 0)
             {
-                foreach(var added in obj.AddedFavorites)
-                {
-                    IPlace castAdded = (IPlace)added;
-                    _favoritePlacesList.AddSorted(castAdded);
+                foreach(IPlace added in obj.AddedFavorites.OfType<IPlace>())
+                {                    
+                    _favoritePlacesList.AddSorted(added);
                 }
             }
             if(obj.RemovedFavorites?.Count > 0)
             {
-                foreach(var removed in obj.RemovedFavorites)
-                {
-                    IPlace castRemoved = (IPlace)removed;
-                    _favoritePlacesList.Remove(castRemoved);
+                foreach(IPlace removed in obj.RemovedFavorites.OfType<IPlace>())
+                {                    
+                    _favoritePlacesList.Remove(removed);
                 }
             }
 

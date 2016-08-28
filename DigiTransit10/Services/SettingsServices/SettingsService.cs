@@ -195,7 +195,7 @@ namespace DigiTransit10.Services.SettingsServices
         /// <summary>
         /// The number of favorites to show in the Pinned Favorites on MainPage. Defaults to 3.
         /// </summary>
-        public int PinnedFavoritesDisplayNumber
+        public int PinnedFavoritePlacesDisplayNumber
         {
             //local, because this is going to differ greatly on display size, and roaming it doesn't make a lot of sense.
             get { return _helper.Read(nameof(PinnedFavorites), 3, SettingsStrategies.Local); }
