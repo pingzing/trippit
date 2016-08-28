@@ -338,6 +338,8 @@
         <TextBlock x:Name="HeaderBlock"
                    RelativePanel.AlignLeftWithPanel="True"
                    RelativePanel.AlignRightWithPanel="True"
+                   IsHitTestVisible="False"                   
+                   Visibility="{x:Bind HeaderBlock.Text, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}"
                    Text="{x:Bind Header, Mode=OneWay}"/>
         <ProgressBar x:Name="ProgressBar"
                      RelativePanel.AlignLeftWithPanel="True"
@@ -357,7 +359,7 @@
                         FontSize="{StaticResource TallTextBoxFontSize}"    
                         ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
                         ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"                        
-                        Height="{StaticResource TallTextBoxHeight}"                        
+                        Height="{StaticResource TallTextBoxHeight}"                                                
                         Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"                        
                         VerticalAlignment="Center"
                         Text="{x:Bind SearchText, Mode=TwoWay}"                        

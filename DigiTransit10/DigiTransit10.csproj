@@ -219,6 +219,7 @@
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\GeolocationService.cs" />
+    <Compile Include="GraphQL\GqlParameterArray.cs" />
     <Compile Include="Services\LiveGeolocationToken.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Styles\HslColors.cs" />
     <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
+    <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Models\ItineraryModel.cs" />

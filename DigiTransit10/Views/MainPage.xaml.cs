@@ -15,6 +15,7 @@ using DigiTransit10.Storyboards;
 using DigiTransit10.ExtensionMethods;
 using static DigiTransit10.Helpers.MessageTypes;
 using System;
+using DigiTransit10.ViewModels.ControlViewModels;
 
 namespace DigiTransit10.Views
 {
@@ -157,10 +158,17 @@ namespace DigiTransit10.Views
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([CallerMemberName]string property = "")
+        private void IntermediatePlaceRemoved_Click(object sender, RoutedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            var model = ((sender as Button)?.Parent as FrameworkElement)?.DataContext as IntermediateSearchViewModel;
+            if(model != null)
+            {
+                this.Focus(FocusState.Programmatic); //Otherwise, focus jumps to the To box, and that's annoying
+                if(ViewModel.TripFormViewModel.RemoveIntermediateCommand.CanExecute(model))
+                {
+                    ViewModel.TripFormViewModel.RemoveIntermediateCommand.Execute(model);
+                }
+            }
         }
 
         private void PlanFound(MessageTypes.PlanFoundMessage obj)
@@ -179,6 +187,12 @@ namespace DigiTransit10.Views
                 }
                 WideHub.ScrollToSection(WideHub.Sections[1]);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

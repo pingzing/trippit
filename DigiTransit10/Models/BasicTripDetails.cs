@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Notifications;
 using DigiTransit10.Models.ApiModels;
-using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
@@ -17,13 +12,15 @@ namespace DigiTransit10.Models
         public string ToPlaceString { get; set; }
         public bool IsTimeTypeArrival { get; set; }
         public ApiCoordinates FromPlaceCoords { get; set; }
+        public List<ApiCoordinates> IntermediateCoords { get; set; }
         public ApiCoordinates ToPlaceCoordinates { get; set; }
         public string TransitModes { get; set;}
 
-
-        public BasicTripDetails(ApiCoordinates fromCoords, ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
+        public BasicTripDetails(ApiCoordinates fromCoords, List<ApiCoordinates> intermediateCoords, 
+            ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
         {
             FromPlaceCoords = fromCoords;
+            IntermediateCoords = intermediateCoords;
             ToPlaceCoordinates = toCoords;
             TransitModes = transit;
             Time = time;

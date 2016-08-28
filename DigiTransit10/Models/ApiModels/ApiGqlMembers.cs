@@ -12,6 +12,7 @@ namespace DigiTransit10.Models.ApiModels
         public static string length => nameof(length);
         public static string legGeometry => nameof(legGeometry);
         public static string stoptimes => nameof(stoptimes);
+        public static string intermediatePlaces => nameof(intermediatePlaces);
         public static string stoptimesForServiceDate => nameof(stoptimesForServiceDate);
         public static string id => "id";
         public static string plan => "plan";

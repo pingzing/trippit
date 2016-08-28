@@ -170,6 +170,10 @@ namespace DigiTransit10.Controls
                     {
                         box.SearchText = newPlace.Name;
                     }
+                    else
+                    {
+                        box.SearchText = "";
+                    }
                     
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
                     box.RaisePropertyChanged(nameof(FavoriteButtonGlyph));

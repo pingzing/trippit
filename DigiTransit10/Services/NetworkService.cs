@@ -20,6 +20,7 @@ using DigiTransit10.Models.Geocoding;
 using static DigiTransit10.Models.ModelEnums;
 using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
 using static DigiTransit10.Helpers.Enums;
+using System.Linq;
 
 namespace DigiTransit10.Services
 {
@@ -142,6 +143,7 @@ namespace DigiTransit10.Services
             GqlQuery query = new GqlQuery(ApiGqlMembers.plan)
                 .WithParameters(
                     new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
+                    new GqlParameter(ApiGqlMembers.intermediatePlaces, new GqlParameterArray(details.IntermediateCoords.Select(x => new GqlTuple { { ApiGqlMembers.lat, x.Lat }, { ApiGqlMembers.lon, x.Lon } }))),
                     new GqlParameter(ApiGqlMembers.to, new GqlTuple { { ApiGqlMembers.lat, details.ToPlaceCoordinates.Lat}, { ApiGqlMembers.lon, details.ToPlaceCoordinates.Lon} }),
                     new GqlParameter(ApiGqlMembers.numItineraries, 5),
                     new GqlParameter(ApiGqlMembers.time, details.Time),

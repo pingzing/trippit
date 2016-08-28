@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using static DigiTransit10.Helpers.Enums;
 using Template10.Services.NavigationService;
+using DigiTransit10.ViewModels.ControlViewModels;
 
 namespace DigiTransit10.ViewModels
 {
@@ -155,6 +156,13 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _pinnedFavorites, value); }
         }
 
+        private ObservableCollection<IntermediateSearchViewModel> _intermediatePlaces = new ObservableCollection<IntermediateSearchViewModel>();
+        public ObservableCollection<IntermediateSearchViewModel> IntermediatePlaces
+        {
+            get { return _intermediatePlaces; }
+            set { Set(ref _intermediatePlaces, value); }
+        }
+
         private RelayCommand _planTripCommand = null;
         public RelayCommand PlanTripCommand {
             get
@@ -165,9 +173,10 @@ namespace DigiTransit10.ViewModels
                 }
                 _planTripCommand = new RelayCommand(PlanTrip,
                     () => (
-                        (bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked 
+                        (bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked
                         || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked)
                         && FromPlace != null
+                        && (IntermediatePlaces.Count == 0 || IntermediatePlaces.All(x => x.IntermediatePlace != null))
                         && ToPlace != null
                     );
                 this.PropertyChanged += (s, e) => _planTripCommand.RaiseCanExecuteChanged();
@@ -193,7 +202,17 @@ namespace DigiTransit10.ViewModels
 
         private readonly RelayCommand<IFavorite> _removePinnedFavoriteCommand = null;
         public RelayCommand<IFavorite> RemovePinnedFavoriteCommand
-            => _removePinnedFavoriteCommand ?? new RelayCommand<IFavorite>(RemovePinnedFavorite);        
+            => _removePinnedFavoriteCommand ?? new RelayCommand<IFavorite>(RemovePinnedFavorite);
+
+        public RelayCommand SwapFirstLocationCommand => new RelayCommand(SwapFirstLocation);
+
+        public RelayCommand<IntermediateSearchViewModel> SwapIntermediateLocationCommand 
+            => new RelayCommand<IntermediateSearchViewModel>(SwapIntermediateLocation);
+
+        public RelayCommand AddIntermediatePlaceCommand => new RelayCommand(AddIntermediatePlace);        
+
+        public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand
+            => new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate);        
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
@@ -236,7 +255,12 @@ namespace DigiTransit10.ViewModels
             {
                 SetBusy(true, AppResources.TripFrom_GettingsAddresses);
 
-                List<IPlace> places = new List<IPlace> { FromPlace, ToPlace };
+                List<IPlace> places = new List<IPlace> { FromPlace };
+                if (IntermediatePlaces.Count > 0)
+                {
+                    places.AddRange(IntermediatePlaces.Select(x => x.IntermediatePlace));
+                }
+                places.Add(ToPlace);
                 places = await ResolvePlaces(places, _cts.Token);
 
                 if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
@@ -245,13 +269,30 @@ namespace DigiTransit10.ViewModels
                     SetBusy(false);
                     return;
                 }
-                FromPlace = places[0]; //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
-                ToPlace = places[1]; // but for now, magic numbers wheee            
+
+                FromPlace = places.First(); //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
+                if(IntermediatePlaces.Any())
+                {
+                    int intermediateIndex = 0;
+                    foreach(IPlace intermediate in places.Skip(1))
+                    {
+                        if(intermediate == places.Last())
+                        {
+                            continue;
+                        }
+                        IntermediatePlaces[intermediateIndex].IntermediatePlace = intermediate;
+                    }
+                }
+                ToPlace = places.Last(); // but for now, magic numbers wheee            
 
                 ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
+                List<ApiCoordinates> intermediateCoords = IntermediatePlaces
+                    .Select(x => new ApiCoordinates { Lat = x.IntermediatePlace.Lat, Lon = x.IntermediatePlace.Lon })
+                    .ToList();
                 ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
                 BasicTripDetails details = new BasicTripDetails(
                     fromCoords,
+                    intermediateCoords,
                     toCoords,
                     IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
                     SelectedDate.DateTime,
@@ -475,6 +516,56 @@ namespace DigiTransit10.ViewModels
         {
             _settingsService.RemovePinnedFavorite(favorite);
             FillPinnedFavorites();
+        }
+
+        private void SwapFirstLocation()
+        {            
+            IPlace first = FromPlace;
+            IPlace nextPlace;
+            if(IntermediatePlaces.Count > 0)
+            {
+                nextPlace = IntermediatePlaces.First().IntermediatePlace;
+                FromPlace = nextPlace;
+                IntermediatePlaces.First().IntermediatePlace = first;
+            }
+            //If the list doesn't have any intermediates, then we need to swap with the To box
+            else
+            {
+                nextPlace = ToPlace;
+                FromPlace = nextPlace;
+                ToPlace = first;
+            }            
+        }
+
+        private void SwapIntermediateLocation(IntermediateSearchViewModel obj)
+        {            
+            int intermediateIndex = IntermediatePlaces.IndexOf(obj);
+            IPlace nextPlace;
+            //If we're at the end of the list, then we need to swap with the To box
+            if(intermediateIndex + 1 < IntermediatePlaces.Count)
+            {
+                nextPlace = IntermediatePlaces[intermediateIndex + 1].IntermediatePlace;
+                IntermediatePlaces[intermediateIndex + 1].IntermediatePlace = obj.IntermediatePlace;
+                obj.IntermediatePlace = nextPlace;
+            }
+            else
+            {
+                nextPlace = ToPlace;
+                ToPlace = obj.IntermediatePlace;
+                obj.IntermediatePlace = nextPlace;                
+            }
+        }
+
+        private void AddIntermediatePlace()
+        {
+            IntermediatePlaces.Add(new IntermediateSearchViewModel(this));
+            PlanTripCommand.RaiseCanExecuteChanged();
+        }
+
+        private void RemoveIntermediate(IntermediateSearchViewModel obj)
+        {
+            IntermediatePlaces.Remove(obj);
+            PlanTripCommand.RaiseCanExecuteChanged();
         }
 
         private async Task HandleTripFailure(ApiResult<ApiPlan> result)
