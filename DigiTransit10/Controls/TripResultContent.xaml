@@ -20,7 +20,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <DataTemplate x:Key="StartOrMiddleLegTemplate" x:DataType="models:DetailedTripListLeg">
+        <DataTemplate x:Key="StartOrMiddleLegTemplate" x:DataType="models:TripLeg">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="85"/>
@@ -37,7 +37,7 @@
                            Grid.Row="0" Grid.Column="0"                  
                            HorizontalAlignment="Right"
                            Style="{ThemeResource SubtitleTextBlockStyle}"
-                           Text="{x:Bind StartTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
+                           Text="{x:Bind StartTime, Converter={StaticResource DateTimeToLocalTimeStringConverter}}"/>
 
                 <Rectangle x:Name="VerticalLine"
                            Grid.Row="0" Grid.Column="1"                                      
@@ -61,7 +61,7 @@
                 <TextBlock x:Name="StartPlaceBlock"
                            Grid.Row="0" Grid.Column="2"
                            Margin="5 0 0 0"
-                           Text="{x:Bind FromName}"
+                           Text="{x:Bind StartPlaceName}"
                            Style="{ThemeResource SubtitleTextBlockStyle}"/>
 
                 <!--Second row-->
@@ -96,39 +96,105 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="EndLegTemplate" x:DataType="models:DetailedTripListLeg">
+        <DataTemplate x:Key="EndLegTemplate" x:DataType="models:TripLeg">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="85"/>
                     <ColumnDefinition Width="10*"/>
                     <ColumnDefinition Width="90*"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <TextBlock x:Name="TimeBlock"                          
-                           Grid.Column="0"
+                <TextBlock x:Name="StartTimeBlock"
+                           Grid.Row="0" Grid.Column="0"                  
                            HorizontalAlignment="Right"
                            Style="{ThemeResource SubtitleTextBlockStyle}"
-                           Text="{x:Bind EndTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"/>
-                <Rectangle x:Name="VerticalLine"
-                           Grid.Column="1"
+                           Text="{x:Bind StartTime, Converter={StaticResource DateTimeToLocalTimeStringConverter}}"/>
+
+                <Rectangle x:Name="StartVerticalLine"
+                           Grid.Row="0" Grid.Column="1"                                      
+                           Width="4"
+                           HorizontalAlignment="Center"
+                           Margin="0 10 0 0"
+                           VerticalAlignment="Stretch"
+                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                <Ellipse x:Name="StartCircle"
+                         Grid.Row="0" Grid.Column="1"                                     
+                         Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                         Height="10" Width="10"
+                         HorizontalAlignment="Center"
+                         Margin="5 0 5 0"/>
+                <Ellipse x:Name="StartInnerCircle"
+                         Grid.Row="0" Grid.Column="1"
+                         Fill="{ThemeResource HighOpacityBackgroundBrush}"
+                         Height="4" Width="4"
+                         HorizontalAlignment="Center"/>
+
+                <TextBlock x:Name="StartPlaceBlock"
+                           Grid.Row="0" Grid.Column="2"
+                           Margin="5 0 0 0"
+                           Text="{x:Bind StartPlaceName}"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+                <!--Second row-->
+                <StackPanel x:Name="TranitIconPanel"
+                            Grid.Row="1" Grid.Column="0"
+                            HorizontalAlignment="Right"
+                            Margin="0 10 0 10"
+                            VerticalAlignment="Top">
+                    <TextBlock x:Name="TransitIconLineName"
+                               HorizontalAlignment="Center"
+                               Text="{x:Bind ShortName}"
+                               TextAlignment="Center"
+                               Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
+                    <FontIcon x:Name="TransitIcon"                                          
+                              Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                              FontFamily="{StaticResource HslPictoFrameFont}"
+                              FontSize="40"
+                              Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+                </StackPanel>
+                <Rectangle x:Name="SecondRowVerticalLine"
+                           Grid.Row="1" Grid.Column="1"
+                           Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
+                           Margin="5 0 5 -10"
+                           HorizontalAlignment="Center"
+                           Width="4"
+                           VerticalAlignment="Stretch"/>
+                <local:TripDetailListIntermediates x:Name="IntermediateStops"
+                                                   Grid.Row="1" Grid.Column="2"
+                                                   Margin="15 10 0 10"
+                                                   TripLeg="{x:Bind }"
+                                                   VerticalAlignment="Center"/>
+
+                <TextBlock x:Name="EndTimeBlock"                          
+                           Grid.Column="0" Grid.Row="3"
+                           HorizontalAlignment="Right"
+                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                           Text="{x:Bind EndTime, Converter={StaticResource DateTimeToLocalTimeStringConverter}}"/>
+                <Rectangle x:Name="EndVerticalLine"
+                           Grid.Column="1" Grid.Row="3"
                            Width="4"
                            HorizontalAlignment="Center"                           
                            VerticalAlignment="Stretch"
                            Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
-                <Ellipse x:Name="Circle"
-                         Grid.Column="1"
+                <Ellipse x:Name="EndCircle"
+                         Grid.Column="1" Grid.Row="3"
                          Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
                          Height="10" Width="10"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Bottom"
                          Margin="5 0 5 0"/>
                 <TextBlock x:Name="EndPlaceBlock"
-                           Grid.Column="2"
+                           Grid.Column="2" Grid.Row="3"
                            Margin="5 0 0 0"
-                           Text="{x:Bind ToName}"
+                           Text="{x:Bind EndPlaceName}"
                            Style="{ThemeResource SubtitleTextBlockStyle}"/>
             </Grid>
-
         </DataTemplate>
 
         <selectors:DetailedTripListLegItemTemplateSelector x:Name="DetailedTripListLegSelector"
@@ -353,9 +419,7 @@
             </ListView.RenderTransform>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <tripPlanStrip:TripPlanStrip StartingPlaceName="{Binding StartingPlaceName}"
-                                                 EndingPlaceName="{Binding EndingPlaceName}"
-                                                 StripItinerary="{Binding BackingItinerary}"
+                    <tripPlanStrip:TripPlanStrip StripItinerary="{Binding}"
                                                  Margin="10 0 10 15" />
                 </DataTemplate>
             </ListView.ItemTemplate>

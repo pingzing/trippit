@@ -13,14 +13,14 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class TripDetailListIntermediates : UserControl
     {
-        private ObservableCollection<ApiStop> ItemsBackingCollection = new ObservableCollection<ApiStop>();
+        private ObservableCollection<TripLegIntermediateStop> ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>();
 
-        private List<ApiStop> _backingIntermediatesList = null;
+        private List<TripLegIntermediateStop> _backingIntermediatesList = null;
         private string _backingSimpleText = null;
         private bool _isShowingIntermediateStops = false;
 
         public static readonly DependencyProperty TripLegProperty = DependencyProperty.Register(
-            "TripLeg", typeof (DetailedTripListLeg), typeof (TripDetailListIntermediates), new PropertyMetadata(null,
+            "TripLeg", typeof (TripLeg), typeof (TripDetailListIntermediates), new PropertyMetadata(null,
                 TripLegChanged));
         private static void TripLegChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -30,7 +30,7 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            DetailedTripListLeg newLeg = e.NewValue as DetailedTripListLeg;
+            TripLeg newLeg = e.NewValue as TripLeg;
             if (newLeg == null)
             {
                 return;
@@ -38,12 +38,12 @@ namespace DigiTransit10.Controls
 
             if (newLeg.IntermediateStops?.Count > 0)
             {
-                _this._backingIntermediatesList = new List<ApiStop>(newLeg.IntermediateStops);
+                _this._backingIntermediatesList = newLeg.IntermediateStops;
                 _this._backingSimpleText = $"{newLeg.IntermediateStops.Count} {AppResources.TripDetailListIntermediates_IntermediateStopsNumber}";
             }
             else
             {
-                var distanceString = newLeg.Distance.ToString("N0");
+                var distanceString = newLeg.DistanceMeters.ToString("N0");
                 if (newLeg.Mode == ApiEnums.ApiMode.Walk)
                 {
                     _this._backingSimpleText = String.Format(AppResources.TripDetailListIntermediates_WalkDistance, distanceString);
@@ -56,19 +56,19 @@ namespace DigiTransit10.Controls
 
             if(_this._isShowingIntermediateStops)
             {
-                _this.ItemsBackingCollection = new ObservableCollection<ApiStop>(_this._backingIntermediatesList);
+                _this.ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>(_this._backingIntermediatesList);
             }
             else
             {
-                ApiStop simpleTextProxy = new ApiStop { Name = _this._backingSimpleText };
-                _this.ItemsBackingCollection = new ObservableCollection<ApiStop>();
+                TripLegIntermediateStop simpleTextProxy = new TripLegIntermediateStop { Name = _this._backingSimpleText };
+                _this.ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>();
                 _this.ItemsBackingCollection.Add(simpleTextProxy);
             }
             _this.IntermediateStopsControl.ItemsSource = _this.ItemsBackingCollection;
         }
-        public DetailedTripListLeg TripLeg
+        public TripLeg TripLeg
         {
-            get { return (DetailedTripListLeg) GetValue(TripLegProperty); }
+            get { return (TripLeg) GetValue(TripLegProperty); }
             set { SetValue(TripLegProperty, value); }
         }
 
@@ -87,7 +87,7 @@ namespace DigiTransit10.Controls
             if (_isShowingIntermediateStops)
             {
                 ItemsBackingCollection.Clear();
-                ItemsBackingCollection.Add(new ApiStop { Name = _backingSimpleText });
+                ItemsBackingCollection.Add(new TripLegIntermediateStop { Name = _backingSimpleText });
             }
             else
             {

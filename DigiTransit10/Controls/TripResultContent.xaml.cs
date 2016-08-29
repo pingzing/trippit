@@ -40,15 +40,7 @@ namespace DigiTransit10.Controls
         }
 
         public TripResultViewModel ViewModel => DataContext as TripResultViewModel;        
-
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(object), typeof(TripResultContent), new PropertyMetadata(null));
-        public object SelectedItem
-        {
-            get { return (object)GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
-        }
-
+       
         public TripResultContent()
         {
             this.InitializeComponent();
@@ -58,8 +50,26 @@ namespace DigiTransit10.Controls
 
             this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
             this.Loaded += TripResultContent_Loaded;
+            this.Unloaded += TripResultContent_Unloaded;
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
             Messenger.Default.Register<MessageTypes.ViewPlanStrips>(this, SwitchToListState);
+        }        
+
+        private void TripResultContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(this.Parent != null)
+            {
+                (this.Parent as FrameworkElement).SizeChanged += Parent_SizeChanged;
+            }
+            ClipToBounds();            
+        }
+
+        private void TripResultContent_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (this.Parent != null)
+            {
+                (this.Parent as FrameworkElement).SizeChanged -= Parent_SizeChanged;
+            }
         }
 
         private void ClipToBounds()
@@ -97,12 +107,7 @@ namespace DigiTransit10.Controls
             {
                 VisualStateManager.GoToState(this, _tripListState.Name, false);
             }
-        }
-
-        private void TripResultContent_Loaded(object sender, RoutedEventArgs e)
-        {
-            ClipToBounds();
-        }
+        }        
 
         private void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -116,10 +121,9 @@ namespace DigiTransit10.Controls
             ClipToBounds();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([CallerMemberName] string prop = "")
+        private void Parent_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            ClipToBounds();
         }
 
         private void DetailedTripList_OnItemClick(object sender, ItemClickEventArgs e)
@@ -131,18 +135,18 @@ namespace DigiTransit10.Controls
             }
 
             //Frame clicked point on the map
-            DetailedTripListLeg clickedLeg = (DetailedTripListLeg)e.ClickedItem;
-            var poisToFrame = new List<BasicGeoposition> { clickedLeg.ToCoords };
-            if (!clickedLeg.FromCoords.Equals(default(BasicGeoposition)))
+            TripLeg clickedLeg = (TripLeg)e.ClickedItem;
+            var poisToFrame = new List<BasicGeoposition> { clickedLeg.EndCoords };
+            if (!clickedLeg.StartCoords.Equals(default(BasicGeoposition)))
             {
-                poisToFrame.Add(clickedLeg.FromCoords);
+                poisToFrame.Add(clickedLeg.StartCoords);
             }
             var boundingBox = SingleMap.GetBoundingBoxForPois(poisToFrame);
             double bottomMargin = DirectionsFloatingPanel.IsOpen ? DirectionsFloatingPanel.ExpandedHeight + 10 : 10;
             SingleMap.TrySetViewBoundsAsync(boundingBox, new Thickness(10, 10, 10, bottomMargin), MapAnimationKind.Bow).DoNotAwait();
-            
+
             //Expand intermediate stops of clicked leg
-            var element = list.ContainerFromItem(e.ClickedItem);            
+            var element = list.ContainerFromItem(e.ClickedItem);
             var intermediatesControl = element.FindChild<TripDetailListIntermediates>("IntermediateStops");
             if (intermediatesControl != null)
             {
@@ -152,7 +156,7 @@ namespace DigiTransit10.Controls
 
         private void TripResultList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            ItineraryModel model = e.ClickedItem as ItineraryModel;
+            TripItinerary model = e.ClickedItem as TripItinerary;
             if (ViewModel.ShowTripDetailsCommand.CanExecute(model))
             {
                 ViewModel.ShowTripDetailsCommand.Execute(model);
@@ -162,11 +166,11 @@ namespace DigiTransit10.Controls
         private void TripResultList_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)
         {
             var item = sender as FrameworkElement;
-            var itinerary = (e.OriginalSource as FrameworkElement).DataContext as ItineraryModel;
-            if(itinerary == null)
+            var itinerary = (e.OriginalSource as FrameworkElement).DataContext as TripItinerary;
+            if (itinerary == null)
             {
-                itinerary = (e.OriginalSource as FrameworkElement).FindParent<TripPlanStrip.TripPlanStrip>().DataContext as ItineraryModel;
-            }            
+                itinerary = (e.OriginalSource as FrameworkElement).FindParent<TripPlanStrip.TripPlanStrip>().DataContext as TripItinerary;
+            }
 
             if (item != null)
             {
@@ -175,5 +179,11 @@ namespace DigiTransit10.Controls
                 flyout.ShowAt(this, e.GetPosition(this));
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }        
     }
 }

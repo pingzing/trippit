@@ -23,7 +23,7 @@
 
         <TextBlock x:Name="TimeBlock" 
                    Grid.Column="0" Grid.ColumnSpan="2"
-                   Text="{x:Bind PointTime, Converter={StaticResource UnixTimeToLocalTimeConverter}}"
+                   Text="{x:Bind PointTime, Converter={StaticResource DateTimeToLocalTimeStringConverter}}"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"/>

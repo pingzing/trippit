@@ -32,7 +32,7 @@ namespace DigiTransit10.Services
         Task<ApiResult<GeocodingResponse>> SearchAddressAsync(string searchString, CancellationToken token = default(CancellationToken));
 
         Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<ApiPlan>> PlanTripAsync(BasicTripDetails details, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -136,7 +136,7 @@ namespace DigiTransit10.Services
         /// <param name="details"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<ApiResult<ApiPlan>> PlanTripAsync(BasicTripDetails details, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 

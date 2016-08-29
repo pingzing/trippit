@@ -80,15 +80,8 @@ namespace DigiTransit10.Controls.TripPlanStrip
                 thisControl.NameOrDistanceBlock.Text = (string)e.NewValue;
             }
             else
-            {
-                if (thisControl.Distance != null)
-                {
-                    thisControl.NameOrDistanceBlock.Text = thisControl.Distance.Value.ToString("N0") + "m";
-                }
-                else
-                {
-                    thisControl.NameOrDistanceBlock.Text = "???";
-                }
+            {                
+                thisControl.NameOrDistanceBlock.Text = thisControl.Distance.ToString("N0") + "m";                                
             }
         }
 
@@ -99,12 +92,12 @@ namespace DigiTransit10.Controls.TripPlanStrip
         }
         
         public static readonly DependencyProperty DistanceProperty =
-            DependencyProperty.Register("Distance", typeof(float?), typeof(TripPlanTransitIcon), new PropertyMetadata(null, new PropertyChangedCallback(DistanceChanged)));
+            DependencyProperty.Register("Distance", typeof(float), typeof(TripPlanTransitIcon), new PropertyMetadata(null, new PropertyChangedCallback(DistanceChanged)));
 
         private static void DistanceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             TripPlanTransitIcon thisControl = d as TripPlanTransitIcon;
-            if(thisControl.ShortName != null)
+            if(!String.IsNullOrWhiteSpace(thisControl.ShortName))
             {
                 return;
             }
@@ -122,9 +115,9 @@ namespace DigiTransit10.Controls.TripPlanStrip
             }
         }
 
-        public float? Distance
+        public float Distance
         {
-            get { return (float?)GetValue(DistanceProperty); }
+            get { return (float)GetValue(DistanceProperty); }
             set { SetValue(DistanceProperty, value); }
         }
 

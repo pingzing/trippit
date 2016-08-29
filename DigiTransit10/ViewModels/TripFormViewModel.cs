@@ -290,7 +290,7 @@ namespace DigiTransit10.ViewModels
                     .Select(x => new ApiCoordinates { Lat = x.IntermediatePlace.Lat, Lon = x.IntermediatePlace.Lon })
                     .ToList();
                 ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
-                BasicTripDetails details = new BasicTripDetails(
+                TripQueryDetails details = new TripQueryDetails(
                     fromCoords,
                     intermediateCoords,
                     toCoords,
@@ -311,12 +311,8 @@ namespace DigiTransit10.ViewModels
                     return;
                 }
 
-                TripPlan newPlan = new TripPlan
-                {
-                    ApiPlan = result.Result,
-                    StartingPlaceName = FromPlace.Name,
-                    EndingPlaceName = ToPlace.Name
-                };
+                var newPlan = new TripPlan(result.Result, FromPlace.Name, ToPlace.Name);
+
                 if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
                 {
                     BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
@@ -331,8 +327,8 @@ namespace DigiTransit10.ViewModels
             }
             catch (OperationCanceledException ex)
             {
-                System.Diagnostics.Debug.WriteLine("Cancellation requested.");
-                //Swallow otherwise. Cancellation should only happen on user request here.
+                //Log and swallow. Cancellation should only happen on user request here.
+                System.Diagnostics.Debug.WriteLine("Cancellation requested.");                
             }
             finally
             {

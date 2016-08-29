@@ -30,6 +30,7 @@
             <conv:EmptyNullToVisibilityConverterInverted x:Key="EmptyNullToVisibilityConverterInverted"/>
             <conv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
             <conv:SecondsSinceDayStartToTimeConverter x:Key="SecondsSinceDayStartToTimeConverter"/>
+            <conv:DateTimeToLocalTimeStringConverter x:Key="DateTimeToLocalTimeStringConverter"/>
 
             <Style x:Key="NoStyleButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>

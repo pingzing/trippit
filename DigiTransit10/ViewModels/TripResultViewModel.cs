@@ -16,6 +16,7 @@ using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Styles;
 using System;
 using DigiTransit10.Services.SettingsServices;
+using Newtonsoft.Json;
 
 namespace DigiTransit10.ViewModels
 {
@@ -25,12 +26,12 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;        
 
-        public RelayCommand<ItineraryModel> ShowTripDetailsCommand => new RelayCommand<ItineraryModel>(ShowTripDetails);
+        public RelayCommand<TripItinerary> ShowTripDetailsCommand => new RelayCommand<TripItinerary>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
-        public RelayCommand<ItineraryModel> SaveRouteCommand => new RelayCommand<ItineraryModel>(SaveRoute); 
+        public RelayCommand<TripItinerary> SaveRouteCommand => new RelayCommand<TripItinerary>(SaveRoute); 
 
-        private ObservableCollection<ItineraryModel> _tripResults = new ObservableCollection<ItineraryModel>();
-        public ObservableCollection<ItineraryModel> TripResults
+        private ObservableCollection<TripItinerary> _tripResults = new ObservableCollection<TripItinerary>();
+        public ObservableCollection<TripItinerary> TripResults
         {
             get { return _tripResults; }
             set { Set(ref _tripResults, value); }
@@ -71,8 +72,8 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isinDetailedState, value); }
         }
 
-        private List<DetailedTripListLeg> _selectedDetailLegs = null;
-        public List<DetailedTripListLeg> SelectedDetailLegs
+        private List<TripLeg> _selectedDetailLegs = null;
+        public List<TripLeg> SelectedDetailLegs
         {
             get { return _selectedDetailLegs; }
             set { Set(ref _selectedDetailLegs, value); }
@@ -103,7 +104,7 @@ namespace DigiTransit10.ViewModels
                 return;
             }
             var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
-            if (foundPlan?.ApiPlan?.Itineraries == null)
+            if (foundPlan?.PlanItineraries == null)
             {
                 return;
             }
@@ -124,54 +125,34 @@ namespace DigiTransit10.ViewModels
             // so that when the TripPlanStrip does it's second render pass, it gets accurate values.
             if (waitForAnimationTask != null) await waitForAnimationTask;
 
-            foreach (var itinerary in foundPlan.ApiPlan.Itineraries)
-            {
-                var model = new ItineraryModel
-                {
-                    BackingItinerary = itinerary,
-                    StartingPlaceName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault,
-                    EndingPlaceName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault
-                };
-                TripResults.Add(model);
+            foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
+            {                
+                TripResults.Add(itinerary);
             }
         }
 
-        private void ShowTripDetails(ItineraryModel model)
+        private void ShowTripDetails(TripItinerary model)
         {
-            List<DetailedTripListLeg> legs = model.BackingItinerary.Legs
-                .Select(x => DetailedTripListLeg.FromApiLeg(x))
-                .ToList();
+            SelectedDetailLegs = model.ItineraryLegs;
 
-            //Rename the From/To for the First/Last legs, as the API doesn't return the names for those
-            legs.First().FromName = model.StartingPlaceName;
-            DetailedTripListLeg leg = DetailedTripListLeg.ApiLegToEndLeg(model.BackingItinerary.Legs.Last());
-            leg.ToName = model.EndingPlaceName;
-            legs.Add(leg);
-
-            SelectedDetailLegs = legs;
-
-            ColoredMapLinePoints = model.BackingItinerary.Legs
+            ColoredMapLinePoints = model.ItineraryLegs
                 .SelectMany(y => 
-                    GooglePolineDecoder.Decode(y.LegGeometry.Points)
+                    GooglePolineDecoder.Decode(y.LegGeometryString)
                     .Select(x => {
                         if(y.Mode == ApiEnums.ApiMode.Walk)
                         {
-                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode.Value), true);
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode), true);
                         }
                         else
                         {
-                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode.Value));
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode));
                         }
                     })
                 ).ToList();
 
             var stops = new List<IMapPoi>();
-            ApiPlace startPoint = model.BackingItinerary.Legs.First().From;
-            startPoint.Name = model.StartingPlaceName;
-            stops.Add(startPoint);
-
-            stops.AddRange(model.BackingItinerary.Legs.Select(x => x.To));
-            stops.Last().Name = model.EndingPlaceName;
+            stops.AddRange(model.ItineraryLegs.Select(x => x.StartPlaceToPoi()));
+            stops.Add(model.ItineraryLegs.Last().EndPlaceToPoi());
 
             MapStops = stops;
 
@@ -179,33 +160,38 @@ namespace DigiTransit10.ViewModels
             IsInDetailedState = true;
         }
 
-        private void SaveRoute(ItineraryModel routeToSave)
+        private void SaveRoute(TripItinerary routeToSave)
         {
             var route = new FavoriteRoute
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
                 IconFontFace = Constants.SymbolFontFamily,
                 UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",
-            };            
+            };
 
-            var places = new List<FavoriteRoutePlace>();
-            ApiLeg fromPlace = routeToSave.BackingItinerary.Legs.First();
-            ApiLeg toPlace = routeToSave.BackingItinerary.Legs.Last();
+            TripLeg startPlace = routeToSave.ItineraryLegs.First();
+            TripLeg endPlace = routeToSave.ItineraryLegs.Last();
+            var places = new List<FavoriteRoutePlace>();            
             places.Add(new FavoriteRoutePlace
             {
-                Lat = fromPlace.From.Lat,
-                Lon = fromPlace.From.Lon,
+                Lat = startPlace.StartCoords.Latitude,
+                Lon = startPlace.StartCoords.Longitude,
                 Name = routeToSave.StartingPlaceName
             });
             places.Add(new FavoriteRoutePlace
             {
-                Lat = toPlace.To.Lat,
-                Lon = toPlace.To.Lon,
+                Lat = endPlace.EndCoords.Latitude,
+                Lon = endPlace.EndCoords.Longitude,
                 Name = routeToSave.EndingPlaceName
             });
 
             route.RoutePlaces = places;
             _settingsService.AddFavorite(route);
+        }
+
+        public void GenerateTripResultJson()
+        {
+            string jsonString = JsonConvert.SerializeObject(TripResults);
         }
 
         private void GoBackToTripList()

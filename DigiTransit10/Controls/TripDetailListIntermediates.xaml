@@ -5,7 +5,7 @@
     xmlns:local="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:apiModels="using:DigiTransit10.Models.ApiModels"
+    xmlns:models="using:DigiTransit10.Models"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -17,7 +17,7 @@
             </TransitionCollection>
         </ItemsControl.ItemContainerTransitions>
         <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="apiModels:ApiStop">
+            <DataTemplate x:DataType="models:TripLegIntermediateStop">
                 <TextBlock x:Name="IntermediateStopPanel" Foreground="Gray" Text="{x:Bind Name}" Style="{StaticResource BaseTextBlockStyle}"/>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

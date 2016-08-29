@@ -28,9 +28,9 @@ namespace DigiTransit10.Helpers
 
         public class ViewPlanDetails
         {
-            public ItineraryModel BackingModel { get; private set; }
+            public TripItinerary BackingModel { get; private set; }
 
-            public ViewPlanDetails(ItineraryModel model)
+            public ViewPlanDetails(TripItinerary model)
             {
                 BackingModel = model;
             }

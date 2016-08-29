@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DateTimeToLocalTimeStringConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
@@ -199,9 +200,11 @@
     <Compile Include="Models\ApiModels\ApiStoptimesInPattern.cs" />
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
-    <Compile Include="Models\BasicTripDetails.cs" />
+    <Compile Include="Models\BasicMapPoi.cs" />
+    <Compile Include="Models\TripLegIntermediateStop.cs" />
+    <Compile Include="Models\TripLeg.cs" />
+    <Compile Include="Models\TripQueryDetails.cs" />
     <Compile Include="Models\ColoredMapLinePoint.cs" />
-    <Compile Include="Models\DetailedTripListLeg.cs" />
     <Compile Include="Models\Geocoding\Geocoding.cs" />
     <Compile Include="Models\Geocoding\GeocodingConstants.cs" />
     <Compile Include="Models\Geocoding\GeocodingEngine.cs" />
@@ -237,7 +240,7 @@
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Models\ItineraryModel.cs" />
+    <Compile Include="Models\TripItinerary.cs" />
     <Compile Include="ViewModels\TripFormViewModel.cs" />
     <Compile Include="ViewModels\TripResultViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">

@@ -12,10 +12,10 @@ namespace DigiTransit10.TemplateSelectors
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            DetailedTripListLeg leg = item as DetailedTripListLeg;
+            TripLeg leg = item as TripLeg;
             if(leg == null)
             {
-                throw new ArgumentException($"{nameof(DetailedTripListLegItemTemplateSelector)} expects only items of type {nameof(DetailedTripListLeg)}");
+                throw new ArgumentException($"{nameof(DetailedTripListLegItemTemplateSelector)} expects only items of type {nameof(TripLeg)}");
             }
 
             if(leg.IsEnd)

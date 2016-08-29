@@ -4,7 +4,7 @@ using DigiTransit10.Models.ApiModels;
 
 namespace DigiTransit10.Models
 {
-    public class BasicTripDetails
+    public class TripQueryDetails
     {
         public TimeSpan Time { get; set; }
         public DateTime Date { get; set; }
@@ -16,7 +16,7 @@ namespace DigiTransit10.Models
         public ApiCoordinates ToPlaceCoordinates { get; set; }
         public string TransitModes { get; set;}
 
-        public BasicTripDetails(ApiCoordinates fromCoords, List<ApiCoordinates> intermediateCoords, 
+        public TripQueryDetails(ApiCoordinates fromCoords, List<ApiCoordinates> intermediateCoords, 
             ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
         {
             FromPlaceCoords = fromCoords;

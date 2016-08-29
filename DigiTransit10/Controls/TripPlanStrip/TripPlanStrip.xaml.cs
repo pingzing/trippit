@@ -12,6 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Shapes;
 using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Models;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -22,8 +23,8 @@ namespace DigiTransit10.Controls.TripPlanStrip
         private const string RectangleHeightKey = "TripPlanStripRectangleHeight";
         private readonly double RectangleHeight;
         
-        private ObservableCollection<TripLegViewModel> _tripLegs = new ObservableCollection<TripLegViewModel>();
-        public ObservableCollection<TripLegViewModel> TripLegs
+        private ObservableCollection<TripLeg> _tripLegs = new ObservableCollection<TripLeg>();
+        public ObservableCollection<TripLeg> TripLegs
         {
             get { return _tripLegs; }
             set
@@ -37,7 +38,7 @@ namespace DigiTransit10.Controls.TripPlanStrip
         }
 
         public static readonly DependencyProperty StripItineraryProperty =
-            DependencyProperty.Register("StripItinerary", typeof(ApiItinerary), typeof(TripPlanStrip), new PropertyMetadata(null,
+            DependencyProperty.Register("StripItinerary", typeof(TripItinerary), typeof(TripPlanStrip), new PropertyMetadata(null,
                 (obj, args) =>
                 {
                     TripPlanStrip thisPlanStrip = obj as TripPlanStrip;
@@ -50,35 +51,18 @@ namespace DigiTransit10.Controls.TripPlanStrip
                     {
                         return;
                     }
-                    ApiItinerary newPlan = args.NewValue as ApiItinerary;
+                    TripItinerary newPlan = args.NewValue as TripItinerary;
                     if (newPlan == null)
                     {
-                        throw new ArgumentException($"The {nameof(StripItinerary)} property must by of type {nameof(ApiItinerary)}");
+                        throw new ArgumentException($"The {nameof(StripItinerary)} property must by of type {nameof(TripItinerary)}");
                     }
 
                     thisPlanStrip.CreateNewPlanStrip(newPlan);
                 }));
 
-
-        public static readonly DependencyProperty StartingPlaceNameProperty =
-            DependencyProperty.Register("StartingPlaceName", typeof(string), typeof(TripPlanStrip), new PropertyMetadata(AppResources.TripPlanStrip_StartingPlaceDefault));
-        public string StartingPlaceName
+        public TripItinerary StripItinerary
         {
-            get { return (string)GetValue(StartingPlaceNameProperty); }
-            set { SetValue(StartingPlaceNameProperty, value); }
-        }
-
-        public static readonly DependencyProperty EndingPlaceNameProperty =
-            DependencyProperty.Register("EndingPlaceName", typeof(string), typeof(TripPlanStrip), new PropertyMetadata(AppResources.TripPlanStrip_EndPlaceDefault));
-        public string EndingPlaceName
-        {
-            get { return (string)GetValue(EndingPlaceNameProperty); }
-            set { SetValue(EndingPlaceNameProperty, value); }
-        }
-
-        public ApiItinerary StripItinerary
-        {
-            get { return (ApiItinerary)GetValue(StripItineraryProperty); }
+            get { return (TripItinerary)GetValue(StripItineraryProperty); }
             set { SetValue(StripItineraryProperty, value); }
         }
 
@@ -88,27 +72,13 @@ namespace DigiTransit10.Controls.TripPlanStrip
             RectangleHeight = (double)App.Current.Resources[RectangleHeightKey];            
         }
 
-        private void CreateNewPlanStrip(ApiItinerary thisItinerary)
+        private void CreateNewPlanStrip(TripItinerary thisItinerary)
         {
             TripLegs.Clear();
             loadedGrids.Clear();
-            for (int i = 0; i < thisItinerary.Legs.Count; i++)
+            foreach(TripLeg leg in thisItinerary.ItineraryLegs)
             {
-                bool isEnd = i == thisItinerary.Legs.Count - 1;
-                ApiLeg nextLeg = null;
-                if (!isEnd)
-                {
-                    nextLeg = thisItinerary.Legs[i + 1];
-                }
-                TripLegs.Add(new TripLegViewModel
-                {
-                    BackingLeg = thisItinerary.Legs[i],
-                    StartPlaceName = i == 0 ? StartingPlaceName : thisItinerary.Legs[i].From.Name,
-                    EndPlaceName = EndingPlaceName,
-                    IsStart = i == 0,
-                    IsEnd = isEnd,
-                    NextLeg = nextLeg
-                });
+                TripLegs.Add(leg);
             }
         }
 
@@ -150,9 +120,9 @@ namespace DigiTransit10.Controls.TripPlanStrip
 
                 if (thirdPoint == null)
                 {
-                    var currentVm = grid.Tag as TripLegViewModel;
+                    var currentVm = grid.Tag as TripLeg;
                     var targetVm = _tripLegs[_tripLegs.IndexOf(currentVm) + 1];
-                    var newGrid = loadedGrids.Where(x => x.Tag == targetVm).FirstOrDefault();
+                    var newGrid = loadedGrids.FirstOrDefault(x => x.Tag == targetVm);
                     if (newGrid == null)
                     {
                         return;
@@ -189,15 +159,5 @@ namespace DigiTransit10.Controls.TripPlanStrip
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
-    }  
-
-    public class TripLegViewModel
-    {
-        public bool IsEnd { get; set; }
-        public bool IsStart { get; set; }
-        public string StartPlaceName { get; set; }
-        public string EndPlaceName { get; set; }
-        public ApiLeg BackingLeg { get; set; }
-        public ApiLeg NextLeg { get; set; }
-    }
+    }      
 }

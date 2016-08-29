@@ -20,10 +20,10 @@ namespace DigiTransit10.Controls.TripPlanStrip
         }
 
         public static readonly DependencyProperty PointTimeProperty =
-            DependencyProperty.Register("PointTime", typeof(long), typeof(TripPlanPoint), new PropertyMetadata(0L));
-        public long PointTime
+            DependencyProperty.Register("PointTime", typeof(DateTime), typeof(TripPlanPoint), new PropertyMetadata(default(DateTime)));
+        public DateTime PointTime
         {
-            get { return (long)GetValue(PointTimeProperty); }
+            get { return (DateTime)GetValue(PointTimeProperty); }
             set { SetValue(PointTimeProperty, value); }
         }
 
