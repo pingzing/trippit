@@ -65,75 +65,6 @@ namespace DigiTransit10.Services.SettingsServices
             }
         }
 
-        /// <summary>
-        /// Access a read-only collection of the user's IFavorites. To Add or Remove, call the AddFavorite() or RemoveFavorite() methods.
-        /// </summary>
-        private List<IFavorite> _favorites;
-        public IReadOnlyList<IFavorite> Favorites
-        {
-            get
-            {
-                if (_favorites == null)
-                {
-                    string serialized = _helper.Read<string>(nameof(Favorites), "", SettingsStrategies.Roam);
-                    if (String.IsNullOrEmpty(serialized) || serialized == "null")
-                    {
-                        _favorites = new List<IFavorite>();
-                        return _favorites.AsReadOnly();
-                    }
-                    else
-                    {
-                        _favorites = JsonConvert.DeserializeObject<List<IFavorite>>(serialized, new JsonSerializerSettings {
-                            TypeNameHandling = TypeNameHandling.Objects,
-                            TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-                        });
-                        return _favorites.AsReadOnly();
-                    }
-                }
-                else
-                {
-                    return _favorites;
-                }
-            }
-            set
-            {
-                _favorites = value.ToList();
-                FlushFavoritesToStorage();
-            }
-        }        
-
-        /// <summary>
-        /// Flushes the in-memory list of <see cref="IFavorite"/>s in Settings to disk.
-        /// </summary>
-        public void FlushFavoritesToStorage()
-        {            
-            _helper.Write(nameof(Favorites), JsonConvert.SerializeObject(_favorites,
-                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects}), 
-                SettingsStrategies.Roam);
-        }
-
-        /// <summary>
-        /// Add favorite to backing list behind <see cref="Favorites"/>, and flushes the changed favorites list to storage.
-        /// </summary>
-        /// <param name="newFavorite"></param>
-        public void AddFavorite(IFavorite newFavorite)
-        {
-            _favorites.Add(newFavorite);
-            Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(new List<IFavorite> { newFavorite }, null));
-            FlushFavoritesToStorage();
-        }
-
-        public bool RemoveFavorite(IFavorite toRemove)
-        {
-            bool success =_favorites.Remove(toRemove);
-            if (success)
-            {
-                Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(null, new List<IFavorite> { toRemove }));
-                FlushFavoritesToStorage();
-            }
-            return success;
-        }
-
         private List<IFavorite> _pinnedFavorites;
         public IReadOnlyList<IFavorite> PinnedFavorites
         {
@@ -166,8 +97,8 @@ namespace DigiTransit10.Services.SettingsServices
             }
             set
             {
-                _pinnedFavorites = value.ToList();                
-                _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites, 
+                _pinnedFavorites = value.ToList();
+                _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites,
                         new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects}),
                     SettingsStrategies.Roam);
             }

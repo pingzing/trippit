@@ -221,8 +221,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\FavoritesService.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GeolocationService.cs" />
     <Compile Include="GraphQL\GqlParameterArray.cs" />
+    <Compile Include="Services\IAsyncInitializable.cs" />
     <Compile Include="Services\LiveGeolocationToken.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />

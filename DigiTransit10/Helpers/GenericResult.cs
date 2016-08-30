@@ -68,5 +68,5 @@ namespace DigiTransit10.Helpers
             Reason = reason;
             IsNone = false;
         }
-    }   
+    }
 }

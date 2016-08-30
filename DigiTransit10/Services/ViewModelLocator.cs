@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using DigiTransit10.Backend;
 using GalaSoft.MvvmLight.Messaging;
+using System.Threading.Tasks;
 
 namespace DigiTransit10.Services
 {
@@ -20,6 +21,9 @@ namespace DigiTransit10.Services
             }
             else
             {
+                var fileService = new FileService();
+                SimpleIoc.Default.Register(() => fileService);
+
                 //runtime stuff                
                 var settingsService = SettingsServices.SettingsService.Instance;
                 SimpleIoc.Default.Register(() => settingsService);
@@ -31,6 +35,7 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
                 SimpleIoc.Default.Register<IGeolocationService>(() => new GeolocationService());
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
+                SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
@@ -44,10 +49,11 @@ namespace DigiTransit10.Services
         public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
         public FavoritesViewModel Favorites => ServiceLocator.Current.GetInstance<FavoritesViewModel>();
 
-        public void Cleanup()
+        public async Task CleanupAsync()
         {
             //Serialize data that needs serializing, etc etc
-            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushFavoritesToStorage();
+            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushPinnedFavoritesToStorage();
+            await SimpleIoc.Default.GetInstance<IFavoritesService>().FlushFavoritesAsync();
         }
     }
 }

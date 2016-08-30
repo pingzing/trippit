@@ -31,6 +31,7 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly IGeolocationService _geolocationService;
         private readonly IDialogService _dialogService;
+        private readonly IFavoritesService _favoritesService;
 
         private bool _isBusy;
         private string _currentBusyMessage;
@@ -216,13 +217,14 @@ namespace DigiTransit10.ViewModels
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
-            IDialogService dialogService)
+            IDialogService dialogService, IFavoritesService favoritesService)
         {
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
             _geolocationService = geolocationService;
             _dialogService = dialogService;
+            _favoritesService = favoritesService;
 
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
         }
@@ -435,7 +437,7 @@ namespace DigiTransit10.ViewModels
             SelectedDate = DateTime.Now;
         }        
 
-        private void AddFavorite(IPlace place)
+        private  void AddFavorite(IPlace place)
         {
             FavoritePlace newFavoritePlace = new FavoritePlace
             {
@@ -447,7 +449,7 @@ namespace DigiTransit10.ViewModels
                 Type = PlaceType.FavoritePlace,
                 UserChosenName = place.Name
             };
-            _settingsService.AddFavorite(newFavoritePlace);
+            _favoritesService.AddFavorite(newFavoritePlace);
         }
 
         private void FillPinnedFavorites()

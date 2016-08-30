@@ -5,7 +5,7 @@ using System.Linq;
 namespace DigiTransit10.Models
 {
     public class TripPlan
-    {        
+    {
         public string StartingPlaceName { get; set; }
         public string EndingPlaceName { get; set; }
         public List<TripItinerary> PlanItineraries { get; set; }
@@ -17,7 +17,7 @@ namespace DigiTransit10.Models
 
             PlanItineraries = apiPlan.Itineraries
                 .Select(x => new TripItinerary(x, StartingPlaceName, EndingPlaceName))
-                .ToList();            
+                .ToList();
         }
-    }    
+    }
 }

@@ -24,11 +24,12 @@ namespace DigiTransit10.ViewModels
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
-        private readonly SettingsService _settingsService;        
+        private readonly SettingsService _settingsService;
+        private readonly IFavoritesService _favoritesService;
 
         public RelayCommand<TripItinerary> ShowTripDetailsCommand => new RelayCommand<TripItinerary>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
-        public RelayCommand<TripItinerary> SaveRouteCommand => new RelayCommand<TripItinerary>(SaveRoute); 
+        public RelayCommand<TripItinerary> SaveRouteCommand => new RelayCommand<TripItinerary>(SaveRoute);
 
         private ObservableCollection<TripItinerary> _tripResults = new ObservableCollection<TripItinerary>();
         public ObservableCollection<TripItinerary> TripResults
@@ -79,11 +80,13 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedDetailLegs, value); }
         }
 
-        public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings)
+        public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings,
+            IFavoritesService favorites)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
+            _favoritesService = favorites;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
@@ -126,7 +129,7 @@ namespace DigiTransit10.ViewModels
             if (waitForAnimationTask != null) await waitForAnimationTask;
 
             foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
-            {                
+            {
                 TripResults.Add(itinerary);
             }
         }
@@ -136,7 +139,7 @@ namespace DigiTransit10.ViewModels
             SelectedDetailLegs = model.ItineraryLegs;
 
             ColoredMapLinePoints = model.ItineraryLegs
-                .SelectMany(y => 
+                .SelectMany(y =>
                     GooglePolineDecoder.Decode(y.LegGeometryString)
                     .Select(x => {
                         if(y.Mode == ApiEnums.ApiMode.Walk)
@@ -171,7 +174,7 @@ namespace DigiTransit10.ViewModels
 
             TripLeg startPlace = routeToSave.ItineraryLegs.First();
             TripLeg endPlace = routeToSave.ItineraryLegs.Last();
-            var places = new List<FavoriteRoutePlace>();            
+            var places = new List<FavoriteRoutePlace>();
             places.Add(new FavoriteRoutePlace
             {
                 Lat = startPlace.StartCoords.Latitude,
@@ -186,12 +189,7 @@ namespace DigiTransit10.ViewModels
             });
 
             route.RoutePlaces = places;
-            _settingsService.AddFavorite(route);
-        }
-
-        public void GenerateTripResultJson()
-        {
-            string jsonString = JsonConvert.SerializeObject(TripResults);
+            _favoritesService.AddFavorite(route);
         }
 
         private void GoBackToTripList()

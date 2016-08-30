@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace DigiTransit10.Models
 {
     public class TripItinerary
-    {        
+    {
         public string StartingPlaceName { get; set; }
         public string EndingPlaceName { get; set; }
         public List<TripLeg> ItineraryLegs { get; set; }
@@ -23,7 +23,7 @@ namespace DigiTransit10.Models
                     string startingName = isStart ? StartingPlaceName : x.From.Name;
                     string endingName = isEnd ? EndingPlaceName : x.To.Name;
                     return new TripLeg(x, isStart, isEnd, startingName, endingName);
-                }).ToList();            
+                }).ToList();
         }
     }
 }

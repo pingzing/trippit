@@ -8,8 +8,8 @@ namespace DigiTransit10.Controls
         public static int MapSelfMarkerZIndex = 999;
 
         public const double RenderTransformOriginX = .38;
-        public const double RenderTransformOriginY = .5;        
-        
+        public const double RenderTransformOriginY = .5;
+
         public static readonly DependencyProperty RotationDegreesProperty =
             DependencyProperty.Register("RotationDegrees", typeof(double), typeof(MapSelfMarker), new PropertyMetadata(0,
                 RotationDegreesChanged));
@@ -29,7 +29,7 @@ namespace DigiTransit10.Controls
             get { return (double)GetValue(RotationDegreesProperty); }
             set { SetValue(RotationDegreesProperty, value); }
         }
-                
+
         public static readonly DependencyProperty IsArrowVisibleProperty =
             DependencyProperty.Register("IsArrowVisible", typeof(bool), typeof(MapSelfMarker), new PropertyMetadata(false,
                 IsArrowVisibleChanged));
@@ -59,7 +59,7 @@ namespace DigiTransit10.Controls
 
         public MapSelfMarker()
         {
-            this.InitializeComponent();                        
-        }               
+            this.InitializeComponent();
+        }
     }
 }

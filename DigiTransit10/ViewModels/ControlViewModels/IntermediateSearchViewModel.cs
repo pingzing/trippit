@@ -15,7 +15,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         public RelayCommand SwapLocationsCommand => new RelayCommand(SwapLocations);
         public RelayCommand<IPlace> FavoriteTappedCommand => new RelayCommand<IPlace>(FavoriteTapped);
-        public RelayCommand RemoveIntermediateCommand => new RelayCommand(RemoveIntermediate);        
+        public RelayCommand RemoveIntermediateCommand => new RelayCommand(RemoveIntermediate);
 
         private IPlace _intermediatePlace;
         public IPlace IntermediatePlace

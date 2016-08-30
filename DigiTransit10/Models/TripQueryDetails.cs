@@ -16,7 +16,7 @@ namespace DigiTransit10.Models
         public ApiCoordinates ToPlaceCoordinates { get; set; }
         public string TransitModes { get; set;}
 
-        public TripQueryDetails(ApiCoordinates fromCoords, List<ApiCoordinates> intermediateCoords, 
+        public TripQueryDetails(ApiCoordinates fromCoords, List<ApiCoordinates> intermediateCoords,
             ApiCoordinates toCoords, TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
         {
             FromPlaceCoords = fromCoords;

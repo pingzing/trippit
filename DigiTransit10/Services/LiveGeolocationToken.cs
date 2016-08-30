@@ -4,7 +4,7 @@ namespace DigiTransit10.Services
 {
     public class LiveGeolocationToken : IDisposable
     {
-        private GeolocationService _ownerService;        
+        private GeolocationService _ownerService;
 
         public LiveGeolocationToken(GeolocationService owner)
         {
@@ -26,9 +26,9 @@ namespace DigiTransit10.Services
                 disposedValue = true;
             }
         }
-        
+
         public void Dispose()
-        {            
+        {
             Dispose(true);
         }
         #endregion

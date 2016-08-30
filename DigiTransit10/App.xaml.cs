@@ -82,7 +82,7 @@ namespace DigiTransit10
 
         public override async Task OnSuspendingAsync(object s, SuspendingEventArgs e, bool prelaunchActivated)
         {
-            Locator.Cleanup();
+            await Locator.CleanupAsync();
 
             await base.OnSuspendingAsync(s, e, prelaunchActivated);
         }

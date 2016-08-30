@@ -34,7 +34,7 @@ namespace DigiTransit10.ViewModels
                 //set up design-time values
             }
         }
-        
+
 
         public TripFormViewModel TripFormViewModel => ((App) BootStrapper.Current).Locator.TripForm;
         public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
@@ -74,7 +74,7 @@ namespace DigiTransit10.ViewModels
         }
 
         public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {                        
+        {
             args.Cancel = false;
             await TripFormViewModel.OnNavigatingFromAsync(args);
             await Task.CompletedTask;

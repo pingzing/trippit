@@ -13,7 +13,7 @@ namespace DigiTransit10.GraphQL
         }
 
         public GqlParameterArray(params GqlTuple[] entries)
-        {            
+        {
             this.AddRange(entries);
         }
 

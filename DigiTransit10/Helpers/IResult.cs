@@ -6,6 +6,6 @@
         IFailure Failure { get; }
 
         bool HasResult { get; }
-        bool IsFailure { get; }            
+        bool IsFailure { get; }
     }
 }

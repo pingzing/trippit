@@ -13,6 +13,6 @@ namespace DigiTransit10.Models
             Coordinates,
             NameOnly,
             FavoritePlace
-        }        
+        }
     }
 }

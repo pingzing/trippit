@@ -25,7 +25,7 @@ namespace DigiTransit10.TemplateSelectors
             else
             {
                 return StartOrMiddleLegTemplate;
-            }            
+            }
         }
     }
 }

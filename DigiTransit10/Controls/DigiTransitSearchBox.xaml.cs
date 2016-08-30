@@ -26,9 +26,10 @@ namespace DigiTransit10.Controls
     public sealed partial class DigiTransitSearchBox : UserControl, INotifyPropertyChanged
     {
         private static readonly IPlaceComparer _placeComparer = new IPlaceComparer();
-        private static readonly SettingsService _settingsService = null;
-        private static readonly INetworkService _networkService = null;
-        private static readonly IMessenger _messengerService = null;
+        private static readonly SettingsService _settingsService;
+        private static readonly INetworkService _networkService;
+        private static readonly IMessenger _messengerService;
+        private static readonly IFavoritesService _favoritesService;
 
         private CancellationTokenSource _currentToken = new CancellationTokenSource();        
 
@@ -92,31 +93,16 @@ namespace DigiTransit10.Controls
             }
         }
 
+        private string _favoriteButtonGlyph = FontIconGlyphs.HollowStar;
         public string FavoriteButtonGlyph
         {
-            get
+            get { return _favoriteButtonGlyph; }
+            set
             {
-                if (SelectedPlace == null)
+                if(_favoriteButtonGlyph != value)
                 {
-                    return FontIconGlyphs.HollowStar;
-                }
-                if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
-                    || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
-                    || SelectedPlace.Lat == default(float)
-                    || SelectedPlace.Lon == default(float))
-                {
-                    return FontIconGlyphs.HollowStar;
-                }
-                if(SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace 
-                    || _settingsService.Favorites.Where(x => x is FavoritePlace)
-                        .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat 
-                            && ((FavoritePlace)x).Lon == SelectedPlace.Lon))
-                {
-                    return FontIconGlyphs.FilledStar;
-                }
-                else
-                {
-                    return FontIconGlyphs.HollowStar;
+                    _favoriteButtonGlyph = value;
+                    RaisePropertyChanged();
                 }
             }
         }
@@ -130,6 +116,7 @@ namespace DigiTransit10.Controls
             _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
             _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();
             _messengerService = ServiceLocator.Current.GetInstance<IMessenger>();
+            _favoritesService = ServiceLocator.Current.GetInstance<IFavoritesService>();
         }
 
         public DigiTransitSearchBox()
@@ -140,19 +127,32 @@ namespace DigiTransit10.Controls
                 return;
             }                                    
 
-            _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
-            foreach(var favorite in _settingsService.Favorites.Where(x => x is FavoritePlace))
-            {
-                _favoritePlacesList.AddSorted(favorite as FavoritePlace);
-            }
-            SuggestedPlaces.Add(_userCurrentLocationList);
-            SuggestedPlaces.Add(_favoritePlacesList);
+            _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });            
+            SuggestedPlaces.Add(_userCurrentLocationList); 
+            //Load favorites in the Loaded handler           
             SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
             PlacesCollection.Source = SuggestedPlaces;
 
             this.SearchBox.GotFocus += SearchBox_GotFocus;
+            this.Loaded += DigiTransitSearchBox_Loaded;
             _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
+        }
+
+        bool _favoritesInserted = false;
+        private async void DigiTransitSearchBox_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            if (!_favoritesInserted)
+            {
+                _favoritesInserted = true;
+                foreach (var favorite in (await _favoritesService.GetFavoritesAsync())
+                    .Where(x => x is FavoritePlace))
+                {
+                    _favoritePlacesList.AddSorted(favorite as FavoritePlace);
+                }
+                SuggestedPlaces.Insert(1, _favoritePlacesList);
+            }
         }
 
         public static readonly DependencyProperty SelectedPlaceProperty =
@@ -176,8 +176,8 @@ namespace DigiTransit10.Controls
                     }
                     
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
-                    box.RaisePropertyChanged(nameof(FavoriteButtonGlyph));
-                }));
+                    box.UpdateFavoriteButtonGlyph().DoNotAwait();                                       
+                }));    
         public IPlace SelectedPlace
         {
             get { return (IPlace)GetValue(SelectedPlaceProperty); }
@@ -423,6 +423,35 @@ namespace DigiTransit10.Controls
 
             RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
             RaisePropertyChanged(nameof(FavoriteButtonGlyph));
+        }
+
+        private async Task UpdateFavoriteButtonGlyph()
+        {
+            if (SelectedPlace == null)
+            {
+                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+                return;
+            }
+            if (SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
+                || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
+                || SelectedPlace.Lat == default(float)
+                || SelectedPlace.Lon == default(float))
+            {
+                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+                return;
+            }
+            if (SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
+                || (await _favoritesService.GetFavoritesAsync()).Where(x => x is FavoritePlace)
+                    .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat
+                        && ((FavoritePlace)x).Lon == SelectedPlace.Lon))
+            {
+                FavoriteButtonGlyph = FontIconGlyphs.FilledStar;
+                return;
+            }
+            else
+            {
+                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+            }
         }
 
         private void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)

@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using DigiTransit10.Controls;
 using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Localization.Strings;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
 
 namespace DigiTransit10.ViewModels
 {
@@ -21,6 +23,7 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
+        private readonly IFavoritesService _favoritesService;
 
         private ObservableCollection<IMapPoi> _mappableFavoritePlaces = new ObservableCollection<IMapPoi>();
         public ObservableCollection<IMapPoi> MappableFavoritePlaces
@@ -46,24 +49,30 @@ namespace DigiTransit10.ViewModels
         private readonly RelayCommand<IFavorite> _deleteFavoriteCommand = null;
         public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);
 
-        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService)
+        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, IFavoritesService favoritesService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
+            _favoritesService = favoritesService;
             _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
-            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
+            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);            
+        }
 
-            foreach (var place in _settingsService.Favorites)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            foreach (var place in await _favoritesService.GetFavoritesAsync())
             {
-                AddFavoritePlace(place);                
+                AddFavoritePlace(place);
             }
 
             Favorites.Add(GroupedFavoritePlaces);
+
+            await Task.CompletedTask;
         }
 
         private void DeleteFavorite(IFavorite favorite)
         {
-            _settingsService.RemoveFavorite(favorite);
+            _favoritesService.RemoveFavorite(favorite);
         }
 
         private void FavoritesChanged(MessageTypes.FavoritesChangedMessage message)
