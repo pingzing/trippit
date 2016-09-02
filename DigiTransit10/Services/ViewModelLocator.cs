@@ -21,7 +21,7 @@ namespace DigiTransit10.Services
             }
             else
             {
-                var fileService = new FileService();
+                IFileService fileService = new FileService();
                 SimpleIoc.Default.Register(() => fileService);
 
                 //runtime stuff                

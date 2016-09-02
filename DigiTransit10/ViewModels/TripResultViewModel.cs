@@ -15,6 +15,10 @@ using Windows.Devices.Geolocation;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Styles;
 using System;
+using System.IO;
+using System.IO.Compression;
+using Windows.Storage;
+using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Services.SettingsServices;
 using Newtonsoft.Json;
 
@@ -26,6 +30,7 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
+        private readonly IFileService _fileService;
 
         public RelayCommand<TripItinerary> ShowTripDetailsCommand => new RelayCommand<TripItinerary>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
@@ -81,12 +86,13 @@ namespace DigiTransit10.ViewModels
         }
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings,
-            IFavoritesService favorites)
+            IFavoritesService favorites, IFileService fileService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
             _favoritesService = favorites;
+            _fileService = fileService;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
@@ -112,7 +118,7 @@ namespace DigiTransit10.ViewModels
                 return;
             }
 
-            //todo: leaking abstraction here, see if we can move this to the view
+            //----todo: leaking abstraction here, see if we can move this to the view
             Task waitForAnimationTask = null;
             if (IsInDetailedState)
             {
@@ -127,6 +133,8 @@ namespace DigiTransit10.ViewModels
             // Give the control enough time to animate back from the DetailedState, 
             // so that when the TripPlanStrip does it's second render pass, it gets accurate values.
             if (waitForAnimationTask != null) await waitForAnimationTask;
+
+            //----end todo
 
             foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
             {
@@ -198,16 +206,50 @@ namespace DigiTransit10.ViewModels
             IsInDetailedState = false;
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
             BootStrapper.BackRequested += BootStrapper_BackRequested;
+            if (suspensionState.ContainsKey(SuspensionKeys.TripResults_HasSavedState)
+                && (bool)suspensionState[SuspensionKeys.TripResults_HasSavedState])
+            {
+                IStorageFile tripResultCacheFile = await _fileService.GetTempFileAsync(
+                    SuspensionKeys.TripResults_HasSavedState, CreationCollisionOption.OpenIfExists);
+
+                using(Stream fileInStream = await tripResultCacheFile.OpenStreamForReadAsync())
+                using (var gzip = new GZipStream(fileInStream, CompressionMode.Decompress))
+                {
+                    TripItinerary[] tripsArray = gzip.DeseriaizeJsonFromStream<TripItinerary[]>();
+                    TripResults = new ObservableCollection<TripItinerary>(tripsArray);
+                }
+
+                FromName = (string)suspensionState[SuspensionKeys.TripResults_FromName];
+                ToName = (string) suspensionState[SuspensionKeys.TripResults_ToName];
+
+                suspensionState.Remove(SuspensionKeys.TripResults_HasSavedState);
+            }
             await Task.CompletedTask;
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
         {
-            if (!suspending)
+            if (suspending)
             {
+                IStorageFile tripResultCacheFile = await _fileService.GetTempFileAsync(
+                    SuspensionKeys.TripResults_HasSavedState, CreationCollisionOption.ReplaceExisting);
+
+                using (Stream fileStream = await tripResultCacheFile.OpenStreamForWriteAsync())
+                using (GZipStream jsonStream = new GZipStream(fileStream, CompressionLevel.Fastest))
+                {
+                    jsonStream.SerializeJsonToStream(TripResults.ToArray());
+                }
+                
+                //and make a note of it in the suspension dict:
+                suspensionState.AddOrUpdate(SuspensionKeys.TripResults_HasSavedState, true);
+                suspensionState.AddOrUpdate(SuspensionKeys.TripResults_FromName, FromName);
+                suspensionState.AddOrUpdate(SuspensionKeys.TripResults_ToName, ToName);
+            }
+            else //Don't want to unhook the "back-returns from Detailed View" behavior if the user is just switching apps.
+            {                
                 BootStrapper.BackRequested -= BootStrapper_BackRequested;
             }
             await Task.CompletedTask;

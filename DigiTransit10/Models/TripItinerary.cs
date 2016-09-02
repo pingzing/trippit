@@ -11,6 +11,11 @@ namespace DigiTransit10.Models
         public string EndingPlaceName { get; set; }
         public List<TripLeg> ItineraryLegs { get; set; }
 
+        /// <summary>
+        /// This mostly exists for JSON.NET's benefit. You can call it if you want, though.
+        /// </summary>
+        public TripItinerary()  { }
+
         public TripItinerary(ApiItinerary apiItinerary, string startingPlaceName, string endingPlaceName)
         {
             StartingPlaceName = startingPlaceName;

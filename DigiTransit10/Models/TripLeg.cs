@@ -29,6 +29,11 @@ namespace DigiTransit10.Models
         public List<TripLegIntermediateStop> IntermediateStops { get; set; }
         public string LegGeometryString { get; set; }
 
+        /// <summary>
+        /// Mostly for JSON.NET's benefit.
+        /// </summary>
+        public TripLeg() { }
+
         public TripLeg(ApiLeg apiLeg, bool isStart, bool isEnd, string startPlaceName, string endPlaceName)
         {
             IsStart = isStart;

@@ -178,6 +178,7 @@
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
     <Compile Include="Helpers\GenericResult.cs" />
+    <Compile Include="Helpers\SuspensionKeys.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />
     <Compile Include="Models\ApiModels\ApiAlert.cs" />
     <Compile Include="Models\ApiModels\ApiBikeRentalStation.cs" />
