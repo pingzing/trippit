@@ -60,12 +60,15 @@ namespace DigiTransit10.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            foreach (var place in await _favoritesService.GetFavoritesAsync())
+            if (GroupedFavoritePlaces.Count == 0)
             {
-                AddFavoritePlace(place);
-            }
+                foreach (var place in await _favoritesService.GetFavoritesAsync())
+                {
+                    AddFavoritePlace(place);
+                }
 
-            Favorites.Add(GroupedFavoritePlaces);
+                Favorites.Add(GroupedFavoritePlaces);
+            }
 
             await Task.CompletedTask;
         }

@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "CSharpAnalyzers": "0.99.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "RefactoringEssentials": "4.2.0"
   },

@@ -98,17 +98,25 @@ namespace DigiTransit10.Services
         public async Task FlushFavoritesAsync()
         {
             await Initialization; //make sure we've got the file ready
-            //serialize to JSON, zip, write to storage
-            string jsonString = JsonConvert.SerializeObject(_favorites, Formatting.None, new JsonSerializerSettings {
+
+            var settings = new JsonSerializerSettings
+            {
                 TypeNameHandling = TypeNameHandling.Objects,
                 TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-            });
-            byte[] stringBuffer = Encoding.UTF8.GetBytes(jsonString);
+            };
 
-            using (Stream outStream = await _favoritesFile.OpenStreamForWriteAsync())
-            using (var gzip = new GZipStream(outStream, CompressionLevel.Optimal))
+            try
+            {           
+                using (Stream outStream = await _favoritesFile.OpenStreamForWriteAsync())
+                using (var gzip = new GZipStream(outStream, CompressionLevel.Optimal))
+                {                
+                    gzip.SerializeJsonToStream(_favorites, settings);
+                }
+            }
+            catch(IOException ex)
             {
-                await gzip.WriteAsync(stringBuffer, 0, stringBuffer.Length);
+                //todo: Log me. Should we inform the user? There's nothing they can do, but info might be handy.
+                System.Diagnostics.Debug.WriteLine($"Could not serialize favorites: {ex}: {ex.Message}");
             }
         }
 
@@ -116,23 +124,21 @@ namespace DigiTransit10.Services
         {
             await Initialization;
 
-            using (Stream readStream = new MemoryStream())
-            using (StreamReader readerReader = new StreamReader(readStream, Encoding.UTF8))
-            using (Stream inStream = await _favoritesFile.OpenStreamForReadAsync())
-            using (var gzip = new GZipStream(inStream, CompressionMode.Decompress))
-            {
-                int n = 0;
-                byte[] buffer = new byte[4096];
+            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects };
 
-                while ((n = await gzip.ReadAsync(buffer, 0, 4096)) != 0)
+            try
+            {
+                using (Stream inStream = await _favoritesFile.OpenStreamForReadAsync())
+                using (var gzip = new GZipStream(inStream, CompressionMode.Decompress))
                 {
-                    await readStream.WriteAsync(buffer, 0, n);
+                    return gzip.DeseriaizeJsonFromStream<List<IFavorite>>(settings);
                 }
-                readStream.Seek(0, SeekOrigin.Begin);
-                string json = await readerReader.ReadToEndAsync();
-                return JsonConvert.DeserializeObject<List<IFavorite>>(json, new JsonSerializerSettings {
-                    TypeNameHandling = TypeNameHandling.Objects
-                });                
+            }
+            catch(IOException ex)
+            {
+                //todo: Log me
+                System.Diagnostics.Debug.WriteLine($"Could not deserialize favorites: {ex}: {ex.Message}");
+                return null;
             }
         }
     }

@@ -15,38 +15,58 @@ namespace DigiTransit10.ExtensionMethods
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> that the serialized JSON data will be written to.</param>
         /// <param name="value">The value to serialize to JSON.</param>
-        public static void SerializeJsonToStream(this Stream stream, object value)
+        /// <param name="serializationSettings">Optional. A <see cref="JsonSerializerSettings>"/> that descrbes how the object should be serialized.</param>
+        public static void SerializeJsonToStream(this Stream stream, object value, JsonSerializerSettings serializationSettings = null)
         {
-            JsonSerializer ser = new JsonSerializer();
+            JsonSerializer ser = JsonSerializer.Create(serializationSettings);
 
-            using (StreamWriter writer = new StreamWriter(stream))
-            using (JsonTextWriter jsonWriter = new JsonTextWriter(writer))
+            using (var writer = new StreamWriter(stream))
+            using (var jsonWriter = new JsonTextWriter(writer))
             {                
                 ser.Serialize(jsonWriter, value);
                 jsonWriter.Flush();
-            }
+            }            
         }
 
-        public static object DeserializeJsonFromStream(this Stream stream)
-        {
-            var serializer = new JsonSerializer();
+        /// <summary>
+        /// Deserializes the contents of a stream of JSON text to an <see cref="object"/>.
+        /// </summary>
+        /// <param name="stream">The stream containing the JSON text.</param>
+        /// <param name="serializationSettings">Optional. A <see cref="JsonSerializerSettings>"/> that descrbes how the object should be deserialized.</param>
+        /// <returns>The JSON object deserialized to a .NET <see cref="object"/>.</returns>
+        public static object DeserializeJsonFromStream(this Stream stream, JsonSerializerSettings serializationSettings = null)
+        {                       
+            JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
+            object deserializedValue;
             using (var sr = new StreamReader(stream))
             using (var jsonTextReader = new JsonTextReader(sr))
             {
-                return serializer.Deserialize(jsonTextReader);
-            }
+                deserializedValue = serializer.Deserialize(jsonTextReader);
+            }            
+
+            return deserializedValue;
         }
 
-        public static T DeseriaizeJsonFromStream<T>(this Stream stream)
-        {
-            var serializer = new JsonSerializer();
+        /// <summary>
+        /// Deserializes the contents of a stream of JSON text to a <see cref="{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The to deserialize the JSON object to.</typeparam>
+        /// <param name="stream">The stream containing the JSON text.</param>
+        /// <param name="serializationSettings">Optional. A <see cref="JsonSerializerSettings>"/> that descrbes how the object should be deserialized.</param>
+        /// <returns></returns>
+        public static T DeseriaizeJsonFromStream<T>(this Stream stream, JsonSerializerSettings serializationSettings = null)
+        {                       
+            JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
+            T deserializedValue;
             using (var sr = new StreamReader(stream))
             using (var jsonTextReader = new JsonTextReader(sr))
             {
-                return serializer.Deserialize<T>(jsonTextReader);
-            }
+                deserializedValue = serializer.Deserialize<T>(jsonTextReader);
+            }            
+
+            return deserializedValue;
         }
     }
 }
