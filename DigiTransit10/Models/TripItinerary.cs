@@ -2,14 +2,18 @@
 using System.Linq;
 using DigiTransit10.Models.ApiModels;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace DigiTransit10.Models
 {
     public class TripItinerary
     {
         public string StartingPlaceName { get; set; }
-        public string EndingPlaceName { get; set; }
+        public string EndingPlaceName { get; set; }        
         public List<TripLeg> ItineraryLegs { get; set; }
+
+        [JsonIgnore]
+        public IEnumerable<string> RouteGeometryStrings => ItineraryLegs.Select(x => x.LegGeometryString);
 
         /// <summary>
         /// This mostly exists for JSON.NET's benefit. You can call it if you want, though.

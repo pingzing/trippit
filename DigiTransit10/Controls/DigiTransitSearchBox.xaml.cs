@@ -31,7 +31,8 @@ namespace DigiTransit10.Controls
         private static readonly IMessenger _messengerService;
         private static readonly IFavoritesService _favoritesService;
 
-        private CancellationTokenSource _currentToken = new CancellationTokenSource();        
+        private CancellationTokenSource _currentToken = new CancellationTokenSource();
+        private bool _favoritesInserted = false;
 
         private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop,
             AppResources.SuggestBoxHeader_TransitStops);
@@ -136,12 +137,12 @@ namespace DigiTransit10.Controls
 
             this.SearchBox.GotFocus += SearchBox_GotFocus;
             this.Loaded += DigiTransitSearchBox_Loaded;
-            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
-        }
-
-        bool _favoritesInserted = false;
+            this.Unloaded += DigiTransitSearchBox_Unloaded;         
+        }        
+        
         private async void DigiTransitSearchBox_Loaded(object sender, RoutedEventArgs e)
         {
+            _favoritesService.FavoritesChanged += FavoritesChanged;
 
             if (!_favoritesInserted)
             {
@@ -153,6 +154,11 @@ namespace DigiTransit10.Controls
                 }
                 SuggestedPlaces.Insert(1, _favoritePlacesList);
             }
+        }
+
+        private void DigiTransitSearchBox_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _favoritesService.FavoritesChanged -= FavoritesChanged;
         }
 
         public static readonly DependencyProperty SelectedPlaceProperty =
@@ -404,18 +410,18 @@ namespace DigiTransit10.Controls
             _stopList.SortInPlace(x => x, _placeComparer);
         }
 
-        private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
+        private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
         {
-            if(obj.AddedFavorites?.Count > 0)
+            if(args.AddedFavorites?.Count > 0)
             {
-                foreach(IPlace added in obj.AddedFavorites.OfType<IPlace>())
+                foreach(IPlace added in args.AddedFavorites.OfType<IPlace>())
                 {                    
                     _favoritePlacesList.AddSorted(added);
                 }
             }
-            if(obj.RemovedFavorites?.Count > 0)
+            if(args.RemovedFavorites?.Count > 0)
             {
-                foreach(IPlace removed in obj.RemovedFavorites.OfType<IPlace>())
+                foreach(IPlace removed in args.RemovedFavorites.OfType<IPlace>())
                 {                    
                     _favoritePlacesList.Remove(removed);
                 }

@@ -4,13 +4,13 @@
     xmlns:local="using:DigiTransit10.Styles">
 
     <!--HSL Colors-->
-    <Color x:Key="HslBusBlue">#007AC9</Color>
-    <Color x:Key="HslTramGreen">#00985F</Color>
-    <Color x:Key="HslTrainPurple">#8C4799</Color>
-    <Color x:Key="HslMetroOrange">#FF6319</Color>
-    <Color x:Key="HslFerryBlue">#00B9E4</Color>
-    <Color x:Key="HslBikeGoldenrod">#FCB614</Color>
-    <Color x:Key="HslWalkGray">#666666</Color>
+    <Color x:Key="HslBusBlue">#FF007AC9</Color>
+    <Color x:Key="HslTramGreen">#FF00985F</Color>
+    <Color x:Key="HslTrainPurple">#FF8C4799</Color>
+    <Color x:Key="HslMetroOrange">#FFFF6319</Color>
+    <Color x:Key="HslFerryBlue">#FF00B9E4</Color>
+    <Color x:Key="HslBikeGoldenrod">#FFFCB614</Color>
+    <Color x:Key="HslWalkGray">#FF666666</Color>
     
     <!--HSL Pictographic Fonts-->
     <FontFamily x:Key="HslPictoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto</FontFamily>

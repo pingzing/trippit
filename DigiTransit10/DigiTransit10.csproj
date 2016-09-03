@@ -202,6 +202,7 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicMapPoi.cs" />
+    <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\TripLegIntermediateStop.cs" />
     <Compile Include="Models\TripLeg.cs" />
     <Compile Include="Models\TripQueryDetails.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\FavoritesChangedEventArgs.cs" />
     <Compile Include="Services\FavoritesService.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GeolocationService.cs" />

@@ -15,6 +15,7 @@ using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Localization.Strings;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI;
 
 namespace DigiTransit10.ViewModels
 {
@@ -32,11 +33,25 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _mappableFavoritePlaces, value); }
         }
 
+        private ObservableCollection<ColoredMapLine> _mappableFavoriteRoutes = new ObservableCollection<ColoredMapLine>();
+        public ObservableCollection<ColoredMapLine> MappableFavoriteRoutes
+        {
+            get { return _mappableFavoriteRoutes; }
+            set { Set(ref _mappableFavoriteRoutes, value); }
+        }
+ 
         private GroupedFavoriteList _groupedFavoritePlaces = new GroupedFavoriteList(AppResources.Favorites_PlacesGroupHeader);
         public GroupedFavoriteList GroupedFavoritePlaces
         {
             get { return _groupedFavoritePlaces; }
             set { Set(ref _groupedFavoritePlaces, value); }
+        }
+
+        private GroupedFavoriteList _groupedFavoriteRoutes = new GroupedFavoriteList(AppResources.Favorites_RoutesGroupHeader);
+        public GroupedFavoriteList GroupedFavoriteRoutes
+        {
+            get { return _groupedFavoriteRoutes; }
+            set { Set(ref _groupedFavoriteRoutes, value); }
         }
 
         private ObservableCollection<GroupedFavoriteList> _favorites = new ObservableCollection<GroupedFavoriteList>();
@@ -54,22 +69,37 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
-            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);            
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();              
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            _favoritesService.FavoritesChanged += FavoritesChanged;
+
+            var favorites = await _favoritesService.GetFavoritesAsync();
             if (GroupedFavoritePlaces.Count == 0)
             {
-                foreach (var place in await _favoritesService.GetFavoritesAsync())
+                foreach (IPlace place in favorites.OfType<IPlace>())
                 {
-                    AddFavoritePlace(place);
+                    AddFavoritePlace((IFavorite)place);
                 }
 
                 Favorites.Add(GroupedFavoritePlaces);
-            }
 
+                foreach (FavoriteRoute route in favorites.OfType<FavoriteRoute>())
+                {
+                    AddFavoriteRoute(route);
+                }
+
+                Favorites.Add(GroupedFavoriteRoutes);
+            }            
+
+            await Task.CompletedTask;
+        }
+
+        public override async Task OnNavigatedFromAsync(IDictionary<string, object> state, bool suspending)
+        {
+            _favoritesService.FavoritesChanged -= FavoritesChanged;
             await Task.CompletedTask;
         }
 
@@ -78,27 +108,27 @@ namespace DigiTransit10.ViewModels
             _favoritesService.RemoveFavorite(favorite);
         }
 
-        private void FavoritesChanged(MessageTypes.FavoritesChangedMessage message)
+        private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
         {
-            if(message.AddedFavorites?.Count > 0)
+            if(args.AddedFavorites?.Count > 0)
             {
-                foreach(var favePlace in message.AddedFavorites.OfType<FavoritePlace>())
+                foreach(var favePlace in args.AddedFavorites.OfType<FavoritePlace>())
                 {
                     AddFavoritePlace(favePlace);
                 }
-                foreach (var faveRoute in message.AddedFavorites.OfType<FavoriteRoute>())
+                foreach (var faveRoute in args.AddedFavorites.OfType<FavoriteRoute>())
                 {
                     //todo:add to favorite routes list
                 }
             }
 
-            if(message.RemovedFavorites?.Count > 0)
+            if(args.RemovedFavorites?.Count > 0)
             {
-                foreach(var deletedFave in message.RemovedFavorites.OfType<FavoritePlace>())
+                foreach(var deletedFave in args.RemovedFavorites.OfType<FavoritePlace>())
                 {
                     RemoveFavoritePlace(deletedFave);
                 }
-                foreach (var deletedRoute in message.RemovedFavorites.OfType<FavoriteRoute>())
+                foreach (var deletedRoute in args.RemovedFavorites.OfType<FavoriteRoute>())
                 {
                     //todo:remove from favorite routes
                 }
@@ -115,6 +145,27 @@ namespace DigiTransit10.ViewModels
         {
             GroupedFavoritePlaces.Remove(deletedFave);
             MappableFavoritePlaces.Remove(deletedFave as IMapPoi);
+        }
+
+        private void AddFavoriteRoute(IFavorite route)
+        {
+            GroupedFavoriteRoutes.Add(route);
+            var faveRoute = (FavoriteRoute)route;
+            IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
+                    .SelectMany(str => GooglePolineDecoder.Decode(str))
+                    .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
+            var mapLine = new ColoredMapLine(mapPoints, faveRoute.FavoriteId);
+            
+            mapLine.FavoriteId = faveRoute.FavoriteId;            
+
+            MappableFavoriteRoutes.Add(mapLine);
+        }
+
+        private void RemoveFavoriteRoute(IFavorite route)
+        {
+            var faveRoute = (FavoriteRoute)route;
+            var toRemove = MappableFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == faveRoute.FavoriteId);
+            MappableFavoriteRoutes.Remove(toRemove);
         }
     }
 }

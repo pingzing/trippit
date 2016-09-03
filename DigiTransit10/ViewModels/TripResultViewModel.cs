@@ -43,8 +43,8 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _tripResults, value); }
         }
 
-        private IList<ColoredMapLinePoint> _coloredMapLinePoints = new List<ColoredMapLinePoint>();
-        public IList<ColoredMapLinePoint> ColoredMapLinePoints
+        private IList<ColoredMapLine> _coloredMapLinePoints = new List<ColoredMapLine>();
+        public IList<ColoredMapLine> ColoredMapLinePoints
         {
             get { return _coloredMapLinePoints; }
             set { Set(ref _coloredMapLinePoints, value); }
@@ -146,11 +146,12 @@ namespace DigiTransit10.ViewModels
         {
             SelectedDetailLegs = model.ItineraryLegs;
 
-            ColoredMapLinePoints = model.ItineraryLegs
+            var mapLine = (ColoredMapLine)model.ItineraryLegs
                 .SelectMany(y =>
                     GooglePolineDecoder.Decode(y.LegGeometryString)
-                    .Select(x => {
-                        if(y.Mode == ApiEnums.ApiMode.Walk)
+                    .Select(x =>
+                    {
+                        if (y.Mode == ApiEnums.ApiMode.Walk)
                         {
                             return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode), true);
                         }
@@ -160,6 +161,9 @@ namespace DigiTransit10.ViewModels
                         }
                     })
                 ).ToList();
+
+            ColoredMapLinePoints.Clear();
+            ColoredMapLinePoints.Add(mapLine);
 
             var stops = new List<IMapPoi>();
             stops.AddRange(model.ItineraryLegs.Select(x => x.StartPlaceToPoi()));
@@ -197,6 +201,7 @@ namespace DigiTransit10.ViewModels
             });
 
             route.RoutePlaces = places;
+            route.RouteGeometryStrings = routeToSave.RouteGeometryStrings.ToList();            
             _favoritesService.AddFavorite(route);
         }
 

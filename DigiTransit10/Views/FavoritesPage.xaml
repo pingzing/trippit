@@ -32,24 +32,24 @@
                               Source="{x:Bind ViewModel.Favorites, Mode=OneWay}"/>
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
-                <Grid Margin="10">
+            <Grid Margin="10">
                 <Grid.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition IsStaggeringEnabled="True"/>
                     </TransitionCollection>
                 </Grid.ChildrenTransitions>
-                    
-                    <TextBlock x:Name="EmptyListTextBlock"                    
+
+                <TextBlock x:Name="EmptyListTextBlock"                    
                                Visibility="{x:Bind Favorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
-                <ListView x:Name="FavoritesListView"                                                            
-                              Margin="-10"                              
-                              Padding="10"
-                              ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"
-                              IsRightTapEnabled="True"
-                              ItemClick="FavoritesListView_ItemClick"
-                              RightTapped="Favorite_RightTapped">
+                <ListView x:Name="FavoritesListView"                                      
+                          Margin="-10"                              
+                          Padding="10"
+                          ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"
+                          IsRightTapEnabled="True"
+                          ItemClick="FavoritesListView_ItemClick"
+                          RightTapped="Favorite_RightTapped">
                     <ListView.GroupStyle>
                         <GroupStyle>
                             <GroupStyle.HeaderContainerStyle>
@@ -59,32 +59,27 @@
                             </GroupStyle.HeaderContainerStyle>
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="-25 -20 -25 0" HorizontalAlignment="Stretch">
-                                        <Border Background="{ThemeResource SystemControlBackgroundAccentBrush}" HorizontalAlignment="Stretch">
-                                            <TextBlock Foreground="White"
-                                                       HorizontalAlignment="Stretch"
-                                                       Margin="15 10 15 5"
-                                                       Text="{Binding Key}" 
-                                                       Style="{StaticResource TitleTextBlockStyle}"/>
-                                        </Border>
-                                    </StackPanel>
+                                    <TextBlock Foreground="White"
+                                               HorizontalAlignment="Stretch"                                                      
+                                               Text="{Binding Key}" 
+                                               Style="{StaticResource TitleTextBlockStyle}"/>
                                 </DataTemplate>
                             </GroupStyle.HeaderTemplate>
                         </GroupStyle>
-                        </ListView.GroupStyle>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="models:IFavorite">
-                                <TextBlock Text="{x:Bind UserChosenName}" 
+                    </ListView.GroupStyle>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:IFavorite">
+                            <TextBlock Text="{x:Bind UserChosenName}" 
                                            Style="{StaticResource BodyTextBlockStyle}"
                                            VerticalAlignment="Center">
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                     <Interactivity:Interaction.Behaviors>
                         <Core:DataTriggerBehavior Binding="{x:Bind Favorites.Count, Mode=OneWay}"
                                                         ComparisonCondition="GreaterThan"
@@ -104,14 +99,14 @@
 
                     <FlyoutBase.AttachedFlyout>
                         <MenuFlyout>
-                            <!--CommandParameter set in Code-behind just before showing the Flyout.-->        
-                                <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
+                            <!--CommandParameter set in Code-behind just before showing the Flyout.-->
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
                                                 Command="{Binding DeleteFavoriteCommand, Mode=OneTime}"/>
-                            </MenuFlyout>
-                        </FlyoutBase.AttachedFlyout>
-                    </ListView>
-                </Grid>
-            </DataTemplate>
+                        </MenuFlyout>
+                    </FlyoutBase.AttachedFlyout>
+                </ListView>
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -174,19 +169,20 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            
-        <lclCtls:DigiTransitMap x:Name="FavoritesMap"                                
-                                Grid.Row="0"
-                                Grid.RowSpan="1"
-                                Places="{x:Bind ViewModel.MappableFavoritePlaces, Mode=OneWay}"/>
+
+            <lclCtls:DigiTransitMap x:Name="FavoritesMap"                                
+                                    Grid.Row="0"
+                                    Grid.RowSpan="1"
+                                    Places="{x:Bind ViewModel.MappableFavoritePlaces, Mode=OneWay}"
+                                    ColoredMapLinePoints="{x:Bind ViewModel.MappableFavoriteRoutes, Mode=OneWay}"/>
 
             <ContentControl x:Name="NarrowFavoritesList"
-                        x:DeferLoadStrategy="Lazy"
-                        Grid.Row="1"
-                        DataContext="{x:Bind ViewModel, Mode=OneWay}"
-                        ContentTemplate="{StaticResource FavoritesTemplate}"
-                        HorizontalContentAlignment="Stretch"
-                        Visibility="Collapsed">
+                            x:DeferLoadStrategy="Lazy"
+                            Grid.Row="1"
+                            DataContext="{x:Bind ViewModel, Mode=OneWay}"
+                            ContentTemplate="{StaticResource FavoritesTemplate}"
+                            HorizontalContentAlignment="Stretch"
+                            Visibility="Collapsed">
                 <ContentControl.Transitions>
                     <TransitionCollection>
                         <EntranceThemeTransition IsStaggeringEnabled="True"/>
@@ -216,7 +212,7 @@
                         <EntranceThemeTransition IsStaggeringEnabled="True"/>
                     </TransitionCollection>
                 </Grid.ChildrenTransitions>
-                
+
                 <ContentControl x:Name="WideFavoritesList"                                                
                                 DataContext="{x:Bind ViewModel, Mode=OneWay}"
                                 ContentTemplate="{StaticResource FavoritesTemplate}"                                
@@ -236,5 +232,5 @@
                                          Position="0"/>
         </lclCtls:NavCommandBar>
     </Page.BottomAppBar>
-    
+
 </Page>

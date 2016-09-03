@@ -12,19 +12,7 @@ namespace DigiTransit10.Helpers
     public static class MessageTypes
     {
         public class PlanFoundMessage { }
-        public class CenterAroundFavoritesOnMap { }
-
-        public class FavoritesChangedMessage
-        {
-            public ReadOnlyCollection<IFavorite> AddedFavorites { get; }
-            public ReadOnlyCollection<IFavorite> RemovedFavorites { get; }
-
-            public FavoritesChangedMessage(IList<IFavorite> added, IList<IFavorite> removed)
-            {
-                if (added != null) AddedFavorites = new ReadOnlyCollection<IFavorite>(added);
-                if (removed != null) RemovedFavorites = new ReadOnlyCollection<IFavorite>(removed);
-            }
-        }
+        public class CenterAroundFavoritesOnMap { }        
 
         public class ViewPlanDetails
         {

@@ -10,11 +10,7 @@ using System.Threading.Tasks;
 using System;
 using Windows.UI;
 using DigiTransit10.Helpers;
-using static DigiTransit10.Models.ApiModels.ApiEnums;
-using DigiTransit10.Styles;
-using Microsoft.Practices.ServiceLocation;
 using DigiTransit10.Services;
-using Template10.Common;
 using GalaSoft.MvvmLight.Ioc;
 using Windows.Devices.Sensors;
 using System.Collections.Specialized;
@@ -113,7 +109,7 @@ namespace DigiTransit10.Controls
         } 
         
         public static readonly DependencyProperty ColoredMapLinePointsProperty =
-            DependencyProperty.Register("ColoredMapLinePoints", typeof(IList<ColoredMapLinePoint>), typeof(DigiTransitMap), new PropertyMetadata(null,
+            DependencyProperty.Register("ColoredMapLinePoints", typeof(IList<ColoredMapLine>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 ColoredMapLinePointsChanged));
         private static void ColoredMapLinePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -122,7 +118,8 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-            IList<ColoredMapLinePoint> newValue = e.NewValue as IList<ColoredMapLinePoint>;
+
+            IList<ColoredMapLine> newValue = e.NewValue as IList<ColoredMapLine>;
             if(newValue == null)
             {                
                 if (_this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().Any())
@@ -132,27 +129,33 @@ namespace DigiTransit10.Controls
                 return;
             }
            
-
             List<MapPolyline> newPolylines = new List<MapPolyline>();
-            List<BasicGeoposition> currentLinePositions = new List<BasicGeoposition>();            
-            for (int i = 0; i <= newValue.Count() - 2; i++)
+            List<BasicGeoposition> currentLinePositions = new List<BasicGeoposition>();
+            foreach (ColoredMapLine lineCollection in newValue)
             {
-                var startPoint = newValue[i];
-                var nextPoint = newValue[i + 1];
-                currentLinePositions.Add(startPoint.Coordinates);
-
-                Color nextColor = nextPoint.LineColor;
-                if (nextPoint == newValue.Last() || startPoint.LineColor != nextColor)
+                for (int i = 0; i <= lineCollection.Count() - 2; i++)
                 {
-                    MapPolyline polyline = new MapPolyline();
-                    polyline.Path = new Geopath(currentLinePositions);
-                    polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
-                    polyline.StrokeDashed = startPoint.IsLineDashed;
-                    polyline.StrokeThickness = 6;
-                    newPolylines.Add(polyline);
+                    var startPoint = lineCollection[i];
+                    var nextPoint = lineCollection[i + 1];
+                    currentLinePositions.Add(startPoint.Coordinates);
 
-                    currentLinePositions = new List<BasicGeoposition>();
-                }                                
+                    Color nextColor = nextPoint.LineColor;
+                    if (nextPoint == lineCollection.Last() || startPoint.LineColor != nextColor)
+                    {
+                        MapPolyline polyline = new MapPolyline();
+                        polyline.Path = new Geopath(currentLinePositions);
+                        polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
+                        polyline.StrokeDashed = startPoint.IsLineDashed;
+                        polyline.StrokeThickness = 6;
+                        if(lineCollection.FavoriteId != null)
+                        {
+                            FavoriteBase.SetFavoriteId(polyline, lineCollection.FavoriteId.Value);
+                        }
+                        newPolylines.Add(polyline);
+
+                        currentLinePositions = new List<BasicGeoposition>();
+                    }
+                }
             }
 
             _this.SetMapLines(newPolylines);
@@ -160,9 +163,9 @@ namespace DigiTransit10.Controls
         /// <summary>
         /// A collection of geopoints, between which lines are drawn. The line's color is determined by the starting point's <see cref="ColoredMapLinePoint.LineColor"/> property.
         /// </summary>
-        public IList<ColoredMapLinePoint> ColoredMapLinePoints
+        public IList<ColoredMapLine> ColoredMapLinePoints
         {
-            get { return (IList<ColoredMapLinePoint>)GetValue(ColoredMapLinePointsProperty); }
+            get { return (IList<ColoredMapLine>)GetValue(ColoredMapLinePointsProperty); }
             set { SetValue(ColoredMapLinePointsProperty, value); }
         }
 
@@ -289,7 +292,7 @@ namespace DigiTransit10.Controls
             DigiTransitMapControl.Opacity = 1;
             LoadingRing.Visibility = Visibility.Collapsed;
         }
-
+        
         private void SetMapLines(IEnumerable<MapPolyline> polylines)
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapPolyline>().ToList();

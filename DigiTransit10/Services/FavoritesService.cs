@@ -19,6 +19,7 @@ namespace DigiTransit10.Services
 {
     public interface IFavoritesService : IAsyncInitializable
     {
+        event EventHandler<FavoritesChangedEventArgs> FavoritesChanged;
         void AddFavorite(IFavorite newFave);
         bool RemoveFavorite(IFavorite deletedFave);
         Task<ImmutableList<IFavorite>> GetFavoritesAsync();
@@ -36,6 +37,7 @@ namespace DigiTransit10.Services
         private IStorageFile _favoritesFile;
 
         public Task Initialization { get; private set; }
+        public event EventHandler<FavoritesChangedEventArgs> FavoritesChanged;
 
         public FavoritesService(SettingsService settingsService, IFileService fileService)
         {
@@ -83,7 +85,7 @@ namespace DigiTransit10.Services
         public void AddFavorite(IFavorite newFavorite)
         {
             _favorites.Add(newFavorite);
-            Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(new List<IFavorite> { newFavorite }, null));
+            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null));            
         }
 
         public bool RemoveFavorite(IFavorite toRemove)
@@ -91,7 +93,7 @@ namespace DigiTransit10.Services
             bool success = _favorites.Remove(toRemove);
             if (success)
             {
-                Messenger.Default.Send(new MessageTypes.FavoritesChangedMessage(null, new List<IFavorite> { toRemove }));
+                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }));                
             }
             return success;
         }

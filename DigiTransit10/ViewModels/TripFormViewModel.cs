@@ -224,9 +224,7 @@ namespace DigiTransit10.ViewModels
             _messengerService = messengerService;
             _geolocationService = geolocationService;
             _dialogService = dialogService;
-            _favoritesService = favoritesService;
-
-            _messengerService.Register<MessageTypes.FavoritesChangedMessage>(this, FavoritesChanged);
+            _favoritesService = favoritesService;            
         }
 
         private void TransitTogglePannel()
@@ -476,26 +474,26 @@ namespace DigiTransit10.ViewModels
             }            
         }
 
-        private void FavoritesChanged(MessageTypes.FavoritesChangedMessage obj)
+        private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
         {
-            if (obj.AddedFavorites?.Count > 0
+            if (args.AddedFavorites?.Count > 0
                 && _settingsService.PinnedFavorites?.Count < _settingsService.PinnedFavoritePlacesDisplayNumber)
             {
                 int maxToAdd = _settingsService.PinnedFavoritePlacesDisplayNumber - _settingsService.PinnedFavorites.Count;
-                int toAdd = Math.Min(maxToAdd, obj.AddedFavorites.Count);
-                foreach(var newPinned in obj.AddedFavorites.Take(toAdd))
+                int toAdd = Math.Min(maxToAdd, args.AddedFavorites.Count);
+                foreach(var newPinned in args.AddedFavorites.Take(toAdd))
                 {
                     _settingsService.AddPinnedFavorite(newPinned);
                 }
             }
-            if (obj.RemovedFavorites?.Count > 0 && _settingsService.PinnedFavorites?.Count > 0)
+            if (args.RemovedFavorites?.Count > 0 && _settingsService.PinnedFavorites?.Count > 0)
             {
-                foreach (var removed in obj.RemovedFavorites)
+                foreach (var removed in args.RemovedFavorites)
                 {
                     _settingsService.RemovePinnedFavorite(removed);
                 }
             }
-            if(obj.RemovedFavorites?.Count > 0 || obj.AddedFavorites?.Count > 0)
+            if(args.RemovedFavorites?.Count > 0 || args.AddedFavorites?.Count > 0)
             {
                 FillPinnedFavorites();
             }
@@ -627,6 +625,8 @@ namespace DigiTransit10.ViewModels
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
+            _favoritesService.FavoritesChanged += FavoritesChanged;
+
             FillPinnedFavorites();
             BootStrapper.BackRequested += BootStrapper_BackRequested;
             await Task.CompletedTask;
@@ -640,15 +640,11 @@ namespace DigiTransit10.ViewModels
                 _messengerService.Send(new MessageTypes.NavigationCanceled());                
                 _cts.Cancel();                
             }
-        }
-
-        public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {            
-            await Task.CompletedTask;
-        }
+        }        
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            _favoritesService.FavoritesChanged -= FavoritesChanged;
             BootStrapper.BackRequested -= BootStrapper_BackRequested;
             await Task.CompletedTask;
         }
