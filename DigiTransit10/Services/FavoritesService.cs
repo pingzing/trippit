@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace DigiTransit10.Services
     {
         void AddFavorite(IFavorite newFave);
         bool RemoveFavorite(IFavorite deletedFave);
-        Task<IReadOnlyList<IFavorite>> GetFavoritesAsync();
+        Task<ImmutableList<IFavorite>> GetFavoritesAsync();
         Task FlushFavoritesAsync();
         //void AddBookmarkedItinerary(TripItinerary newBookmark);
         //bool DeleteBookmarkedItinerary(TripItinerary deletedBookmark);
@@ -49,10 +50,10 @@ namespace DigiTransit10.Services
         }
 
         /// <summary>
-        /// Access a read-only collection of the user's IFavorites. To Add or Remove, call the AddFavorite() or RemoveFavorite() methods.
+        /// Access a readonly view of the stored favorites collection.
         /// </summary>
         private List<IFavorite> _favorites;
-        public async Task<IReadOnlyList<IFavorite>> GetFavoritesAsync()
+        public async Task<ImmutableList<IFavorite>> GetFavoritesAsync()
         {
             if (_favorites == null)
             {
@@ -61,22 +62,22 @@ namespace DigiTransit10.Services
                 if (favorite == null)
                 {
                     _favorites = new List<IFavorite>();
-                    return _favorites.AsReadOnly();
+                    return _favorites.ToImmutableList();
                 }
                 else
                 {
                     _favorites = favorite;
-                    return _favorites.AsReadOnly();
+                    return _favorites.ToImmutableList();
                 }
             }
             else
             {
-                return _favorites;
+                return _favorites.ToImmutableList();
             }
         }
 
         /// <summary>
-        /// Add favorite to backing list behind <see cref="Favorites"/>, and flushes the changed favorites list to storage.
+        /// Add the given <see cref="IFavorite"/> to the favorites collection.
         /// </summary>
         /// <param name="newFavorite"></param>
         public void AddFavorite(IFavorite newFavorite)
@@ -97,7 +98,7 @@ namespace DigiTransit10.Services
 
         public async Task FlushFavoritesAsync()
         {
-            await Initialization; //make sure we've got the file ready
+            await Initialization;
 
             var settings = new JsonSerializerSettings
             {
