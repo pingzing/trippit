@@ -36,7 +36,7 @@ namespace DigiTransit10.Controls
 
             Views.Busy.BusyChanged += BusyView_BusyChanged;
            
-            _navigationService = App.Current.NavigationService;
+            _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
             this.Unloaded += NavCommandBar_Unloaded;

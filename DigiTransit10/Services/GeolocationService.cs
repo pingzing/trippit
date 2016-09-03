@@ -56,6 +56,7 @@ namespace DigiTransit10.Services
                 }
                 catch(Exception ex)
                 {
+                    //todo: log exception?
                     return GenericResult<Geoposition>.Fail;
                 }
             }
