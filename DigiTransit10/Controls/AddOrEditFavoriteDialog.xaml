@@ -5,6 +5,7 @@
     xmlns:local="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:DigiTransit10.Models"
     mc:Ignorable="d"
     Title="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_AddHeader}"
     PrimaryButtonText="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_Save}"
@@ -16,19 +17,38 @@
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <local:DigiTransitMap x:Name="SingleMap"
                               Grid.Row="0"
                               Height="100"
-                              Places="{x:Bind MapPlace}"/>
+                              Places="{x:Bind MapPlace, Mode=OneWay}"/>
 
-        <StackPanel Grid.Row="1">
-            <local:DigiTransitSearchBox x:Name="SearchBox"                                        
-                                        Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_SearchBoxHeader}"/>
-            <TextBox x:Name="NameTextBox"
-                     Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_UserChosenNameHeader}"/>
-        </StackPanel>
+        <local:DigiTransitSearchBox x:Name="SearchBox"       
+                                    Grid.Row="1"
+                                    Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_SearchBoxHeader}"
+                                    Height="56"
+                                    Margin="0 10 0 0"
+                                    ShowFavoritesButton="False"/>
+        <TextBox x:Name="NameTextBox"                 
+                 Grid.Row="2"
+                 Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_UserChosenNameHeader}"
+                 Margin="0 10 0 0"/>
+
+        <GridView x:Name="IconsGrid"
+                  Grid.Row="3"
+                  Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_IconsHeader}"
+                  ItemsSource="{x:Bind PossibleIconsList, Mode=OneWay}"                  
+                  Margin="0 10 0 0"
+                  SelectedIndex="{x:Bind SelectedIconIndex, Mode=TwoWay}">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="models:FavoriteIcon">
+                    <FontIcon FontFamily="{x:Bind FontFamily}" Glyph="{x:Bind Glyph}"/>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </ContentDialog>

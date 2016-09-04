@@ -36,8 +36,8 @@
                             <RepositionThemeTransition/>
                         </TransitionCollection>
                     </StackPanel.ChildrenTransitions>
-                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                  
-                                                  Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"
+                    <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                     
+                                                  Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"                                                  
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"
                                                   FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
                         <Button x:Name="SwapButton"

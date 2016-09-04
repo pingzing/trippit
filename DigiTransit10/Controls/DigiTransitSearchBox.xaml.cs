@@ -222,6 +222,97 @@ namespace DigiTransit10.Controls
             set { SetValue(HeaderProperty, value); }
         }
 
+        public static readonly new DependencyProperty HeightProperty =
+            DependencyProperty.Register("Height", typeof(double), typeof(DigiTransitSearchBox), new PropertyMetadata(48, OnHeightChanged));
+        private static void OnHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var _this = d as DigiTransitSearchBox;
+            if (_this == null)
+            {
+                return;
+            }
+
+            if(!(e.NewValue is double))
+            {
+                return;
+            }
+
+            double availableSeachBoxSpace = (double)e.NewValue;
+            if(_this.HeaderBlock.Visibility == Visibility.Visible)
+            {
+                availableSeachBoxSpace -= 19.95; //header block height
+            }
+            availableSeachBoxSpace -= 4; //progress bar height
+            _this.SearchBox.Height = availableSeachBoxSpace;
+        }
+        public new double Height
+        {
+            get { return (double)GetValue(HeightProperty); }
+            set { SetValue(HeightProperty, value); }
+        }
+
+        public static readonly new DependencyProperty FontSizeProperty =
+            DependencyProperty.Register("FontSize", typeof(double), typeof(DigiTransitSearchBox), new PropertyMetadata(20, OnFontSizeChanged));
+        private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var _this = d as DigiTransitSearchBox;
+            if (_this == null)
+            {   
+                return;
+            }
+
+            if (!(e.NewValue is double))
+            {
+                return;
+            }
+
+            double newSize = (double)e.NewValue;
+
+            _this.SearchBox.FontSize = newSize;
+        }
+        public new double FontSize
+        {
+            get { return (double)GetValue(FontSizeProperty); }
+            set { SetValue(FontSizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowFavoritesButtonProperty =
+            DependencyProperty.Register("ShowFavoritesButton", typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true,
+                ShowFavoritesButtonChanged));
+        private static void ShowFavoritesButtonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var _this = d as DigiTransitSearchBox;
+            if (_this == null)
+            {
+                return;
+            }
+
+            if(e.NewValue == e.OldValue)
+            {
+                return;
+            }
+
+            if (!(e.NewValue is bool))
+            {
+                return;
+            }
+
+            bool showFavorites = (bool)e.NewValue;            
+            if(showFavorites)
+            {                
+                _this.AddToFavoritesBorder.Visibility = Visibility.Visible;
+            }
+            else
+            {                
+                _this.AddToFavoritesBorder.Visibility = Visibility.Collapsed;
+            }
+        }
+        public bool ShowFavoritesButton
+        {
+            get { return (bool)GetValue(ShowFavoritesButtonProperty); }
+            set { SetValue(ShowFavoritesButtonProperty, value); }
+        }                
+
         private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (String.IsNullOrWhiteSpace(SearchBox.Text))

@@ -42,6 +42,10 @@ namespace DigiTransit10.Helpers
         public const string BikeBrushName = "HslBikeGoldenrodBrush";
         public const string WalkBrushName = "HslWalkGrayBrush";
 
+        //Other misc Resource names
+        public const string TallTextBoxHeightName = "TallTextBoxHeight";
+        public const string TallTextBoxFontSizeName = "TallTextBoxFontSize";
+
         //Font names
         public const string HslPictoNormalFontName = "HslPictoNormalFont";
         public const string HslPictoFrameFontName = "HslPictoFrameFont";

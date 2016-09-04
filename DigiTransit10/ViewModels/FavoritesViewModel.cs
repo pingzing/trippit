@@ -96,8 +96,9 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private readonly RelayCommand<IFavorite> _deleteFavoriteCommand = null;
-        public RelayCommand<IFavorite> DeleteFavoriteCommand => _deleteFavoriteCommand ?? new RelayCommand<IFavorite>(DeleteFavorite);
+        public RelayCommand AddNewFavoriteCmmand => new RelayCommand(AddNewFavorite);        
+
+        public RelayCommand<IFavorite> DeleteFavoriteCommand => new RelayCommand<IFavorite>(DeleteFavorite);        
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, IFavoritesService favoritesService)
         {
@@ -167,6 +168,12 @@ namespace DigiTransit10.ViewModels
                     RemoveFavoriteRoute(deletedRoute);
                 }
             }
+        }
+
+        private async void AddNewFavorite()
+        {
+            var dialog = new AddOrEditFavoriteDialog();
+            await dialog.ShowAsync();
         }
 
         private void AddFavoritePlace(IFavorite place)

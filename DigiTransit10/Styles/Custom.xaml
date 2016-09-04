@@ -31,138 +31,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <Style x:Key="WideTimePickerStyle" TargetType="TimePicker">
-        <Setter Property="IsTabStop" Value="False"/>
-        <Setter Property="MinWidth" Value="242"/>
-        <Setter Property="MaxWidth" Value="640"/>
-        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
-        <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
-        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="TimePicker">
-                    <StackPanel x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
-                        <StackPanel.Resources>
-                            <Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
-                                <Setter Property="UseSystemFocusVisuals" Value="False"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Grid Background="{TemplateBinding Background}">
-                                                <VisualStateManager.VisualStateGroups>
-                                                    <VisualStateGroup x:Name="CommonStates">
-                                                        <VisualState x:Name="Normal"/>
-                                                        <VisualState x:Name="PointerOver">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlPageBackgroundAltMediumBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                        <VisualState x:Name="Pressed">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                        <VisualState x:Name="Disabled">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                    </VisualStateGroup>
-                                                    <VisualStateGroup x:Name="FocusStates">
-                                                        <VisualState x:Name="Focused">
-                                                            <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightListAccentLowBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                            </Storyboard>
-                                                        </VisualState>
-                                                        <VisualState x:Name="Unfocused"/>
-                                                        <VisualState x:Name="PointerFocused"/>
-                                                    </VisualStateGroup>
-                                                </VisualStateManager.VisualStateGroups>
-                                                <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="2" Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </StackPanel.Resources>
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="HeaderContentPresenter">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="FirstColumnDivider">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="SecondColumnDivider">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <ContentPresenter x:Name="HeaderContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" Margin="0,0,0,8" Visibility="Collapsed" x:DeferLoadStrategy="Lazy"/>
-                        <Button x:Name="FlyoutButton" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" IsEnabled="{TemplateBinding IsEnabled}" Style="{StaticResource TimePickerFlyoutButtonStyle}">
-                            <Grid x:Name="FlyoutButtonContentGrid">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition x:Name="FirstTextBlockColumn" Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition x:Name="SecondTextBlockColumn" Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition x:Name="ThirdTextBlockColumn" Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border x:Name="FirstPickerHost" Grid.Column="0">
-                                    <TextBlock x:Name="HourTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center"/>
-                                </Border>
-                                <Rectangle x:Name="FirstColumnDivider" Grid.Column="1" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2"/>
-                                <Border x:Name="SecondPickerHost" Grid.Column="2">
-                                    <TextBlock x:Name="MinuteTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center"/>
-                                </Border>
-                                <Rectangle x:Name="SecondColumnDivider" Grid.Column="3" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2"/>
-                                <Border x:Name="ThirdPickerHost" Grid.Column="4">
-                                    <TextBlock x:Name="PeriodTextBlock" AutomationProperties.AccessibilityView="Raw" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Padding="0,3,0,5" TextAlignment="Center"/>
-                                </Border>
-                            </Grid>
-                        </Button>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+       
     <Style x:Key="WideDatePickerStyle" TargetType="DatePicker">
         <Setter Property="Orientation" Value="Horizontal"/>
         <Setter Property="IsTabStop" Value="False"/>
@@ -289,6 +158,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <Style x:Key="HubSectionCustomHeaderStyle" TargetType="HubSection">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -316,6 +186,69 @@
                                 <ContentPresenter x:Name="HeaderContent" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="0" FontWeight="{ThemeResource HubSectionHeaderThemeFontWeight}" FontSize="{ThemeResource HubSectionHeaderThemeFontSize}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{ThemeResource HubSectionHeaderThemeMargin}" Grid.Row="1" VerticalAlignment="Bottom"/>
                             </Grid>
                             <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Grid.Row="2" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Overriding the default style, because it's _stupid_. It doesn't allow scrolling. I mean, really.-->
+    <Style TargetType="ContentDialog">
+        <Setter Property="Foreground" Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
+        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="MaxHeight" Value="{ThemeResource ContentDialogMaxHeight}" />
+        <Setter Property="MinHeight" Value="{ThemeResource ContentDialogMinHeight}" />
+        <Setter Property="MaxWidth" Value="{ThemeResource ContentDialogMaxWidth}" />
+        <Setter Property="MinWidth" Value="{ThemeResource ContentDialogMinWidth}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContentDialog">
+                    <Border x:Name="Container">
+                        <Grid x:Name="LayoutRoot">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" FlowDirection="{TemplateBinding FlowDirection}" BorderThickness="{ThemeResource ContentDialogBorderWidth}" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}" MaxWidth="{TemplateBinding MaxWidth}" MaxHeight="{TemplateBinding MaxHeight}" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" >
+                                <Grid x:Name="DialogSpace" VerticalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <ScrollViewer x:Name="ContentScrollViewer" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" ZoomMode="Disabled" Margin="{ThemeResource ContentDialogContentScrollViewerMargin}" IsTabStop="False">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <!--The line below is the only change. The default style sets it to "Auto".-->
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <ContentControl x:Name="Title" Margin="{ThemeResource ContentDialogTitleMargin}" Content="{TemplateBinding Title}" ContentTemplate="{TemplateBinding TitleTemplate}" FontSize="20" FontFamily="XamlAutoFontFamily" FontWeight="Normal" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" VerticalAlignment="Top" IsTabStop="False" MaxHeight="{ThemeResource ContentDialogTitleMaxHeight}" >
+                                                <ContentControl.Template>
+                                                    <ControlTemplate TargetType="ContentControl">
+                                                        <ContentPresenter Content="{TemplateBinding Content}" MaxLines="2" TextWrapping="Wrap" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Padding}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                                    </ControlTemplate>
+                                                </ContentControl.Template>
+                                            </ContentControl>
+                                            <ContentPresenter x:Name="Content" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" FontSize="{ThemeResource ControlContentThemeFontSize}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" Margin="{ThemeResource ContentDialogContentMargin}" Foreground="{TemplateBinding Foreground}" Grid.Row="1" TextWrapping="Wrap" />
+                                        </Grid>
+                                    </ScrollViewer>
+                                    <Grid x:Name="CommandSpace" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border x:Name="Button1Host" Margin="{ThemeResource ContentDialogButton1HostMargin}" MinWidth="{ThemeResource ContentDialogButtonMinWidth}" MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}" Height="{ThemeResource ContentDialogButtonHeight}" HorizontalAlignment="Stretch" />
+                                        <Border x:Name="Button2Host" Margin="{ThemeResource ContentDialogButton2HostMargin}" MinWidth="{ThemeResource ContentDialogButtonMinWidth}" MaxWidth="{ThemeResource ContentDialogButtonMaxWidth}" Height="{ThemeResource ContentDialogButtonHeight}" Grid.Column="1" HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </Border>
                 </ControlTemplate>

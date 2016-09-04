@@ -1,5 +1,6 @@
 ﻿<UserControl
     x:Class="DigiTransit10.Controls.DigiTransitSearchBox"
+    x:Name="ThisSearchBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DigiTransit10.Controls"
@@ -28,7 +29,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--House glyph icon-->
-                <FontIcon Grid.Column="0" x:Name="FontIcon" FontFamily="Segoe MDL2 Assets" Glyph="{Binding House, Source={StaticResource FontIcons}}"/> 
+                <FontIcon Grid.Column="0" x:Name="FontIcon" FontFamily="Segoe MDL2 Assets" Glyph="{Binding House, Source={StaticResource FontIcons}}"/>
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
             </Grid>
         </DataTemplate>
@@ -352,40 +353,40 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-        
-        <AutoSuggestBox x:Name="SearchBox"                        
-                        AutoMaximizeSuggestionArea="True"                                                                                           
-                        Grid.Column="0"                  
-                        FontSize="{StaticResource TallTextBoxFontSize}"    
-                        ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
-                        ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"                        
-                        Height="{StaticResource TallTextBoxHeight}"                                                
-                        Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"                        
+
+            <AutoSuggestBox x:Name="SearchBox"                                                                                                                              
+                            Grid.Column="0"                  
+                            AutoMaximizeSuggestionArea="True"                 
+                            FontSize="{StaticResource TallTextBoxFontSize}"   
+                            Height="{StaticResource TallTextBoxHeight}"
+                            ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
+                            ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"                                                
+                            Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"                        
+                            VerticalAlignment="Center"
+                            Text="{x:Bind SearchText, Mode=TwoWay}"                        
+                            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                            TextMemberPath="Name"
+                            TextChanged="AutoSuggestBox_TextChanged"
+                            SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
+            <Border x:Name="AddToFavoritesBorder"                 
+                    Grid.Column="1"                
+                    BorderThickness="2"                
+                    BorderBrush="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"
+                    VerticalAlignment="Center">
+                <Button x:Name="AddToFavoriteButton"                       
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"                
+                        Height="44"
+                        Width="44"
+                        Margin="-2 0 0 0"
                         VerticalAlignment="Center"
-                        Text="{x:Bind SearchText, Mode=TwoWay}"                        
-                        QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                        TextMemberPath="Name"
-                        TextChanged="AutoSuggestBox_TextChanged"
-                        SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
-        <Border x:Name="AddToFavoritesBorder"                 
-                Grid.Column="1"                
-                BorderThickness="2"                
-                BorderBrush="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}"
-                VerticalAlignment="Center">
-        <Button x:Name="AddToFavoriteButton"                       
-                Background="{ThemeResource SystemControlBackgroundAccentBrush}"                
-                Height="44"
-                Width="44"
-                Margin="-2 0 0 0"
-                VerticalAlignment="Center"
-                VerticalContentAlignment="Center"
-                IsEnabled="{x:Bind IsFavoriteButtonEnabled, Mode=OneWay}"
-                Tapped="AddToFavoriteButton_Tapped">
-            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                      Glyph="{x:Bind FavoriteButtonGlyph, Mode=OneWay}"
-                      Foreground="White"/>
-        </Button>
-        </Border>
+                        VerticalContentAlignment="Center"
+                        IsEnabled="{x:Bind IsFavoriteButtonEnabled, Mode=OneWay}"
+                        Tapped="AddToFavoriteButton_Tapped">
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                              Glyph="{x:Bind FavoriteButtonGlyph, Mode=OneWay}"
+                              Foreground="White"/>
+                </Button>
+            </Border>
         </Grid>
     </RelativePanel>
 </UserControl>

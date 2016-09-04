@@ -210,7 +210,8 @@
         <lclCtls:NavCommandBar x:Name="FavoritesBottomBar" 
                                x:DeferLoadStrategy="Lazy"
                                Visibility="Collapsed">
-            <lclCtls:MovableAppBarButton Icon="Add" 
+            <lclCtls:MovableAppBarButton Command="{x:Bind ViewModel.AddNewFavoriteCmmand}" 
+                                         Icon="Add" 
                                          Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"
                                          Position="0"/>
         </lclCtls:NavCommandBar>

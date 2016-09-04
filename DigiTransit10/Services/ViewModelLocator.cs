@@ -36,6 +36,7 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<IGeolocationService>(() => new GeolocationService());
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
                 SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
+                SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
