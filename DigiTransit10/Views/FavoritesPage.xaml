@@ -40,7 +40,7 @@
                 </Grid.ChildrenTransitions>
 
                 <TextBlock x:Name="EmptyListTextBlock"                    
-                               Visibility="{x:Bind Favorites.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
+                               Visibility="{x:Bind IsFavoritesEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
                 <ListView x:Name="FavoritesListView"                                      
@@ -51,7 +51,7 @@
                           ItemClick="FavoritesListView_ItemClick"
                           RightTapped="Favorite_RightTapped">
                     <ListView.GroupStyle>
-                        <GroupStyle>
+                        <GroupStyle HidesIfEmpty="True">
                             <GroupStyle.HeaderContainerStyle>
                                 <Style TargetType="ListViewHeaderItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -80,23 +80,6 @@
                             </TextBlock>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                    <Interactivity:Interaction.Behaviors>
-                        <Core:DataTriggerBehavior Binding="{x:Bind Favorites.Count, Mode=OneWay}"
-                                                        ComparisonCondition="GreaterThan"
-                                                        Value="0">
-                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=FavoritesListView}"
-                                                           PropertyName="Visibility"
-                                                           Value="Visible"/>
-                        </Core:DataTriggerBehavior>
-                        <Core:DataTriggerBehavior Binding="{x:Bind Favorites.Count, Mode=OneWay}"
-                                                        ComparisonCondition="Equal"
-                                                        Value="0">
-                            <Core:ChangePropertyAction TargetObject="{Binding ElementName=FavoritesListView}"
-                                                           PropertyName="Visibility"
-                                                           Value="Collapsed"/>
-                        </Core:DataTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>
-
                     <FlyoutBase.AttachedFlyout>
                         <MenuFlyout>
                             <!--CommandParameter set in Code-behind just before showing the Flyout.-->

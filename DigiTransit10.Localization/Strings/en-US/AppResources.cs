@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 08/28/2016 17:08:39
+// 	Generated: 09/04/2016 17:52:52
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -643,6 +643,83 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("TripResults_SaveRoute");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Add Favorite"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_AddHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_AddHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Cancel"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_Cancel
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_Cancel");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Edit Favorite"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_EditHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_EditHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Icon"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_IconsHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_IconsHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Save"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_Save
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_Save");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Location"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_SearchBoxHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_SearchBoxHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Name"
+        /// </summary>
+        public static string AddOrEditFavoriteDialog_UserChosenNameHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("AddOrEditFavoriteDialog_UserChosenNameHeader");
             }
         }
     }

@@ -119,6 +119,18 @@ namespace DigiTransit10.Controls
                 return;
             }
 
+            //set up INotifyCollectionChangeds
+            var oldCollection = e.OldValue as INotifyCollectionChanged;
+            var newCollection = e.NewValue as INotifyCollectionChanged;
+            if (oldCollection != null)
+            {
+                oldCollection.CollectionChanged -= _this.OnRoutesCollectionChanged;
+            }
+            if (newCollection != null)
+            {
+                newCollection.CollectionChanged += _this.OnRoutesCollectionChanged;
+            }
+
             IList<ColoredMapLine> newValue = e.NewValue as IList<ColoredMapLine>;
             if(newValue == null)
             {                
@@ -159,7 +171,7 @@ namespace DigiTransit10.Controls
             }
 
             _this.SetMapLines(newPolylines);
-        }
+        }        
         /// <summary>
         /// A collection of geopoints, between which lines are drawn. The line's color is determined by the starting point's <see cref="ColoredMapLinePoint.LineColor"/> property.
         /// </summary>
@@ -168,13 +180,69 @@ namespace DigiTransit10.Controls
             get { return (IList<ColoredMapLine>)GetValue(ColoredMapLinePointsProperty); }
             set { SetValue(ColoredMapLinePointsProperty, value); }
         }
+        private void OnRoutesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(e.Action == NotifyCollectionChangedAction.Move)
+            {
+                return;
+            }
+
+            if(e.NewItems != null)
+            {
+                List<MapPolyline> newPolylines = new List<MapPolyline>();
+                List<BasicGeoposition> currentLinePositions = new List<BasicGeoposition>();
+                foreach (ColoredMapLine lineCollection in e.NewItems.OfType<ColoredMapLine>())
+                {
+                    for (int i = 0; i <= lineCollection.Count() - 2; i++)
+                    {
+                        var startPoint = lineCollection[i];
+                        var nextPoint = lineCollection[i + 1];
+                        currentLinePositions.Add(startPoint.Coordinates);
+
+                        Color nextColor = nextPoint.LineColor;
+                        if (nextPoint == lineCollection.Last() || startPoint.LineColor != nextColor)
+                        {
+                            MapPolyline polyline = new MapPolyline();
+                            polyline.Path = new Geopath(currentLinePositions);
+                            polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
+                            polyline.StrokeDashed = startPoint.IsLineDashed;
+                            polyline.StrokeThickness = 6;
+                            if (lineCollection.FavoriteId != null)
+                            {
+                                FavoriteBase.SetFavoriteId(polyline, lineCollection.FavoriteId.Value);
+                            }
+                            newPolylines.Add(polyline);
+
+                            currentLinePositions = new List<BasicGeoposition>();
+                        }
+                    }
+                }
+                AddMapLines(newPolylines);
+            }            
+
+            if(e.OldItems != null)
+            {
+                var removedLines = new List<MapPolyline>();
+                foreach(ColoredMapLine oldLine in e.OldItems.OfType<ColoredMapLine>())
+                {
+                    MapPolyline removedLine = DigiTransitMapControl.MapElements
+                        .OfType<MapPolyline>()
+                        .FirstOrDefault(line => FavoriteBase.GetFavoriteId(line) == oldLine.FavoriteId);
+                    if(removedLine != null)
+                    {
+                        removedLines.Add(removedLine);
+                    }
+                }
+                RemoveMapLines(removedLines);
+            }
+        }
 
         public static readonly DependencyProperty PlacesProperty =
             DependencyProperty.Register("Places", typeof(IEnumerable<IMapPoi>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnPlacesChanged)));
         private static void OnPlacesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DigiTransitMap _this = d as DigiTransitMap;
+            var _this = d as DigiTransitMap;
             if(_this == null)
             {
                 return;
@@ -292,6 +360,26 @@ namespace DigiTransit10.Controls
             DigiTransitMapControl.Opacity = 1;
             LoadingRing.Visibility = Visibility.Collapsed;
         }
+
+        private void AddMapLines(IEnumerable<MapPolyline> polylines)
+        {
+            foreach (var newLine in polylines)
+            {
+                DigiTransitMapControl.MapElements.Add(newLine);
+            }
+
+            this?.MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RemoveMapLines(IEnumerable<MapPolyline> polylines)
+        {
+            foreach(var removedLine in polylines)
+            {
+                DigiTransitMapControl.MapElements.Remove(removedLine);
+            }
+
+            this?.MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
         
         private void SetMapLines(IEnumerable<MapPolyline> polylines)
         {
@@ -304,28 +392,20 @@ namespace DigiTransit10.Controls
 
             if (oldList != null)
             {
-                foreach (var element in polylines.Except(oldList))
-                {
-                    DigiTransitMapControl.MapElements.Add(element);
-                }
+                var toAdd = polylines.Except(oldList);
+                AddMapLines(toAdd);
             }
             else
             {
-                foreach (var element in polylines)
-                {
-                    DigiTransitMapControl.MapElements.Add(element);
-                }
+                var toAdd = polylines;
+                AddMapLines(toAdd);
             }
 
             if (oldList != null)
             {
-                foreach (var element in oldList.Except(polylines))
-                {
-                    DigiTransitMapControl.MapElements.Remove(element);
-                }
-            }
-
-            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+                var toRemove = oldList.Except(polylines);
+                RemoveMapLines(toRemove);
+            }            
         }
 
         private void AddMapIcons(IEnumerable<MapIcon> icons)

@@ -279,4 +279,25 @@
   <data name="TripResults_SaveRoute" xml:space="preserve">
     <value>Save route</value>
   </data>
+  <data name="AddOrEditFavoriteDialog_AddHeader" xml:space="preserve">
+    <value>Add Favorite</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_EditHeader" xml:space="preserve">
+    <value>Edit Favorite</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_IconsHeader" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_SearchBoxHeader" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="AddOrEditFavoriteDialog_UserChosenNameHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
 </root>

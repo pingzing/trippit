@@ -26,6 +26,29 @@ namespace DigiTransit10.ViewModels
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
 
+        public bool IsFavoritesEmpty
+        {
+            get
+            {
+                bool isEmpty = true;
+                if (Favorites?.Count == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    foreach (var list in Favorites)
+                    {
+                        if (list?.Count > 0)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
         private ObservableCollection<IMapPoi> _mappableFavoritePlaces = new ObservableCollection<IMapPoi>();
         public ObservableCollection<IMapPoi> MappableFavoritePlaces
         {
@@ -44,21 +67,33 @@ namespace DigiTransit10.ViewModels
         public GroupedFavoriteList GroupedFavoritePlaces
         {
             get { return _groupedFavoritePlaces; }
-            set { Set(ref _groupedFavoritePlaces, value); }
+            set
+            {
+                Set(ref _groupedFavoritePlaces, value);
+                RaisePropertyChanged(nameof(IsFavoritesEmpty));
+            }
         }
 
         private GroupedFavoriteList _groupedFavoriteRoutes = new GroupedFavoriteList(AppResources.Favorites_RoutesGroupHeader);
         public GroupedFavoriteList GroupedFavoriteRoutes
         {
             get { return _groupedFavoriteRoutes; }
-            set { Set(ref _groupedFavoriteRoutes, value); }
+            set
+            {
+                Set(ref _groupedFavoriteRoutes, value);
+                RaisePropertyChanged(nameof(IsFavoritesEmpty));
+            }
         }
 
         private ObservableCollection<GroupedFavoriteList> _favorites = new ObservableCollection<GroupedFavoriteList>();
         public ObservableCollection<GroupedFavoriteList> Favorites
         {
             get { return _favorites; }
-            set { Set(ref _favorites, value); }
+            set
+            {
+                Set(ref _favorites, value);
+                RaisePropertyChanged(nameof(IsFavoritesEmpty));
+            }
         }
 
         private readonly RelayCommand<IFavorite> _deleteFavoriteCommand = null;
@@ -69,7 +104,10 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();              
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
+
+            Favorites.Add(GroupedFavoritePlaces);
+            Favorites.Add(GroupedFavoriteRoutes);
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -82,16 +120,12 @@ namespace DigiTransit10.ViewModels
                 foreach (IPlace place in favorites.OfType<IPlace>())
                 {
                     AddFavoritePlace((IFavorite)place);
-                }
-
-                Favorites.Add(GroupedFavoritePlaces);
+                }                
 
                 foreach (FavoriteRoute route in favorites.OfType<FavoriteRoute>())
                 {
                     AddFavoriteRoute(route);
-                }
-
-                Favorites.Add(GroupedFavoriteRoutes);
+                }                
             }            
 
             await Task.CompletedTask;
@@ -118,7 +152,7 @@ namespace DigiTransit10.ViewModels
                 }
                 foreach (var faveRoute in args.AddedFavorites.OfType<FavoriteRoute>())
                 {
-                    //todo:add to favorite routes list
+                    AddFavoriteRoute(faveRoute);
                 }
             }
 
@@ -130,7 +164,7 @@ namespace DigiTransit10.ViewModels
                 }
                 foreach (var deletedRoute in args.RemovedFavorites.OfType<FavoriteRoute>())
                 {
-                    //todo:remove from favorite routes
+                    RemoveFavoriteRoute(deletedRoute);
                 }
             }
         }
@@ -139,12 +173,16 @@ namespace DigiTransit10.ViewModels
         {
             GroupedFavoritePlaces.AddSorted(place);
             MappableFavoritePlaces.Add(place as IMapPoi);
+
+            RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
 
         private void RemoveFavoritePlace(IFavorite deletedFave)
         {
             GroupedFavoritePlaces.Remove(deletedFave);
             MappableFavoritePlaces.Remove(deletedFave as IMapPoi);
+
+            RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
 
         private void AddFavoriteRoute(IFavorite route)
@@ -159,13 +197,19 @@ namespace DigiTransit10.ViewModels
             mapLine.FavoriteId = faveRoute.FavoriteId;            
 
             MappableFavoriteRoutes.Add(mapLine);
+
+            RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
 
         private void RemoveFavoriteRoute(IFavorite route)
         {
+            GroupedFavoriteRoutes.Remove(route);
+
             var faveRoute = (FavoriteRoute)route;
             var toRemove = MappableFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == faveRoute.FavoriteId);
             MappableFavoriteRoutes.Remove(toRemove);
+
+            RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
     }
 }
