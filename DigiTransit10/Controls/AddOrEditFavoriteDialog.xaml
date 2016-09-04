@@ -1,0 +1,34 @@
+﻿<ContentDialog
+    x:Class="DigiTransit10.Controls.AddOrEditFavoriteDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DigiTransit10.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_AddHeader}"
+    PrimaryButtonText="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_Save}"
+    SecondaryButtonText="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_Cancel}"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <local:DigiTransitMap x:Name="SingleMap"
+                              Grid.Row="0"
+                              Height="100"
+                              Places="{x:Bind MapPlace}"/>
+
+        <StackPanel Grid.Row="1">
+            <local:DigiTransitSearchBox x:Name="SearchBox"                                        
+                                        Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_SearchBoxHeader}"/>
+            <TextBox x:Name="NameTextBox"
+                     Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_UserChosenNameHeader}"/>
+        </StackPanel>
+    </Grid>
+</ContentDialog>
