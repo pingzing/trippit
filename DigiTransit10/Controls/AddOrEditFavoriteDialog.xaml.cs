@@ -1,7 +1,10 @@
-﻿using DigiTransit10.Models;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.ServiceLocation;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -69,16 +72,29 @@ namespace DigiTransit10.Controls
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 //apparently FontFamilies have to be constructed on the UI thread. Who knew?
-                hslFamily = new FontFamily("hsl-pikto-frame-webfont.ttf#HSL-Pikto Frame");
+                hslFamily = (FontFamily)App.Current.Resources[Constants.HslPictoFrameFontName];
                 segoeFamily = new FontFamily("Segoe MDL2 Assets");
                 fontFamiliesFound.SetResult(true);
             });
 
             
             await fontFamiliesFound.Task;
+            //Short delay to give the UI time to render before getting locked up in the FontService loop
+            await Task.Delay(10);
+
+            List<int> fontInts = _fontService.GetFontGlyphs(hslFamily.Source).ToList();
+            foreach (int value in fontInts)
+            {
+                var icon = new FavoriteIcon
+                {
+                    FontFamily = hslFamily,
+                    Glyph = ((char)(int.Parse(value.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
+                };
+                PossibleIconsList.AddSorted(icon, (x1, x2) => x1.Glyph.CompareTo(x2.Glyph));
+                await Task.Delay(1); //small throttle, or we'll choke the UI thread
+            }
 
             Array enumsValues = Enum.GetValues(typeof(Symbol));
-            
             foreach (var value in enumsValues)
             {
                 int currentValue = (int)value;
@@ -89,18 +105,9 @@ namespace DigiTransit10.Controls
                 };
                 PossibleIconsList.Add(icon);
                 await Task.Delay(1); //small throttle, or we'll choke the UI thread
-            }
+            }            
 
-            foreach(int value in await _fontService.GetFontGlyphsAsync(hslFamily.Source))
-            {
-                var icon = new FavoriteIcon
-                {
-                    FontFamily = hslFamily,
-                    Glyph = ((char)(int.Parse(value.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
-                };
-                PossibleIconsList.Add(icon);
-                await Task.Delay(1);
-            }
+            string hslPictoFrameCharacterCodes = JsonConvert.SerializeObject(fontInts);
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

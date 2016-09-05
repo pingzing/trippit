@@ -7,20 +7,30 @@ namespace DigiTransit10.ExtensionMethods
 {
     public static class ObservableCollectionExtensions
     {
-        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement, IComparer<T> comparer = null)
+        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement)
         {
-            if (comparer == null)
+            AddSorted(col, newElement, comparerFunc: null);
+        }
+
+        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement, IComparer<T> comparer)
+        {
+            AddSorted(col, newElement, comparer.Compare);
+        }
+
+        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement, Func<T, T, int> comparerFunc)
+        {
+            if(comparerFunc == null)
             {
-                comparer = Comparer<T>.Default;
+                comparerFunc = Comparer<T>.Default.Compare;
             }
 
             int i = 0;
-            while (i < col.Count && comparer.Compare(col[i], newElement) < 0)
+            while(i < col.Count && comparerFunc(col[i], newElement) < 0)
             {
                 i++;
             }
 
-            col.Insert(i, newElement);
+            col.Insert(i, newElement);                    
         }
 
         public static void SortInPlace<TSource, TKey>(this ObservableCollection<TSource> col, Func<TSource, TKey> keySelector)

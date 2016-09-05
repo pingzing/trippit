@@ -93,8 +93,12 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Content Include="Assets\Fonts\hsl-pikto-frame-webfont.ttf" />
-    <Content Include="Assets\Fonts\hsl-pikto-normal-webfont.ttf" />
+    <Content Include="Assets\Fonts\hsl-pikto-frame-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Fonts\hsl-pikto-normal-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="DigiTransit10_TemporaryKey.pfx" />
     <None Include="project.json" />
   </ItemGroup>

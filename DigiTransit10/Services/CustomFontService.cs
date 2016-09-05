@@ -1,6 +1,7 @@
 ﻿using DigiTransit10.Helpers.FontLoading;
 using SharpDX.DirectWrite;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,11 @@ namespace DigiTransit10.Services
 {
     public interface ICustomFontService : IAsyncInitializable
     {
-        Task<List<int>> GetFontGlyphsAsync(string fontName);
+        IEnumerable<int> GetFontGlyphs(string fontName);
     }
     public class CustomFontService : ICustomFontService
     {
-        private readonly IFileService _fileService;        
+        private readonly IFileService _fileService;
         private readonly Factory _directWriteFactory;
         private CustomFontFileLoader _fontLoader;
 
@@ -24,7 +25,7 @@ namespace DigiTransit10.Services
         {
             _fileService = fileService;
             _directWriteFactory = new Factory();
-            Initialization = InitializeAsync();            
+            Initialization = InitializeAsync();
         }
 
         private async Task InitializeAsync()
@@ -33,11 +34,11 @@ namespace DigiTransit10.Services
             await _fontLoader.Initialization;
         }
 
-        public async Task<List<int>> GetFontGlyphsAsync(string fontName)
+        public IEnumerable<int> GetFontGlyphs(string fontName)
         {
-            await Initialization;
+            Task.WaitAll(Initialization);           
 
-            if(fontName.Contains("#"))
+            if (fontName.Contains("#"))
             {
                 fontName = fontName.Substring(fontName.IndexOf("#") + 1);
             }
@@ -46,31 +47,27 @@ namespace DigiTransit10.Services
             int familyIndex = -1;
             collection.FindFamilyName(fontName, out familyIndex);
 
-            if(familyIndex == -1)
+            if (familyIndex == -1)
             {
                 return null;
             }
 
             FontFamily fontFamily = collection.GetFontFamily(familyIndex);
 
-            List<int> glyphHexCodes = new List<int>();
+            ConcurrentBag<int> glyphHexCodes = new ConcurrentBag<int>();
             var characterHexCodes = new List<int>();
             int count = UInt16.MaxValue; //Maybe?
             Font font = fontFamily.GetFont(0);
-            //todo: this function is slow as molasses, so maybe it's better if we just run it on our own computer and record the values, hardcoded somewhere.
-            await Task.Run(() =>
+            
+            //Parallel loop cuts us down from a several-minute runtime to a few seconds.
+            Parallel.For(0, count + 1, (i, state) => 
             {
-                for (int i = 0; i < count; i++)
+                if (font.HasCharacter(i))
                 {
-                    System.Diagnostics.Debug.WriteLine("Searching at: " + i);
-                    if (font.HasCharacter(i))
-                    {
-                        System.Diagnostics.Debug.WriteLine("Found! At: " + i);
-                        glyphHexCodes.Add(i);
-                    }
+                    glyphHexCodes.Add(i);
                 }
-            });         
-
+            });
+            
             return glyphHexCodes;
         }
     }
