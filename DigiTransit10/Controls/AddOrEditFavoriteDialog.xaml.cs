@@ -59,12 +59,14 @@ namespace DigiTransit10.Controls
         public AddOrEditFavoriteDialog()
         {
             this.InitializeComponent();
-            this.Loaded += AddOrEditFavoriteDialog_Loaded;
+            this.Loaded += AddOrEditFavoriteDialog_Loaded;            
             _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
-        }
+        }        
 
         private async void AddOrEditFavoriteDialog_Loaded(object sender, RoutedEventArgs e)
         {
+            SingleMap.Focus(FocusState.Programmatic);
+
             FontFamily hslFamily = null;
             FontFamily segoeFamily = null;
             TaskCompletionSource<bool> fontFamiliesFound = new TaskCompletionSource<bool>();

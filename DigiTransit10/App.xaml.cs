@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.ViewManagement;
 using Windows.Foundation.Metadata;
 using DigiTransit10.ExtensionMethods;
+using Microsoft.HockeyApp;
 
 namespace DigiTransit10
 {
@@ -40,10 +41,17 @@ namespace DigiTransit10
             RequestedTheme = SettingsService.Instance.AppTheme;
 
             #endregion
+            
+            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
+            }
+
             if (Window.Current.Content as ModalDialog == null)
             {
                 // create a new frame 
@@ -57,16 +65,12 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };
             }
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
-            }
+            
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
-            DispatcherHelper.Initialize();
+            DispatcherHelper.Initialize();            
             await Task.CompletedTask;
         }
 
