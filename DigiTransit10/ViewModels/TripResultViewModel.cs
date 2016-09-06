@@ -144,9 +144,9 @@ namespace DigiTransit10.ViewModels
 
         private void ShowTripDetails(TripItinerary model)
         {
-            SelectedDetailLegs = model.ItineraryLegs;
+            SelectedDetailLegs = model.ItineraryLegs;            
 
-            var mapLine = (ColoredMapLine)model.ItineraryLegs
+            var mapLine = new ColoredMapLine(model.ItineraryLegs
                 .SelectMany(y =>
                     GooglePolineDecoder.Decode(y.LegGeometryString)
                     .Select(x =>
@@ -159,8 +159,8 @@ namespace DigiTransit10.ViewModels
                         {
                             return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode));
                         }
-                    })
-                ).ToList();
+                    }))
+                );
 
             ColoredMapLinePoints.Clear();
             ColoredMapLinePoints.Add(mapLine);
