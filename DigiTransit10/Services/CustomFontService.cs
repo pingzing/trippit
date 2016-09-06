@@ -1,4 +1,7 @@
-﻿using DigiTransit10.Helpers.FontLoading;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
+using DigiTransit10.Helpers.FontLoading;
+using Newtonsoft.Json;
 using SharpDX.DirectWrite;
 using System;
 using System.Collections.Concurrent;
@@ -11,13 +14,14 @@ namespace DigiTransit10.Services
 {
     public interface ICustomFontService : IAsyncInitializable
     {
-        IEnumerable<int> GetFontGlyphs(string fontName);
+        Task<IEnumerable<int>> GetFontGlyphsAsync(string fontName);
     }
     public class CustomFontService : ICustomFontService
     {
         private readonly IFileService _fileService;
         private readonly Factory _directWriteFactory;
         private CustomFontFileLoader _fontLoader;
+        private Dictionary<string, List<int>> _fontGlyphCache = new Dictionary<string, List<int>>();
 
         public Task Initialization { get; }
 
@@ -25,6 +29,10 @@ namespace DigiTransit10.Services
         {
             _fileService = fileService;
             _directWriteFactory = new Factory();
+
+            CacheFontGlyphs(Constants.HslPiktoFrameFontName, HslFontGlyphs.PiktoFrame);
+            //CacheFontGlyphs(Constants.HslPiktoNormalFontName, HslFontGlyphs.PiktoNormal); //todo: get these values and put them in HslFontGlyphs
+
             Initialization = InitializeAsync();
         }
 
@@ -34,14 +42,29 @@ namespace DigiTransit10.Services
             await _fontLoader.Initialization;
         }
 
-        public IEnumerable<int> GetFontGlyphs(string fontName)
+        private void CacheFontGlyphs(string name, IEnumerable<int> glyphs)
         {
-            Task.WaitAll(Initialization);           
+            if(name.Contains("#"))
+            {
+                name = name.Substring(name.IndexOf("#") + 1);
+            }
 
+            _fontGlyphCache.AddOrUpdate(name, glyphs.ToList());            
+        }
+
+        public async Task<IEnumerable<int>> GetFontGlyphsAsync(string fontName)
+        {
             if (fontName.Contains("#"))
             {
                 fontName = fontName.Substring(fontName.IndexOf("#") + 1);
             }
+
+            if(_fontGlyphCache.ContainsKey(fontName))
+            {
+                return _fontGlyphCache[fontName];
+            }
+
+            await Initialization;            
 
             FontCollection collection = new FontCollection(_directWriteFactory, _fontLoader, _fontLoader.Key);
             int familyIndex = -1;
@@ -54,9 +77,8 @@ namespace DigiTransit10.Services
 
             FontFamily fontFamily = collection.GetFontFamily(familyIndex);
 
-            ConcurrentBag<int> glyphHexCodes = new ConcurrentBag<int>();
-            var characterHexCodes = new List<int>();
-            int count = UInt16.MaxValue; //Maybe?
+            ConcurrentBag<int> glyphHexCodes = new ConcurrentBag<int>();            
+            int count = UInt16.MaxValue; //Maybe? I suppose some fonts go past 65535, but for perf's sake, let's assume they don't.
             Font font = fontFamily.GetFont(0);
             
             //Parallel loop cuts us down from a several-minute runtime to a few seconds.
@@ -67,7 +89,9 @@ namespace DigiTransit10.Services
                     glyphHexCodes.Add(i);
                 }
             });
-            
+
+            string lsit = JsonConvert.SerializeObject(glyphHexCodes);
+
             return glyphHexCodes;
         }
     }

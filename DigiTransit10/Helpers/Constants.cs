@@ -46,9 +46,13 @@ namespace DigiTransit10.Helpers
         public const string TallTextBoxHeightName = "TallTextBoxHeight";
         public const string TallTextBoxFontSizeName = "TallTextBoxFontSize";
 
-        //Font names
-        public const string HslPictoNormalFontName = "HslPictoNormalFont";
-        public const string HslPictoFrameFontName = "HslPictoFrameFont";
+        //FontFamily keys
+        public const string HslPiktoNormalFontFamilyKey = "HslPiktoNormalFont";
+        public const string HslPiktoFrameFontFamilyKey = "HslPiktoFrameFont";
+
+        //Font names as they appear in the .ttf file
+        public const string HslPiktoNormalFontName = "HSL-Pikto";
+        public const string HslPiktoFrameFontName = "HSL-Pikto Frame";
 
         //Global dictionary Current Visual State keys
         public const string CurrentMainPageVisualStateKey = "CurrentMainPageVisualState";

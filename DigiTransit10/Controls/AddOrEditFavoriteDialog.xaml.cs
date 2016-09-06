@@ -65,7 +65,7 @@ namespace DigiTransit10.Controls
 
         private async void AddOrEditFavoriteDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            SingleMap.Focus(FocusState.Programmatic);
+            SingleMap.Focus(FocusState.Programmatic); //prevent auto-focusing on the search box
 
             FontFamily hslFamily = null;
             FontFamily segoeFamily = null;
@@ -74,17 +74,17 @@ namespace DigiTransit10.Controls
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
                 //apparently FontFamilies have to be constructed on the UI thread. Who knew?
-                hslFamily = (FontFamily)App.Current.Resources[Constants.HslPictoFrameFontName];
-                segoeFamily = new FontFamily("Segoe MDL2 Assets");
+                hslFamily = (FontFamily)App.Current.Resources[Constants.HslPiktoFrameFontFamilyKey];
+                segoeFamily = new FontFamily(Constants.SymbolFontFamily);
                 fontFamiliesFound.SetResult(true);
             });
-
             
             await fontFamiliesFound.Task;
+
             //Short delay to give the UI time to render before getting locked up in the FontService loop
             await Task.Delay(10);
 
-            List<int> fontInts = _fontService.GetFontGlyphs(hslFamily.Source).ToList();
+            List<int> fontInts = (await _fontService.GetFontGlyphsAsync(hslFamily.Source)).ToList();
             foreach (int value in fontInts)
             {
                 var icon = new FavoriteIcon
@@ -92,8 +92,7 @@ namespace DigiTransit10.Controls
                     FontFamily = hslFamily,
                     Glyph = ((char)(int.Parse(value.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
                 };
-                PossibleIconsList.AddSorted(icon, (x1, x2) => x1.Glyph.CompareTo(x2.Glyph));
-                await Task.Delay(1); //small throttle, or we'll choke the UI thread
+                PossibleIconsList.AddSorted(icon, (x1, x2) => x1.Glyph.CompareTo(x2.Glyph));                
             }
 
             Array enumsValues = Enum.GetValues(typeof(Symbol));
@@ -105,8 +104,7 @@ namespace DigiTransit10.Controls
                     FontFamily = segoeFamily,
                     Glyph = ((char)(int.Parse(currentValue.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
                 };
-                PossibleIconsList.Add(icon);
-                await Task.Delay(1); //small throttle, or we'll choke the UI thread
+                PossibleIconsList.Add(icon);                
             }            
 
             string hslPictoFrameCharacterCodes = JsonConvert.SerializeObject(fontInts);

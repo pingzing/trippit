@@ -13,8 +13,8 @@
     <Color x:Key="HslWalkGray">#FF666666</Color>
     
     <!--HSL Pictographic Fonts-->
-    <FontFamily x:Key="HslPictoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto</FontFamily>
-    <FontFamily x:Key="HslPictoFrameFont">/Assets/Fonts/hsl-pikto-frame-webfont.ttf#HSL-Pikto Frame</FontFamily>
+    <FontFamily x:Key="HslPiktoNormalFont">/Assets/Fonts/hsl-pikto-normal-webfont.ttf#HSL-Pikto</FontFamily>
+    <FontFamily x:Key="HslPiktoFrameFont">/Assets/Fonts/hsl-pikto-frame-webfont.ttf#HSL-Pikto Frame</FontFamily>
     
     <!--HSL Color Brushes-->
     <SolidColorBrush x:Key="HslBusBlueBrush" Color="{StaticResource HslBusBlue}"/>

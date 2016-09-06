@@ -186,6 +186,7 @@
     <Compile Include="Helpers\FontLoading\CustomFontFileLoader.cs" />
     <Compile Include="Helpers\FontLoading\CustomFontFileEnumerator.cs" />
     <Compile Include="Helpers\FontLoading\CustomFontFileStream.cs" />
+    <Compile Include="Helpers\FontLoading\HslFontGlyphs.cs" />
     <Compile Include="Helpers\GooglePolineDecoder.cs" />
     <Compile Include="Helpers\IFailure.cs" />
     <Compile Include="Helpers\IFailureReason.cs" />

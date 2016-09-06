@@ -58,7 +58,7 @@ namespace DigiTransit10.Controls.TripPlanStrip
                 case ApiMode.Walk:
                     _this.TransitModeIcon.Foreground = (Brush)Application.Current.Resources[Constants.WalkBrushName];
                     _this.TransitModeIcon.Glyph = FontIconGlyphs.WalkIcon;
-                    _this.TransitModeIcon.FontFamily = (FontFamily)Application.Current.Resources[Constants.HslPictoNormalFontName];                    
+                    _this.TransitModeIcon.FontFamily = (FontFamily)Application.Current.Resources[Constants.HslPiktoNormalFontFamilyKey];                    
                     _this.NameOrDistanceBlock.FontWeight = FontWeights.Normal;
                     break;
             }           

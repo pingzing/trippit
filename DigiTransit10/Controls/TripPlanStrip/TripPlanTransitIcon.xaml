@@ -29,7 +29,7 @@
         <FontIcon x:Name="TransitModeIcon"
                   Grid.Row="1"
                   HorizontalAlignment="Center"
-                  FontFamily="{StaticResource HslPictoFrameFont}"
+                  FontFamily="{StaticResource HslPiktoFrameFont}"
                   FontSize="35">
             <FontIcon.RenderTransform>
                 <TranslateTransform/>

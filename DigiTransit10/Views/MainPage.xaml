@@ -203,7 +203,7 @@
                         <CheckBox x:Name="BusCheckBox"                                                      
                                       Grid.Row="3" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsBusChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslBusBlueBrush}"                                                              
                                           FontSize="50"                                                              
                                           Glyph="{Binding BusIcon, Source={StaticResource FontIcons}}"/>
@@ -211,7 +211,7 @@
                         <CheckBox x:Name="TramCheckBox"                                                       
                                       Grid.Row="3" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsTramChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslTramGreenBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TramIcon, Source={StaticResource FontIcons}}"/>
@@ -219,7 +219,7 @@
                         <CheckBox x:Name="TrainCheckBox" 
                                       Grid.Row="3" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsTrainChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{StaticResource HslPictoFrameFont}"
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslTrainPurpleBrush}"
                                           FontSize="50"
                                           Glyph="{Binding TrainIcon, Source={StaticResource FontIcons}}"/>
@@ -227,7 +227,7 @@
                         <CheckBox x:Name="MetroCheckBox" 
                                       Grid.Row="4" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsMetroChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}"
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{Binding Source={StaticResource HslMetroOrangeBrush}}"
                                           FontSize="50"
                                           Glyph="{Binding MetroIcon, Source={StaticResource FontIcons}}" />
@@ -235,7 +235,7 @@
                         <CheckBox x:Name="FerryCheckBox"
                                       Grid.Row="4" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsFerryChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}" 
                                           Foreground="{Binding Source={StaticResource HslFerryBlueBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding FerryIcon, Source={StaticResource FontIcons}}"/>
@@ -243,7 +243,7 @@
                         <CheckBox x:Name="BikeCheckBox"
                                       Grid.Row="4" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsBikeChecked, Mode=TwoWay}">
-                            <FontIcon FontFamily="{Binding Source={StaticResource HslPictoFrameFont}}" 
+                            <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}" 
                                           Foreground="{Binding Source={StaticResource HslBikeGoldenrodBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding BikeIcon, Source={StaticResource FontIcons}}"/>

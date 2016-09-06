@@ -77,7 +77,7 @@
                                Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
                     <FontIcon x:Name="TransitIcon"                                          
                               Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                              FontFamily="{StaticResource HslPictoFrameFont}"
+                              FontFamily="{StaticResource HslPiktoFrameFont}"
                               FontSize="40"
                               Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
                 </StackPanel>
@@ -154,7 +154,7 @@
                                Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
                     <FontIcon x:Name="TransitIcon"                                          
                               Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                              FontFamily="{StaticResource HslPictoFrameFont}"
+                              FontFamily="{StaticResource HslPiktoFrameFont}"
                               FontSize="40"
                               Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
                 </StackPanel>
