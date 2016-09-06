@@ -81,8 +81,7 @@ namespace DigiTransit10.Controls
             
             await fontFamiliesFound.Task;
 
-            //Short delay to give the UI time to render before getting locked up in the FontService loop
-            await Task.Delay(10);
+            await Task.Delay(10); //give UI time to render before we go hunting for glyphs
 
             List<int> fontInts = (await _fontService.GetFontGlyphsAsync(hslFamily.Source)).ToList();
             foreach (int value in fontInts)
@@ -105,9 +104,7 @@ namespace DigiTransit10.Controls
                     Glyph = ((char)(int.Parse(currentValue.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
                 };
                 PossibleIconsList.Add(icon);                
-            }            
-
-            string hslPictoFrameCharacterCodes = JsonConvert.SerializeObject(fontInts);
+            }                        
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
