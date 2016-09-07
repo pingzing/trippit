@@ -186,6 +186,10 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
+            if(e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                SetMapLines(new List<MapPolyline>());
+            }
 
             if(e.NewItems != null)
             {
@@ -291,6 +295,10 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
+            if(args.Action == NotifyCollectionChangedAction.Reset)
+            {
+                SetMapIcons(new List<MapIcon>());
+            }
 
             if (args.NewItems != null)
             {
@@ -385,7 +393,7 @@ namespace DigiTransit10.Controls
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapPolyline>().ToList();
 
-            if (polylines == null || !polylines.Any())
+            if (polylines == null)
             {
                 return;
             }
@@ -430,7 +438,7 @@ namespace DigiTransit10.Controls
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapIcon>().ToList();
 
-            if (icons == null || !icons.Any())
+            if (icons == null)
             {
                 return;
             }

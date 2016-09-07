@@ -43,8 +43,8 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _tripResults, value); }
         }
 
-        private IList<ColoredMapLine> _coloredMapLinePoints = new List<ColoredMapLine>();
-        public IList<ColoredMapLine> ColoredMapLinePoints
+        private ObservableCollection<ColoredMapLine> _coloredMapLinePoints = new ObservableCollection<ColoredMapLine>();
+        public ObservableCollection<ColoredMapLine> ColoredMapLinePoints
         {
             get { return _coloredMapLinePoints; }
             set { Set(ref _coloredMapLinePoints, value); }
