@@ -172,6 +172,7 @@ namespace DigiTransit10.Controls
 
             _this.SetMapLines(newPolylines);
         }        
+
         /// <summary>
         /// A collection of geopoints, between which lines are drawn. The line's color is determined by the starting point's <see cref="ColoredMapLinePoint.LineColor"/> property.
         /// </summary>
