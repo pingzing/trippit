@@ -43,7 +43,7 @@
                                Visibility="{x:Bind IsFavoritesEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
-                <ListView x:Name="FavoritesListView"                                      
+                <ListView x:Name="FavoritesListView"                                        
                           Margin="-10"                              
                           Padding="10"
                           ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"
