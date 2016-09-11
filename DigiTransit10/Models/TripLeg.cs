@@ -46,9 +46,16 @@ namespace DigiTransit10.Models
             EndTime = DateTimeOffset.FromUnixTimeMilliseconds(apiLeg.EndTime.Value).UtcDateTime;
             EndCoords = apiLeg.To.Coords;
 
-            Mode = apiLeg.Mode.Value;
-            ShortName = apiLeg.Route?.ShortName;
+            Mode = apiLeg.Mode.Value;            
             DistanceMeters = apiLeg.Distance.Value;
+            if (Mode == ApiMode.Subway)
+            {
+                ShortName = "M";
+            }
+            else
+            {
+                ShortName = apiLeg.Route?.ShortName;
+            }
 
             IntermediateStops = apiLeg.IntermediateStops
                 .Select(x => new TripLegIntermediateStop
