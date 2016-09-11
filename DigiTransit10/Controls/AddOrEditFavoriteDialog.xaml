@@ -15,7 +15,7 @@
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-    <Grid x:Name="LayoutRoot">
+    <Grid x:Name="LayoutRoot" Margin="0 10 0 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -32,7 +32,7 @@
         <local:DigiTransitSearchBox x:Name="SearchBox"       
                                     Grid.Row="1"
                                     Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_SearchBoxHeader}"
-                                    Height="56"                                    
+                                    TextBoxHeight="32"                                    
                                     Margin="0 10 0 0"
                                     ShowFavoritesButton="False"/>
         <TextBox x:Name="NameTextBox"                 
