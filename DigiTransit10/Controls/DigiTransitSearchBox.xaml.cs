@@ -222,9 +222,9 @@ namespace DigiTransit10.Controls
             set { SetValue(HeaderProperty, value); }
         }
 
-        public static readonly new DependencyProperty HeightProperty =
-            DependencyProperty.Register("Height", typeof(double), typeof(DigiTransitSearchBox), new PropertyMetadata(48, OnHeightChanged));
-        private static void OnHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public static readonly DependencyProperty TextBoxHeightProperty =
+            DependencyProperty.Register("TextBoxHeight", typeof(double), typeof(DigiTransitSearchBox), new PropertyMetadata(48.0, OnTextBoxHeightChanged));
+        private static void OnTextBoxHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var _this = d as DigiTransitSearchBox;
             if (_this == null)
@@ -232,23 +232,23 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            if(!(e.NewValue is double))
+            if (!(e.NewValue is double))
             {
                 return;
             }
 
             double availableSeachBoxSpace = (double)e.NewValue;
-            if(_this.HeaderBlock.Visibility == Visibility.Visible)
-            {
-                availableSeachBoxSpace -= 19.95; //header block height
-            }
-            availableSeachBoxSpace -= 4; //progress bar height
+            //if (_this.HeaderBlock.Visibility == Visibility.Visible)
+            //{
+            //    availableSeachBoxSpace -= 19.95; //header block height
+            //}
+            //availableSeachBoxSpace -= 4; //progress bar height
             _this.SearchBox.Height = availableSeachBoxSpace;
         }
-        public new double Height
+        public double TextBoxHeight
         {
-            get { return (double)GetValue(HeightProperty); }
-            set { SetValue(HeightProperty, value); }
+            get { return (double)GetValue(TextBoxHeightProperty); }
+            set { SetValue(TextBoxHeightProperty, value); }
         }
 
         public static readonly new DependencyProperty FontSizeProperty =

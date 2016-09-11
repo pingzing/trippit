@@ -358,7 +358,7 @@
                             Grid.Column="0"                  
                             AutoMaximizeSuggestionArea="True"                 
                             FontSize="{StaticResource TallTextBoxFontSize}"   
-                            Height="{StaticResource TallTextBoxHeight}"
+                            Height="{x:Bind TextBoxHeight, Mode=OneWay}"
                             ItemsSource="{Binding Source={StaticResource PlacesCollectionKey}}"
                             ItemTemplateSelector="{StaticResource PlaceTemplateSelector}"                                                
                             Style="{StaticResource DigiTransitAutoSuggestBoxStyle}"                        
