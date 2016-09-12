@@ -13,7 +13,7 @@
     SecondaryButtonText="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_Cancel}"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
-    ScrollViewer.VerticalScrollBarVisibility="Auto">
+    Style="{StaticResource ScrollableContentDialogStyle}">
 
     <Grid x:Name="LayoutRoot" Margin="0 10 0 0">
         <Grid.RowDefinitions>

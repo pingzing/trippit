@@ -13,6 +13,11 @@ namespace DigiTransit10.Storyboards
     {
         private ContinuumNavigationEntranceFactory(FrameworkElement mover)
         {
+            if (mover == null)
+            {
+                return;
+            }
+
             this.InitializeComponent();
 
             mover.RenderTransform = new CompositeTransform();

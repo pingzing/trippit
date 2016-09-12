@@ -16,6 +16,8 @@ using DigiTransit10.Localization.Strings;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI;
+using DigiTransit10.ViewModels.ControlViewModels;
+using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10.ViewModels
 {
@@ -25,6 +27,8 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
+
+        private IList<object> _selectedItems = null;
 
         public bool IsFavoritesEmpty
         {
@@ -62,7 +66,7 @@ namespace DigiTransit10.ViewModels
             get { return _mappableFavoriteRoutes; }
             set { Set(ref _mappableFavoriteRoutes, value); }
         }
- 
+
         private GroupedFavoriteList _groupedFavoritePlaces = new GroupedFavoriteList(AppResources.Favorites_PlacesGroupHeader);
         public GroupedFavoriteList GroupedFavoritePlaces
         {
@@ -94,11 +98,24 @@ namespace DigiTransit10.ViewModels
                 Set(ref _favorites, value);
                 RaisePropertyChanged(nameof(IsFavoritesEmpty));
             }
+        }                
+
+        private ListViewSelectionMode _listSelectionMode = ListViewSelectionMode.None;
+        public ListViewSelectionMode ListSelectionMode
+        {
+            get { return _listSelectionMode; }
+            set { Set(ref _listSelectionMode, value); }
         }
 
-        public RelayCommand AddNewFavoriteCmmand => new RelayCommand(AddNewFavorite);        
-
-        public RelayCommand<IFavorite> DeleteFavoriteCommand => new RelayCommand<IFavorite>(DeleteFavorite);        
+        public RelayCommand AddNewFavoriteCommand => new RelayCommand(AddNewFavorite);
+        public RelayCommand<IFavorite> EditFavoriteCommand => new RelayCommand<IFavorite>(EditFavorite);        
+        public RelayCommand<IFavorite> DeleteFavoriteCommand => new RelayCommand<IFavorite>(DeleteFavorite);
+        public RelayCommand<IFavorite> SetAsOriginCommand => new RelayCommand<IFavorite>(SetAsOrigin);
+        public RelayCommand<IFavorite> SetAsDestinationCommand => new RelayCommand<IFavorite>(SetAsDestination);
+        public RelayCommand<IFavorite> ToggleSelectionCommand => new RelayCommand<IFavorite>(ToggleSelection);
+        public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);        
+        public RelayCommand<IFavorite> PinToMainPageCommand => new RelayCommand<IFavorite>(PinToMainPage);
+        public RelayCommand<IList<object>> SelectionChangedCommand => new RelayCommand<IList<object>>(SelectionChanged);
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, IFavoritesService favoritesService)
         {
@@ -114,20 +131,24 @@ namespace DigiTransit10.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
+            
+            GroupedFavoritePlaces.Clear();
+            MappableFavoritePlaces.Clear();
+            GroupedFavoriteRoutes.Clear();
+            MappableFavoriteRoutes.Clear();
 
             var favorites = await _favoritesService.GetFavoritesAsync();
-            if (GroupedFavoritePlaces.Count == 0)
-            {
-                foreach (IPlace place in favorites.OfType<IPlace>())
-                {
-                    AddFavoritePlace((IFavorite)place);
-                }                
 
-                foreach (FavoriteRoute route in favorites.OfType<FavoriteRoute>())
-                {
-                    AddFavoriteRoute(route);
-                }                
-            }            
+            foreach (IPlace place in favorites.OfType<IPlace>())
+            {
+                AddFavoritePlace((IFavorite)place);
+            }
+
+            foreach (FavoriteRoute route in favorites.OfType<FavoriteRoute>())
+            {
+                AddFavoriteRoute(route);
+            }
+
 
             await Task.CompletedTask;
         }
@@ -145,9 +166,9 @@ namespace DigiTransit10.ViewModels
 
         private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
         {
-            if(args.AddedFavorites?.Count > 0)
+            if (args.AddedFavorites?.Count > 0)
             {
-                foreach(var favePlace in args.AddedFavorites.OfType<FavoritePlace>())
+                foreach (var favePlace in args.AddedFavorites.OfType<FavoritePlace>())
                 {
                     AddFavoritePlace(favePlace);
                 }
@@ -157,9 +178,9 @@ namespace DigiTransit10.ViewModels
                 }
             }
 
-            if(args.RemovedFavorites?.Count > 0)
+            if (args.RemovedFavorites?.Count > 0)
             {
-                foreach(var deletedFave in args.RemovedFavorites.OfType<FavoritePlace>())
+                foreach (var deletedFave in args.RemovedFavorites.OfType<FavoritePlace>())
                 {
                     RemoveFavoritePlace(deletedFave);
                 }
@@ -185,7 +206,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private void RemoveFavoritePlace(IFavorite deletedFave)
-        {
+        {            
             GroupedFavoritePlaces.Remove(deletedFave);
             MappableFavoritePlaces.Remove(deletedFave as IMapPoi);
 
@@ -193,15 +214,16 @@ namespace DigiTransit10.ViewModels
         }
 
         private void AddFavoriteRoute(IFavorite route)
-        {
+        {            
             GroupedFavoriteRoutes.Add(route);
+
             var faveRoute = (FavoriteRoute)route;
             IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
                     .SelectMany(str => GooglePolineDecoder.Decode(str))
                     .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
             var mapLine = new ColoredMapLine(mapPoints, faveRoute.FavoriteId);
-            
-            mapLine.FavoriteId = faveRoute.FavoriteId;            
+
+            mapLine.FavoriteId = faveRoute.FavoriteId;
 
             MappableFavoriteRoutes.Add(mapLine);
 
@@ -209,14 +231,64 @@ namespace DigiTransit10.ViewModels
         }
 
         private void RemoveFavoriteRoute(IFavorite route)
-        {
+        {            
             GroupedFavoriteRoutes.Remove(route);
 
             var faveRoute = (FavoriteRoute)route;
-            var toRemove = MappableFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == faveRoute.FavoriteId);
+            ColoredMapLine toRemove = MappableFavoriteRoutes
+                .FirstOrDefault(x => x.FavoriteId == faveRoute.FavoriteId);
             MappableFavoriteRoutes.Remove(toRemove);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
+        }
+
+        private void SetAsOrigin(IFavorite obj)
+        {
+            //navigate back to main page, with the selected favorite as the origin
+            throw new NotImplementedException();
+        }
+
+        private void SetAsDestination(IFavorite obj)
+        {
+            //navigate back to the main page with the selected favorite as the detination
+            throw new NotImplementedException();
+        }
+
+        private void EditFavorite(IFavorite obj)
+        {
+            //bring up the AddOrEdit dialog in Edit mode
+            throw new NotImplementedException();
+        }
+
+        private void ToggleSelection(IFavorite obj)
+        {
+            if (ListSelectionMode == ListViewSelectionMode.None)
+            {
+                ListSelectionMode = ListViewSelectionMode.Multiple;
+                if (_selectedItems != null && obj != null)
+                {
+                    _selectedItems.Add(obj);
+                }
+            }
+            else
+            {
+                ListSelectionMode = ListViewSelectionMode.None;
+            }            
+        }
+
+        private void PinToStart(IFavorite obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PinToMainPage(IFavorite obj)
+        {
+            _settingsService.AddPinnedFavorite(obj);
+        }
+
+        private void SelectionChanged(IList<object> obj)
+        {
+            _selectedItems = obj;
         }
     }
 }

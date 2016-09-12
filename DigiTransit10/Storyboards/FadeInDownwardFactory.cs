@@ -16,6 +16,11 @@ namespace DigiTransit10.Storyboards
         /// <returns>A <see cref="Storyboard"/> that defines the animation.</returns>
         public static Storyboard GetAnimation(DependencyObject target)
         {
+            if (target == null)
+            {
+                return null;
+            }
+
             var storyboard = new Storyboard();
 
             RepositionThemeAnimation repositionAnimation = new RepositionThemeAnimation

@@ -96,6 +96,16 @@ namespace DigiTransit10.Views
                 && _pinnedFavoritesList != null
                 && _isPlayingExitAnimation)
             {
+                //double check to make sure that the PlanTrip actually found a Trip
+                if(!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults) 
+                    || BootStrapper.Current.SessionState[NavParamKeys.PlanResults] == null)
+                {
+                    _pinnedFavoriteClicked = null;
+                    _pinnedFavoritesList = null;
+                    _isPlayingExitAnimation = false;
+                    return;
+                }
+
                 e.Cancel = true;
 
                 var clickedItem = (FrameworkElement)_pinnedFavoritesList.ContainerFromItem(_pinnedFavoriteClicked);

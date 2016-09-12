@@ -159,9 +159,11 @@
     <Compile Include="Converters\DateTimeToLocalTimeStringConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\ListViewSelectionModeToBoolConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\SecondsSinceDayStartToTimeConverter.cs" />
+    <Compile Include="Converters\SelectionChangedConverter.cs" />
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
@@ -237,6 +239,9 @@
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\TripPlan.cs" />
+    <Compile Include="Controls\MovableAppBarToggleButton.xaml.cs">
+      <DependentUpon>MovableAppBarToggleButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\CustomFontService.cs" />
@@ -408,6 +413,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Controls\TripResultContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MovableAppBarToggleButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -65,6 +65,7 @@ namespace DigiTransit10.Services.SettingsServices
             }
         }
 
+        //todo: make the list only actually hold PinnedFavoritePlacesNumber of elements
         private List<IFavorite> _pinnedFavorites;
         public IReadOnlyList<IFavorite> PinnedFavorites
         {

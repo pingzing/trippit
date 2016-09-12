@@ -1,22 +1,15 @@
-﻿using DigiTransit10.Helpers;
-using DigiTransit10.Models;
+﻿using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Controls.Maps;
+using DigiTransit10.ExtensionMethods;
+using System.Threading.Tasks;
+using DigiTransit10.ViewModels.ControlViewModels;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -34,26 +27,29 @@ namespace DigiTransit10.Views
             this.InitializeComponent();
         }
 
-        private void Favorite_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            ListView list = sender as ListView;
-            IFavorite tappedItem = (IFavorite)((FrameworkElement)e.OriginalSource).DataContext;
+            var list = sender as ListView;
+            var tappedItem = (IFavorite)e.ClickedItem;
             if (list == null)
             {
                 return;
+            }            
+
+            if(list.SelectionMode == ListViewSelectionMode.Multiple)
+            {
+                return;
             }
-            MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(list) as MenuFlyout;
-            ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = tappedItem;
-            flyout.ShowAt(this, e.GetPosition(this));
-        }
-
-        private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)
-        {
-
+            
+            var listContainer = (FrameworkElement)list.ContainerFromItem(e.ClickedItem);
+            RelativePanel ownerPanel = listContainer.FindChild<RelativePanel>("ListItemPanel");
+            var flyout = FlyoutBase.GetAttachedFlyout(ownerPanel) as MenuFlyout;                                    
+            
+            flyout.ShowAt(listContainer);
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
+        {            
             var boundingBox = this.FavoritesMap.GetMapIconsBoundingBox();
             if (boundingBox != null)
             {

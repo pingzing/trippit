@@ -194,7 +194,7 @@
     </Style>
 
     <!--Overriding the default style, because it's _stupid_. It doesn't allow scrolling. I mean, really.-->
-    <Style TargetType="ContentDialog">
+    <Style x:Key="ScrollableContentDialogStyle" TargetType="ContentDialog">
         <Setter Property="Foreground" Value="{ThemeResource SystemControlPageTextBaseHighBrush}" />
         <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
@@ -216,9 +216,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Border x:Name="BackgroundElement" Background="{TemplateBinding Background}" FlowDirection="{TemplateBinding FlowDirection}" BorderThickness="{ThemeResource ContentDialogBorderWidth}" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}" MaxWidth="{TemplateBinding MaxWidth}" MaxHeight="{TemplateBinding MaxHeight}" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" >
-                                <Grid x:Name="DialogSpace" VerticalAlignment="Stretch">
+                                <Grid x:Name="DialogSpace" VerticalAlignment="Stretch" Padding="10">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
@@ -226,7 +225,6 @@
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
-                                                <!--The line below is the only change. The default style sets it to "Auto".-->
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <ContentControl x:Name="Title" Margin="{ThemeResource ContentDialogTitleMargin}" Content="{TemplateBinding Title}" ContentTemplate="{TemplateBinding TitleTemplate}" FontSize="20" FontFamily="XamlAutoFontFamily" FontWeight="Normal" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Left" VerticalAlignment="Top" IsTabStop="False" MaxHeight="{ThemeResource ContentDialogTitleMaxHeight}" >

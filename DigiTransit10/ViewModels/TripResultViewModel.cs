@@ -113,6 +113,7 @@ namespace DigiTransit10.ViewModels
                 return;
             }
             var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
+            BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
             if (foundPlan?.PlanItineraries == null)
             {
                 return;

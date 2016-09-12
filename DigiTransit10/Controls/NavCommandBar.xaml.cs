@@ -129,7 +129,7 @@ namespace DigiTransit10.Controls
                     }
                     else //no more space, start removing PrimaryCommands
                     {
-                        var buttonToMove = (MovableAppBarButton)this.PrimaryCommands.Max(x => x as ISortableAppBarButton);
+                        var buttonToMove = (ICommandBarElement)this.PrimaryCommands.Max(x => x as ISortableAppBarButton);
                         if (buttonToMove == null)
                         {
                             break;
@@ -154,14 +154,14 @@ namespace DigiTransit10.Controls
                     }
 
                     //start by adding by PrimaryCommands
-                    var primaryCommand = (MovableAppBarButton)this.SecondaryCommands
-                        .Where(x => x is MovableAppBarButton)
+                    var barButton = (ICommandBarElement)this.SecondaryCommands
+                        .Where(x => !(x is NavAppBarButton))
                         .Min(x => x as ISortableAppBarButton);
 
-                    if (primaryCommand != null)
+                    if (barButton != null)
                     {
-                        this.SecondaryCommands.Remove(primaryCommand);
-                        InsertToPrimaryBar(primaryCommand);
+                        this.SecondaryCommands.Remove(barButton);
+                        InsertToPrimaryBar(barButton);
                         primaryCommandsWidth += appButtonWidth;
                     }
                     else
@@ -193,11 +193,11 @@ namespace DigiTransit10.Controls
             UpdateButtonLabels(IsOpen);
         }
 
-        private void InsertToPrimaryBar(MovableAppBarButton primaryCommand)
+        private void InsertToPrimaryBar(ICommandBarElement primaryCommand)
         {
             this.PrimaryCommands.Add(primaryCommand);
-            primaryCommand.IsEnabled = true;
-            primaryCommand.IsSecondaryCommand = false;
+            ((Control)primaryCommand).IsEnabled = true;
+            ((ISortableAppBarButton)primaryCommand).IsSecondaryCommand = false;
 
             TryRemoveSecondarySeparator();
         }
@@ -238,9 +238,9 @@ namespace DigiTransit10.Controls
             }
         }
 
-        private void InsertToSecondaryBar(MovableAppBarButton buttonToMove)
+        private void InsertToSecondaryBar(ICommandBarElement buttonToMove)
         {
-            buttonToMove.IsSecondaryCommand = true;
+            ((ISortableAppBarButton)buttonToMove).IsSecondaryCommand = true;
             if (SecondaryCommands.Any(x => x is NavAppBarButton) && !SecondaryCommands.Any(x => x is AppBarSeparator))
             {
                 SecondaryCommands.Add(new AppBarSeparator());
@@ -262,7 +262,7 @@ namespace DigiTransit10.Controls
                 for (int i = startIndex; i < SecondaryCommands.Count; i++)
                 {
                     int currCommandPosition = ((ISortableAppBarButton)SecondaryCommands[i]).Position;
-                    if (buttonToMove.Position < currCommandPosition)
+                    if (((ISortableAppBarButton)buttonToMove).Position < currCommandPosition)
                     {
                         SecondaryCommands.Insert(i, buttonToMove);                        
                         return;
@@ -278,7 +278,7 @@ namespace DigiTransit10.Controls
             if (SecondaryCommands.Any(x => x is AppBarSeparator) && ( 
                     SecondaryCommands.Count == 0
                     || !SecondaryCommands.Any(x => x is NavAppBarButton)
-                    || !SecondaryCommands.Any(x => x is MovableAppBarButton)
+                    || !SecondaryCommands.Any(x => x is ISortableAppBarButton)
                 ))
             {
                 int separatorIndex = SecondaryCommands.IndexOf(SecondaryCommands.First(x => x is AppBarSeparator));

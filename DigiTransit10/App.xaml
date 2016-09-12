@@ -31,6 +31,8 @@
             <conv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
             <conv:SecondsSinceDayStartToTimeConverter x:Key="SecondsSinceDayStartToTimeConverter"/>
             <conv:DateTimeToLocalTimeStringConverter x:Key="DateTimeToLocalTimeStringConverter"/>
+            <conv:SelectionChangedConverter x:Key="SelectionChangedConverter"/>
+            <conv:ListViewSelectionModeToBoolConverter x:Key="ListViewSelectionModeToBoolConverter"/>
 
             <Style x:Key="NoStyleButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
