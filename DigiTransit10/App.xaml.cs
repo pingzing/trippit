@@ -14,6 +14,8 @@ using Windows.UI.ViewManagement;
 using Windows.Foundation.Metadata;
 using DigiTransit10.ExtensionMethods;
 using Microsoft.HockeyApp;
+using MetroLog;
+using MetroLog.Targets;
 
 namespace DigiTransit10
 {
@@ -40,9 +42,11 @@ namespace DigiTransit10
             ShowShellBackButton = _settings.UseShellBackButton;
             RequestedTheme = SettingsService.Instance.AppTheme;
 
-            #endregion
-            
-            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");
+            #endregion            
+
+            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());            
+
+            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");                
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
@@ -72,7 +76,7 @@ namespace DigiTransit10
 
             DispatcherHelper.Initialize();            
             await Task.CompletedTask;
-        }
+        }        
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {

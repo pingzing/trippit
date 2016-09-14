@@ -11,6 +11,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Template10.Common;
 using DigiTransit10.Views;
 using Windows.UI.Xaml.Media.Animation;
+using MetroLog;
 
 namespace DigiTransit10.ViewModels
 {
@@ -19,13 +20,16 @@ namespace DigiTransit10.ViewModels
     {
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
+        private readonly ILogger _logger;
         private readonly Services.SettingsServices.SettingsService _settingsService;
 
-        public MainViewModel(INetworkService networkService, IMessenger messengerService, Services.SettingsServices.SettingsService settings)
+        public MainViewModel(INetworkService networkService, IMessenger messengerService, 
+            Services.SettingsServices.SettingsService settings, ILogger logger)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
+            _logger = logger;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
 
@@ -42,8 +46,10 @@ namespace DigiTransit10.ViewModels
 
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
+            _logger.Debug("Entering MainViewModel.PlanFound...");
             if(!SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
             {
+                _logger.Fatal("Exception in MainViewModel.PlanFound. SessionState does not contain key CurrentMainPageVisualStateKey. Crashing...");
                 throw new ArgumentNullException("CurrentMainPageVisualStateKey");
             }
 

@@ -21,6 +21,8 @@ using System.Linq;
 using static DigiTransit10.Helpers.Enums;
 using Template10.Services.NavigationService;
 using DigiTransit10.ViewModels.ControlViewModels;
+using MetroLog;
+using Newtonsoft.Json;
 
 namespace DigiTransit10.ViewModels
 {
@@ -32,6 +34,7 @@ namespace DigiTransit10.ViewModels
         private readonly IGeolocationService _geolocationService;
         private readonly IDialogService _dialogService;
         private readonly IFavoritesService _favoritesService;
+        private readonly ILogger _logger;
 
         private bool _isBusy;
         private string _currentBusyMessage;
@@ -217,14 +220,15 @@ namespace DigiTransit10.ViewModels
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
-            IDialogService dialogService, IFavoritesService favoritesService)
+            IDialogService dialogService, IFavoritesService favoritesService, ILogger logger)
         {
             _networkService = netService;
             _settingsService = settings;
             _messengerService = messengerService;
             _geolocationService = geolocationService;
             _dialogService = dialogService;
-            _favoritesService = favoritesService;            
+            _favoritesService = favoritesService;
+            _logger = logger;
         }
 
         private void TransitTogglePannel()
@@ -323,6 +327,7 @@ namespace DigiTransit10.ViewModels
                     BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
                 }
 
+                _logger.Debug($"About to call PlanFound with Plan:\n{JsonConvert.SerializeObject(newPlan)}");
                 _messengerService.Send(new MessageTypes.PlanFoundMessage());
             }
             catch (OperationCanceledException ex)

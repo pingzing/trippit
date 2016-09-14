@@ -4,6 +4,7 @@ using Microsoft.Practices.ServiceLocation;
 using DigiTransit10.Backend;
 using GalaSoft.MvvmLight.Messaging;
 using System.Threading.Tasks;
+using MetroLog;
 
 namespace DigiTransit10.Services
 {
@@ -37,6 +38,7 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
                 SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
                 SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));
+                SimpleIoc.Default.Register<ILogger>(() => LogManagerFactory.DefaultLogManager.GetLogger("GlobalLogger"));
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
@@ -53,7 +55,7 @@ namespace DigiTransit10.Services
         public async Task CleanupAsync()
         {
             //Serialize data that needs serializing, etc etc
-            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushPinnedFavoritesToStorage();
+            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushPinnedFavoritesToStorage();            
             await SimpleIoc.Default.GetInstance<IFavoritesService>().FlushFavoritesAsync();
         }
     }

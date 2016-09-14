@@ -21,6 +21,7 @@ using Windows.Storage;
 using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Services.SettingsServices;
 using Newtonsoft.Json;
+using MetroLog;
 
 namespace DigiTransit10.ViewModels
 {
@@ -31,6 +32,7 @@ namespace DigiTransit10.ViewModels
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
         private readonly IFileService _fileService;
+        private readonly ILogger _logger;
 
         public RelayCommand<TripItinerary> ShowTripDetailsCommand => new RelayCommand<TripItinerary>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
@@ -86,13 +88,14 @@ namespace DigiTransit10.ViewModels
         }
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings,
-            IFavoritesService favorites, IFileService fileService)
+            IFavoritesService favorites, IFileService fileService, ILogger logger)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
             _favoritesService = favorites;
             _fileService = fileService;
+            _logger = logger;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
         }
@@ -108,37 +111,46 @@ namespace DigiTransit10.ViewModels
 
         private async void PlanFound(MessageTypes.PlanFoundMessage _)
         {
+            _logger.Debug($"Entering {nameof(PlanFound)} in TripResultViewModel.");
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
                 return;
             }
+
+            _logger.Debug($"Pulling PlanFound out of session state dict.");
             var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
+
+            _logger.Debug($"Removing PlanFound from sesstionState dict");
             BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
             if (foundPlan?.PlanItineraries == null)
             {
+                _logger.Debug($"No itineraries in PlanFound. Returning...");
                 return;
             }
 
-            //----todo: leaking abstraction here, see if we can move this to the view
-            Task waitForAnimationTask = null;
-            if (IsInDetailedState)
-            {
-                GoBackToTripList();
-                waitForAnimationTask = Task.Delay(450);
-            }
+            _logger.Debug($"Clearing TripResults...");
             TripResults.Clear();
 
+            _logger.Debug($"SettingFromName and ToName in the foundPlan.");
             FromName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
             ToName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
 
+            _logger.Debug($"Setting up delay for animation...");
+            //----todo: leaking abstraction here, see if we can move this to the view
             // Give the control enough time to animate back from the DetailedState, 
-            // so that when the TripPlanStrip does it's second render pass, it gets accurate values.
-            if (waitForAnimationTask != null) await waitForAnimationTask;
-
+            // so that when the TripPlanStrip does it's second render pass, it gets accurate values.            
+            if (IsInDetailedState)
+            {
+                _logger.Debug($"In detailed state, but got a new plan. Navigating TripResultForm back to trip list...");
+                GoBackToTripList();
+                await Task.Delay(450);
+            }
             //----end todo
 
+            _logger.Debug($"Adding trip results to the results list...");
             foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
             {
+                _logger.Debug($"Adding {itinerary.StartingPlaceName} -> {itinerary.EndingPlaceName} with {itinerary.ItineraryLegs.Count} legs to the list.");
                 TripResults.Add(itinerary);
             }
         }
