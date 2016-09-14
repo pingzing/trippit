@@ -146,7 +146,7 @@ namespace DigiTransit10.Controls
                 while (currWidth - navWidth - primaryCommandsWidth >= appButtonWidth
                     && this.SecondaryCommands.Count > 0) //the bar has space for at least one button, and there are buttons to add
                 {
-                    //If we're adding back the first PrimaryCommand, factor in the width of the separator we'll be adding too
+                    //If we're adding back the first PrimaryCommand, also factor in the width of the separator
                     if(PrimaryCommands.Count == 0
                         && currWidth - navWidth - primaryCommandsWidth - separatorWidth < appButtonWidth)
                     {
