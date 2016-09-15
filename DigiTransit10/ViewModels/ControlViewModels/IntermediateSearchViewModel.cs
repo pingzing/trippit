@@ -38,6 +38,12 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             _parentVm = parentVm;
         }
 
+        public IntermediateSearchViewModel(TripFormViewModel parentVm, IPlace intermediatePlace)
+        {
+            _parentVm = parentVm;
+            IntermediatePlace = intermediatePlace;
+        }
+
         private void SwapLocations()
         {
             _parentVm.SwapIntermediateLocationCommand.Execute(this);

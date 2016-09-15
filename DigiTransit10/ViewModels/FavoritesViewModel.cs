@@ -18,6 +18,9 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI;
 using DigiTransit10.ViewModels.ControlViewModels;
 using Windows.UI.Xaml.Controls;
+using Template10.Services.NavigationService;
+using DigiTransit10.Views;
+using DigiTransit10.Helpers.PageNavigationContainers;
 
 namespace DigiTransit10.ViewModels
 {
@@ -26,7 +29,7 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
-        private readonly IFavoritesService _favoritesService;
+        private readonly IFavoritesService _favoritesService;        
 
         private IList<object> _selectedItems = null;
 
@@ -110,19 +113,20 @@ namespace DigiTransit10.ViewModels
         public RelayCommand AddNewFavoriteCommand => new RelayCommand(AddNewFavorite);
         public RelayCommand<IFavorite> EditFavoriteCommand => new RelayCommand<IFavorite>(EditFavorite);        
         public RelayCommand<IFavorite> DeleteFavoriteCommand => new RelayCommand<IFavorite>(DeleteFavorite);
-        public RelayCommand<IFavorite> SetAsOriginCommand => new RelayCommand<IFavorite>(SetAsOrigin);
-        public RelayCommand<IFavorite> SetAsDestinationCommand => new RelayCommand<IFavorite>(SetAsDestination);
+        public RelayCommand<IPlace> SetAsOriginCommand => new RelayCommand<IPlace>(SetAsOrigin);
+        public RelayCommand<IPlace> SetAsDestinationCommand => new RelayCommand<IPlace>(SetAsDestination);
         public RelayCommand<IFavorite> ToggleSelectionCommand => new RelayCommand<IFavorite>(ToggleSelection);
         public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);        
         public RelayCommand<IFavorite> PinToMainPageCommand => new RelayCommand<IFavorite>(PinToMainPage);
         public RelayCommand<IList<object>> SelectionChangedCommand => new RelayCommand<IList<object>>(SelectionChanged);
 
-        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, IFavoritesService favoritesService)
+        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, 
+            IFavoritesService favoritesService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();            
 
             Favorites.Add(GroupedFavoritePlaces);
             Favorites.Add(GroupedFavoriteRoutes);
@@ -242,16 +246,16 @@ namespace DigiTransit10.ViewModels
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
 
-        private void SetAsOrigin(IFavorite obj)
+        private void SetAsOrigin(IPlace obj)
         {
-            //navigate back to main page, with the selected favorite as the origin
-            throw new NotImplementedException();
+            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsOrigin);
+            NavigationService.NavigateAsync(typeof(MainPage), args);
         }
 
-        private void SetAsDestination(IFavorite obj)
+        private void SetAsDestination(IPlace obj)
         {
-            //navigate back to the main page with the selected favorite as the detination
-            throw new NotImplementedException();
+            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsDestination);
+            NavigationService.NavigateAsync(typeof(MainPage), args);
         }
 
         private void EditFavorite(IFavorite obj)

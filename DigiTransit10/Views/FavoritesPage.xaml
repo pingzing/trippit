@@ -110,7 +110,7 @@
                                                         Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsOriginCommand, Mode=OneTime}"
                                                         CommandParameter="{x:Bind}"/>
                                         <MenuFlyoutItem Text="Set as destination"
-                                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsDesinationCommand, Mode=OneTime}"
+                                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsDestinationCommand, Mode=OneTime}"
                                                         CommandParameter="{x:Bind}"/>
                                         <MenuFlyoutSeparator/>
                                         <MenuFlyoutItem Text="Select"

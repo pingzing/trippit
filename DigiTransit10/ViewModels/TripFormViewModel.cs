@@ -24,6 +24,7 @@ using DigiTransit10.ViewModels.ControlViewModels;
 using MetroLog;
 using Newtonsoft.Json;
 using static DigiTransit10.Helpers.MessageTypes;
+using DigiTransit10.Helpers.PageNavigationContainers;
 
 namespace DigiTransit10.ViewModels
 {
@@ -334,8 +335,7 @@ namespace DigiTransit10.ViewModels
                     BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
                     BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
                 }
-
-                _logger.Debug($"About to call PlanFound with Plan:\n{JsonConvert.SerializeObject(newPlan)}");
+                
                 _messengerService.Send(new MessageTypes.PlanFoundMessage(CurrentVisualState));
             }
             catch (OperationCanceledException ex)
@@ -642,6 +642,34 @@ namespace DigiTransit10.ViewModels
 
             FillPinnedFavorites();
             BootStrapper.BackRequested += BootStrapper_BackRequested;
+
+            //---PlanTripFromFavorites
+            var navArgs = parameter as NavigateWithFavoritePlaceArgs;
+            if(navArgs != null)
+            {
+                if(navArgs.PlaceNavigationType == NavigationType.AsDestination)
+                {
+                    ToPlace = navArgs.Place;
+                }
+                else if(navArgs.PlaceNavigationType == NavigationType.AsOrigin)
+
+                {
+                    FromPlace = navArgs.Place;
+                }
+                else if(navArgs.PlaceNavigationType  == NavigationType.AsIntermediate)
+                {
+                    if(navArgs.IntermediateIndex != null)
+                    {
+                        IntermediatePlaces.Insert(navArgs.IntermediateIndex.Value, new IntermediateSearchViewModel(this, navArgs.Place));
+                    }
+                }
+                if (PlanTripCommand.CanExecute(null))
+                {
+                    PlanTripCommand.Execute(null);
+                }
+            }
+            //---End PlanTripFromFavorites
+
             await Task.CompletedTask;
         }
 
