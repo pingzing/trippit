@@ -46,15 +46,10 @@ namespace DigiTransit10.ViewModels
 
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
-            _logger.Debug("Entering MainViewModel.PlanFound...");
-            if(!SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
+            _logger.Debug("Entering MainViewModel.PlanFound...");            
+            if(planFoundMessage.VisualState == MessageTypes.VisualStateType.Narrow)
             {
-                _logger.Fatal("Exception in MainViewModel.PlanFound. SessionState does not contain key CurrentMainPageVisualStateKey. Crashing...");
-                throw new ArgumentNullException("CurrentMainPageVisualStateKey");
-            }
-
-            if((string)SessionState[Constants.CurrentMainPageVisualStateKey] == Constants.VisualStateNarrow)
-            {
+                _logger.Debug("Navigating from MainViewModel to TripResultPage in Narrow view...");
                 NavigationService.NavigateAsync(typeof(TripResultPage));
             }
         }

@@ -37,25 +37,28 @@ namespace DigiTransit10.Views
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             string currentStateName = AdaptiveVisualStateGroup.CurrentState.Name;
-            if (BootStrapper.Current.SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
-            {
-                BootStrapper.Current.SessionState[Constants.CurrentMainPageVisualStateKey] = currentStateName;
-            }
-            else
-            {
-                BootStrapper.Current.SessionState.Add(Constants.CurrentMainPageVisualStateKey, currentStateName);
-            }
+            UpdateViewModelVisualState(currentStateName);
         }
 
         private void AdaptiveVisualStateGroup_CurrentStateChanged(object sender, VisualStateChangedEventArgs e)
         {
-            if (BootStrapper.Current.SessionState.ContainsKey(Constants.CurrentMainPageVisualStateKey))
+            string currentStateName = AdaptiveVisualStateGroup.CurrentState.Name;
+            UpdateViewModelVisualState(currentStateName);
+        }
+
+        private void UpdateViewModelVisualState(string currentStateName)
+        {
+            if (currentStateName == Constants.VisualStateNarrow)
             {
-                BootStrapper.Current.SessionState[Constants.CurrentMainPageVisualStateKey] = e.NewState.Name;
+                ViewModel.TripFormViewModel.CurrentVisualState = VisualStateType.Narrow;
             }
-            else
+            else if (currentStateName == Constants.VisualStateNormal)
             {
-                BootStrapper.Current.SessionState.Add(Constants.CurrentMainPageVisualStateKey, e.NewState.Name);
+                ViewModel.TripFormViewModel.CurrentVisualState = VisualStateType.Normal;
+            }
+            else if (currentStateName == Constants.VisualStateWide)
+            {
+                ViewModel.TripFormViewModel.CurrentVisualState = VisualStateType.Wide;
             }
         }
 

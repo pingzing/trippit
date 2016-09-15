@@ -52,10 +52,7 @@ namespace DigiTransit10.Helpers
 
         //Font names as they appear in the .ttf file
         public const string HslPiktoNormalFontName = "HSL-Pikto";
-        public const string HslPiktoFrameFontName = "HSL-Pikto Frame";
-
-        //Global dictionary Current Visual State keys
-        public const string CurrentMainPageVisualStateKey = "CurrentMainPageVisualState";
+        public const string HslPiktoFrameFontName = "HSL-Pikto Frame";        
 
         //Visual state names
         public const string VisualStateNarrow = "VisualStateNarrow";

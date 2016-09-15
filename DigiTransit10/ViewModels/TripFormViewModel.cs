@@ -23,6 +23,7 @@ using Template10.Services.NavigationService;
 using DigiTransit10.ViewModels.ControlViewModels;
 using MetroLog;
 using Newtonsoft.Json;
+using static DigiTransit10.Helpers.MessageTypes;
 
 namespace DigiTransit10.ViewModels
 {
@@ -165,6 +166,13 @@ namespace DigiTransit10.ViewModels
         {
             get { return _intermediatePlaces; }
             set { Set(ref _intermediatePlaces, value); }
+        }
+
+        private VisualStateType _currentVisualState;
+        public VisualStateType CurrentVisualState
+        {
+            get { return _currentVisualState; }
+            set { Set(ref _currentVisualState, value); }
         }
 
         private RelayCommand _planTripCommand = null;
@@ -328,7 +336,7 @@ namespace DigiTransit10.ViewModels
                 }
 
                 _logger.Debug($"About to call PlanFound with Plan:\n{JsonConvert.SerializeObject(newPlan)}");
-                _messengerService.Send(new MessageTypes.PlanFoundMessage());
+                _messengerService.Send(new MessageTypes.PlanFoundMessage(CurrentVisualState));
             }
             catch (OperationCanceledException ex)
             {
