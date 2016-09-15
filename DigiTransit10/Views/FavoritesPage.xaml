@@ -30,8 +30,7 @@
     <Page.Resources>
         <CollectionViewSource x:Key="FavoritesViewSourceKey"
                               x:Name="FavoritesViewSource"
-                              IsSourceGrouped="True"
-                              Source="{x:Bind ViewModel.Favorites, Mode=OneWay}"/>
+                              IsSourceGrouped="True"/>
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
             <Grid Margin="10">
@@ -46,8 +45,8 @@
                                Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
                                Style="{StaticResource EmptyListHeaderStyle}"/>
                 <ListView x:Name="FavoritesListView"
-                          ItemClick="FavoritesListView_ItemClick"
-                          IsItemClickEnabled="True"
+                          ItemClick="FavoritesListView_ItemClick"                          
+                          IsItemClickEnabled="True"                          
                           IsMultiSelectCheckBoxEnabled="True"
                           ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"                                                  
                           SelectionMode="{x:Bind ListSelectionMode, Mode=TwoWay}">
@@ -70,17 +69,21 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:IFavorite">
-                            <RelativePanel x:Name="ListItemPanel">
+                            <!--The background is set because a transparent background (which is the default) 
+                            causes tap and click events to be ignored if they occur on the element's background.-->
+                            <RelativePanel x:Name="ListItemPanel" Background="{StaticResource MostlyTransparentWhite}" VerticalAlignment="Stretch">
                                 <RelativePanel.ChildrenTransitions>
                                     <TransitionCollection>
                                         <RepositionThemeTransition/>
                                     </TransitionCollection>
                                 </RelativePanel.ChildrenTransitions>
                                 <TextBlock x:Name="RouteNameBlock" 
+                                           RelativePanel.AlignVerticalCenterWithPanel="True"
                                            Text="{x:Bind UserChosenName}" 
                                            Style="{StaticResource BodyTextBlockStyle}"/>
                                 <FontIcon x:Name="ListChevron"
@@ -118,6 +121,11 @@
                                                         CommandParameter="{x:Bind}"/>
                                     </MenuFlyout>
                                 </FlyoutBase.AttachedFlyout>
+                                <Interactivity:Interaction.Behaviors>
+                                    <Core:EventTriggerBehavior EventName="RightTapped">
+                                        <Behaviors:OpenFlyoutAction/>
+                                    </Core:EventTriggerBehavior>
+                                </Interactivity:Interaction.Behaviors>
                             </RelativePanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

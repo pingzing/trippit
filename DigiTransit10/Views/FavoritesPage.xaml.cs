@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls.Maps;
 using DigiTransit10.ExtensionMethods;
 using System.Threading.Tasks;
 using DigiTransit10.ViewModels.ControlViewModels;
+using Windows.UI.Xaml.Data;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,6 +26,15 @@ namespace DigiTransit10.Views
         public FavoritesPage()
         {
             this.InitializeComponent();
+
+            //Doing this in code-behind, because doing it in XAML breaks the XAML designer.
+            var collectionViewSourceBinding = new Binding();            
+            collectionViewSourceBinding.Source = ViewModel.Favorites;
+            collectionViewSourceBinding.Mode = BindingMode.OneWay;
+
+            BindingOperations.SetBinding(FavoritesViewSource, 
+                CollectionViewSource.SourceProperty, 
+                collectionViewSourceBinding);
         }
 
         private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -40,12 +50,11 @@ namespace DigiTransit10.Views
             {
                 return;
             }
-            
-            var listContainer = (FrameworkElement)list.ContainerFromItem(e.ClickedItem);
-            RelativePanel ownerPanel = listContainer.FindChild<RelativePanel>("ListItemPanel");
-            var flyout = FlyoutBase.GetAttachedFlyout(ownerPanel) as MenuFlyout;                                    
-            
-            flyout.ShowAt(listContainer);
+
+            if (ViewModel.SetAsDestinationCommand.CanExecute(tappedItem))
+            {
+                ViewModel.SetAsDestinationCommand.Execute(tappedItem);
+            }
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -55,6 +64,24 @@ namespace DigiTransit10.Views
             {
                 await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);
             }
+        }
+
+        private void FavoritesListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            var element = sender as FrameworkElement;
+            if(element == null)
+            {
+                return;
+            }
+
+            if (ViewModel.ListSelectionMode == ListViewSelectionMode.Multiple)
+            {
+                return;
+                //or do something else, I dunno
+            }
+
+            MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(element) as MenuFlyout;
+            flyout.ShowAt(this, e.GetPosition(this));
         }
     }
 }

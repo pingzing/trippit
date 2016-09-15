@@ -15,6 +15,7 @@
 
     <SolidColorBrush x:Key="HighlightColorBrush" Color="{ThemeResource SystemAccentColor}"/>
     <SolidColorBrush x:Key="HighOpacityBackgroundBrush" Color="{ThemeResource SystemAltHighColor}" Opacity=".8"/>
+    <SolidColorBrush x:Key="MostlyTransparentWhite" Color="White" Opacity=".0000001"/>
 
     <Style x:Key="EmptyListHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
         <Setter Property="Foreground" Value="Gray"/>
