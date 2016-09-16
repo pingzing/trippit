@@ -24,6 +24,7 @@ namespace DigiTransit10.Services
         bool RemoveFavorite(IFavorite deletedFave);
         Task<ImmutableList<IFavorite>> GetFavoritesAsync();
         Task FlushFavoritesAsync();
+        Task<ImmutableList<IFavorite>> GetPinnedFavorites();
         //void AddBookmarkedItinerary(TripItinerary newBookmark);
         //bool DeleteBookmarkedItinerary(TripItinerary deletedBookmark);
     }
@@ -85,6 +86,8 @@ namespace DigiTransit10.Services
         public void AddFavorite(IFavorite newFavorite)
         {
             _favorites.Add(newFavorite);
+                            
+            _settingsService.PushFavoriteId(newFavorite.FavoriteId);           
             FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null));            
         }
 
@@ -93,6 +96,7 @@ namespace DigiTransit10.Services
             bool success = _favorites.Remove(toRemove);
             if (success)
             {
+                _settingsService.RemovedFavoriteId(toRemove.FavoriteId);
                 FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }));                
             }
             return success;
@@ -123,6 +127,14 @@ namespace DigiTransit10.Services
             }
         }
 
+        public async Task<ImmutableList<IFavorite>> GetPinnedFavorites()
+        {
+            var idList = _settingsService.PinnedFavoriteIds;
+            return (await GetFavoritesAsync())
+                .Where(x => idList.Any(y => x.FavoriteId == y))
+                .ToImmutableList();
+        }
+
         private async Task<List<IFavorite>> DeserializeFavoritesFile()
         {
             await Initialization;
@@ -143,6 +155,6 @@ namespace DigiTransit10.Services
                 System.Diagnostics.Debug.WriteLine($"Could not deserialize favorites: {ex}: {ex.Message}");
                 return null;
             }
-        }
+        }        
     }
 }

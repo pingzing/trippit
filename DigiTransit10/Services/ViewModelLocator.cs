@@ -32,13 +32,15 @@ namespace DigiTransit10.Services
                 INetworkClient networkClient = new NetworkClient();
                 SimpleIoc.Default.Register<INetworkClient>(() => networkClient);
 
-                SimpleIoc.Default.Register<INetworkService>(() => new NetworkService(networkClient, settingsService));
+                ILogger logger = LogManagerFactory.DefaultLogManager.GetLogger("GlobalLogger");
+                SimpleIoc.Default.Register<ILogger>(() => logger);
+
+                SimpleIoc.Default.Register<INetworkService>(() => new NetworkService(networkClient, settingsService, logger));
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
                 SimpleIoc.Default.Register<IGeolocationService>(() => new GeolocationService());
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
                 SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
-                SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));
-                SimpleIoc.Default.Register<ILogger>(() => LogManagerFactory.DefaultLogManager.GetLogger("GlobalLogger"));
+                SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));                
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
@@ -55,7 +57,7 @@ namespace DigiTransit10.Services
         public async Task CleanupAsync()
         {
             //Serialize data that needs serializing, etc etc
-            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushPinnedFavoritesToStorage();            
+            SimpleIoc.Default.GetInstance<SettingsServices.SettingsService>().FlushPinnedFavoriteIdsToStorage();            
             await SimpleIoc.Default.GetInstance<IFavoritesService>().FlushFavoritesAsync();
         }
     }

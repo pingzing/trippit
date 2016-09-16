@@ -24,10 +24,12 @@
             <conv:EmptyNullToVisibilityConverter x:Key="EmptyNullToVisibilityConverter"/>
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <conv:BoolToVisibilityConverterInverted x:Key="BoolToVisibilityConverterInverted"/>
+            <conv:EmptyNullToVisibilityConverterInverted x:Key="EmptyNullToVisibilityConverterInverted"/>
+            
             <conv:TransitModeToFontIconConverter x:Key="TransitModeToFontIconConverter"/>
             <conv:TransitModeToForegroundBrushConverter x:Key="TransitModeToForegroundBrushConverter"/>
             <conv:UnixTimeToLocalTimeConverter x:Key="UnixTimeToLocalTimeConverter"/>
-            <conv:EmptyNullToVisibilityConverterInverted x:Key="EmptyNullToVisibilityConverterInverted"/>
+            
             <conv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
             <conv:SecondsSinceDayStartToTimeConverter x:Key="SecondsSinceDayStartToTimeConverter"/>
             <conv:DateTimeToLocalTimeStringConverter x:Key="DateTimeToLocalTimeStringConverter"/>

@@ -21,6 +21,7 @@ using static DigiTransit10.Models.ModelEnums;
 using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
 using static DigiTransit10.Helpers.Enums;
 using System.Linq;
+using MetroLog;
 
 namespace DigiTransit10.Services
 {
@@ -39,16 +40,19 @@ namespace DigiTransit10.Services
     {
         private readonly Backend.INetworkClient _networkClient;
         private readonly SettingsService _settingsService;
+        private readonly ILogger _logger;
+
         private HttpRequestHeaderCollection _defaultHeaders = null;
 
         public string DefaultGqlRequestUrl { get; } = "https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql";
         public string DefaultGeocodingRequestUrl { get; } = "https://api.digitransit.fi/geocoding/v1/";
 
-        public NetworkService(Backend.INetworkClient networkClient, SettingsService settingsService)
+        public NetworkService(Backend.INetworkClient networkClient, SettingsService settingsService, ILogger logger)
         {
             _networkClient = networkClient;
             _settingsService = settingsService;
             _defaultHeaders = _networkClient.DefaultHeaders;
+            _logger = logger;
         }
 
         //---GEOCODING REQUESTS---
@@ -66,19 +70,27 @@ namespace DigiTransit10.Services
                 $"&lang={_settingsService.CurrentLanguage.Substring(0, 2)}";
             Uri uri = new Uri(urlString);
 
-            var response = await _networkClient.GetAsync(uri, token);
-
-            if (response == null || !response.IsSuccessStatusCode)
+            try
             {
-                LogHttpFailure(response).DoNotAwait();
-                return ApiResult<GeocodingResponse>.Fail;
+                var response = await _networkClient.GetAsync(uri, token);
+
+                if (response == null || !response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure(response).DoNotAwait();
+                    return ApiResult<GeocodingResponse>.Fail;
+                }
+
+                GeocodingResponse geoResponse = (await response.Content.ReadAsInputStreamAsync())
+                    .AsStreamForRead()
+                    .DeseriaizeJsonFromStream<GeocodingResponse>();
+
+                return new ApiResult<GeocodingResponse>(geoResponse);
             }
-
-            GeocodingResponse geoResponse = (await response.Content.ReadAsInputStreamAsync())
-                .AsStreamForRead()
-                .DeseriaizeJsonFromStream<GeocodingResponse>();
-
-            return new ApiResult<GeocodingResponse>(geoResponse);
+            catch(Exception ex) when (ex is COMException || ex is HttpRequestException)
+            {
+                LogException(ex);
+                return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.NoConnection);
+            }
         }
 
         //---GRAPHQL REQUESTS---
@@ -266,8 +278,9 @@ namespace DigiTransit10.Services
             System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed. Reason: {reason}.");
         }
 
-        private void LogException(Exception ex)
+        private void LogException(Exception ex, [CallerMemberName]string caller = "Unknown")
         {
+            _logger.Error($"{caller} threw exception: ", ex);
             System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}\n{ex.StackTrace}");
         }
     }

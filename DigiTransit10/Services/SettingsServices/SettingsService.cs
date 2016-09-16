@@ -12,6 +12,7 @@ using Windows.System.UserProfile;
 using System.Linq;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Messaging;
+using System.Collections.Immutable;
 
 namespace DigiTransit10.Services.SettingsServices
 {
@@ -66,62 +67,72 @@ namespace DigiTransit10.Services.SettingsServices
         }
 
         //todo: make the list only actually hold PinnedFavoritePlacesNumber of elements
-        private List<IFavorite> _pinnedFavorites;
-        public IReadOnlyList<IFavorite> PinnedFavorites
+        private List<Guid> _pinnedFavoriteIds;
+        public ImmutableList<Guid> PinnedFavoriteIds
         {
             get
             {
-                if (_pinnedFavorites == null)
+                if (_pinnedFavoriteIds == null)
                 {
-                    string serialized = _helper.Read(nameof(PinnedFavorites), "", SettingsStrategies.Roam);
+                    string serialized = _helper.Read(nameof(PinnedFavoriteIds), "", SettingsStrategies.Roam);
                     if (String.IsNullOrEmpty(serialized) || serialized == "null")
                     {
-                        _pinnedFavorites = new List<IFavorite>();
-                        return _pinnedFavorites.AsReadOnly();
+                        _pinnedFavoriteIds = new List<Guid>();
+                        return _pinnedFavoriteIds.ToImmutableList();
                     }
                     else
                     {
-                        _pinnedFavorites = JsonConvert.DeserializeObject<List<IFavorite>>(serialized,
-                            new JsonSerializerSettings
-                            {
-                                TypeNameHandling = TypeNameHandling.Objects,
-                                TypeNameAssemblyFormat =
-                                    System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple
-                            });
-                        return _pinnedFavorites.AsReadOnly();
+                        _pinnedFavoriteIds = JsonConvert.DeserializeObject<List<Guid>>(serialized);
+                        return _pinnedFavoriteIds.ToImmutableList();
                     }
                 }
                 else
                 {
-                    return _pinnedFavorites.AsReadOnly();
+                    return _pinnedFavoriteIds.ToImmutableList();
                 }
             }
             set
             {
-                _pinnedFavorites = value.ToList();
-                _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites,
-                        new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects}),
-                    SettingsStrategies.Roam);
+                _pinnedFavoriteIds = value.ToList();
+                _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds), SettingsStrategies.Roam);
             }
         }
 
-        public void AddPinnedFavorite(IFavorite newPinned)
+        /// <summary>
+        /// Attempts to add the specified Favorite ID to the list of Pinned FavoriteIds. If this causes
+        /// the size of the Pinned FavoriteIds list to exceed the maximum number as defined by PinnedFavoritePlacesDisplayNumber,
+        /// then older Pinned FavoriteIds will be pushed out of the list to make room.
+        /// </summary>
+        /// <param name="newId"></param>
+        public void PushFavoriteId(Guid newId)
         {
-            _pinnedFavorites.Add(newPinned);
-            FlushPinnedFavoritesToStorage();
+            int maxAllowed = PinnedFavoritePlacesDisplayNumber;
+
+            //We're using the Property accessor here rather than the backing value to ensure that the backing value is initialized and up to date.
+            int newCount = PinnedFavoriteIds.Count + 1; 
+            int numToRemove = newCount - maxAllowed;
+            for(int i = 0; i < numToRemove; i++)
+            {
+                _pinnedFavoriteIds.Remove(_pinnedFavoriteIds.First());
+            }
+
+            _pinnedFavoriteIds.Add(newId);
+            FlushPinnedFavoriteIdsToStorage();
         }
 
-        public void RemovePinnedFavorite(IFavorite removedPinned)
+        /// <summary>
+        /// Removed the FavoriteId from the list of Pinned FavoriteIds.
+        /// </summary>
+        /// <param name="removedId"></param>
+        public void RemovedFavoriteId(Guid removedId)
         {
-            _pinnedFavorites.Remove(removedPinned);
-            FlushPinnedFavoritesToStorage();
+            _pinnedFavoriteIds.Remove(removedId);
+            FlushPinnedFavoriteIdsToStorage();
         }
 
-        public void FlushPinnedFavoritesToStorage()
+        public void FlushPinnedFavoriteIdsToStorage()
         {
-            _helper.Write(nameof(PinnedFavorites), JsonConvert.SerializeObject(_pinnedFavorites,
-                        new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects }),
-                    SettingsStrategies.Roam);
+            _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds), SettingsStrategies.Roam);
         }
 
         /// <summary>
@@ -130,8 +141,8 @@ namespace DigiTransit10.Services.SettingsServices
         public int PinnedFavoritePlacesDisplayNumber
         {
             //local, because this is going to differ greatly on display size, and roaming it doesn't make a lot of sense.
-            get { return _helper.Read(nameof(PinnedFavorites), 3, SettingsStrategies.Local); }
-            set { _helper.Write(nameof(PinnedFavorites), value, SettingsStrategies.Local); }
+            get { return _helper.Read(nameof(PinnedFavoritePlacesDisplayNumber), 3, SettingsStrategies.Local); }
+            set { _helper.Write(nameof(PinnedFavoritePlacesDisplayNumber), value, SettingsStrategies.Local); }
         }
 
         //todo: make this persist somehow

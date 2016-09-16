@@ -193,6 +193,7 @@ namespace DigiTransit10.ViewModels
             var route = new FavoriteRoute
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
+                FavoriteId = Guid.NewGuid(),                
                 IconFontFace = Constants.SymbolFontFamily,
                 UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",
             };

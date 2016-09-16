@@ -25,6 +25,7 @@ using MetroLog;
 using Newtonsoft.Json;
 using static DigiTransit10.Helpers.MessageTypes;
 using DigiTransit10.Helpers.PageNavigationContainers;
+using DigiTransit10.ExtensionMethods;
 
 namespace DigiTransit10.ViewModels
 {
@@ -453,6 +454,7 @@ namespace DigiTransit10.ViewModels
             FavoritePlace newFavoritePlace = new FavoritePlace
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
+                FavoriteId = Guid.NewGuid(),
                 IconFontFace = "Segoe MDL2 Assets",
                 Lat = place.Lat,
                 Lon = place.Lon,
@@ -463,18 +465,15 @@ namespace DigiTransit10.ViewModels
             _favoritesService.AddFavorite(newFavoritePlace);
         }
 
-        private void FillPinnedFavorites()
+        private async Task FillPinnedFavorites()
         {                        
-            if(_settingsService.PinnedFavorites.Count == 0)
+            if(_settingsService.PinnedFavoriteIds.Count == 0)
             {
                 PinnedFavorites.Clear();
                 return;
-            }            
+            }
 
-            int numPinnedToDisplay = _settingsService.PinnedFavoritePlacesDisplayNumber;
-            var pinned = _settingsService.PinnedFavorites.Count >= numPinnedToDisplay 
-                ? new List<IFavorite>(_settingsService.PinnedFavorites.Take(numPinnedToDisplay)) 
-                : new List<IFavorite>(_settingsService.PinnedFavorites);
+            var pinned = await _favoritesService.GetPinnedFavorites();
 
             var toRemove = PinnedFavorites.Except(pinned).ToList();
             foreach(var staleFave in toRemove)
@@ -487,29 +486,9 @@ namespace DigiTransit10.ViewModels
             }            
         }
 
-        private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
-        {
-            if (args.AddedFavorites?.Count > 0
-                && _settingsService.PinnedFavorites?.Count < _settingsService.PinnedFavoritePlacesDisplayNumber)
-            {
-                int maxToAdd = _settingsService.PinnedFavoritePlacesDisplayNumber - _settingsService.PinnedFavorites.Count;
-                int toAdd = Math.Min(maxToAdd, args.AddedFavorites.Count);
-                foreach(var newPinned in args.AddedFavorites.Take(toAdd))
-                {
-                    _settingsService.AddPinnedFavorite(newPinned);
-                }
-            }
-            if (args.RemovedFavorites?.Count > 0 && _settingsService.PinnedFavorites?.Count > 0)
-            {
-                foreach (var removed in args.RemovedFavorites)
-                {
-                    _settingsService.RemovePinnedFavorite(removed);
-                }
-            }
-            if(args.RemovedFavorites?.Count > 0 || args.AddedFavorites?.Count > 0)
-            {
-                FillPinnedFavorites();
-            }
+        private async void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
+        {            
+            await FillPinnedFavorites();
         }
 
         private void FavoritePlaceClicked(FavoritePlace obj)
@@ -523,8 +502,8 @@ namespace DigiTransit10.ViewModels
 
         private void RemovePinnedFavorite(IFavorite favorite)
         {
-            _settingsService.RemovePinnedFavorite(favorite);
-            FillPinnedFavorites();
+            _settingsService.RemovedFavoriteId(favorite.FavoriteId);
+            FillPinnedFavorites().DoNotAwait();
         }
 
         private void SwapFirstLocation()
@@ -639,8 +618,7 @@ namespace DigiTransit10.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
-
-            FillPinnedFavorites();
+            
             BootStrapper.BackRequested += BootStrapper_BackRequested;
 
             //---PlanTripFromFavorites
@@ -669,6 +647,8 @@ namespace DigiTransit10.ViewModels
                 }
             }
             //---End PlanTripFromFavorites
+
+            await FillPinnedFavorites();
 
             await Task.CompletedTask;
         }

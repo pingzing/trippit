@@ -287,7 +287,7 @@ namespace DigiTransit10.ViewModels
 
         private void PinToMainPage(IFavorite obj)
         {
-            _settingsService.AddPinnedFavorite(obj);
+            _settingsService.PushFavoriteId(obj.FavoriteId);
         }
 
         private void SelectionChanged(IList<object> obj)
