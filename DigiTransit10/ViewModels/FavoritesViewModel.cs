@@ -193,12 +193,36 @@ namespace DigiTransit10.ViewModels
                     RemoveFavoriteRoute(deletedRoute);
                 }
             }
+            if(args.EditedFavorites?.Count > 0)
+            {
+                foreach(var editedFave in args.EditedFavorites)
+                {
+                    var toEdit = GroupedFavoritePlaces.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
+                    if(toEdit != null)
+                    {
+                        RemoveFavoritePlace(toEdit);
+                        AddFavoritePlace(editedFave);
+                    }
+
+                    toEdit = GroupedFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
+                    if(toEdit != null)
+                    {
+                        RemoveFavoriteRoute(toEdit);
+                        AddFavoriteRoute(editedFave);  
+                    }
+                }
+            }
         }
 
         private async void AddNewFavorite()
         {
             var dialog = new AddOrEditFavoriteDialog();
+            dialog.DialogType = AddOrEditDialogType.Add;                  
             await dialog.ShowAsync();
+            if(dialog.ResultFavorite != null)
+            {
+                AddFavoritePlace(dialog.ResultFavorite);
+            }
         }
 
         private void AddFavoritePlace(IFavorite place)
@@ -219,7 +243,7 @@ namespace DigiTransit10.ViewModels
 
         private void AddFavoriteRoute(IFavorite route)
         {            
-            GroupedFavoriteRoutes.Add(route);
+            GroupedFavoriteRoutes.AddSorted(route);
 
             var faveRoute = (FavoriteRoute)route;
             IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
@@ -258,10 +282,17 @@ namespace DigiTransit10.ViewModels
             NavigationService.NavigateAsync(typeof(MainPage), args);
         }
 
-        private void EditFavorite(IFavorite obj)
+        private async void EditFavorite(IFavorite obj)
         {
             //bring up the AddOrEdit dialog in Edit mode
-            throw new NotImplementedException();
+            var dialog = new AddOrEditFavoriteDialog();
+            dialog.DialogType = AddOrEditDialogType.Edit;
+            dialog.Favorite = obj;
+            await dialog.ShowAsync();
+            if(dialog.ResultFavorite != null)
+            {
+                _favoritesService.EditFavorite(dialog.ResultFavorite);
+            }
         }
 
         private void ToggleSelection(IFavorite obj)

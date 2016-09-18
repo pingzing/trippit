@@ -6,5 +6,6 @@ namespace DigiTransit10.Models
     {
         public FontFamily FontFamily { get; set; }
         public string Glyph { get; set; }
+        public double FontSize { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace DigiTransit10.Services
     {
         event EventHandler<FavoritesChangedEventArgs> FavoritesChanged;
         void AddFavorite(IFavorite newFave);
+        bool EditFavorite(IFavorite edited);
         bool RemoveFavorite(IFavorite deletedFave);
         Task<ImmutableList<IFavorite>> GetFavoritesAsync();
         Task FlushFavoritesAsync();
@@ -88,7 +89,7 @@ namespace DigiTransit10.Services
             _favorites.Add(newFavorite);
                             
             _settingsService.PushFavoriteId(newFavorite.FavoriteId);           
-            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null));            
+            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null, null));            
         }
 
         public bool RemoveFavorite(IFavorite toRemove)
@@ -97,9 +98,30 @@ namespace DigiTransit10.Services
             if (success)
             {
                 _settingsService.RemovedFavoriteId(toRemove.FavoriteId);
-                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }));                
+                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }, null));                
             }
             return success;
+        }
+
+        /// <summary>
+        /// Edit an existing favorite. Returns false if a favorite with the given FavoriteId cannot be found.
+        /// </summary>
+        /// <param name="edited">An IFavorite containing the FavoriteId of the favorite that should be edited.</param>
+        /// <returns>Success if the favorite is successfully found and modified, false otherwise.</returns>
+        public bool EditFavorite(IFavorite edited)
+        {
+            var found = _favorites.FirstOrDefault(x => x.FavoriteId == edited.FavoriteId);
+            if(found == null)
+            {
+                return false;
+            }
+
+            found.FontIconGlyph = edited.FontIconGlyph;
+            found.IconFontFace = edited.IconFontFace;
+            found.UserChosenName = edited.UserChosenName;
+            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, null, new List<IFavorite> { found }));
+
+            return true;
         }
 
         public async Task FlushFavoritesAsync()

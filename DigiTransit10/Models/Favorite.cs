@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DigiTransit10.Localization.Strings;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Windows.Devices.Geolocation;
@@ -61,8 +62,8 @@ namespace DigiTransit10.Models
         public float Lat { get; set; }
         public float Lon { get; set; }
         public PlaceType Type { get; set; }
-        public double? Confidence { get; set; }       
-        public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
+        public double? Confidence { get; set; }
+        public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };        
 
         public override int CompareTo(IFavorite other)
         {

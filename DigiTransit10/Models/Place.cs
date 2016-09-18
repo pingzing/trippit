@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigiTransit10.Localization.Strings;
+using System;
 using System.Collections.Generic;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
@@ -32,6 +33,21 @@ namespace DigiTransit10.Models
         public PlaceType Type { get; set; }
         public double? Confidence { get; set; }
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
+
+        public static FavoritePlace MyLocationPlace
+        {
+            get
+            {
+                return new FavoritePlace
+                {
+                    Confidence = null,
+                    FavoriteId = Guid.Empty,
+                    Type = PlaceType.UserCurrentLocation,
+                    UserChosenName = AppResources.SuggestBoxHeader_MyLocation,
+                    Name = AppResources.SuggestBoxHeader_MyLocation
+                };
+            }
+        }
 
         public override bool Equals(object obj)
         {

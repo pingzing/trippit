@@ -7,17 +7,18 @@ namespace DigiTransit10.ExtensionMethods
 {
     public static class ObservableCollectionExtensions
     {
-        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement)
+        //todo: move the AddSorteds to an IListExtensions class
+        public static void AddSorted<T>(this IList<T> col, T newElement)
         {
             AddSorted(col, newElement, comparerFunc: null);
         }
 
-        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement, IComparer<T> comparer)
+        public static void AddSorted<T>(this IList<T> col, T newElement, IComparer<T> comparer)
         {
             AddSorted(col, newElement, comparer.Compare);
         }
 
-        public static void AddSorted<T>(this ObservableCollection<T> col, T newElement, Func<T, T, int> comparerFunc)
+        public static void AddSorted<T>(this IList<T> col, T newElement, Func<T, T, int> comparerFunc)
         {
             if(comparerFunc == null)
             {

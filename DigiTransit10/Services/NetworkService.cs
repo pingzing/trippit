@@ -86,10 +86,17 @@ namespace DigiTransit10.Services
 
                 return new ApiResult<GeocodingResponse>(geoResponse);
             }
-            catch(Exception ex) when (ex is COMException || ex is HttpRequestException)
+            catch(Exception ex) when (ex is COMException || ex is HttpRequestException || ex is OperationCanceledException)
             {
                 LogException(ex);
-                return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.NoConnection);
+                if (ex is OperationCanceledException)
+                {
+                    return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.Canceled);
+                }
+                else
+                {
+                    return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.NoConnection);
+                }
             }
         }
 
@@ -135,10 +142,17 @@ namespace DigiTransit10.Services
 
                 return new ApiResult<List<ApiStop>>(result);
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
             {
                 LogException(ex);
-                return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoConnection);
+                if (ex is OperationCanceledException)
+                {
+                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.Canceled);
+                }
+                else
+                {
+                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoConnection);
+                }
             }
         }
 
@@ -231,16 +245,18 @@ namespace DigiTransit10.Services
                 }
 
                 return new ApiResult<ApiPlan>(result);
-            }
-            catch (OperationCanceledException ex)
+            }            
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
             {
                 LogException(ex);
-                return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
-            }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException)
-            {
-                LogException(ex);
-                return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
+                if (ex is OperationCanceledException)
+                {
+                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
+                }
+                else
+                {
+                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
+                }
             }            
         }
 
@@ -258,30 +274,27 @@ namespace DigiTransit10.Services
         }
 
         private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method()")
-        {
-            //todo: add real logging
+        {           
             if (response.Content != null)
             {
                 string errorResponse = await response.Content?.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine(
+                _logger.Error(
                     $"{callerMethod} call failed. Response failed: Error code: {response.StatusCode}. Response message:\n{errorResponse}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed: Error code: {response.StatusCode}. Did not receive a response message.");
+                _logger.Error($"{callerMethod} call failed: Error code: {response.StatusCode}. Did not receive a response message.");
             }
         }
 
         private void LogLogicFailure(FailureReason reason, [CallerMemberName]string callerMethod = "Unknown method()")
-        {
-            //todo: add real logging
-            System.Diagnostics.Debug.WriteLine($"{callerMethod} call failed. Reason: {reason}.");
+        {            
+            _logger.Error($"{callerMethod} call failed. Reason: {reason}.");
         }
 
         private void LogException(Exception ex, [CallerMemberName]string caller = "Unknown")
         {
-            _logger.Error($"{caller} threw exception: ", ex);
-            System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}\n{ex.StackTrace}");
+            _logger.Error($"{caller} threw exception: ", ex);            
         }
     }
 }

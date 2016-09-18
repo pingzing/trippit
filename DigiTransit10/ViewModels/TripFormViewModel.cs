@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using static DigiTransit10.Helpers.MessageTypes;
 using DigiTransit10.Helpers.PageNavigationContainers;
 using DigiTransit10.ExtensionMethods;
+using Windows.UI.Xaml.Media;
 
 namespace DigiTransit10.ViewModels
 {
@@ -451,11 +452,11 @@ namespace DigiTransit10.ViewModels
 
         private  void AddFavorite(IPlace place)
         {
-            FavoritePlace newFavoritePlace = new FavoritePlace
+            var newFavoritePlace = new FavoritePlace
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
                 FavoriteId = Guid.NewGuid(),
-                IconFontFace = "Segoe MDL2 Assets",
+                IconFontFace = ((FontFamily)App.Current.Resources["SymbolThemeFontFamily"]).Source,
                 Lat = place.Lat,
                 Lon = place.Lon,
                 Name = place.Name,

@@ -237,12 +237,7 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            double availableSeachBoxSpace = (double)e.NewValue;
-            //if (_this.HeaderBlock.Visibility == Visibility.Visible)
-            //{
-            //    availableSeachBoxSpace -= 19.95; //header block height
-            //}
-            //availableSeachBoxSpace -= 4; //progress bar height
+            double availableSeachBoxSpace = (double)e.NewValue;            
             _this.SearchBox.Height = availableSeachBoxSpace;
         }
         public double TextBoxHeight
@@ -311,8 +306,43 @@ namespace DigiTransit10.Controls
         {
             get { return (bool)GetValue(ShowFavoritesButtonProperty); }
             set { SetValue(ShowFavoritesButtonProperty, value); }
-        }                
+        }
 
+        public static readonly DependencyProperty IsUserCurrentLocationListedProperty = 
+            DependencyProperty.Register(nameof(IsUserCurrentLocationListed), typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true,
+                OnIsUserCurrentLocationListedChanged));
+
+        private static void OnIsUserCurrentLocationListedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var _this = d as DigiTransitSearchBox;
+            if(_this == null)
+            {
+                return;
+            }
+
+            bool newValue = (bool)e.NewValue;
+            bool oldValue = (bool)e.OldValue;
+            if(newValue == oldValue)
+            {
+                return;
+            }
+
+            if (newValue == true)
+            {                
+                _this.SuggestedPlaces.Insert(0, _this._userCurrentLocationList);
+            }
+            else
+            {
+                _this.SuggestedPlaces.Remove(_this._userCurrentLocationList);
+            }
+        }
+
+        public bool IsUserCurrentLocationListed
+        {
+            get { return (bool)GetValue(IsUserCurrentLocationListedProperty); }
+            set { SetValue(IsUserCurrentLocationListedProperty, value); }
+        }
+        
         private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (String.IsNullOrWhiteSpace(SearchBox.Text))
