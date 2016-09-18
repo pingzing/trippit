@@ -2,13 +2,15 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml;
 using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
 {
-    public interface IFavorite : IComparable<IFavorite>
+    //todo: consider implementing INotifyPropertyChanged here
+    public interface IFavorite : IComparable<IFavorite>, INotifyPropertyChanged
     {
         Guid FavoriteId { get; set; }
         string UserChosenName { get; set; }
@@ -37,6 +39,8 @@ namespace DigiTransit10.Models
             typeof(Guid),
             typeof(FavoriteBase),
             new PropertyMetadata(Guid.Empty));
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public static void SetFavoriteId(DependencyObject element, Guid id)
         {

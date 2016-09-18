@@ -485,6 +485,8 @@ namespace DigiTransit10.ViewModels
             {
                 PinnedFavorites.Add(newFace);
             }            
+
+
         }
 
         private async void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
