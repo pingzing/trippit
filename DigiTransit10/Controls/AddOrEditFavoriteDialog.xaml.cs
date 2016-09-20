@@ -19,14 +19,19 @@ using Windows.UI.Xaml.Media;
 
 namespace DigiTransit10.Controls
 {
-    public enum AddOrEditDialogType { Add ,Edit }
+    public enum AddOrEditDialogType { Add, Edit }
 
     public sealed partial class AddOrEditFavoriteDialog : ContentDialog, INotifyPropertyChanged
     {
 
-        private readonly ICustomFontService _fontService;        
+        private readonly ICustomFontService _fontService;
+        private AddOrEditDialogType _dialogType;
+        private string _editDialogIconGlyph;
+        private string _editDialogIconFont;
+        private FavoriteRoute _favoriteRoute = null; //only non-null if we're working with a FavoriteRoute
+        private FavoritePlace _favoritePlace = null; //only non-null if we're wokring with an IPlace
 
-        public IFavorite ResultFavorite { get; private set; }        
+        public IFavorite ResultFavorite { get; private set; }
 
         public IEnumerable<IMapPoi> MapPlace { get; set; }
 
@@ -65,14 +70,14 @@ namespace DigiTransit10.Controls
             get { return _nameText; }
             set
             {
-                if(_nameText != value)
+                if (_nameText != value)
                 {
-                    _nameText = value;                    
+                    _nameText = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsSaveButtonEnabled));
                 }
             }
-        }        
+        }
 
         private int _selectedIconIndex;
         public int SelectedIconIndex
@@ -80,7 +85,7 @@ namespace DigiTransit10.Controls
             get { return _selectedIconIndex; }
             set
             {
-                if(_selectedIconIndex != value)
+                if (_selectedIconIndex != value)
                 {
                     _selectedIconIndex = value;
                     RaisePropertyChanged();
@@ -94,54 +99,32 @@ namespace DigiTransit10.Controls
                                             && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly
                                             && SearchBoxPlace.Type != ModelEnums.PlaceType.UserCurrentLocation
                                             && SelectedIconIndex != -1;
-        
-        //todo: replace this with a converter in the view
-        public bool IsAddNewDialog => DialogType == AddOrEditDialogType.Add;        
 
-        public static readonly DependencyProperty FavoriteProperty =
-            DependencyProperty.Register(nameof(Favorite), typeof(IFavorite), typeof(AddOrEditFavoriteDialog), new PropertyMetadata(null));
-        public IFavorite Favorite
-        {
-            get { return (IFavorite)GetValue(FavoriteProperty); }
-            set
-            {
-                IPlace favoriteAsPlace = value as IPlace;
-                if(favoriteAsPlace != null)
-                {
-                    SearchBoxPlace = favoriteAsPlace;
-                }
-                SetValue(FavoriteProperty, value);
-                if (PossibleIconsList != null)
-                {
-                    SelectedIconIndex = PossibleIconsList.IndexOf
-                    (
-                        PossibleIconsList.FirstOrDefault(x => x.FontFamily.Source == Favorite.IconFontFace
-                                                              && x.Glyph == Favorite.FontIconGlyph)
-                    );
-                }
-                if (SelectedIconIndex == -1) SelectedIconIndex = 0;
-                NameText = value.UserChosenName;                
-            }
-        }        
-        
-        public static readonly DependencyProperty DialogTypeProperty =
-            DependencyProperty.Register(nameof(DialogType), typeof(AddOrEditDialogType), typeof(AddOrEditDialogType), new PropertyMetadata(AddOrEditDialogType.Add));
-        public AddOrEditDialogType DialogType
-        {
-            get { return (AddOrEditDialogType)GetValue(DialogTypeProperty); }
-            set
-            {
-                SetValue(DialogTypeProperty, value);
-                RaisePropertyChanged(nameof(IsAddNewDialog));
-            }
-        }                             
+        //todo: replace this with a converter in the view
+        public bool IsAddNewDialog => _dialogType == AddOrEditDialogType.Add;
 
         public AddOrEditFavoriteDialog()
-        {            
-            this.InitializeComponent();            
-            this.Loaded += AddOrEditFavoriteDialog_Loaded;                        
+        {
+            this.InitializeComponent();
+            this.Loaded += AddOrEditFavoriteDialog_Loaded;
             _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
-        }        
+            _dialogType = AddOrEditDialogType.Add;
+        }
+
+        public AddOrEditFavoriteDialog(IFavorite favoriteToEdit) : this()
+        {
+            _dialogType = AddOrEditDialogType.Edit;
+            var favoriteAsPlace = favoriteToEdit as IPlace;
+            if (favoriteAsPlace != null)
+            {
+                SearchBoxPlace = favoriteAsPlace;
+            }
+            NameText = favoriteToEdit.UserChosenName;
+            _editDialogIconGlyph = favoriteToEdit.FontIconGlyph;
+            _editDialogIconFont = favoriteToEdit.IconFontFace;
+            _favoriteRoute = favoriteToEdit as FavoriteRoute;
+            _favoritePlace = favoriteToEdit as FavoritePlace;
+        }
 
         private async void AddOrEditFavoriteDialog_Loaded(object sender, RoutedEventArgs e)
         {
@@ -156,7 +139,7 @@ namespace DigiTransit10.Controls
                 hslFamily = (FontFamily)App.Current.Resources[Constants.HslPiktoFrameFontFamilyKey];
                 segoeFamily = new FontFamily(Constants.SymbolFontFamily);
                 fontFamiliesFound.SetResult(true);
-            });            
+            });
             await fontFamiliesFound.Task;
             await Task.Delay(10); //give UI time to render before we go hunting for glyphs
 
@@ -182,7 +165,7 @@ namespace DigiTransit10.Controls
                     FontFamily = segoeFamily,
                     Glyph = ((char)(int.Parse(currentValue.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
                 };
-                iconsList.Add(icon);                
+                iconsList.Add(icon);
             }
 
             PossibleIconsList = new ObservableCollection<FavoriteIcon>(iconsList);
@@ -192,71 +175,70 @@ namespace DigiTransit10.Controls
             // ready to go.
             await Task.Delay(100);
 
-            if (Favorite == null)
-            {
-                SelectedIconIndex = 0;
-            }
-            else
+            if (!String.IsNullOrWhiteSpace(_editDialogIconFont)
+                && !String.IsNullOrWhiteSpace(_editDialogIconGlyph))
             {
                 SelectedIconIndex = PossibleIconsList.IndexOf
                 (
-                    PossibleIconsList.FirstOrDefault(x => x.FontFamily.Source == Favorite.IconFontFace 
-                                                          && x.Glyph == Favorite.FontIconGlyph)
+                    PossibleIconsList.FirstOrDefault(x => x.FontFamily.Source == _editDialogIconFont && x.Glyph == _editDialogIconGlyph)
                 );
-                if (SelectedIconIndex == -1) SelectedIconIndex = 0;
+            }
+
+            if (SelectedIconIndex == -1)
+            {
+                SelectedIconIndex = 0; //In case we didn't find it, default to the first icon.
             }
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            if(Favorite is IPlace)
+            if (_dialogType == AddOrEditDialogType.Edit)
             {
-                if (DialogType == AddOrEditDialogType.Edit)
+                if (_favoritePlace != null)
                 {
                     ResultFavorite = new FavoritePlace
                     {
                         Confidence = null,
-                        FavoriteId = Favorite.FavoriteId,
+                        FavoriteId = _favoritePlace.FavoriteId,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
                         Id = null,
-                        Lat = ((IPlace)Favorite).Lat,
-                        Lon = ((IPlace)Favorite).Lon,
-                        Name = ((IPlace)Favorite).Name,
+                        Lat = _favoritePlace.Lat,
+                        Lon = _favoritePlace.Lon,
+                        Name = _favoritePlace.Name,
                         UserChosenName = NameText,
                         Type = ModelEnums.PlaceType.FavoritePlace
                     };
                 }
-                else if(DialogType == AddOrEditDialogType.Add)
+                else if (_favoriteRoute != null)
                 {
-                    ResultFavorite = new FavoritePlace
+                    ResultFavorite = new FavoriteRoute
                     {
-                        Confidence = null,
-                        FavoriteId = Guid.NewGuid(),
+                        FavoriteId = _favoriteRoute.FavoriteId,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
-                        Id = null,
-                        Lat = SearchBoxPlace.Lat,
-                        Lon = SearchBoxPlace.Lon,
-                        Name = SearchBoxPlace.Name,
-                        UserChosenName = NameText,
-                        Type = ModelEnums.PlaceType.FavoritePlace,
+                        RouteGeometryStrings = _favoriteRoute.RouteGeometryStrings,
+                        RoutePlaces = _favoriteRoute.RoutePlaces,
+                        UserChosenName = NameText
                     };
                 }
             }
-            else if(Favorite is FavoriteRoute)
+            else if (_dialogType == AddOrEditDialogType.Add)
             {
-                ResultFavorite = new FavoriteRoute
+                ResultFavorite = new FavoritePlace
                 {
-                    FavoriteId = Favorite.FavoriteId,
+                    Confidence = null,
+                    FavoriteId = Guid.NewGuid(),
                     FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                     IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
-                    RouteGeometryStrings = ((FavoriteRoute)Favorite).RouteGeometryStrings,
-                    RoutePlaces = ((FavoriteRoute)Favorite).RoutePlaces,
-                    UserChosenName = NameText
+                    Id = null,
+                    Lat = SearchBoxPlace.Lat,
+                    Lon = SearchBoxPlace.Lon,
+                    Name = SearchBoxPlace.Name,
+                    UserChosenName = NameText,
+                    Type = ModelEnums.PlaceType.FavoritePlace,
                 };
             }
-
             this.Hide();
         }
 

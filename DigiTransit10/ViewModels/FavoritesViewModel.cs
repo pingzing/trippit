@@ -214,17 +214,6 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private async void AddNewFavorite()
-        {
-            var dialog = new AddOrEditFavoriteDialog();
-            dialog.DialogType = AddOrEditDialogType.Add;                  
-            await dialog.ShowAsync();
-            if(dialog.ResultFavorite != null)
-            {
-                AddFavoritePlace(dialog.ResultFavorite);
-            }
-        }
-
         private void AddFavoritePlace(IFavorite place)
         {
             GroupedFavoritePlaces.AddSorted(place);
@@ -282,12 +271,20 @@ namespace DigiTransit10.ViewModels
             NavigationService.NavigateAsync(typeof(MainPage), args);
         }
 
+        private async void AddNewFavorite()
+        {
+            var dialog = new AddOrEditFavoriteDialog();
+            await dialog.ShowAsync();
+            if (dialog.ResultFavorite != null)
+            {
+                _favoritesService.AddFavorite(dialog.ResultFavorite);
+            }
+        }
+
         private async void EditFavorite(IFavorite obj)
         {
             //bring up the AddOrEdit dialog in Edit mode
-            var dialog = new AddOrEditFavoriteDialog();
-            dialog.DialogType = AddOrEditDialogType.Edit;
-            dialog.Favorite = obj;
+            var dialog = new AddOrEditFavoriteDialog(obj);            
             await dialog.ShowAsync();
             if(dialog.ResultFavorite != null)
             {
