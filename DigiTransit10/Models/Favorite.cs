@@ -16,6 +16,7 @@ namespace DigiTransit10.Models
         string UserChosenName { get; set; }
         string FontIconGlyph { get; set; }
         string IconFontFace { get; set; }
+        double IconFontSize { get; set; }
     }
 
     /// <summary>
@@ -27,6 +28,7 @@ namespace DigiTransit10.Models
         public abstract string UserChosenName { get; set; }
         public abstract string FontIconGlyph { get; set; }
         public abstract string IconFontFace { get; set; }
+        public abstract double IconFontSize { get; set; }
 
         public abstract int CompareTo(IFavorite other);
 
@@ -61,7 +63,8 @@ namespace DigiTransit10.Models
         public override string UserChosenName { get; set; }
         public override string IconFontFace { get; set; }
         public override string FontIconGlyph { get; set; }
-        public override Guid FavoriteId { get; set; }
+        public override Guid FavoriteId { get; set; }   
+        public override double IconFontSize { get; set; }
         public string Name { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
@@ -86,6 +89,7 @@ namespace DigiTransit10.Models
         public override string FontIconGlyph { get; set; }
         public override string IconFontFace { get; set; }
         public override Guid FavoriteId { get; set; }
+        public override double IconFontSize { get; set; }
         public List<string> RouteGeometryStrings { get; set; }
         public List<FavoriteRoutePlace> RoutePlaces { get; set; }        
 

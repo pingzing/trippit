@@ -58,15 +58,14 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="FavoritePlaceTemplate">
+        <DataTemplate x:Key="FavoritePlaceTemplate" x:DataType="models:IFavorite">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <!--Hollow star icon-->
-                <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="{Binding HollowStar, Source={StaticResource FontIcons}}"/>
-                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}"/>
+                <FontIcon Grid.Column="0" FontFamily="{x:Bind IconFontFace}" Glyph="{x:Bind FontIconGlyph}" FontSize="{x:Bind IconFontSize}"/>
+                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind UserChosenName}"/>
             </Grid>
         </DataTemplate>
 

@@ -60,7 +60,7 @@
                   SelectionChanged="IconsGrid_SelectionChanged">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:FavoriteIcon">
-                    <FontIcon FontFamily="{x:Bind FontFamily}" Glyph="{x:Bind Glyph}"/>
+                    <FontIcon FontFamily="{x:Bind FontFamily}" Glyph="{x:Bind Glyph}" FontSize="{x:Bind FontSize}"/>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>

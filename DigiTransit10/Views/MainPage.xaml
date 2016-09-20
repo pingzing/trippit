@@ -285,7 +285,8 @@
                                      </Grid.ColumnDefinitions>
                                      <FontIcon x:Name="FavoriteIcon"
                                                Grid.Column="0"
-                                               FontFamily="{Binding IconFontFace}" 
+                                               FontFamily="{Binding IconFontFace}"
+                                               FontSize="{Binding IconFontSize}"
                                                Glyph="{Binding FontIconGlyph}"/>
                                      <TextBlock x:Name="FavoriteName" 
                                                 Grid.Column="1"                              

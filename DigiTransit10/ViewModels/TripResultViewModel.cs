@@ -195,6 +195,7 @@ namespace DigiTransit10.ViewModels
                 FontIconGlyph = FontIconGlyphs.FilledStar,
                 FavoriteId = Guid.NewGuid(),                
                 IconFontFace = Constants.SymbolFontFamily,
+                IconFontSize = Constants.SymbolFontSize,
                 UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",
             };
 

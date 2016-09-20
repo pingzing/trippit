@@ -58,5 +58,9 @@ namespace DigiTransit10.Helpers
         public const string VisualStateNarrow = "VisualStateNarrow";
         public const string VisualStateNormal = "VisualStateNormal";
         public const string VisualStateWide = "VisualStateWide";
+
+        //Font sizes
+        public const double SymbolFontSize = 20;
+        public const double HslFontSize = 28;
     }
 }

@@ -151,7 +151,8 @@ namespace DigiTransit10.Controls
                 var icon = new FavoriteIcon
                 {
                     FontFamily = hslFamily,
-                    Glyph = ((char)(int.Parse(value.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
+                    Glyph = ((char)(int.Parse(value.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString(),
+                    FontSize = Constants.HslFontSize
                 };
                 iconsList.Add(icon);
             }
@@ -163,7 +164,8 @@ namespace DigiTransit10.Controls
                 var icon = new FavoriteIcon
                 {
                     FontFamily = segoeFamily,
-                    Glyph = ((char)(int.Parse(currentValue.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString()
+                    Glyph = ((char)(int.Parse(currentValue.ToString("X"), System.Globalization.NumberStyles.HexNumber))).ToString(),
+                    FontSize = Constants.SymbolFontSize
                 };
                 iconsList.Add(icon);
             }
@@ -202,6 +204,7 @@ namespace DigiTransit10.Controls
                         FavoriteId = _favoritePlace.FavoriteId,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
+                        IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
                         Id = null,
                         Lat = _favoritePlace.Lat,
                         Lon = _favoritePlace.Lon,
@@ -217,6 +220,7 @@ namespace DigiTransit10.Controls
                         FavoriteId = _favoriteRoute.FavoriteId,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
+                        IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
                         RouteGeometryStrings = _favoriteRoute.RouteGeometryStrings,
                         RoutePlaces = _favoriteRoute.RoutePlaces,
                         UserChosenName = NameText
@@ -231,6 +235,7 @@ namespace DigiTransit10.Controls
                     FavoriteId = Guid.NewGuid(),
                     FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                     IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
+                    IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
                     Id = null,
                     Lat = SearchBoxPlace.Lat,
                     Lon = SearchBoxPlace.Lon,

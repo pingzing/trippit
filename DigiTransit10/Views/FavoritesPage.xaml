@@ -82,8 +82,15 @@
                                         <RepositionThemeTransition/>
                                     </TransitionCollection>
                                 </RelativePanel.ChildrenTransitions>
+                                <FontIcon x:Name="FavoriteIcon"
+                                          RelativePanel.AlignVerticalCenterWithPanel="True"
+                                          FontFamily="{x:Bind IconFontFace}"
+                                          FontSize="{x:Bind IconFontSize}"
+                                          Glyph="{x:Bind FontIconGlyph}"/>
                                 <TextBlock x:Name="RouteNameBlock" 
                                            RelativePanel.AlignVerticalCenterWithPanel="True"
+                                           RelativePanel.RightOf="FavoriteIcon"
+                                           Margin="5 0 0 0"
                                            Text="{x:Bind UserChosenName}" 
                                            Style="{StaticResource BodyTextBlockStyle}"/>
                                 <FontIcon x:Name="ListChevron"
