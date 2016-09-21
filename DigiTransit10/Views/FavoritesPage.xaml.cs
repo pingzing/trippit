@@ -64,24 +64,6 @@ namespace DigiTransit10.Views
             {
                 await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);
             }
-        }
-
-        private void FavoritesListView_RightTapped(object sender, RightTappedRoutedEventArgs e)
-        {
-            var element = sender as FrameworkElement;
-            if(element == null)
-            {
-                return;
-            }
-
-            if (ViewModel.ListSelectionMode == ListViewSelectionMode.Multiple)
-            {
-                return;
-                //or do something else, I dunno
-            }
-
-            MenuFlyout flyout = FlyoutBase.GetAttachedFlyout(element) as MenuFlyout;
-            flyout.ShowAt(this, e.GetPosition(this));
-        }
+        }        
     }
 }

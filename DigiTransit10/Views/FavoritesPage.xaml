@@ -130,7 +130,13 @@
                                 </FlyoutBase.AttachedFlyout>
                                 <Interactivity:Interaction.Behaviors>
                                     <Core:EventTriggerBehavior EventName="RightTapped">
-                                        <Behaviors:OpenFlyoutAction/>
+                                        <Behaviors:ConditionalAction LeftValue="{Binding ElementName=FavoritesListView, Path=SelectionMode}"
+                                                                     Operator="NotEqualToRight">
+                                            <Behaviors:ConditionalAction.RightValue>
+                                                <ListViewSelectionMode>Multiple</ListViewSelectionMode>
+                                            </Behaviors:ConditionalAction.RightValue>
+                                            <Behaviors:OpenFlyoutAction/>
+                                        </Behaviors:ConditionalAction>
                                     </Core:EventTriggerBehavior>
                                 </Interactivity:Interaction.Behaviors>
                             </RelativePanel>
