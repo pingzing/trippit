@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DigiTransit10.Helpers
+﻿namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
         //Font faces
-        public const string SymbolFontFamily = "Segoe MDL2 Assets";
+        public const string SegoeMdl2FontName = "Segoe MDL2 Assets";
+        public const string SymbolThemeFontResource = "SymbolThemeFontFamily";
 
         //Misc keys
         public const string WideKey = "Wide";

@@ -137,7 +137,7 @@ namespace DigiTransit10.Controls
             {
                 //apparently FontFamilies have to be constructed on the UI thread. Who knew?
                 hslFamily = (FontFamily)App.Current.Resources[Constants.HslPiktoFrameFontFamilyKey];
-                segoeFamily = new FontFamily(Constants.SymbolFontFamily);
+                segoeFamily = new FontFamily(Constants.SegoeMdl2FontName);
                 fontFamiliesFound.SetResult(true);
             });
             await fontFamiliesFound.Task;

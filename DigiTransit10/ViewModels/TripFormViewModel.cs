@@ -456,7 +456,8 @@ namespace DigiTransit10.ViewModels
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
                 FavoriteId = Guid.NewGuid(),
-                IconFontFace = ((FontFamily)App.Current.Resources["SymbolThemeFontFamily"]).Source,
+                IconFontFace = ((FontFamily)App.Current.Resources[Constants.SymbolThemeFontResource]).Source,
+                IconFontSize = Constants.SymbolFontSize,
                 Lat = place.Lat,
                 Lon = place.Lon,
                 Name = place.Name,
