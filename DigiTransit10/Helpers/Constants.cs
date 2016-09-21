@@ -47,7 +47,7 @@
 
         //Font names as they appear in the .ttf file
         public const string HslPiktoNormalFontName = "HSL-Pikto";
-        public const string HslPiktoFrameFontName = "HSL-Pikto Frame";        
+        public const string HslPiktoFrameFontName = "HSL-Pikto Frame";
 
         //Visual state names
         public const string VisualStateNarrow = "VisualStateNarrow";

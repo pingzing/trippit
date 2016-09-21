@@ -64,7 +64,7 @@ namespace DigiTransit10.ViewModels
         {
             get { return _isDepartureChecked; }
             set { Set(ref _isDepartureChecked, value); }
-        }        
+        }
 
         private bool _isTransitPanelVisible = false;
         public bool IsTransitPanelVisible
@@ -203,12 +203,12 @@ namespace DigiTransit10.ViewModels
         public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTrip));
 
         private readonly RelayCommand _toggleTransitPanelCommand = null;
-        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);        
+        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
 
         private readonly RelayCommand _setDateToTodayCommand = null;
         public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
 
-        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;        
+        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;
         public RelayCommand<IPlace> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<IPlace>(AddFavorite);
 
         private readonly RelayCommand<FavoritePlace> _favoritePlaceClickedCommand = null;
@@ -221,13 +221,13 @@ namespace DigiTransit10.ViewModels
 
         public RelayCommand SwapFirstLocationCommand => new RelayCommand(SwapFirstLocation);
 
-        public RelayCommand<IntermediateSearchViewModel> SwapIntermediateLocationCommand 
+        public RelayCommand<IntermediateSearchViewModel> SwapIntermediateLocationCommand
             => new RelayCommand<IntermediateSearchViewModel>(SwapIntermediateLocation);
 
-        public RelayCommand AddIntermediatePlaceCommand => new RelayCommand(AddIntermediatePlace);        
+        public RelayCommand AddIntermediatePlaceCommand => new RelayCommand(AddIntermediatePlace);
 
         public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand
-            => new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate);        
+            => new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate);
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
@@ -243,7 +243,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private void TransitTogglePannel()
-        {            
+        {
             IsTransitPanelVisible = !IsTransitPanelVisible;
             if(IsTransitPanelVisible)
             {
@@ -337,19 +337,19 @@ namespace DigiTransit10.ViewModels
                     BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
                     BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
                 }
-                
+
                 _messengerService.Send(new MessageTypes.PlanFoundMessage(CurrentVisualState));
             }
             catch (OperationCanceledException ex)
             {
                 //Log and swallow. Cancellation should only happen on user request here.
-                System.Diagnostics.Debug.WriteLine("Cancellation requested.");                
+                System.Diagnostics.Debug.WriteLine("Cancellation requested.");
             }
             finally
             {
                 SetBusy(false);
             }
-        }        
+        }
 
         /// <summary>
         /// Takes a list of places, and resolves NameOnly or UserLocation places 
@@ -362,7 +362,7 @@ namespace DigiTransit10.ViewModels
         {
             List<Task<bool>> getAddressTasks = new List<Task<bool>>();
             for (int i = places.Count - 1; i >= 0; i--)
-            {                
+            {
                 int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
                 if (places[idx].Type == PlaceType.NameOnly)
                 {
@@ -407,15 +407,15 @@ namespace DigiTransit10.ViewModels
                         };
                         return true;
                     }));
-                }                
+                }
             }
 
-            await Task.WhenAll(getAddressTasks);            
+            await Task.WhenAll(getAddressTasks);
             return places;
         }
 
         private string ConstructTransitModes(bool isBus, bool isTram, bool isTrain, bool isMetro, bool isFerry, bool isBike)
-        {            
+        {
             StringBuilder sb = new StringBuilder();
             sb.Append($"{Constants.WalkTransitMode} ");
             if (isBike)
@@ -443,12 +443,12 @@ namespace DigiTransit10.ViewModels
                 sb.Append($"{Constants.TramTransitMode} ");
             }
             return sb.ToString().Trim().Replace(" ", ",");
-        }        
+        }
 
         private void SetDateToToday()
         {
             SelectedDate = DateTime.Now;
-        }        
+        }
 
         private  void AddFavorite(IPlace place)
         {
@@ -468,7 +468,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private async Task FillPinnedFavorites()
-        {                        
+        {
             if(_settingsService.PinnedFavoriteIds.Count == 0)
             {
                 PinnedFavorites.Clear();
@@ -485,13 +485,13 @@ namespace DigiTransit10.ViewModels
             foreach (var newFace in pinned.Except(PinnedFavorites))
             {
                 PinnedFavorites.Add(newFace);
-            }            
+            }
 
 
         }
 
         private async void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
-        {            
+        {
             await FillPinnedFavorites();
         }
 
@@ -511,7 +511,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private void SwapFirstLocation()
-        {            
+        {
             IPlace first = FromPlace;
             IPlace nextPlace;
             if(IntermediatePlaces.Count > 0)
@@ -526,11 +526,11 @@ namespace DigiTransit10.ViewModels
                 nextPlace = ToPlace;
                 FromPlace = nextPlace;
                 ToPlace = first;
-            }            
+            }
         }
 
         private void SwapIntermediateLocation(IntermediateSearchViewModel obj)
-        {            
+        {
             int intermediateIndex = IntermediatePlaces.IndexOf(obj);
             IPlace nextPlace;
             //If we're at the end of the list, then we need to swap with the To box
@@ -544,7 +544,7 @@ namespace DigiTransit10.ViewModels
             {
                 nextPlace = ToPlace;
                 ToPlace = obj.IntermediatePlace;
-                obj.IntermediatePlace = nextPlace;                
+                obj.IntermediatePlace = nextPlace;
             }
         }
 
@@ -586,7 +586,7 @@ namespace DigiTransit10.ViewModels
                 errorMessage = AppResources.DialogMessage_NoTripsFoundUnknown;
             }
             await _dialogService.ShowDialog(errorMessage, AppResources.DialogTitle_NoTripsFound);
-        }        
+        }
 
         private async Task HandleTripFailure(IList<IPlace> resolutionFailures)
         {
@@ -615,14 +615,14 @@ namespace DigiTransit10.ViewModels
             {
                 _isBusy = newBusy;
                 _currentBusyMessage = message;
-                Views.Busy.SetBusy(newBusy, true, message);                
+                Views.Busy.SetBusy(newBusy, true, message);
             }
-        }        
+        }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
-            
+
             BootStrapper.BackRequested += BootStrapper_BackRequested;
 
             //---PlanTripFromFavorites
@@ -662,10 +662,10 @@ namespace DigiTransit10.ViewModels
             if (_isBusy)
             {
                 //don't mark this as handled, because the Busy control will do that when it dismisses itself.                
-                _messengerService.Send(new MessageTypes.NavigationCanceled());                
-                _cts.Cancel();                
+                _messengerService.Send(new MessageTypes.NavigationCanceled());
+                _cts.Cancel();
             }
-        }        
+        }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {

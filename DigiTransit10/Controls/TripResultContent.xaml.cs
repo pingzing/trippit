@@ -141,7 +141,7 @@ namespace DigiTransit10.Controls
             {
                 poisToFrame.Add(clickedLeg.StartCoords);
             }
-            var boundingBox = SingleMap.GetBoundingBoxForPois(poisToFrame);
+            var boundingBox = SingleMap.GetPoisBoundingBox(poisToFrame);
             double bottomMargin = DirectionsFloatingPanel.IsOpen ? DirectionsFloatingPanel.ExpandedHeight + 10 : 10;
             SingleMap.TrySetViewBoundsAsync(boundingBox, new Thickness(10, 10, 10, bottomMargin), MapAnimationKind.Bow).DoNotAwait();
 

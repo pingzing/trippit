@@ -26,7 +26,7 @@ namespace DigiTransit10.Controls
         private DispatcherTimer _loadingDelayTimer = new DispatcherTimer();
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
-        private Geopoint _lastKnownGeopoint;        
+        private Geopoint _lastKnownGeopoint;
 
         public event EventHandler MapElementsChanged;
 
@@ -46,25 +46,25 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            bool newBool = (bool)e.NewValue;            
+            bool newBool = (bool)e.NewValue;
             if (newBool)
             {
                 _this.SelfMarker.Visibility = Visibility.Visible;
                 MapControl.SetNormalizedAnchorPoint(_this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
-                _this.StartLiveUpdates();                
+                _this.StartLiveUpdates();
             }
             else
             {
                 _this.SelfMarker.Visibility = Visibility.Collapsed;
-                _this.StopLiveUpdates();                
+                _this.StopLiveUpdates();
             }
-        }        
+        }
 
         public bool ShowUserOnMap
         {
             get { return (bool)GetValue(ShowUserOnMapProperty); }
             set { SetValue(ShowUserOnMapProperty, value); }
-        }       
+        }
 
         public static readonly DependencyProperty MapLinePointsProperty =
                     DependencyProperty.Register("MapLinePoints", typeof(IEnumerable<BasicGeoposition>), typeof(DigiTransitMap), new PropertyMetadata(null,
@@ -100,16 +100,16 @@ namespace DigiTransit10.Controls
             _this.SetMapLines(new List<MapPolyline> { polyline });
         }
         /// <summary>
-        /// A collection of geopoints, between which a single half-transparent blue line is drawn. Exclusive with <see cref="ColoredMapLinePoints"/>.
+        /// A collection of geopoints, between which a single half-transparent blue line is drawn. Exclusive with <see cref="ColoredMapLines"/>.
         /// </summary>
         public IEnumerable<BasicGeoposition> MapLinePoints
         {
             get { return (IEnumerable<BasicGeoposition>)GetValue(MapLinePointsProperty); }
             set { SetValue(MapLinePointsProperty, value); }
-        } 
-        
-        public static readonly DependencyProperty ColoredMapLinePointsProperty =
-            DependencyProperty.Register("ColoredMapLinePoints", typeof(IList<ColoredMapLine>), typeof(DigiTransitMap), new PropertyMetadata(null,
+        }
+
+        public static readonly DependencyProperty ColoredMapLinesProperty =
+            DependencyProperty.Register(nameof(ColoredMapLines), typeof(IList<ColoredMapLine>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 ColoredMapLinePointsChanged));
         private static void ColoredMapLinePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -119,7 +119,6 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            //set up INotifyCollectionChangeds
             var oldCollection = e.OldValue as INotifyCollectionChanged;
             var newCollection = e.NewValue as INotifyCollectionChanged;
             if (oldCollection != null)
@@ -133,14 +132,14 @@ namespace DigiTransit10.Controls
 
             IList<ColoredMapLine> newValue = e.NewValue as IList<ColoredMapLine>;
             if(newValue == null)
-            {                
+            {
                 if (_this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().Any())
                 {
                     _this.SetMapLines(null);
                 }
                 return;
             }
-           
+
             List<MapPolyline> newPolylines = new List<MapPolyline>();
             List<BasicGeoposition> currentLinePositions = new List<BasicGeoposition>();
             foreach (ColoredMapLine lineCollection in newValue)
@@ -171,15 +170,14 @@ namespace DigiTransit10.Controls
             }
 
             _this.SetMapLines(newPolylines);
-        }        
-
+        }
         /// <summary>
         /// A collection of geopoints, between which lines are drawn. The line's color is determined by the starting point's <see cref="ColoredMapLinePoint.LineColor"/> property.
         /// </summary>
-        public IList<ColoredMapLine> ColoredMapLinePoints
+        public IList<ColoredMapLine> ColoredMapLines
         {
-            get { return (IList<ColoredMapLine>)GetValue(ColoredMapLinePointsProperty); }
-            set { SetValue(ColoredMapLinePointsProperty, value); }
+            get { return (IList<ColoredMapLine>)GetValue(ColoredMapLinesProperty); }
+            set { SetValue(ColoredMapLinesProperty, value); }
         }
         private void OnRoutesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -223,7 +221,7 @@ namespace DigiTransit10.Controls
                     }
                 }
                 AddMapLines(newPolylines);
-            }            
+            }
 
             if(e.OldItems != null)
             {
@@ -330,6 +328,47 @@ namespace DigiTransit10.Controls
             }
         }
 
+        public static readonly DependencyProperty IsInteractionEnabledProperty =
+            DependencyProperty.Register(nameof(IsInteractionEnabled), typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(true,
+                OnIsInteractionEnabledChanged));
+        private static void OnIsInteractionEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DigiTransitMap _this = d as DigiTransitMap;
+            if(_this == null)
+            {
+                return;
+            }
+
+            bool oldEnabled = (bool)e.OldValue;
+            bool newEnabled = (bool)e.NewValue;
+            if(oldEnabled == newEnabled)
+            {
+                return;
+            }
+
+            if(newEnabled)
+            {
+                _this.DigiTransitMapControl.PanInteractionMode = MapPanInteractionMode.Auto;
+                _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Auto;
+                _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Auto;
+                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;
+                _this.DigiTransitMapControl.AllowFocusOnInteraction = true;
+            }
+            else
+            {
+                _this.DigiTransitMapControl.PanInteractionMode = MapPanInteractionMode.Disabled;
+                _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Disabled;
+                _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Disabled;
+                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Disabled;
+                _this.DigiTransitMapControl.AllowFocusOnInteraction = false;
+            }
+        }
+        public bool IsInteractionEnabled
+        {
+            get { return (bool)GetValue(IsInteractionEnabledProperty); }
+            set { SetValue(IsInteractionEnabledProperty, value); }
+        }
+
         public DigiTransitMap()
         {
             this.InitializeComponent();
@@ -345,19 +384,19 @@ namespace DigiTransit10.Controls
 
             _loadingDelayTimer.Interval = TimeSpan.FromMilliseconds(750);
             _loadingDelayTimer.Tick += _layoutUpdateTimer_Tick;
-            this.Loaded += DigiTransitMap_Loaded;            
+            this.Loaded += DigiTransitMap_Loaded;
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
         }
 
         private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
         {
-            DigiTransitMapControl.Visibility = Visibility.Visible;            
+            DigiTransitMapControl.Visibility = Visibility.Visible;
             _loadingDelayTimer.Start();
         }
 
         private void _layoutUpdateTimer_Tick(object sender, object e)
-        {            
+        {
             HideLoadingScreenStoryboard.Begin();
             HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
         }
@@ -389,7 +428,7 @@ namespace DigiTransit10.Controls
 
             this?.MapElementsChanged?.Invoke(this, EventArgs.Empty);
         }
-        
+
         private void SetMapLines(IEnumerable<MapPolyline> polylines)
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapPolyline>().ToList();
@@ -414,7 +453,7 @@ namespace DigiTransit10.Controls
             {
                 var toRemove = oldList.Except(polylines);
                 RemoveMapLines(toRemove);
-            }            
+            }
         }
 
         private void AddMapIcons(IEnumerable<MapIcon> icons)
@@ -446,28 +485,28 @@ namespace DigiTransit10.Controls
 
             if (oldList != null)
             {
-                AddMapIcons(icons.Except(oldList));                
+                AddMapIcons(icons.Except(oldList));
             }
             else
             {
-                AddMapIcons(icons);                
+                AddMapIcons(icons);
             }
 
             if (oldList != null)
             {
-                RemoveMapIcons(oldList.Except(icons));                
-            }            
+                RemoveMapIcons(oldList.Except(icons));
+            }
         }
 
         private void StartLiveUpdates()
         {
             _liveUpdateToken = _geolocationService.BeginLiveUpdates();
             _geolocationService.PositionChanged += GeopositionChanged;
-            _geolocationService.HeadingChanged += HeadingChanged;            
+            _geolocationService.HeadingChanged += HeadingChanged;
         }
 
         private void StopLiveUpdates()
-        {                        
+        {
             _liveUpdateToken.Dispose();
             _liveUpdateToken = null;
             _geolocationService.PositionChanged -= GeopositionChanged;
@@ -482,11 +521,11 @@ namespace DigiTransit10.Controls
                 MapControl.SetLocation(SelfMarker, args.Position.Coordinate.Point);
             }
         }
-        
+
         private void HeadingChanged(CompassReadingChangedEventArgs args)
         {
             _lastKnownHeading = args.Reading;
-            if(ShowUserOnMap)                
+            if(ShowUserOnMap)
             {
                 SelfMarker.IsArrowVisible = true;
                 SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
@@ -527,7 +566,7 @@ namespace DigiTransit10.Controls
         }
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
-        {            
+        {
             await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
         }
 
@@ -537,8 +576,8 @@ namespace DigiTransit10.Controls
         /// <returns></returns>
         public GeoboundingBox GetMapIconsBoundingBox()
         {
-            if (DigiTransitMapControl.MapElements == null 
-                || DigiTransitMapControl.MapElements.Count() <= 0 
+            if (DigiTransitMapControl.MapElements == null
+                || DigiTransitMapControl.MapElements.Count <= 0
                 || !DigiTransitMapControl.MapElements.Any(x => x is MapIcon))
             {
                 return null;
@@ -565,10 +604,10 @@ namespace DigiTransit10.Controls
             return new GeoboundingBox(topLeft, bottomRight);
         }
 
-        public GeoboundingBox GetBoundingBoxForPois(IEnumerable<BasicGeoposition> pois)
+        public GeoboundingBox GetPoisBoundingBox(IEnumerable<BasicGeoposition> pois)
         {
             if (DigiTransitMapControl.MapElements == null
-                || DigiTransitMapControl.MapElements.Count() <= 0
+                || DigiTransitMapControl.MapElements.Count <= 0
                 || !DigiTransitMapControl.MapElements.Any(x => x is MapIcon))
             {
                 return null;
@@ -595,6 +634,52 @@ namespace DigiTransit10.Controls
             return new GeoboundingBox(topLeft, bottomRight);
         }
 
+        public GeoboundingBox GetAllMapElementsBoundingBox()
+        {
+            if(DigiTransitMapControl.MapElements == null
+                || DigiTransitMapControl.MapElements.Count <= 0)
+            {
+                return null;
+            }
+
+            List<BasicGeoposition> elementGeopositions = new List<BasicGeoposition>();
+
+            var linePositions = DigiTransitMapControl.MapElements
+                .OfType<MapPolyline>()
+                .Select(x => x.Path.Positions)
+                .FirstOrDefault();
+            if(linePositions != null)
+            {
+                elementGeopositions.AddRange(linePositions);
+            }
+
+            elementGeopositions.AddRange(
+                DigiTransitMapControl.MapElements
+                .OfType<MapIcon>()
+                .Select(x => x.Location.Position)
+            );
+
+            if(!elementGeopositions.Any())
+            {
+                return null;
+            }
+
+            var topLeft = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = elementGeopositions.Min(x => x.Longitude),
+                Latitude = elementGeopositions.Max(x => x.Latitude)
+            };
+            var bottomRight = new BasicGeoposition
+            {
+                Altitude = 0.0,
+                Longitude = elementGeopositions.Max(x => x.Longitude),
+                Latitude = elementGeopositions.Min(x => x.Latitude)
+            };
+
+            return new GeoboundingBox(topLeft, bottomRight);
+        }
+
         public GeoboundingBox GetMapViewBoundingBox()
         {
             var geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
@@ -613,6 +698,6 @@ namespace DigiTransit10.Controls
             };
 
             return new GeoboundingBox(topLeft, bottomRight);
-        }             
+        }
     }
 }

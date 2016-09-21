@@ -30,18 +30,20 @@
 
         <local:DigiTransitMap x:Name="SingleMap"
                               Grid.Row="0"
+                              IsInteractionEnabled="False"
                               IsTabStop="True"
                               Height="100"
-                              Places="{x:Bind MapPlace, Mode=OneWay}"/>
+                              Places="{x:Bind MapPlace, Mode=OneWay}"
+                              ColoredMapLines="{x:Bind MapRoute, Mode=OneWay}"/>
 
         <local:DigiTransitSearchBox x:Name="SearchBox"       
                                     Grid.Row="1"
                                     FontSize="{ThemeResource ControlContentThemeFontSize}"
-                                    IsEnabled="{x:Bind IsAddNewDialog, Mode=OneWay}"
-                                    IsUserCurrentLocationListed="False"
                                     Header="{Binding Source={StaticResource Strings}, Path=AddOrEditFavoriteDialog_SearchBoxHeader}"
+                                    IsEnabled="{x:Bind IsAddNewDialog, Mode=OneWay}"
+                                    IsUserCurrentLocationListed="False"                                    
                                     SelectedPlace="{x:Bind SearchBoxPlace, Mode=TwoWay}"
-                                    TextBoxHeight="32"                                    
+                                    TextBoxHeight="32"
                                     Margin="0 10 0 0"
                                     ShowFavoritesButton="False"/>
         <TextBox x:Name="NameTextBox"                 

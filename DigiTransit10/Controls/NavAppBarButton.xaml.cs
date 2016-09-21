@@ -62,7 +62,7 @@ namespace DigiTransit10.Controls
             get { return (bool)GetValue(IsSecondaryCommandProperty); }
             set { SetValue(IsSecondaryCommandProperty, value); }
         }
-                
+
         public NavAppBarButton()
         {
             this.InitializeComponent();
@@ -82,7 +82,7 @@ namespace DigiTransit10.Controls
                     _labelTextBlock = this.FindChild<TextBlock>("TextLabel");
                 }
                 if (_labelTextBlock?.Visibility == Visibility.Collapsed)
-                {                    
+                {
                     _labelTextBlock.Visibility = Visibility.Visible;
                 }
             }
@@ -93,7 +93,7 @@ namespace DigiTransit10.Controls
                     _labelTextBlock = this.FindChild<TextBlock>("TextLabel");
                 }
                 if(_labelTextBlock?.Visibility == Visibility.Visible)
-                {                    
+                {
                     _labelTextBlock.Visibility = Visibility.Collapsed;
                 }
             }

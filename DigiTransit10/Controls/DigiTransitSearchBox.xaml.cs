@@ -81,11 +81,11 @@ namespace DigiTransit10.Controls
                 if(SelectedPlace == null)
                 {
                     return false;
-                }                
+                }
                 if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
                     || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
                     || SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
-                    || SelectedPlace.Lat == default(float) 
+                    || SelectedPlace.Lat == default(float)
                     || SelectedPlace.Lon == default(float))
                 {
                     return false;
@@ -114,7 +114,7 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();            
+            _networkService = ServiceLocator.Current.GetInstance<INetworkService>();
             _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();
             _messengerService = ServiceLocator.Current.GetInstance<IMessenger>();
             _favoritesService = ServiceLocator.Current.GetInstance<IFavoritesService>();
@@ -126,10 +126,10 @@ namespace DigiTransit10.Controls
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 return;
-            }                                    
+            }
 
-            _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });            
-            SuggestedPlaces.Add(_userCurrentLocationList); 
+            _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
+            SuggestedPlaces.Add(_userCurrentLocationList);
             //Load favorites in the Loaded handler           
             SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
@@ -137,9 +137,9 @@ namespace DigiTransit10.Controls
 
             this.SearchBox.GotFocus += SearchBox_GotFocus;
             this.Loaded += DigiTransitSearchBox_Loaded;
-            this.Unloaded += DigiTransitSearchBox_Unloaded;         
-        }        
-        
+            this.Unloaded += DigiTransitSearchBox_Unloaded;
+        }
+
         private async void DigiTransitSearchBox_Loaded(object sender, RoutedEventArgs e)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
@@ -180,10 +180,10 @@ namespace DigiTransit10.Controls
                     {
                         box.SearchText = "";
                     }
-                    
+
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
-                    box.UpdateFavoriteButtonGlyph().DoNotAwait();                                       
-                }));    
+                    box.UpdateFavoriteButtonGlyph().DoNotAwait();
+                }));
         public IPlace SelectedPlace
         {
             get { return (IPlace)GetValue(SelectedPlaceProperty); }
@@ -197,7 +197,7 @@ namespace DigiTransit10.Controls
             get { return (string)GetValue(SearchTextProperty); }
             set { SetValue(SearchTextProperty, value); }
         }
-        
+
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command", typeof(ICommand), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
         public ICommand Command
@@ -212,7 +212,7 @@ namespace DigiTransit10.Controls
         {
             get { return (ICommand)GetValue(FavoriteTappedCommandProperty); }
             set { SetValue(FavoriteTappedCommandProperty, value); }
-        }                
+        }
 
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register("Header", typeof(string), typeof(DigiTransitSearchBox), new PropertyMetadata(null));
@@ -237,7 +237,7 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            double availableSeachBoxSpace = (double)e.NewValue;            
+            double availableSeachBoxSpace = (double)e.NewValue;
             _this.SearchBox.Height = availableSeachBoxSpace;
         }
         public double TextBoxHeight
@@ -252,7 +252,7 @@ namespace DigiTransit10.Controls
         {
             var _this = d as DigiTransitSearchBox;
             if (_this == null)
-            {   
+            {
                 return;
             }
 
@@ -292,13 +292,13 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            bool showFavorites = (bool)e.NewValue;            
+            bool showFavorites = (bool)e.NewValue;
             if(showFavorites)
-            {                
+            {
                 _this.AddToFavoritesBorder.Visibility = Visibility.Visible;
             }
             else
-            {                
+            {
                 _this.AddToFavoritesBorder.Visibility = Visibility.Collapsed;
             }
         }
@@ -308,7 +308,7 @@ namespace DigiTransit10.Controls
             set { SetValue(ShowFavoritesButtonProperty, value); }
         }
 
-        public static readonly DependencyProperty IsUserCurrentLocationListedProperty = 
+        public static readonly DependencyProperty IsUserCurrentLocationListedProperty =
             DependencyProperty.Register(nameof(IsUserCurrentLocationListed), typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true,
                 OnIsUserCurrentLocationListedChanged));
 
@@ -328,7 +328,7 @@ namespace DigiTransit10.Controls
             }
 
             if (newValue == true)
-            {                
+            {
                 _this.SuggestedPlaces.Insert(0, _this._userCurrentLocationList);
             }
             else
@@ -342,13 +342,13 @@ namespace DigiTransit10.Controls
             get { return (bool)GetValue(IsUserCurrentLocationListedProperty); }
             set { SetValue(IsUserCurrentLocationListedProperty, value); }
         }
-        
+
         private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (String.IsNullOrWhiteSpace(SearchBox.Text))
             {
                 _stopList.Clear();
-                _addressList.Clear();                
+                _addressList.Clear();
 
                 // this has to happen after the list clearing. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
                 SearchText = "";
@@ -383,7 +383,7 @@ namespace DigiTransit10.Controls
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {                        
+        {
             //todo: should this also be an actual event, as well as the Command?
             IsWaiting = false;
             _currentToken?.Cancel();
@@ -408,7 +408,7 @@ namespace DigiTransit10.Controls
                     Lon = 0,
                     Name = args.QueryText,
                     Type = ModelEnums.PlaceType.NameOnly
-                };                
+                };
                 SearchText = args.QueryText;
 
                 if(SearchBox.IsSuggestionListOpen)
@@ -421,7 +421,7 @@ namespace DigiTransit10.Controls
                     Command.Execute(args.QueryText);
                 }
             }
-        }        
+        }
 
         private async Task TriggerSearch(string searchString)
         {
@@ -478,7 +478,7 @@ namespace DigiTransit10.Controls
                     }
                     continue;
                 }
-                string name = place.Properties.Name;                
+                string name = place.Properties.Name;
                 Place foundPlace = new Place
                 {
                     Id = place.Properties.Id,
@@ -488,7 +488,7 @@ namespace DigiTransit10.Controls
                     Type = ModelEnums.PlaceType.Address,
                     Confidence = place.Properties.Confidence
                 };
-                _addressList.AddSorted(foundPlace, _placeComparer);                                
+                _addressList.AddSorted(foundPlace, _placeComparer);
             }
             _addressList.SortInPlace(x => x, _placeComparer);
         }
@@ -526,7 +526,7 @@ namespace DigiTransit10.Controls
                     Lon = stop.Lon,
                     Type = ModelEnums.PlaceType.Stop
                 };
-                _stopList.AddSorted(foundPlace, _placeComparer);                
+                _stopList.AddSorted(foundPlace, _placeComparer);
             }
             _stopList.SortInPlace(x => x, _placeComparer);
         }
@@ -536,14 +536,14 @@ namespace DigiTransit10.Controls
             if(args.AddedFavorites?.Count > 0)
             {
                 foreach(IPlace added in args.AddedFavorites.OfType<IPlace>())
-                {                    
+                {
                     _favoritePlacesList.AddSorted(added);
                 }
             }
             if(args.RemovedFavorites?.Count > 0)
             {
                 foreach(IPlace removed in args.RemovedFavorites.OfType<IPlace>())
-                {                    
+                {
                     _favoritePlacesList.Remove(removed);
                 }
             }

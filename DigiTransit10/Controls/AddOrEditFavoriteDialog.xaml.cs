@@ -11,8 +11,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -28,12 +30,42 @@ namespace DigiTransit10.Controls
         private AddOrEditDialogType _dialogType;
         private string _editDialogIconGlyph;
         private string _editDialogIconFont;
+        private FavoritePlace _favoritePlace = null; //only non-null if we're wokring with an IPlace      
+
         private FavoriteRoute _favoriteRoute = null; //only non-null if we're working with a FavoriteRoute
-        private FavoritePlace _favoritePlace = null; //only non-null if we're wokring with an IPlace
+        private FavoriteRoute FavoriteRoute
+        {
+            get { return _favoriteRoute; }
+            set
+            {
+                if (_favoriteRoute != value)
+                {
+                    _favoriteRoute = value;
+                    RaisePropertyChanged(nameof(MapRoute));
+                }
+            }
+        }
+        public List<ColoredMapLine> MapRoute
+        {
+            get
+            {
+                if (FavoriteRoute != null)
+                {
+                    return new List<ColoredMapLine> { new ColoredMapLine(
+                        FavoriteRoute.RouteGeometryStrings
+                            .SelectMany(str => GooglePolineDecoder.Decode(str))
+                            .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue)),
+                        FavoriteRoute.FavoriteId)
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         public IFavorite ResultFavorite { get; private set; }
-
-        public IEnumerable<IMapPoi> MapPlace { get; set; }
 
         private ObservableCollection<FavoriteIcon> _possibleIconsList = null;
         public ObservableCollection<FavoriteIcon> PossibleIconsList
@@ -60,6 +92,21 @@ namespace DigiTransit10.Controls
                     _searchBoxPlace = value;
                     RaisePropertyChanged();
                     RaisePropertyChanged(nameof(IsSaveButtonEnabled));
+                    RaisePropertyChanged(nameof(MapPlace));
+                }
+            }
+        }
+        public List<IMapPoi> MapPlace
+        {
+            get
+            {
+                if(SearchBoxPlace != null)
+                {
+                    return new List<IMapPoi> { SearchBoxPlace };
+                }
+                else
+                {
+                    return null;
                 }
             }
         }
@@ -107,8 +154,23 @@ namespace DigiTransit10.Controls
         {
             this.InitializeComponent();
             this.Loaded += AddOrEditFavoriteDialog_Loaded;
+            SingleMap.MapElementsChanged += SingleMap_MapElementsChanged;
             _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
             _dialogType = AddOrEditDialogType.Add;
+        }
+
+        private void SingleMap_MapElementsChanged(object sender, EventArgs e)
+        {
+            if (_favoritePlace != null || (SearchBoxPlace != null && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly) )
+            {
+                var boundingBox = SingleMap.GetMapIconsBoundingBox();
+                SingleMap.TrySetViewAsync(new Windows.Devices.Geolocation.Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.None).DoNotAwait();
+            }
+            if(_favoriteRoute != null)
+            {
+                var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
+                SingleMap.TrySetViewBoundsAsync(boundingBox, null, MapAnimationKind.None, true).DoNotAwait();
+            }
         }
 
         public AddOrEditFavoriteDialog(IFavorite favoriteToEdit) : this()
@@ -122,7 +184,7 @@ namespace DigiTransit10.Controls
             NameText = favoriteToEdit.UserChosenName;
             _editDialogIconGlyph = favoriteToEdit.FontIconGlyph;
             _editDialogIconFont = favoriteToEdit.IconFontFace;
-            _favoriteRoute = favoriteToEdit as FavoriteRoute;
+            FavoriteRoute = favoriteToEdit as FavoriteRoute;
             _favoritePlace = favoriteToEdit as FavoritePlace;
         }
 
@@ -213,16 +275,16 @@ namespace DigiTransit10.Controls
                         Type = ModelEnums.PlaceType.FavoritePlace
                     };
                 }
-                else if (_favoriteRoute != null)
+                else if (FavoriteRoute != null)
                 {
                     ResultFavorite = new FavoriteRoute
                     {
-                        FavoriteId = _favoriteRoute.FavoriteId,
+                        FavoriteId = FavoriteRoute.FavoriteId,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
                         IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
-                        RouteGeometryStrings = _favoriteRoute.RouteGeometryStrings,
-                        RoutePlaces = _favoriteRoute.RoutePlaces,
+                        RouteGeometryStrings = FavoriteRoute.RouteGeometryStrings,
+                        RoutePlaces = FavoriteRoute.RoutePlaces,
                         UserChosenName = NameText
                     };
                 }

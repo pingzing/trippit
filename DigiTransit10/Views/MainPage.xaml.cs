@@ -24,7 +24,7 @@ namespace DigiTransit10.Views
         public MainViewModel ViewModel => this.DataContext as MainViewModel;
 
         public MainPage()
-        {                        
+        {
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
             this.AdaptiveVisualStateGroup.CurrentStateChanged += AdaptiveVisualStateGroup_CurrentStateChanged;
@@ -100,7 +100,7 @@ namespace DigiTransit10.Views
                 && _isPlayingExitAnimation)
             {
                 //double check to make sure that the PlanTrip actually found a Trip
-                if(!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults) 
+                if(!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults)
                     || BootStrapper.Current.SessionState[NavParamKeys.PlanResults] == null)
                 {
                     _pinnedFavoriteClicked = null;

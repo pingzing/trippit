@@ -219,7 +219,7 @@
                                     Grid.Row="0"
                                     Grid.RowSpan="1"
                                     Places="{x:Bind ViewModel.MappableFavoritePlaces, Mode=OneWay}"
-                                    ColoredMapLinePoints="{x:Bind ViewModel.MappableFavoriteRoutes, Mode=OneWay}"/>
+                                    ColoredMapLines="{x:Bind ViewModel.MappableFavoriteRoutes, Mode=OneWay}"/>
 
             <ContentControl x:Name="NarrowFavoritesList"
                             x:DeferLoadStrategy="Lazy"

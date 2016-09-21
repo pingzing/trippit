@@ -29,7 +29,7 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
-        private readonly IFavoritesService _favoritesService;        
+        private readonly IFavoritesService _favoritesService;
 
         private IList<object> _selectedItems = null;
 
@@ -101,7 +101,7 @@ namespace DigiTransit10.ViewModels
                 Set(ref _favorites, value);
                 RaisePropertyChanged(nameof(IsFavoritesEmpty));
             }
-        }                
+        }
 
         private ListViewSelectionMode _listSelectionMode = ListViewSelectionMode.None;
         public ListViewSelectionMode ListSelectionMode
@@ -111,22 +111,22 @@ namespace DigiTransit10.ViewModels
         }
 
         public RelayCommand AddNewFavoriteCommand => new RelayCommand(AddNewFavorite);
-        public RelayCommand<IFavorite> EditFavoriteCommand => new RelayCommand<IFavorite>(EditFavorite);        
+        public RelayCommand<IFavorite> EditFavoriteCommand => new RelayCommand<IFavorite>(EditFavorite);
         public RelayCommand<IFavorite> DeleteFavoriteCommand => new RelayCommand<IFavorite>(DeleteFavorite);
         public RelayCommand<IPlace> SetAsOriginCommand => new RelayCommand<IPlace>(SetAsOrigin);
         public RelayCommand<IPlace> SetAsDestinationCommand => new RelayCommand<IPlace>(SetAsDestination);
         public RelayCommand<IFavorite> ToggleSelectionCommand => new RelayCommand<IFavorite>(ToggleSelection);
-        public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);        
+        public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);
         public RelayCommand<IFavorite> PinToMainPageCommand => new RelayCommand<IFavorite>(PinToMainPage);
         public RelayCommand<IList<object>> SelectionChangedCommand => new RelayCommand<IList<object>>(SelectionChanged);
 
-        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService, 
+        public FavoritesViewModel(INetworkService networkService, IMessenger messengerService,
             IFavoritesService favoritesService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
-            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();            
+            _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
 
             Favorites.Add(GroupedFavoritePlaces);
             Favorites.Add(GroupedFavoriteRoutes);
@@ -135,7 +135,7 @@ namespace DigiTransit10.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
-            
+
             GroupedFavoritePlaces.Clear();
             MappableFavoritePlaces.Clear();
             GroupedFavoriteRoutes.Clear();
@@ -208,7 +208,7 @@ namespace DigiTransit10.ViewModels
                     if(toEdit != null)
                     {
                         RemoveFavoriteRoute(toEdit);
-                        AddFavoriteRoute(editedFave);  
+                        AddFavoriteRoute(editedFave);
                     }
                 }
             }
@@ -223,7 +223,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private void RemoveFavoritePlace(IFavorite deletedFave)
-        {            
+        {
             GroupedFavoritePlaces.Remove(deletedFave);
             MappableFavoritePlaces.Remove(deletedFave as IMapPoi);
 
@@ -231,24 +231,23 @@ namespace DigiTransit10.ViewModels
         }
 
         private void AddFavoriteRoute(IFavorite route)
-        {            
+        {
             GroupedFavoriteRoutes.AddSorted(route);
 
             var faveRoute = (FavoriteRoute)route;
+
             IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
                     .SelectMany(str => GooglePolineDecoder.Decode(str))
                     .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
             var mapLine = new ColoredMapLine(mapPoints, faveRoute.FavoriteId);
-
             mapLine.FavoriteId = faveRoute.FavoriteId;
-
             MappableFavoriteRoutes.Add(mapLine);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
 
         private void RemoveFavoriteRoute(IFavorite route)
-        {            
+        {
             GroupedFavoriteRoutes.Remove(route);
 
             var faveRoute = (FavoriteRoute)route;
@@ -284,7 +283,7 @@ namespace DigiTransit10.ViewModels
         private async void EditFavorite(IFavorite obj)
         {
             //bring up the AddOrEdit dialog in Edit mode
-            var dialog = new AddOrEditFavoriteDialog(obj);            
+            var dialog = new AddOrEditFavoriteDialog(obj);
             await dialog.ShowAsync();
             if(dialog.ResultFavorite != null)
             {
@@ -305,7 +304,7 @@ namespace DigiTransit10.ViewModels
             else
             {
                 ListSelectionMode = ListViewSelectionMode.None;
-            }            
+            }
         }
 
         private void PinToStart(IFavorite obj)

@@ -109,7 +109,7 @@ namespace DigiTransit10.Services.SettingsServices
             int maxAllowed = PinnedFavoritePlacesDisplayNumber;
 
             //We're using the Property accessor here rather than the backing value to ensure that the backing value is initialized and up to date.
-            int newCount = PinnedFavoriteIds.Count + 1; 
+            int newCount = PinnedFavoriteIds.Count + 1;
             int numToRemove = newCount - maxAllowed;
             for(int i = 0; i < numToRemove; i++)
             {

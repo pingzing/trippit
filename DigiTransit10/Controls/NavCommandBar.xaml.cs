@@ -17,9 +17,9 @@ namespace DigiTransit10.Controls
     public sealed partial class NavCommandBar : CommandBar, INotifyPropertyChanged
     {
         private readonly INavigationService _navigationService;
-        private AppBarButton _currentlySelected = null;        
+        private AppBarButton _currentlySelected = null;
 
-        public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);        
+        public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);
 
         public NavCommandBar()
         {
@@ -35,13 +35,13 @@ namespace DigiTransit10.Controls
             }
 
             Views.Busy.BusyChanged += BusyView_BusyChanged;
-           
+
             _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
             this.Unloaded += NavCommandBar_Unloaded;
             this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
-            
+
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
              * to the IsOpen property, and when it changes, we update each button's IsCompact property 
@@ -49,25 +49,25 @@ namespace DigiTransit10.Controls
              */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
-        }        
+        }
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
         {
             NavCommandBar _this = sender as NavCommandBar;
             bool isOpen = (bool)_this.GetValue(dp);
-            _this.UpdateButtonLabels(isOpen);           
+            _this.UpdateButtonLabels(isOpen);
         }
 
         private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
         {
             var currSize = new Size(this.ActualWidth, this.ActualHeight);
             UpdateNavSeparatorVisibility();
-            this.UpdateLayout();            
+            this.UpdateLayout();
 
             ReflowCommands(currSize, currSize);
             UpdateSelectionVisual();
-            
-            UpdateButtonLabels(IsOpen);                        
+
+            UpdateButtonLabels(IsOpen);
         }
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
@@ -76,14 +76,14 @@ namespace DigiTransit10.Controls
         }
 
         private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
-        {            
+        {
             ReflowCommands(e.PreviousSize, e.NewSize);
-        }        
+        }
 
         private void Frame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             UpdateSelectionVisual();
-            UpdateButtonLabels(IsOpen);                        
+            UpdateButtonLabels(IsOpen);
         }
 
         private void PrimaryCommands_VectorChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs evt)
@@ -100,8 +100,8 @@ namespace DigiTransit10.Controls
         private void ReflowCommands(Size oldSize, Size newSize)
         {
             //Always leave Home, the currently selected page, and the AppBarSeparator in the Nav panel
-            int navElementsToKeep = (_currentlySelected == null || _currentlySelected == HomeButton) 
-                ? 2 
+            int navElementsToKeep = (_currentlySelected == null || _currentlySelected == HomeButton)
+                ? 2
                 : 3;
 
             double ellipsisButtonWidth = 48;
@@ -109,7 +109,7 @@ namespace DigiTransit10.Controls
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
             var currWidth = this.ActualWidth;
             var navWidth = this.NavigationButtons.ActualWidth;
-            double primaryCommandsWidth = this.PrimaryCommands.Count*appButtonWidth + ellipsisButtonWidth;            
+            double primaryCommandsWidth = this.PrimaryCommands.Count*appButtonWidth + ellipsisButtonWidth;
 
             if (newSize.Width <= oldSize.Width)
             {
@@ -150,7 +150,7 @@ namespace DigiTransit10.Controls
                     if(PrimaryCommands.Count == 0
                         && currWidth - navWidth - primaryCommandsWidth - separatorWidth < appButtonWidth)
                     {
-                        return;                        
+                        return;
                     }
 
                     //start by adding by PrimaryCommands
@@ -179,16 +179,16 @@ namespace DigiTransit10.Controls
                         }
                     }
                 }
-            }            
+            }
         }
 
         private void InsertToNavBar(NavAppBarButton navCommand)
         {
-            int navButtonsCount = this.NavigationButtons.Children.Count;            
+            int navButtonsCount = this.NavigationButtons.Children.Count;
             this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
             navCommand.IsSecondaryCommand = false;
             navCommand.IsEnabled = true;
-                
+
             TryRemoveSecondarySeparator();
             UpdateButtonLabels(IsOpen);
         }
@@ -229,7 +229,7 @@ namespace DigiTransit10.Controls
                     int currCommandPosition = ((ISortableAppBarButton)SecondaryCommands[i]).Position;
                     if (buttonToMove.Position < currCommandPosition)
                     {
-                        SecondaryCommands.Insert(i, buttonToMove);                        
+                        SecondaryCommands.Insert(i, buttonToMove);
                         return;
                     }
                 }
@@ -264,7 +264,7 @@ namespace DigiTransit10.Controls
                     int currCommandPosition = ((ISortableAppBarButton)SecondaryCommands[i]).Position;
                     if (((ISortableAppBarButton)buttonToMove).Position < currCommandPosition)
                     {
-                        SecondaryCommands.Insert(i, buttonToMove);                        
+                        SecondaryCommands.Insert(i, buttonToMove);
                         return;
                     }
                 }
@@ -272,10 +272,10 @@ namespace DigiTransit10.Controls
                 SecondaryCommands.Add(buttonToMove);
             }
         }
-        
+
         private void TryRemoveSecondarySeparator()
         {
-            if (SecondaryCommands.Any(x => x is AppBarSeparator) && ( 
+            if (SecondaryCommands.Any(x => x is AppBarSeparator) && (
                     SecondaryCommands.Count == 0
                     || !SecondaryCommands.Any(x => x is NavAppBarButton)
                     || !SecondaryCommands.Any(x => x is ISortableAppBarButton)
@@ -308,8 +308,8 @@ namespace DigiTransit10.Controls
         private void UpdateButtonLabels(bool isOpen)
         {
             foreach (var button in NavigationButtons.Children.OfType<NavAppBarButton>())
-            {                
-                button.IsCompact = !isOpen;                                
+            {
+                button.IsCompact = !isOpen;
             }
         }
 
@@ -328,7 +328,7 @@ namespace DigiTransit10.Controls
                 {
                     NavButtonSeparator.Visibility = Visibility.Collapsed;
                 }
-            }        
+            }
         }
 
         private void Navigate(Type destination)

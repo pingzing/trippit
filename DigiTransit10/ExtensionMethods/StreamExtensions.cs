@@ -22,10 +22,10 @@ namespace DigiTransit10.ExtensionMethods
 
             using (var writer = new StreamWriter(stream))
             using (var jsonWriter = new JsonTextWriter(writer))
-            {                
+            {
                 ser.Serialize(jsonWriter, value);
                 jsonWriter.Flush();
-            }            
+            }
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace DigiTransit10.ExtensionMethods
         /// <param name="serializationSettings">Optional. A <see cref="JsonSerializerSettings>"/> that descrbes how the object should be deserialized.</param>
         /// <returns>The JSON object deserialized to a .NET <see cref="object"/>.</returns>
         public static object DeserializeJsonFromStream(this Stream stream, JsonSerializerSettings serializationSettings = null)
-        {                       
+        {
             JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
             object deserializedValue;
@@ -43,7 +43,7 @@ namespace DigiTransit10.ExtensionMethods
             using (var jsonTextReader = new JsonTextReader(sr))
             {
                 deserializedValue = serializer.Deserialize(jsonTextReader);
-            }            
+            }
 
             return deserializedValue;
         }
@@ -56,7 +56,7 @@ namespace DigiTransit10.ExtensionMethods
         /// <param name="serializationSettings">Optional. A <see cref="JsonSerializerSettings>"/> that descrbes how the object should be deserialized.</param>
         /// <returns></returns>
         public static T DeseriaizeJsonFromStream<T>(this Stream stream, JsonSerializerSettings serializationSettings = null)
-        {                       
+        {
             JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
             T deserializedValue;
@@ -64,7 +64,7 @@ namespace DigiTransit10.ExtensionMethods
             using (var jsonTextReader = new JsonTextReader(sr))
             {
                 deserializedValue = serializer.Deserialize<T>(jsonTextReader);
-            }            
+            }
 
             return deserializedValue;
         }

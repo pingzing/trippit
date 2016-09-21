@@ -49,7 +49,7 @@ namespace DigiTransit10.Services
                 name = name.Substring(name.IndexOf("#") + 1);
             }
 
-            _fontGlyphCache.AddOrUpdate(name, glyphs.ToList());            
+            _fontGlyphCache.AddOrUpdate(name, glyphs.ToList());
         }
 
         public async Task<IEnumerable<int>> GetFontGlyphsAsync(string fontName)
@@ -64,7 +64,7 @@ namespace DigiTransit10.Services
                 return _fontGlyphCache[fontName];
             }
 
-            await Initialization;            
+            await Initialization;
 
             FontCollection collection = new FontCollection(_directWriteFactory, _fontLoader, _fontLoader.Key);
             int familyIndex = -1;
@@ -77,12 +77,12 @@ namespace DigiTransit10.Services
 
             FontFamily fontFamily = collection.GetFontFamily(familyIndex);
 
-            ConcurrentBag<int> glyphHexCodes = new ConcurrentBag<int>();            
+            ConcurrentBag<int> glyphHexCodes = new ConcurrentBag<int>();
             int count = UInt16.MaxValue; //Maybe? I suppose some fonts go past 65535, but for perf's sake, let's assume they don't.
             Font font = fontFamily.GetFont(0);
-            
+
             //Parallel loop cuts us down from a several-minute runtime to a few seconds.
-            Parallel.For(0, count + 1, (i, state) => 
+            Parallel.For(0, count + 1, (i, state) =>
             {
                 if (font.HasCharacter(i))
                 {

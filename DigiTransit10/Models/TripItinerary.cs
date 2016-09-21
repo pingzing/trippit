@@ -9,7 +9,7 @@ namespace DigiTransit10.Models
     public class TripItinerary
     {
         public string StartingPlaceName { get; set; }
-        public string EndingPlaceName { get; set; }        
+        public string EndingPlaceName { get; set; }
         public List<TripLeg> ItineraryLegs { get; set; }
 
         [JsonIgnore]

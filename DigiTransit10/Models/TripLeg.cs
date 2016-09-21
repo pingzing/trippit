@@ -46,7 +46,7 @@ namespace DigiTransit10.Models
             EndTime = DateTimeOffset.FromUnixTimeMilliseconds(apiLeg.EndTime.Value).UtcDateTime;
             EndCoords = apiLeg.To.Coords;
 
-            Mode = apiLeg.Mode.Value;            
+            Mode = apiLeg.Mode.Value;
             DistanceMeters = apiLeg.Distance.Value;
             if (Mode == ApiMode.Subway)
             {

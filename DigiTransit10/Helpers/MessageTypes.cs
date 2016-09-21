@@ -30,20 +30,20 @@ namespace DigiTransit10.Helpers
         /// <summary>
         /// Indicates that the active map should center on its collection of displayed favorites.
         /// </summary>
-        public class CenterAroundFavoritesOnMap { }        
+        public class CenterAroundFavoritesOnMap { }
 
         /// <summary>
         /// Indicates that a TripPlanStrip has been tapped, and we should zoom in to display its details.
         /// </summary>
         public class ViewPlanDetails
         {
-            public TripItinerary BackingModel { get; private set; }            
+            public TripItinerary BackingModel { get; private set; }
 
             public ViewPlanDetails(TripItinerary model)
             {
-                BackingModel = model;                
+                BackingModel = model;
             }
-        }        
+        }
 
         /// <summary>
         /// Indicates that we should back out of a detailed TripPlanStrip view.

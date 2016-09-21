@@ -28,12 +28,12 @@ namespace DigiTransit10.Views
             this.InitializeComponent();
 
             //Doing this in code-behind, because doing it in XAML breaks the XAML designer.
-            var collectionViewSourceBinding = new Binding();            
+            var collectionViewSourceBinding = new Binding();
             collectionViewSourceBinding.Source = ViewModel.Favorites;
             collectionViewSourceBinding.Mode = BindingMode.OneWay;
 
-            BindingOperations.SetBinding(FavoritesViewSource, 
-                CollectionViewSource.SourceProperty, 
+            BindingOperations.SetBinding(FavoritesViewSource,
+                CollectionViewSource.SourceProperty,
                 collectionViewSourceBinding);
         }
 
@@ -44,7 +44,7 @@ namespace DigiTransit10.Views
             if (list == null)
             {
                 return;
-            }            
+            }
 
             if(list.SelectionMode == ListViewSelectionMode.Multiple)
             {
@@ -58,12 +58,12 @@ namespace DigiTransit10.Views
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             var boundingBox = this.FavoritesMap.GetMapIconsBoundingBox();
             if (boundingBox != null)
             {
                 await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);
             }
-        }        
+        }
     }
 }

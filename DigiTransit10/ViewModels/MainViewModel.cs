@@ -23,7 +23,7 @@ namespace DigiTransit10.ViewModels
         private readonly ILogger _logger;
         private readonly Services.SettingsServices.SettingsService _settingsService;
 
-        public MainViewModel(INetworkService networkService, IMessenger messengerService, 
+        public MainViewModel(INetworkService networkService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, ILogger logger)
         {
             _networkService = networkService;
@@ -46,7 +46,7 @@ namespace DigiTransit10.ViewModels
 
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
         {
-            _logger.Debug("Entering MainViewModel.PlanFound...");            
+            _logger.Debug("Entering MainViewModel.PlanFound...");
             if(planFoundMessage.VisualState == MessageTypes.VisualStateType.Narrow)
             {
                 _logger.Debug("Navigating from MainViewModel to TripResultPage in Narrow view...");

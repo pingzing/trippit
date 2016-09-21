@@ -31,7 +31,7 @@ namespace DigiTransit10.ExtensionMethods
                 i++;
             }
 
-            col.Insert(i, newElement);                    
+            col.Insert(i, newElement);
         }
 
         public static void SortInPlace<TSource, TKey>(this ObservableCollection<TSource> col, Func<TSource, TKey> keySelector)

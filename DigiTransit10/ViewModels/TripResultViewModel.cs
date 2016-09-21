@@ -157,7 +157,7 @@ namespace DigiTransit10.ViewModels
 
         private void ShowTripDetails(TripItinerary model)
         {
-            SelectedDetailLegs = model.ItineraryLegs;            
+            SelectedDetailLegs = model.ItineraryLegs;
 
             var mapLine = new ColoredMapLine(model.ItineraryLegs
                 .SelectMany(y =>
@@ -193,7 +193,7 @@ namespace DigiTransit10.ViewModels
             var route = new FavoriteRoute
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
-                FavoriteId = Guid.NewGuid(),                
+                FavoriteId = Guid.NewGuid(),
                 IconFontFace = Constants.SegoeMdl2FontName,
                 IconFontSize = Constants.SymbolFontSize,
                 UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",
@@ -216,7 +216,7 @@ namespace DigiTransit10.ViewModels
             });
 
             route.RoutePlaces = places;
-            route.RouteGeometryStrings = routeToSave.RouteGeometryStrings.ToList();            
+            route.RouteGeometryStrings = routeToSave.RouteGeometryStrings.ToList();
             _favoritesService.AddFavorite(route);
         }
 
@@ -262,14 +262,14 @@ namespace DigiTransit10.ViewModels
                 {
                     jsonStream.SerializeJsonToStream(TripResults.ToArray());
                 }
-                
+
                 //and make a note of it in the suspension dict:
                 suspensionState.AddOrUpdate(SuspensionKeys.TripResults_HasSavedState, true);
                 suspensionState.AddOrUpdate(SuspensionKeys.TripResults_FromName, FromName);
                 suspensionState.AddOrUpdate(SuspensionKeys.TripResults_ToName, ToName);
             }
             else //Don't want to unhook the "back-returns from Detailed View" behavior if the user is just switching apps.
-            {                
+            {
                 BootStrapper.BackRequested -= BootStrapper_BackRequested;
             }
             await Task.CompletedTask;

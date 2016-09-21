@@ -87,9 +87,9 @@ namespace DigiTransit10.Services
         public void AddFavorite(IFavorite newFavorite)
         {
             _favorites.Add(newFavorite);
-                            
-            _settingsService.PushFavoriteId(newFavorite.FavoriteId);           
-            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null, null));            
+
+            _settingsService.PushFavoriteId(newFavorite.FavoriteId);
+            FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null, null));
         }
 
         public bool RemoveFavorite(IFavorite toRemove)
@@ -98,7 +98,7 @@ namespace DigiTransit10.Services
             if (success)
             {
                 _settingsService.RemovedFavoriteId(toRemove.FavoriteId);
-                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }, null));                
+                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }, null));
             }
             return success;
         }
@@ -135,10 +135,10 @@ namespace DigiTransit10.Services
             };
 
             try
-            {           
+            {
                 using (Stream outStream = await _favoritesFile.OpenStreamForWriteAsync())
                 using (var gzip = new GZipStream(outStream, CompressionLevel.Optimal))
-                {                
+                {
                     gzip.SerializeJsonToStream(_favorites, settings);
                 }
             }
@@ -177,6 +177,6 @@ namespace DigiTransit10.Services
                 System.Diagnostics.Debug.WriteLine($"Could not deserialize favorites: {ex}: {ex.Message}");
                 return null;
             }
-        }        
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace DigiTransit10.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var listView = parameter as ListView;            
+            var listView = parameter as ListView;
 
             return listView?.SelectedItems;
         }

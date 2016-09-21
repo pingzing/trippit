@@ -44,9 +44,9 @@ namespace DigiTransit10
 
             #endregion            
 
-            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());            
+            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
 
-            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");                
+            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
@@ -69,14 +69,14 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };
             }
-            
+
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
-            DispatcherHelper.Initialize();            
+            DispatcherHelper.Initialize();
             await Task.CompletedTask;
-        }        
+        }
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
