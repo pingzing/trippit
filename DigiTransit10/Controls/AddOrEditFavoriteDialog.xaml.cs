@@ -157,21 +157,7 @@ namespace DigiTransit10.Controls
             SingleMap.MapElementsChanged += SingleMap_MapElementsChanged;
             _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
             _dialogType = AddOrEditDialogType.Add;
-        }
-
-        private void SingleMap_MapElementsChanged(object sender, EventArgs e)
-        {
-            if (_favoritePlace != null || (SearchBoxPlace != null && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly) )
-            {
-                var boundingBox = SingleMap.GetMapIconsBoundingBox();
-                SingleMap.TrySetViewAsync(new Windows.Devices.Geolocation.Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.None).DoNotAwait();
-            }
-            if(_favoriteRoute != null)
-            {
-                var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
-                SingleMap.TrySetViewBoundsAsync(boundingBox, null, MapAnimationKind.None, true).DoNotAwait();
-            }
-        }
+        }        
 
         public AddOrEditFavoriteDialog(IFavorite favoriteToEdit) : this()
         {
@@ -315,12 +301,6 @@ namespace DigiTransit10.Controls
             this.Hide();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void RaisePropertyChanged([CallerMemberName]string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
         private void IconsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             GridView grid = (GridView)sender;
@@ -329,6 +309,26 @@ namespace DigiTransit10.Controls
             {
                 grid.ScrollIntoView(item);
             }
+        }
+
+        private void SingleMap_MapElementsChanged(object sender, EventArgs e)
+        {
+            if (_favoritePlace != null || (SearchBoxPlace != null && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly))
+            {
+                var boundingBox = SingleMap.GetMapIconsBoundingBox();
+                SingleMap.TrySetViewAsync(new Windows.Devices.Geolocation.Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.None).DoNotAwait();
+            }
+            if (_favoriteRoute != null)
+            {
+                var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
+                SingleMap.TrySetViewBoundsAsync(boundingBox, null, MapAnimationKind.None, true).DoNotAwait();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }
