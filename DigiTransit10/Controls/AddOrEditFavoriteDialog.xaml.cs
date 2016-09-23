@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -316,12 +317,12 @@ namespace DigiTransit10.Controls
             if (_favoritePlace != null || (SearchBoxPlace != null && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly))
             {
                 var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
-                SingleMap.TrySetViewAsync(new Windows.Devices.Geolocation.Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.None).DoNotAwait();
+                SingleMap.TrySetViewAsync(new Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.Default).DoNotAwait();
             }
             if (_favoriteRoute != null)
             {
                 var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
-                SingleMap.TrySetViewBoundsAsync(boundingBox, null, MapAnimationKind.None, true).DoNotAwait();
+                SingleMap.TrySetViewBoundsAsync(boundingBox, null, MapAnimationKind.Default, true).DoNotAwait();
             }
         }
 

@@ -58,14 +58,21 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="FavoritePlaceTemplate" x:DataType="models:IFavorite">
+        <!--Not using x:Bind here because occasionally the TemplateSelector barfs,
+        and requests the wrong template, and that crashes if we're using compiled bindings.-->
+        <DataTemplate x:Key="FavoritePlaceTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <FontIcon Grid.Column="0" FontFamily="{x:Bind IconFontFace}" Glyph="{x:Bind FontIconGlyph}" FontSize="{x:Bind IconFontSize}"/>
-                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind UserChosenName}"/>
+                <FontIcon Grid.Column="0" 
+                          FontFamily="{Binding IconFontFace, Mode=OneTime}" 
+                          Glyph="{Binding FontIconGlyph, Mode=OneTime}" 
+                          FontSize="{Binding IconFontSize, Mode=OneTime}"/>
+                <TextBlock Grid.Column="1" 
+                           Margin="5 0 0 0" 
+                           Text="{Binding UserChosenName, Mode=OneTime}"/>
             </Grid>
         </DataTemplate>
 

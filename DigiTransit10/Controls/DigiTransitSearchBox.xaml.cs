@@ -152,7 +152,8 @@ namespace DigiTransit10.Controls
                 {
                     _favoritePlacesList.AddSorted(favorite as FavoritePlace);
                 }
-                SuggestedPlaces.Insert(1, _favoritePlacesList);
+                int insertIndex = IsUserCurrentLocationListed ? 1 : 0;
+                SuggestedPlaces.Insert(insertIndex, _favoritePlacesList);
             }
         }
 
@@ -328,7 +329,7 @@ namespace DigiTransit10.Controls
             }
 
             if (newValue == true)
-            {
+            {                
                 _this.SuggestedPlaces.Insert(0, _this._userCurrentLocationList);
             }
             else
