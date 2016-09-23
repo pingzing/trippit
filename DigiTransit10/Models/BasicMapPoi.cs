@@ -1,4 +1,5 @@
-﻿using Windows.Devices.Geolocation;
+﻿using System;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.Models
 {
@@ -6,5 +7,7 @@ namespace DigiTransit10.Models
     {
         public BasicGeoposition Coords { get; set; }
         public string Name { get; set; }
+
+        public Guid OptionalId{ get; set; }
     }
 }

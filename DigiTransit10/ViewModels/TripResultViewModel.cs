@@ -45,11 +45,11 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _tripResults, value); }
         }
 
-        private ObservableCollection<ColoredMapLine> _coloredMapLinePoints = new ObservableCollection<ColoredMapLine>();
-        public ObservableCollection<ColoredMapLine> ColoredMapLinePoints
+        private ObservableCollection<ColoredMapLine> _coloredMapLines = new ObservableCollection<ColoredMapLine>();
+        public ObservableCollection<ColoredMapLine> ColoredMapLines
         {
-            get { return _coloredMapLinePoints; }
-            set { Set(ref _coloredMapLinePoints, value); }
+            get { return _coloredMapLines; }
+            set { Set(ref _coloredMapLines, value); }
         }
 
         private IEnumerable<IMapPoi> _mapStops = new List<IMapPoi>();
@@ -110,77 +110,80 @@ namespace DigiTransit10.ViewModels
         }
 
         private async void PlanFound(MessageTypes.PlanFoundMessage _)
-        {
-            _logger.Debug($"Entering {nameof(PlanFound)} in TripResultViewModel.");
+        {                        
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
                 return;
             }
-
-            _logger.Debug($"Pulling PlanFound out of session state dict.");
-            var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
-
-            _logger.Debug($"Removing PlanFound from sesstionState dict");
+            
+            var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;            
             BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
             if (foundPlan?.PlanItineraries == null)
-            {
-                _logger.Debug($"No itineraries in PlanFound. Returning...");
+            {                
                 return;
-            }
-
-            _logger.Debug($"Clearing TripResults...");
-            TripResults.Clear();
-
-            _logger.Debug($"SettingFromName and ToName in the foundPlan.");
+            }            
+            TripResults.Clear();            
             FromName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
             ToName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
-
-            _logger.Debug($"Setting up delay for animation...");
+            
             //----todo: leaking abstraction here, see if we can move this to the view
             // Give the control enough time to animate back from the DetailedState, 
             // so that when the TripPlanStrip does it's second render pass, it gets accurate values.            
             if (IsInDetailedState)
-            {
-                _logger.Debug($"In detailed state, but got a new plan. Navigating TripResultForm back to trip list...");
+            {                
                 GoBackToTripList();
                 await Task.Delay(450);
             }
-            //----end todo
-
-            _logger.Debug($"Adding trip results to the results list...");
+            //----end todo            
             foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
-            {
-                _logger.Debug($"Adding {itinerary.StartingPlaceName} -> {itinerary.EndingPlaceName} with {itinerary.ItineraryLegs.Count} legs to the list.");
+            {                
                 TripResults.Add(itinerary);
             }
         }
 
         private void ShowTripDetails(TripItinerary model)
         {
-            SelectedDetailLegs = model.ItineraryLegs;
+            List<Guid> legIds = new List<Guid>();
+            for (int i = 0; i <= model.ItineraryLegs.Count - 1; i++)
+            {
+                legIds.Add(Guid.NewGuid());
+            }
 
-            var mapLine = new ColoredMapLine(model.ItineraryLegs
-                .SelectMany(y =>
-                    GooglePolineDecoder.Decode(y.LegGeometryString)
+            SelectedDetailLegs = model.ItineraryLegs
+                .Zip(legIds, (x, id) => { x.TemporaryId = id; return x; })
+                .ToList();
+
+            ColoredMapLines.Clear();            
+            int legIndex = 0;
+            foreach(TripLeg leg in model.ItineraryLegs)
+            {
+                List<ColoredMapLinePoint> coloredPoints = GooglePolineDecoder.Decode(leg.LegGeometryString)
                     .Select(x =>
                     {
-                        if (y.Mode == ApiEnums.ApiMode.Walk)
+                        if (leg.Mode == ApiEnums.ApiMode.Walk)
                         {
-                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode), true);
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(leg.Mode), true);
                         }
                         else
                         {
-                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(y.Mode));
+                            return new ColoredMapLinePoint(x, HslColors.GetModeColor(leg.Mode));
                         }
-                    }))
-                );
-
-            ColoredMapLinePoints.Clear();
-            ColoredMapLinePoints.Add(mapLine);
+                    })
+                    .ToList();
+                var mapLine = new ColoredMapLine(coloredPoints, legIds[legIndex]);                
+                ColoredMapLines.Add(mapLine);
+                legIndex++;
+            }                                              
 
             var stops = new List<IMapPoi>();
-            stops.AddRange(model.ItineraryLegs.Select(x => x.StartPlaceToPoi()));
-            stops.Add(model.ItineraryLegs.Last().EndPlaceToPoi());
+            stops.AddRange(model.ItineraryLegs.Zip(legIds, (x, id) => {
+                IMapPoi poi = x.StartPlaceToPoi();
+                poi.OptionalId = id;
+                return poi;                
+            }));
+            IMapPoi endPoi = model.ItineraryLegs.Last().EndPlaceToPoi();
+            endPoi.OptionalId = legIds.Last();
+            stops.Add(endPoi);
 
             MapStops = stops;
 

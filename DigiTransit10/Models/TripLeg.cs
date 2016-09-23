@@ -29,6 +29,10 @@ namespace DigiTransit10.Models
         public List<TripLegIntermediateStop> IntermediateStops { get; set; }
         public string LegGeometryString { get; set; }
 
+
+        [JsonIgnore]
+        public Guid TemporaryId { get; set; }
+
         /// <summary>
         /// Mostly for JSON.NET's benefit.
         /// </summary>

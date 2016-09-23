@@ -315,7 +315,7 @@ namespace DigiTransit10.Controls
         {
             if (_favoritePlace != null || (SearchBoxPlace != null && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly))
             {
-                var boundingBox = SingleMap.GetMapIconsBoundingBox();
+                var boundingBox = SingleMap.GetAllMapElementsBoundingBox();
                 SingleMap.TrySetViewAsync(new Windows.Devices.Geolocation.Geopoint(boundingBox.NorthwestCorner), 13, MapAnimationKind.None).DoNotAwait();
             }
             if (_favoriteRoute != null)

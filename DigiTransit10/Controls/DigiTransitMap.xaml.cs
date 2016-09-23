@@ -14,6 +14,7 @@ using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Ioc;
 using Windows.Devices.Sensors;
 using System.Collections.Specialized;
+using DigiTransit10.ExtensionMethods;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -64,54 +65,12 @@ namespace DigiTransit10.Controls
         {
             get { return (bool)GetValue(ShowUserOnMapProperty); }
             set { SetValue(ShowUserOnMapProperty, value); }
-        }
-
-        public static readonly DependencyProperty MapLinePointsProperty =
-                    DependencyProperty.Register("MapLinePoints", typeof(IEnumerable<BasicGeoposition>), typeof(DigiTransitMap), new PropertyMetadata(null,
-                        OnMapLinePointsChanged));
-        private static void OnMapLinePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            DigiTransitMap _this = d as DigiTransitMap;
-            if (_this == null)
-            {
-                return;
-            }
-
-            IEnumerable<BasicGeoposition> newLinePoints = e.NewValue as IEnumerable<BasicGeoposition>;
-            if (newLinePoints == null)
-            {
-                if (_this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().Any())
-                {
-                    _this.SetMapLines(null);
-                }
-                return;
-            }
-
-            MapPolyline polyline = new MapPolyline();
-            polyline.Path = new Geopath(newLinePoints);
-            polyline.StrokeColor = Color.FromArgb(128, 0, 0, 200); //half-transparent blue
-            polyline.StrokeThickness = 6;
-
-            if (_this.DigiTransitMapControl.MapElements.OfType<MapPolyline>().Any())
-            {
-                _this.SetMapLines(null);
-            }
-
-            _this.SetMapLines(new List<MapPolyline> { polyline });
-        }
-        /// <summary>
-        /// A collection of geopoints, between which a single half-transparent blue line is drawn. Exclusive with <see cref="ColoredMapLines"/>.
-        /// </summary>
-        public IEnumerable<BasicGeoposition> MapLinePoints
-        {
-            get { return (IEnumerable<BasicGeoposition>)GetValue(MapLinePointsProperty); }
-            set { SetValue(MapLinePointsProperty, value); }
-        }
+        }        
 
         public static readonly DependencyProperty ColoredMapLinesProperty =
             DependencyProperty.Register(nameof(ColoredMapLines), typeof(IList<ColoredMapLine>), typeof(DigiTransitMap), new PropertyMetadata(null,
-                ColoredMapLinePointsChanged));
-        private static void ColoredMapLinePointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+                ColoredMapLinesChanged));
+        private static void ColoredMapLinesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DigiTransitMap _this = d as DigiTransitMap;
             if (_this == null)
@@ -123,11 +82,11 @@ namespace DigiTransit10.Controls
             var newCollection = e.NewValue as INotifyCollectionChanged;
             if (oldCollection != null)
             {
-                oldCollection.CollectionChanged -= _this.OnRoutesCollectionChanged;
+                oldCollection.CollectionChanged -= _this.OnColoredMapLinePointsCollectionChanged;
             }
             if (newCollection != null)
             {
-                newCollection.CollectionChanged += _this.OnRoutesCollectionChanged;
+                newCollection.CollectionChanged += _this.OnColoredMapLinePointsCollectionChanged;
             }
 
             IList<ColoredMapLine> newValue = e.NewValue as IList<ColoredMapLine>;
@@ -158,9 +117,9 @@ namespace DigiTransit10.Controls
                         polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
                         polyline.StrokeDashed = startPoint.IsLineDashed;
                         polyline.StrokeThickness = 6;
-                        if(lineCollection.FavoriteId != null)
+                        if(lineCollection.OptionalId != Guid.Empty)
                         {
-                            FavoriteBase.SetFavoriteId(polyline, lineCollection.FavoriteId.Value);
+                            MapElementExtensions.SetPoiId(polyline, lineCollection.OptionalId);
                         }
                         newPolylines.Add(polyline);
 
@@ -179,7 +138,7 @@ namespace DigiTransit10.Controls
             get { return (IList<ColoredMapLine>)GetValue(ColoredMapLinesProperty); }
             set { SetValue(ColoredMapLinesProperty, value); }
         }
-        private void OnRoutesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnColoredMapLinePointsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if(e.Action == NotifyCollectionChangedAction.Move)
             {
@@ -210,9 +169,9 @@ namespace DigiTransit10.Controls
                             polyline.StrokeColor = Color.FromArgb(192, startPoint.LineColor.R, startPoint.LineColor.G, startPoint.LineColor.B);
                             polyline.StrokeDashed = startPoint.IsLineDashed;
                             polyline.StrokeThickness = 6;
-                            if (lineCollection.FavoriteId != null)
+                            if (lineCollection.OptionalId != Guid.Empty)
                             {
-                                FavoriteBase.SetFavoriteId(polyline, lineCollection.FavoriteId.Value);
+                                MapElementExtensions.SetPoiId(polyline, lineCollection.OptionalId);
                             }
                             newPolylines.Add(polyline);
 
@@ -230,7 +189,7 @@ namespace DigiTransit10.Controls
                 {
                     MapPolyline removedLine = DigiTransitMapControl.MapElements
                         .OfType<MapPolyline>()
-                        .FirstOrDefault(line => FavoriteBase.GetFavoriteId(line) == oldLine.FavoriteId);
+                        .FirstOrDefault(line => MapElementExtensions.GetPoiId(line) == oldLine.OptionalId);
                     if(removedLine != null)
                     {
                         removedLines.Add(removedLine);
@@ -277,6 +236,7 @@ namespace DigiTransit10.Controls
                 element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
                 element.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                MapElementExtensions.SetPoiId(element, place.OptionalId);
                 icons.Add(element);
             }
 
@@ -568,13 +528,9 @@ namespace DigiTransit10.Controls
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
         {
             await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
-        }
+        }        
 
-        /// <summary>
-        /// Returns a GeoboundingBox around all the MapElements currently on the map, or null if there are none.
-        /// </summary>
-        /// <returns></returns>
-        public GeoboundingBox GetMapIconsBoundingBox()
+        public GeoboundingBox GetBoundingBoxWithIds(Guid poisId)
         {
             if (DigiTransitMapControl.MapElements == null
                 || DigiTransitMapControl.MapElements.Count <= 0
@@ -583,28 +539,45 @@ namespace DigiTransit10.Controls
                 return null;
             }
 
-            var topLeft = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = DigiTransitMapControl.MapElements.OfType<MapIcon>()
-                                       .Min(x => x.Location.Position.Longitude),
-                Latitude = DigiTransitMapControl.MapElements.OfType<MapIcon>()
-                                      .Max(x => x.Location.Position.Latitude)
-            };
+            List<BasicGeoposition> coords = new List<BasicGeoposition>();
+            var iconsCoords = DigiTransitMapControl.MapElements
+                .OfType<MapIcon>()
+                .Where(x => 
+                    {
+                        Guid? id = MapElementExtensions.GetPoiId(x) as Guid?;
+                        if(id == null || id != poisId)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }                        
+                    })
+                .Select(x => x.Location.Position);
+            coords.AddRange(iconsCoords);
 
-            var bottomRight = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = DigiTransitMapControl.MapElements.OfType<MapIcon>()
-                                       .Max(x => x.Location.Position.Longitude),
-                Latitude = DigiTransitMapControl.MapElements.OfType<MapIcon>()
-                                      .Min(x => x.Location.Position.Latitude)
-            };
+            var lineCoords = DigiTransitMapControl.MapElements
+                .OfType<MapPolyline>().
+                Where(x =>
+                {
+                    Guid? id = MapElementExtensions.GetPoiId(x) as Guid?;
+                    if (id == null || id != poisId)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                })
+                .SelectMany(x => x.Path.Positions);
+            coords.AddRange(lineCoords);
 
-            return new GeoboundingBox(topLeft, bottomRight);
-        }
+            return GetCoordinateGeoboundingBox(coords);
+        }        
 
-        public GeoboundingBox GetPoisBoundingBox(IEnumerable<BasicGeoposition> pois)
+        public GeoboundingBox GetPlacesBoundingBox(IEnumerable<BasicGeoposition> pois)
         {
             if (DigiTransitMapControl.MapElements == null
                 || DigiTransitMapControl.MapElements.Count <= 0
@@ -613,25 +586,14 @@ namespace DigiTransit10.Controls
                 return null;
             }
 
-            var poisInMap = DigiTransitMapControl.MapElements.OfType<MapIcon>().Join(pois,
-                x =>  new BasicGeoposition { Altitude = 0.0, Latitude = x.Location.Position.Latitude, Longitude = x.Location.Position.Longitude },
-                y =>  y,
-                (x, y) => x);
+            var poisInMap = DigiTransitMapControl.MapElements.OfType<MapIcon>().Join(
+                    pois, 
+                    x => x.Location.Position,
+                    y => y,
+                    (x, y) => x)
+                .Select(x => x.Location.Position);
 
-            var topLeft = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = poisInMap.Min(x => x.Location.Position.Longitude),
-                Latitude = poisInMap.Max(x => x.Location.Position.Latitude)
-            };
-            var bottomRight = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = poisInMap.Max(x => x.Location.Position.Longitude),
-                Latitude = poisInMap.Min(x => x.Location.Position.Latitude)
-            };
-
-            return new GeoboundingBox(topLeft, bottomRight);
+            return GetCoordinateGeoboundingBox(poisInMap);
         }
 
         public GeoboundingBox GetAllMapElementsBoundingBox()
@@ -664,37 +626,28 @@ namespace DigiTransit10.Controls
                 return null;
             }
 
-            var topLeft = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = elementGeopositions.Min(x => x.Longitude),
-                Latitude = elementGeopositions.Max(x => x.Latitude)
-            };
-            var bottomRight = new BasicGeoposition
-            {
-                Altitude = 0.0,
-                Longitude = elementGeopositions.Max(x => x.Longitude),
-                Latitude = elementGeopositions.Min(x => x.Latitude)
-            };
-
-            return new GeoboundingBox(topLeft, bottomRight);
+            return GetCoordinateGeoboundingBox(elementGeopositions);
         }
 
         public GeoboundingBox GetMapViewBoundingBox()
         {
             var geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
+            return GetCoordinateGeoboundingBox(geopath.Positions);
+        }
 
+        private GeoboundingBox GetCoordinateGeoboundingBox(IEnumerable<BasicGeoposition> coords)
+        {
             var topLeft = new BasicGeoposition
             {
                 Altitude = 0.0,
-                Longitude = geopath.Positions.Min(x => x.Longitude),
-                Latitude = geopath.Positions.Max(x => x.Latitude)
+                Longitude = coords.Min(x => x.Longitude),
+                Latitude = coords.Max(x => x.Latitude)
             };
             var bottomRight = new BasicGeoposition
             {
                 Altitude = 0.0,
-                Longitude = geopath.Positions.Max(x => x.Longitude),
-                Latitude = geopath.Positions.Min(x => x.Latitude)
+                Longitude = coords.Max(x => x.Longitude),
+                Latitude = coords.Min(x => x.Latitude)
             };
 
             return new GeoboundingBox(topLeft, bottomRight);

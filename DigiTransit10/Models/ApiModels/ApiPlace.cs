@@ -29,5 +29,8 @@ namespace DigiTransit10.Models.ApiModels
 
         [JsonIgnore]
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
+
+        [JsonIgnore]
+        public Guid OptionalId { get; set; }
     }
 }

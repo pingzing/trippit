@@ -469,7 +469,7 @@ namespace DigiTransit10.ViewModels
 
         private async Task FillPinnedFavorites()
         {
-            if(_settingsService.PinnedFavoriteIds.Count == 0)
+           if(_settingsService.PinnedFavoriteIds.Count == 0)
             {
                 PinnedFavorites.Clear();
                 return;

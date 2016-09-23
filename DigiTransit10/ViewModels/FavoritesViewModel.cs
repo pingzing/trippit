@@ -240,7 +240,7 @@ namespace DigiTransit10.ViewModels
                     .SelectMany(str => GooglePolineDecoder.Decode(str))
                     .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
             var mapLine = new ColoredMapLine(mapPoints, faveRoute.FavoriteId);
-            mapLine.FavoriteId = faveRoute.FavoriteId;
+            mapLine.OptionalId = faveRoute.FavoriteId;
             MappableFavoriteRoutes.Add(mapLine);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
@@ -252,7 +252,7 @@ namespace DigiTransit10.ViewModels
 
             var faveRoute = (FavoriteRoute)route;
             ColoredMapLine toRemove = MappableFavoriteRoutes
-                .FirstOrDefault(x => x.FavoriteId == faveRoute.FavoriteId);
+                .FirstOrDefault(x => x.OptionalId == faveRoute.FavoriteId);
             MappableFavoriteRoutes.Remove(toRemove);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));

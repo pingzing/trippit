@@ -15,9 +15,9 @@
                 VerticalAlignment="Stretch">
             <Canvas.Background>
                 <ImageBrush ImageSource="ms-appx:///Assets/SplashScreen.png" Stretch="Uniform">
-                    <ImageBrush.Transform>
+                    <!--<ImageBrush.Transform>
                         <TranslateTransform Y="10" />
-                    </ImageBrush.Transform>
+                    </ImageBrush.Transform>-->
                 </ImageBrush>
             </Canvas.Background>
             <Viewbox x:Name="splashImage"

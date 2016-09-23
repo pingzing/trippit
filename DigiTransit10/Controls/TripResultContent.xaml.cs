@@ -92,7 +92,7 @@ namespace DigiTransit10.Controls
                 VisualStateManager.GoToState(this, _detailedTripState.Name, false);
             }
 
-            GeoboundingBox iconsBoundingBox = SingleMap.GetMapIconsBoundingBox();
+            GeoboundingBox iconsBoundingBox = SingleMap.GetAllMapElementsBoundingBox();
             var mapMargin = new Thickness(10, 10, 10, (this.ActualHeight * .66) + 10);
             SingleMap.TrySetViewBoundsAsync(iconsBoundingBox, mapMargin, MapAnimationKind.None, true).DoNotAwait();
         }
@@ -135,13 +135,8 @@ namespace DigiTransit10.Controls
             }
 
             //Frame clicked point on the map
-            TripLeg clickedLeg = (TripLeg)e.ClickedItem;
-            var poisToFrame = new List<BasicGeoposition> { clickedLeg.EndCoords };
-            if (!clickedLeg.StartCoords.Equals(default(BasicGeoposition)))
-            {
-                poisToFrame.Add(clickedLeg.StartCoords);
-            }
-            var boundingBox = SingleMap.GetPoisBoundingBox(poisToFrame);
+            TripLeg clickedLeg = (TripLeg)e.ClickedItem;            
+            var boundingBox = SingleMap.GetBoundingBoxWithIds(clickedLeg.TemporaryId);
             double bottomMargin = DirectionsFloatingPanel.IsOpen ? DirectionsFloatingPanel.ExpandedHeight + 10 : 10;
             SingleMap.TrySetViewBoundsAsync(boundingBox, new Thickness(10, 10, 10, bottomMargin), MapAnimationKind.Bow).DoNotAwait();
 

@@ -33,6 +33,7 @@ namespace DigiTransit10.Models
         public PlaceType Type { get; set; }
         public double? Confidence { get; set; }
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
+        public Guid OptionalId { get; set; }    
 
         public static FavoritePlace MyLocationPlace
         {
