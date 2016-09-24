@@ -16,6 +16,8 @@ using DigiTransit10.ExtensionMethods;
 using Microsoft.HockeyApp;
 using MetroLog;
 using MetroLog.Targets;
+using System.Diagnostics;
+using System;
 
 namespace DigiTransit10
 {
@@ -33,7 +35,7 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);
+            SplashFactory = (e) => new Views.Splash(e);            
 
             #region App settings
 
@@ -47,7 +49,12 @@ namespace DigiTransit10
             LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
 
             HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");
-        }
+            //todo: figure out if there's a way to make this work
+                //.SetExceptionDescriptionLoader((Exception ex) =>
+                //{
+                //    return $"Current log: {LogManagerFactory.DefaultLogManager.GetCompressedLogs().Result.}";
+                //});
+        }        
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
@@ -74,7 +81,7 @@ namespace DigiTransit10
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
-            DispatcherHelper.Initialize();
+            DispatcherHelper.Initialize();            
             await Task.CompletedTask;
         }
 
@@ -93,7 +100,7 @@ namespace DigiTransit10
             await Locator.CleanupAsync();
 
             await base.OnSuspendingAsync(s, e, prelaunchActivated);
-        }
+        }        
     }
 }
 

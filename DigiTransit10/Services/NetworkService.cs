@@ -87,14 +87,14 @@ namespace DigiTransit10.Services
                 return new ApiResult<GeocodingResponse>(geoResponse);
             }
             catch(Exception ex) when (ex is COMException || ex is HttpRequestException || ex is OperationCanceledException)
-            {
-                LogException(ex);
+            {                
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.Canceled);
                 }
                 else
                 {
+                    LogException(ex);
                     return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.NoConnection);
                 }
             }
@@ -143,14 +143,14 @@ namespace DigiTransit10.Services
                 return new ApiResult<List<ApiStop>>(result);
             }
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {
-                LogException(ex);
+            {                
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.Canceled);
                 }
                 else
                 {
+                    LogException(ex);
                     return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoConnection);
                 }
             }
@@ -247,14 +247,14 @@ namespace DigiTransit10.Services
                 return new ApiResult<ApiPlan>(result);
             }            
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {
-                LogException(ex);
+            {                
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
                 }
                 else
                 {
+                    LogException(ex);
                     return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
                 }
             }            
@@ -273,7 +273,7 @@ namespace DigiTransit10.Services
                 .Data.First.First.ToObject<T>();
         }
 
-        private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method()")
+        private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method")
         {           
             if (response.Content != null)
             {
