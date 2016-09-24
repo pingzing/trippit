@@ -28,6 +28,7 @@ namespace DigiTransit10.ViewModels
         private readonly IMessenger _messengerService;
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
+        private readonly ITileService _tileService;
 
         private IList<object> _selectedItems = null;
 
@@ -125,12 +126,13 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IFavorite> SetAsRouteCommand => new RelayCommand<IFavorite>(SetAsRoute);        
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService,
-            IFavoritesService favoritesService)
+            IFavoritesService favoritesService, ITileService tileService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
             _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
+            _tileService = tileService;
 
             Favorites.Add(GroupedFavoritePlaces);
             Favorites.Add(GroupedFavoriteRoutes);
@@ -332,7 +334,11 @@ namespace DigiTransit10.ViewModels
 
         private void PinToStart(IFavorite obj)
         {
-            throw new NotImplementedException();
+            var place = obj as FavoritePlace;
+            if (place != null)
+            {
+                _tileService.PinFavoritePlaceToStartAsync(place);
+            }
         }
 
         private void PinToMainPage(IFavorite obj)
