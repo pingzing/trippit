@@ -16,9 +16,7 @@ using DigiTransit10.Localization.Strings;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI;
-using DigiTransit10.ViewModels.ControlViewModels;
 using Windows.UI.Xaml.Controls;
-using Template10.Services.NavigationService;
 using DigiTransit10.Views;
 using DigiTransit10.Helpers.PageNavigationContainers;
 
@@ -36,8 +34,7 @@ namespace DigiTransit10.ViewModels
         public bool IsFavoritesEmpty
         {
             get
-            {
-                bool isEmpty = true;
+            {                
                 if (Favorites?.Count == 0)
                 {
                     return true;
@@ -107,8 +104,14 @@ namespace DigiTransit10.ViewModels
         public ListViewSelectionMode ListSelectionMode
         {
             get { return _listSelectionMode; }
-            set { Set(ref _listSelectionMode, value); }
+            set
+            {
+                Set(ref _listSelectionMode, value);
+                RaisePropertyChanged(nameof(IsMultiSelectionActive));
+            }
         }
+
+        public bool IsMultiSelectionActive => ListSelectionMode == ListViewSelectionMode.Multiple;
 
         public RelayCommand AddNewFavoriteCommand => new RelayCommand(AddNewFavorite);
         public RelayCommand<IFavorite> EditFavoriteCommand => new RelayCommand<IFavorite>(EditFavorite);
@@ -119,6 +122,7 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);
         public RelayCommand<IFavorite> PinToMainPageCommand => new RelayCommand<IFavorite>(PinToMainPage);
         public RelayCommand<IList<object>> SelectionChangedCommand => new RelayCommand<IList<object>>(SelectionChanged);
+        public RelayCommand<IFavorite> SetAsRouteCommand => new RelayCommand<IFavorite>(SetAsRoute);        
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService,
             IFavoritesService favoritesService)
@@ -136,6 +140,7 @@ namespace DigiTransit10.ViewModels
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
 
+            //todo: change this from nuking/rebuilding every time to add/remove what's changed
             GroupedFavoritePlaces.Clear();
             MappableFavoritePlaces.Clear();
             GroupedFavoriteRoutes.Clear();
@@ -165,7 +170,16 @@ namespace DigiTransit10.ViewModels
 
         private void DeleteFavorite(IFavorite favorite)
         {
-            _favoritesService.RemoveFavorite(favorite);
+            if(ListSelectionMode == ListViewSelectionMode.Multiple
+                && _selectedItems != null
+                && _selectedItems.Count > 0)
+            {              
+                _favoritesService.RemoveFavorite(_selectedItems.Cast<IFavorite>());
+            }
+            else
+            {            
+                _favoritesService.RemoveFavorite(favorite);
+            }
         }
 
         private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
@@ -270,6 +284,15 @@ namespace DigiTransit10.ViewModels
             NavigationService.NavigateAsync(typeof(MainPage), args);
         }
 
+        private void SetAsRoute(IFavorite obj)
+        {
+            var args = obj as FavoriteRoute;
+            if (args != null)
+            {
+                NavigationService.NavigateAsync(typeof(MainPage), args);
+            }
+        }
+
         private async void AddNewFavorite()
         {
             var dialog = new AddOrEditFavoriteDialog();
@@ -314,7 +337,19 @@ namespace DigiTransit10.ViewModels
 
         private void PinToMainPage(IFavorite obj)
         {
-            _settingsService.PushFavoriteId(obj.FavoriteId);
+            if (ListSelectionMode == ListViewSelectionMode.Multiple
+                && _selectedItems != null
+                && _selectedItems.Count > 0)
+            {
+                foreach(var fave in _selectedItems.Cast<IFavorite>())
+                {
+                    _settingsService.PushFavoriteId(fave.FavoriteId);
+                }
+            }
+            else
+            {
+                _settingsService.PushFavoriteId(obj.FavoriteId);
+            }
         }
 
         private void SelectionChanged(IList<object> obj)

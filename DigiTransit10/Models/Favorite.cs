@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 
@@ -23,9 +24,45 @@ namespace DigiTransit10.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Id { get; set; }
-        public string UserChosenName { get; set; }
-        public string IconFontFace { get; set; }
-        public string FontIconGlyph { get; set; }
+        private string _userChosenName;
+        public string UserChosenName
+        {
+            get { return _userChosenName; }
+            set
+            {
+                if(_userChosenName != value)
+                {
+                    _userChosenName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private string _iconFontFace;
+        public string IconFontFace
+        {
+            get { return _iconFontFace; }
+            set
+            {
+                if(_iconFontFace != value)
+                {
+                    _iconFontFace = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private string _fontIconGlyph;
+        public string FontIconGlyph
+        {
+            get { return _fontIconGlyph; }
+            set
+            {
+                if(_fontIconGlyph != value)
+                {
+                    _fontIconGlyph = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         public Guid FavoriteId { get; set; }   
         public double IconFontSize { get; set; }
         public string Name { get; set; }
@@ -35,6 +72,11 @@ namespace DigiTransit10.Models
         public double? Confidence { get; set; }
         public Guid OptionalId { get; set; }
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };        
+
+        private void RaisePropertyChanged([CallerMemberName]string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public int CompareTo(IFavorite other)
         {
@@ -49,15 +91,55 @@ namespace DigiTransit10.Models
 
     public class FavoriteRoute : IFavorite
     {
-        public string UserChosenName { get; set; }
-        public string FontIconGlyph { get; set; }
-        public string IconFontFace { get; set; }
+        private string _userChosenName;
+        public string UserChosenName
+        {
+            get { return _userChosenName; }
+            set
+            {
+                if (_userChosenName != value)
+                {
+                    _userChosenName = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private string _iconFontFace;
+        public string IconFontFace
+        {
+            get { return _iconFontFace; }
+            set
+            {
+                if (_iconFontFace != value)
+                {
+                    _iconFontFace = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        private string _fontIconGlyph;
+        public string FontIconGlyph
+        {
+            get { return _fontIconGlyph; }
+            set
+            {
+                if (_fontIconGlyph != value)
+                {
+                    _fontIconGlyph = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         public Guid FavoriteId { get; set; }
         public double IconFontSize { get; set; }
         public List<string> RouteGeometryStrings { get; set; }
         public List<FavoriteRoutePlace> RoutePlaces { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged([CallerMemberName]string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public int CompareTo(IFavorite other)
         {

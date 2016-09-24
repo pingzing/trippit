@@ -29,11 +29,7 @@ namespace DigiTransit10.TemplateSelectors
                 else if(place.Type == ModelEnums.PlaceType.Stop)
                 {                    
                     return StopTemplate;
-                }
-                else if(place.Type == ModelEnums.PlaceType.Coordinates)
-                {                    
-                    return CoordinatesTemplate;
-                }
+                }                
                 else if(place.Type == ModelEnums.PlaceType.UserCurrentLocation)
                 {                   
                     return UserCurrentLocationTemplate;

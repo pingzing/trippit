@@ -197,7 +197,6 @@
     <Compile Include="Helpers\MessageTypes.cs" />
     <Compile Include="Helpers\NavParamKeys.cs" />
     <Compile Include="Helpers\GenericResult.cs" />
-    <Compile Include="Helpers\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
     <Compile Include="Helpers\SuspensionKeys.cs" />
     <Compile Include="Models\ApiModels\ApiAgency.cs" />
     <Compile Include="Models\ApiModels\ApiAlert.cs" />
@@ -224,6 +223,7 @@
     <Compile Include="Models\BasicMapPoi.cs" />
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
+    <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
     <Compile Include="Models\TripLegIntermediateStop.cs" />
     <Compile Include="Models\TripLeg.cs" />
     <Compile Include="Models\TripQueryDetails.cs" />
@@ -267,6 +267,7 @@
     <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
     <Compile Include="Styles\HslColors.cs" />
     <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\FavoritesListTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />

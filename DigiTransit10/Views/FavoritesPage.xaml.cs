@@ -51,9 +51,21 @@ namespace DigiTransit10.Views
                 return;
             }
 
-            if (ViewModel.SetAsDestinationCommand.CanExecute(tappedItem))
+            var tappedPlace = tappedItem as FavoritePlace;
+            if (tappedPlace != null)
             {
-                ViewModel.SetAsDestinationCommand.Execute(tappedItem);
+                if (ViewModel.SetAsDestinationCommand.CanExecute(tappedItem))
+                {
+                    ViewModel.SetAsDestinationCommand.Execute(tappedItem);
+                }
+            }
+            var tappedRoute = tappedItem as FavoriteRoute;
+            if(tappedRoute != null)
+            {
+                if(ViewModel.SetAsRouteCommand.CanExecute(tappedRoute))
+                {
+                    ViewModel.SetAsRouteCommand.Execute(tappedRoute);
+                }
             }
         }
 

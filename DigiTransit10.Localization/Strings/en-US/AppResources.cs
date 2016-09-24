@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 09/04/2016 17:52:52
+// 	Generated: 09/24/2016 20:22:28
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -720,6 +720,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("AddOrEditFavoriteDialog_UserChosenNameHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Select"
+        /// </summary>
+        public static string FavoritesPage_CommandBarSelect
+        {
+            get
+            {
+                return resourceLoader.GetString("FavoritesPage_CommandBarSelect");
             }
         }
     }

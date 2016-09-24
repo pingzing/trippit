@@ -22,7 +22,8 @@ namespace DigiTransit10.Services
         event EventHandler<FavoritesChangedEventArgs> FavoritesChanged;
         void AddFavorite(IFavorite newFave);
         bool EditFavorite(IFavorite edited);
-        bool RemoveFavorite(IFavorite deletedFave);
+        void RemoveFavorite(IFavorite deletedFave);
+        void RemoveFavorite(IEnumerable<IFavorite> deletedFaves);
         Task<ImmutableList<IFavorite>> GetFavoritesAsync();
         Task FlushFavoritesAsync();
         Task<ImmutableList<IFavorite>> GetPinnedFavorites();
@@ -62,15 +63,15 @@ namespace DigiTransit10.Services
             if (_favorites == null)
             {
                 await Initialization; //make sure we've got the file ready
-                List<IFavorite> favorite = await DeserializeFavoritesFile();
-                if (favorite == null)
+                List<IFavorite> list = await DeserializeFavoritesFile();
+                if (list == null)
                 {
                     _favorites = new List<IFavorite>();
                     return _favorites.ToImmutableList();
                 }
                 else
                 {
-                    _favorites = favorite;
+                    _favorites = list;
                     return _favorites.ToImmutableList();
                 }
             }
@@ -92,15 +93,26 @@ namespace DigiTransit10.Services
             FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null, null));
         }
 
-        public bool RemoveFavorite(IFavorite toRemove)
+        public void RemoveFavorite(IFavorite toRemove)
         {
             bool success = _favorites.Remove(toRemove);
             if (success)
             {
                 _settingsService.RemovedFavoriteId(toRemove.FavoriteId);
                 FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }, null));
+            }            
+        }
+
+        public void RemoveFavorite(IEnumerable<IFavorite> deletedFaves)
+        {
+            _favorites = _favorites.Except(deletedFaves).ToList();            
+            {
+                foreach(var fave in deletedFaves)
+                {
+                    _settingsService.RemovedFavoriteId(fave.FavoriteId);
+                }
+                FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, deletedFaves.ToList(), null));
             }
-            return success;
         }
 
         /// <summary>

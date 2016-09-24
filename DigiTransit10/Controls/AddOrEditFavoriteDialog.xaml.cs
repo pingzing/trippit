@@ -142,11 +142,25 @@ namespace DigiTransit10.Controls
             }
         }
 
-        public bool IsSaveButtonEnabled => !String.IsNullOrWhiteSpace(NameText)
-                                            && SearchBoxPlace != null
-                                            && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly
-                                            && SearchBoxPlace.Type != ModelEnums.PlaceType.UserCurrentLocation
-                                            && SelectedIconIndex != -1;
+        public bool IsSaveButtonEnabled
+        {
+            get
+            {
+                if(IsAddNewDialog)
+                {
+                    return !String.IsNullOrWhiteSpace(NameText)
+                        && SearchBoxPlace != null
+                        && SearchBoxPlace.Type != ModelEnums.PlaceType.NameOnly
+                        && SearchBoxPlace.Type != ModelEnums.PlaceType.UserCurrentLocation
+                        && SelectedIconIndex != -1;
+                }
+                else
+                {
+                    return !String.IsNullOrWhiteSpace(NameText)
+                        && SelectedIconIndex != -1;
+                }
+            }
+        }
 
         //todo: replace this with a converter in the view
         public bool IsAddNewDialog => _dialogType == AddOrEditDialogType.Add;

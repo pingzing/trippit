@@ -486,8 +486,6 @@ namespace DigiTransit10.ViewModels
             {
                 PinnedFavorites.Add(newFace);
             }
-
-
         }
 
         private async void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
@@ -625,32 +623,48 @@ namespace DigiTransit10.ViewModels
 
             BootStrapper.BackRequested += BootStrapper_BackRequested;
 
-            //---PlanTripFromFavorites
-            var navArgs = parameter as NavigateWithFavoritePlaceArgs;
-            if(navArgs != null)
+            if (mode != NavigationMode.Back && mode != NavigationMode.Refresh)
             {
-                if(navArgs.PlaceNavigationType == NavigationType.AsDestination)
+                //---PlanTripFromFavorites
+                var placeArgs = parameter as NavigateWithFavoritePlaceArgs;
+                if (placeArgs != null)
                 {
-                    ToPlace = navArgs.Place;
-                }
-                else if(navArgs.PlaceNavigationType == NavigationType.AsOrigin)
-
-                {
-                    FromPlace = navArgs.Place;
-                }
-                else if(navArgs.PlaceNavigationType  == NavigationType.AsIntermediate)
-                {
-                    if(navArgs.IntermediateIndex != null)
+                    if (placeArgs.PlaceNavigationType == NavigationType.AsDestination)
                     {
-                        IntermediatePlaces.Insert(navArgs.IntermediateIndex.Value, new IntermediateSearchViewModel(this, navArgs.Place));
+                        ToPlace = placeArgs.Place;
+                    }
+                    else if (placeArgs.PlaceNavigationType == NavigationType.AsOrigin)
+
+                    {
+                        FromPlace = placeArgs.Place;
+                    }
+                    else if (placeArgs.PlaceNavigationType == NavigationType.AsIntermediate)
+                    {
+                        if (placeArgs.IntermediateIndex != null)
+                        {
+                            IntermediatePlaces.Insert(placeArgs.IntermediateIndex.Value, new IntermediateSearchViewModel(this, placeArgs.Place));
+                        }
+                    }
+                    if (PlanTripCommand.CanExecute(null))
+                    {
+                        PlanTripCommand.Execute(null);
                     }
                 }
-                if (PlanTripCommand.CanExecute(null))
+
+                var routeArgs = parameter as FavoriteRoute;
+                if (routeArgs != null)
                 {
-                    PlanTripCommand.Execute(null);
+                    var firstPlace = routeArgs.RoutePlaces.First();
+                    FromPlace = new Place { Type = PlaceType.Address, Lat = (float)firstPlace.Lat, Lon = (float)firstPlace.Lon, Name = firstPlace.Name };
+                    var lastPlace = routeArgs.RoutePlaces.Last();
+                    ToPlace = new Place { Type = PlaceType.Address, Lat = (float)lastPlace.Lat, Lon = (float)lastPlace.Lon, Name = lastPlace.Name };
+                    if (PlanTripCommand.CanExecute(null))
+                    {
+                        PlanTripCommand.Execute(null);
+                    }
                 }
             }
-            //---End PlanTripFromFavorites
+            //---End PlanTripFromFavorites            
 
             await FillPinnedFavorites();
 

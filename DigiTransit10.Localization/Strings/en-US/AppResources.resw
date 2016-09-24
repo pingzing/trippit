@@ -300,4 +300,7 @@
   <data name="AddOrEditFavoriteDialog_UserChosenNameHeader" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="FavoritesPage_CommandBarSelect" xml:space="preserve">
+    <value>Select</value>
+  </data>
 </root>

@@ -9,8 +9,7 @@ namespace DigiTransit10.Models
         {
             UserCurrentLocation,
             Stop,
-            Address,
-            Coordinates,
+            Address,            
             NameOnly,
             FavoritePlace
         }
