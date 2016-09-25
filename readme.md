@@ -9,17 +9,16 @@ Requirements
 
 ##Feature Epics
 - [x] Trip planning
-- [x] Favorites (partially completed)
+- [x] Favorites
 - [x] Detailed trip plan
 - [ ] Line search
 - [ ] Stop search
-- [ ] Versioned data formats (see [MSDN article](https://msdn.microsoft.com/en-us/windows/uwp/app-settings/store-and-retrieve-app-data) for more details)
-- [ ] Multi-leg trip planning
+- [x] Multi-leg trip planning
 - [ ] Show nearby stops
 - [ ] Transit service alerts
-- [ ] Stop/route tile pinning
+- [x] Stop/route tile pinning
 - [ ] Subscribe to a line, receive notifications when it stops somewhere
-- [ ] Crash reporting
+- [x] Crash reporting
 - [ ] Analytics
 - [ ] Testing
 
@@ -40,7 +39,7 @@ I.E. dates are in ISO 8601 format, and times are expressed in 24-hour clock form
 
 When times are returned by the server, they are usually in UNIX-milliseconds timestamp format, encoded as `long`s.
 
-#####Formatting
+######Formatting
 When sending JSON requests, the double-quotes around strings must be escaped _in the request_. That means backslashes next to the quotes. _In the request_. Ugh.
 
 Example:
