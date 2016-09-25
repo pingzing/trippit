@@ -356,11 +356,22 @@
                             VerticalAlignment="Bottom">
                     <AppBarButton Command="{x:Bind ViewModel.AddNewFavoriteCommand}"
                                   Icon="Add"
-                                  Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"/>
+                                  Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                    <AppBarButton Command="{x:Bind ViewModel.DeleteFavoriteCommand}"
+                                  Icon="Delete"
+                                  IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                  Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarDeleteSelected}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     <AppBarToggleButton Command="{x:Bind ViewModel.ToggleSelectionCommand}"
                                         IsChecked="{x:Bind ViewModel.ListSelectionMode, Mode=OneWay, Converter={StaticResource ListViewSelectionModeToBoolConverter}}"
                                         Icon="Bullets"
                                         Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarSelect}"/>
+                    <AppBarButton Command="{x:Bind ViewModel.PinToStartCommand}"
+                                  Icon="Pin"
+                                  IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                  Label="{Binding Source={StaticResource Strings}, Path=LiteralPinToStart}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </CommandBar>
             </Grid>
         </Grid>
