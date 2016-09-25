@@ -157,6 +157,7 @@
     <Compile Include="Converters\BoolToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DateTimeToLocalTimeStringConverter.cs" />
+    <Compile Include="Converters\EmptyNullToBoolConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
     <Compile Include="Converters\ListViewSelectionModeToBoolConverter.cs" />

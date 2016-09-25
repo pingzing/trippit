@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 09/24/2016 20:22:28
+// 	Generated: 09/25/2016 19:43:40
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -731,6 +731,61 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("FavoritesPage_CommandBarSelect");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "is already pinned to Start!"
+        /// </summary>
+        public static string Favorites_PinToStartAlreadyExists
+        {
+            get
+            {
+                return resourceLoader.GetString("Favorites_PinToStartAlreadyExists");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Could not pin to Start"
+        /// </summary>
+        public static string Favorites_PinToStartErrorTitle
+        {
+            get
+            {
+                return resourceLoader.GetString("Favorites_PinToStartErrorTitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Not sure why, but we weren't able to pin {0} to Start."
+        /// </summary>
+        public static string Favorites_PinToStartGenericFailure
+        {
+            get
+            {
+                return resourceLoader.GetString("Favorites_PinToStartGenericFailure");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Delete Selected"
+        /// </summary>
+        public static string FavoritesPage_CommandBarDeleteSelected
+        {
+            get
+            {
+                return resourceLoader.GetString("FavoritesPage_CommandBarDeleteSelected");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Pin to Start"
+        /// </summary>
+        public static string LiteralPinToStart
+        {
+            get
+            {
+                return resourceLoader.GetString("LiteralPinToStart");
             }
         }
     }

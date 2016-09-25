@@ -25,7 +25,8 @@
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <conv:BoolToVisibilityConverterInverted x:Key="BoolToVisibilityConverterInverted"/>
             <conv:EmptyNullToVisibilityConverterInverted x:Key="EmptyNullToVisibilityConverterInverted"/>
-            
+            <conv:EmptyNullToBoolConverter x:Key="EmptyNullToBoolConverter"/>
+
             <conv:TransitModeToFontIconConverter x:Key="TransitModeToFontIconConverter"/>
             <conv:TransitModeToForegroundBrushConverter x:Key="TransitModeToForegroundBrushConverter"/>
             <conv:UnixTimeToLocalTimeConverter x:Key="UnixTimeToLocalTimeConverter"/>

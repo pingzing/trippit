@@ -18,6 +18,7 @@ namespace DigiTransit10.Helpers
             InvalidCredentials = 8,
             NoResults = 16,
             Canceled = 32,
+            Exists = 64,        
         }
     }
 }

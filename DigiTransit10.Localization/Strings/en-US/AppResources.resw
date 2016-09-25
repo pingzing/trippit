@@ -303,4 +303,20 @@
   <data name="FavoritesPage_CommandBarSelect" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="Favorites_PinToStartAlreadyExists" xml:space="preserve">
+    <value>is already pinned to Start!</value>
+  </data>
+  <data name="Favorites_PinToStartErrorTitle" xml:space="preserve">
+    <value>Could not pin to Start</value>
+  </data>
+  <data name="Favorites_PinToStartGenericFailure" xml:space="preserve">
+    <value>Not sure why, but we weren't able to pin {0} to Start.</value>
+    <comment>{0} filled with user's place name by String.Format call</comment>
+  </data>
+  <data name="FavoritesPage_CommandBarDeleteSelected" xml:space="preserve">
+    <value>Delete Selected</value>
+  </data>
+  <data name="LiteralPinToStart" xml:space="preserve">
+    <value>Pin to Start</value>
+  </data>
 </root>

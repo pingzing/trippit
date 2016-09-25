@@ -165,13 +165,7 @@ namespace DigiTransit10.Services.SettingsServices
                 ApplicationLanguages.PrimaryLanguageOverride = value;
                 //do something to reload values?
             }
-        }
-
-        public List<Guid> SecondaryTileIds
-        {
-            get { return _helper.Read<List<Guid>>(nameof(SecondaryTileIds), new List<Guid>(), SettingsStrategies.Roam); }
-            set { _helper.Write(nameof(SecondaryTileIds), value, SettingsStrategies.Roam); }
-        }
+        }        
     }
 }
 

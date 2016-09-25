@@ -58,8 +58,8 @@ namespace DigiTransit10.Controls
 
         public MovableAppBarButton()
         {
-            this.InitializeComponent();
-        }
+            this.InitializeComponent();            
+        }        
 
         public int CompareTo(ISortableAppBarButton other)
         {

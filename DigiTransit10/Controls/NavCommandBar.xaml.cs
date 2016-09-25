@@ -11,6 +11,7 @@ using Windows.Foundation.Collections;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using DigiTransit10.ExtensionMethods;
+using System.Collections.Generic;
 
 namespace DigiTransit10.Controls
 {
@@ -18,11 +19,12 @@ namespace DigiTransit10.Controls
     {
         private readonly INavigationService _navigationService;
         private AppBarButton _currentlySelected = null;
+        private Dictionary<ICommandBarElement, long> _visibilityTrackedElements = new Dictionary<ICommandBarElement, long>();
 
         public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);
 
         public NavCommandBar()
-        {
+        {                     
             this.InitializeComponent();
             if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.CommandBar", "OverflowButtonVisibility"))
             {
@@ -39,8 +41,7 @@ namespace DigiTransit10.Controls
             _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
-            this.Unloaded += NavCommandBar_Unloaded;
-            this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
+            this.Unloaded += NavCommandBar_Unloaded;            
 
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
@@ -49,7 +50,9 @@ namespace DigiTransit10.Controls
              */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
-        }
+            this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
+            this.SecondaryCommands.VectorChanged += SecondaryCommands_VectorChanged;
+        }        
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
         {
@@ -59,15 +62,16 @@ namespace DigiTransit10.Controls
         }
 
         private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
-        {
-            var currSize = new Size(this.ActualWidth, this.ActualHeight);
+        {            
             UpdateNavSeparatorVisibility();
             this.UpdateLayout();
 
-            ReflowCommands(currSize, currSize);
+            ReflowCommands(this.RenderSize, this.RenderSize);
             UpdateSelectionVisual();
 
             UpdateButtonLabels(IsOpen);
+            UpdateCommandsVisibilityTracking(this.PrimaryCommands);
+            UpdateCommandsVisibilityTracking(this.SecondaryCommands);
         }
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
@@ -88,7 +92,53 @@ namespace DigiTransit10.Controls
 
         private void PrimaryCommands_VectorChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs evt)
         {
+            System.Diagnostics.Debug.WriteLine("Primary vector changed, " + sender.Count + " elements in sender");
+            UpdateCommandsVisibilityTracking(sender);
             UpdateNavSeparatorVisibility();
+        }
+
+        private void SecondaryCommands_VectorChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs @event)
+        {
+            System.Diagnostics.Debug.WriteLine("Secondary vector changed, " + sender.Count + " elements in sender");
+            UpdateCommandsVisibilityTracking(sender);
+        }
+
+        private void UpdateCommandsVisibilityTracking(IEnumerable<ICommandBarElement> sender)
+        {
+            List<ICommandBarElement> toRemove = new List<ICommandBarElement>();
+            foreach (KeyValuePair<ICommandBarElement, long> element in _visibilityTrackedElements)
+            {
+                var visibilityTrackable = element.Key as FrameworkElement;
+                if (visibilityTrackable != null 
+                    && !(PrimaryCommands.Contains(element.Key) || SecondaryCommands.Contains(element.Key)))
+                {
+                    visibilityTrackable.UnregisterPropertyChangedCallback(VisibilityProperty, element.Value);
+                }
+            }
+
+            foreach (var stale in toRemove)
+            {
+                _visibilityTrackedElements.Remove(stale);
+            }
+
+            foreach (ICommandBarElement element in sender)
+            {
+                if(element is NavAppBarButton)
+                {
+                    continue;
+                }
+                var visibilityTrackable = element as FrameworkElement;
+                if (visibilityTrackable != null && !_visibilityTrackedElements.ContainsKey(element))
+                {
+                    long callbackToken = visibilityTrackable.RegisterPropertyChangedCallback(VisibilityProperty, OnCommandBarElementVisibilityChanged);
+                    _visibilityTrackedElements.Add(element, callbackToken);
+                }
+            }
+        }
+
+        private void OnCommandBarElementVisibilityChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            ReflowCommands(RenderSize, RenderSize);
         }
 
         //Disable the bar when we have a Loading/Busy overlay visible.
@@ -109,11 +159,14 @@ namespace DigiTransit10.Controls
             double appButtonWidth = HomeButton.ActualWidth; //we just need the width of any old AppBarButton here, so we're using one that's readily available
             var currWidth = this.ActualWidth;
             var navWidth = this.NavigationButtons.ActualWidth;
-            double primaryCommandsWidth = this.PrimaryCommands.Count*appButtonWidth + ellipsisButtonWidth;
+            //Only factor in visible elements for width calculations
+            double primaryCommandsWidth = this.PrimaryCommands
+                .OfType<UIElement>()
+                .Count(x => x.Visibility == Visibility.Visible) * appButtonWidth + ellipsisButtonWidth;
 
+            //shrinking or staying the same
             if (newSize.Width <= oldSize.Width)
-            {
-                //shrinking
+            {                
                 while ((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
                 {
                     if (this.NavigationButtons.Children.Count > navElementsToKeep)
@@ -140,9 +193,10 @@ namespace DigiTransit10.Controls
                     }
                 }
             }
-            else
-            {
-                //growing
+
+            //growing or staying the same
+            if (newSize.Width >= oldSize.Width)
+            {                
                 while (currWidth - navWidth - primaryCommandsWidth >= appButtonWidth
                     && this.SecondaryCommands.Count > 0) //the bar has space for at least one button, and there are buttons to add
                 {
@@ -196,7 +250,10 @@ namespace DigiTransit10.Controls
         private void InsertToPrimaryBar(ICommandBarElement primaryCommand)
         {
             this.PrimaryCommands.Add(primaryCommand);
-            ((Control)primaryCommand).IsEnabled = true;
+            if (((Control)primaryCommand).IsEnabled)
+            {
+                ((Control)primaryCommand).IsEnabled = true;
+            }
             ((ISortableAppBarButton)primaryCommand).IsSecondaryCommand = false;
 
             TryRemoveSecondarySeparator();

@@ -29,13 +29,19 @@ namespace DigiTransit10.ViewModels
         private readonly SettingsService _settingsService;
         private readonly IFavoritesService _favoritesService;
         private readonly ITileService _tileService;
+        private readonly IDialogService _dialogService;
 
-        private IList<object> _selectedItems = null;
+        private ObservableCollection<object> _selectedItems = null;
+        public ObservableCollection<object> SelectedItems
+        {
+            get { return _selectedItems; }
+            set { Set(ref _selectedItems, value); }
+        }
 
         public bool IsFavoritesEmpty
         {
             get
-            {                
+            {
                 if (Favorites?.Count == 0)
                 {
                     return true;
@@ -126,13 +132,14 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IFavorite> SetAsRouteCommand => new RelayCommand<IFavorite>(SetAsRoute);        
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService,
-            IFavoritesService favoritesService, ITileService tileService)
+            IFavoritesService favoritesService, ITileService tileService, IDialogService dialogService)
         {
             _networkService = networkService;
             _messengerService = messengerService;
             _favoritesService = favoritesService;
             _settingsService = SimpleIoc.Default.GetInstance<SettingsService>();
             _tileService = tileService;
+            _dialogService = dialogService;
 
             Favorites.Add(GroupedFavoritePlaces);
             Favorites.Add(GroupedFavoriteRoutes);
@@ -172,15 +179,112 @@ namespace DigiTransit10.ViewModels
 
         private void DeleteFavorite(IFavorite favorite)
         {
-            if(ListSelectionMode == ListViewSelectionMode.Multiple
+            if (ListSelectionMode == ListViewSelectionMode.Multiple
                 && _selectedItems != null
                 && _selectedItems.Count > 0)
-            {              
+            {
                 _favoritesService.RemoveFavorite(_selectedItems.Cast<IFavorite>());
             }
             else
-            {            
+            {
                 _favoritesService.RemoveFavorite(favorite);
+            }
+        }
+
+        private void SetAsOrigin(IPlace obj)
+        {
+            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsOrigin);
+            NavigationService.NavigateAsync(typeof(MainPage), args);
+        }
+
+        private void SetAsDestination(IPlace obj)
+        {
+            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsDestination);
+            NavigationService.NavigateAsync(typeof(MainPage), args);
+        }
+
+        private void SetAsRoute(IFavorite obj)
+        {
+            var args = obj as FavoriteRoute;
+            if (args != null)
+            {
+                NavigationService.NavigateAsync(typeof(MainPage), args);
+            }
+        }
+
+        private async void AddNewFavorite()
+        {
+            var dialog = new AddOrEditFavoriteDialog();
+            await dialog.ShowAsync();
+            if (dialog.ResultFavorite != null)
+            {
+                _favoritesService.AddFavorite(dialog.ResultFavorite);
+            }
+        }
+
+        private async void EditFavorite(IFavorite obj)
+        {
+            //bring up the AddOrEdit dialog in Edit mode
+            var dialog = new AddOrEditFavoriteDialog(obj);
+            await dialog.ShowAsync();
+            if (dialog.ResultFavorite != null)
+            {
+                _favoritesService.EditFavorite(dialog.ResultFavorite);
+            }
+        }
+
+        private void ToggleSelection(IFavorite obj)
+        {
+            if (ListSelectionMode == ListViewSelectionMode.None)
+            {
+                ListSelectionMode = ListViewSelectionMode.Multiple;
+                if (_selectedItems != null && obj != null)
+                {
+                    _selectedItems.Add(obj);
+                }
+            }
+            else
+            {
+                ListSelectionMode = ListViewSelectionMode.None;
+            }
+        }
+
+        private async void PinToStart(IFavorite obj)
+        {            
+            if (ListSelectionMode == ListViewSelectionMode.Multiple
+                && _selectedItems != null
+                && _selectedItems.Count > 0)
+            {
+                foreach (var selectedFave in _selectedItems.Cast<IFavorite>())
+                {
+                    await PinSingleFavorite(selectedFave);
+                }
+            }
+            else
+            {
+                await PinSingleFavorite(obj);
+            }
+        }
+
+        private async Task PinSingleFavorite(IFavorite favorite)
+        {
+            await _tileService.PinFavoriteToStartAsync(favorite);
+        }
+
+        private void PinToMainPage(IFavorite obj)
+        {
+            if (ListSelectionMode == ListViewSelectionMode.Multiple
+                && _selectedItems != null
+                && _selectedItems.Count > 0)
+            {
+                foreach (var fave in _selectedItems.Cast<IFavorite>())
+                {
+                    _settingsService.PushFavoriteId(fave.FavoriteId);
+                }
+            }
+            else
+            {
+                _settingsService.PushFavoriteId(obj.FavoriteId);
             }
         }
 
@@ -209,19 +313,19 @@ namespace DigiTransit10.ViewModels
                     RemoveFavoriteRoute(deletedRoute);
                 }
             }
-            if(args.EditedFavorites?.Count > 0)
+            if (args.EditedFavorites?.Count > 0)
             {
-                foreach(var editedFave in args.EditedFavorites)
+                foreach (var editedFave in args.EditedFavorites)
                 {
                     var toEdit = GroupedFavoritePlaces.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
-                    if(toEdit != null)
+                    if (toEdit != null)
                     {
                         RemoveFavoritePlace(toEdit);
                         AddFavoritePlace(editedFave);
                     }
 
                     toEdit = GroupedFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
-                    if(toEdit != null)
+                    if (toEdit != null)
                     {
                         RemoveFavoriteRoute(toEdit);
                         AddFavoriteRoute(editedFave);
@@ -230,6 +334,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
+        //---These methods happen in reaction to the FavoritesChanged Event.
         private void AddFavoritePlace(IFavorite place)
         {
             GroupedFavoritePlaces.AddSorted(place);
@@ -273,94 +378,11 @@ namespace DigiTransit10.ViewModels
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
         }
-
-        private void SetAsOrigin(IPlace obj)
-        {
-            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsOrigin);
-            NavigationService.NavigateAsync(typeof(MainPage), args);
-        }
-
-        private void SetAsDestination(IPlace obj)
-        {
-            var args = new NavigateWithFavoritePlaceArgs(obj, NavigationType.AsDestination);
-            NavigationService.NavigateAsync(typeof(MainPage), args);
-        }
-
-        private void SetAsRoute(IFavorite obj)
-        {
-            var args = obj as FavoriteRoute;
-            if (args != null)
-            {
-                NavigationService.NavigateAsync(typeof(MainPage), args);
-            }
-        }
-
-        private async void AddNewFavorite()
-        {
-            var dialog = new AddOrEditFavoriteDialog();
-            await dialog.ShowAsync();
-            if (dialog.ResultFavorite != null)
-            {
-                _favoritesService.AddFavorite(dialog.ResultFavorite);
-            }
-        }
-
-        private async void EditFavorite(IFavorite obj)
-        {
-            //bring up the AddOrEdit dialog in Edit mode
-            var dialog = new AddOrEditFavoriteDialog(obj);
-            await dialog.ShowAsync();
-            if(dialog.ResultFavorite != null)
-            {
-                _favoritesService.EditFavorite(dialog.ResultFavorite);
-            }
-        }
-
-        private void ToggleSelection(IFavorite obj)
-        {
-            if (ListSelectionMode == ListViewSelectionMode.None)
-            {
-                ListSelectionMode = ListViewSelectionMode.Multiple;
-                if (_selectedItems != null && obj != null)
-                {
-                    _selectedItems.Add(obj);
-                }
-            }
-            else
-            {
-                ListSelectionMode = ListViewSelectionMode.None;
-            }
-        }
-
-        private void PinToStart(IFavorite obj)
-        {
-            var place = obj as FavoritePlace;
-            if (place != null)
-            {
-                _tileService.PinFavoritePlaceToStartAsync(place);
-            }
-        }
-
-        private void PinToMainPage(IFavorite obj)
-        {
-            if (ListSelectionMode == ListViewSelectionMode.Multiple
-                && _selectedItems != null
-                && _selectedItems.Count > 0)
-            {
-                foreach(var fave in _selectedItems.Cast<IFavorite>())
-                {
-                    _settingsService.PushFavoriteId(fave.FavoriteId);
-                }
-            }
-            else
-            {
-                _settingsService.PushFavoriteId(obj.FavoriteId);
-            }
-        }
+        //---End FavoritesChanged Event reactions
 
         private void SelectionChanged(IList<object> obj)
         {
-            _selectedItems = obj;
+            SelectedItems = new ObservableCollection<object>(obj);
         }
     }
 }
