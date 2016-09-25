@@ -384,6 +384,7 @@
                                          Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
             <lclCtls:MovableAppBarToggleButton Command="{x:Bind ViewModel.ToggleSelectionCommand}"
                                                IsChecked="{x:Bind ViewModel.ListSelectionMode, Mode=OneWay, Converter={StaticResource ListViewSelectionModeToBoolConverter}}"
+                                               IsEnabled="True"
                                                Icon="Bullets"
                                                Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarSelect}"
                                                Position="1"/>

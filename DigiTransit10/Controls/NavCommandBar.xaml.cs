@@ -8,9 +8,7 @@ using Windows.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
-using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
-using DigiTransit10.ExtensionMethods;
 using System.Collections.Generic;
 
 namespace DigiTransit10.Controls
@@ -20,9 +18,10 @@ namespace DigiTransit10.Controls
         private readonly INavigationService _navigationService;
         private AppBarButton _currentlySelected = null;
         private Dictionary<ICommandBarElement, long> _visibilityTrackedElements = new Dictionary<ICommandBarElement, long>();
+        DispatcherTimer _visibilityChangedThrottle = new DispatcherTimer();
 
         public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);
-
+        
         public NavCommandBar()
         {                     
             this.InitializeComponent();
@@ -46,12 +45,20 @@ namespace DigiTransit10.Controls
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
              * to the IsOpen property, and when it changes, we update each button's IsCompact property 
-             * accordingly. 
-             */
+             * accordingly. */
             this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
             this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
             this.SecondaryCommands.VectorChanged += SecondaryCommands_VectorChanged;
+
+            /*Arbitary value. I figure with a target of 60FPS, it's not unreasonabe to expect 
+             * simultaneous visibility changes to propagate within ~20 frames of each other. */
+            _visibilityChangedThrottle.Interval = TimeSpan.FromMilliseconds(5.34);
+            _visibilityChangedThrottle.Tick += (s, args) =>
+            {
+                ReflowCommands(RenderSize, RenderSize);
+                _visibilityChangedThrottle.Stop();
+            };
         }        
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
@@ -60,7 +67,7 @@ namespace DigiTransit10.Controls
             bool isOpen = (bool)_this.GetValue(dp);
             _this.UpdateButtonLabels(isOpen);
         }
-
+        
         private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
         {            
             UpdateNavSeparatorVisibility();
@@ -71,7 +78,7 @@ namespace DigiTransit10.Controls
 
             UpdateButtonLabels(IsOpen);
             UpdateCommandsVisibilityTracking(this.PrimaryCommands);
-            UpdateCommandsVisibilityTracking(this.SecondaryCommands);
+            UpdateCommandsVisibilityTracking(this.SecondaryCommands);            
         }
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
@@ -135,10 +142,15 @@ namespace DigiTransit10.Controls
                 }
             }
         }
-
+        
         private void OnCommandBarElementVisibilityChanged(DependencyObject sender, DependencyProperty dp)
-        {
-            ReflowCommands(RenderSize, RenderSize);
+        {            
+            /* We don't want to reflow immediately--if several buttons change visibility at once, the 
+             * various Reflow calls end up stepping all over each others' toes. So instead, we've got 
+             * a tiny timer (~5ms) that batches our Reflow commands together. The actual Reflow
+             command happens in the Timer's .Tick event.*/
+            _visibilityChangedThrottle.Stop();
+            _visibilityChangedThrottle.Start();            
         }
 
         //Disable the bar when we have a Loading/Busy overlay visible.
@@ -215,7 +227,11 @@ namespace DigiTransit10.Controls
                     if (barButton != null)
                     {
                         this.SecondaryCommands.Remove(barButton);
-                        InsertToPrimaryBar(barButton);
+                        //Insert to Primary bar
+                        this.PrimaryCommands.Add(barButton);                                                                                                
+                        ((ISortableAppBarButton)barButton).IsSecondaryCommand = false;
+                        TryRemoveSecondarySeparator();
+                        
                         primaryCommandsWidth += appButtonWidth;
                     }
                     else
@@ -228,35 +244,19 @@ namespace DigiTransit10.Controls
                         if (navCommand != null)
                         {
                             this.SecondaryCommands.Remove(navCommand);
-                            InsertToNavBar(navCommand);
+                            //Insert to Nav Bar
+                            int navButtonsCount = this.NavigationButtons.Children.Count;
+                            this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
+                            navCommand.IsSecondaryCommand = false;
+                            navCommand.IsEnabled = true;
+                            TryRemoveSecondarySeparator();
+                            UpdateButtonLabels(IsOpen);
+                                                      
                             navWidth += appButtonWidth;
                         }
                     }
                 }
             }
-        }
-
-        private void InsertToNavBar(NavAppBarButton navCommand)
-        {
-            int navButtonsCount = this.NavigationButtons.Children.Count;
-            this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
-            navCommand.IsSecondaryCommand = false;
-            navCommand.IsEnabled = true;
-
-            TryRemoveSecondarySeparator();
-            UpdateButtonLabels(IsOpen);
-        }
-
-        private void InsertToPrimaryBar(ICommandBarElement primaryCommand)
-        {
-            this.PrimaryCommands.Add(primaryCommand);
-            if (((Control)primaryCommand).IsEnabled)
-            {
-                ((Control)primaryCommand).IsEnabled = true;
-            }
-            ((ISortableAppBarButton)primaryCommand).IsSecondaryCommand = false;
-
-            TryRemoveSecondarySeparator();
         }
 
         private void InsertToSecondaryBar(NavAppBarButton buttonToMove)

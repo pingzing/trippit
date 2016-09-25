@@ -1,18 +1,5 @@
-﻿using DigiTransit10.Controls;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -49,6 +36,17 @@ namespace DigiTransit10.Controls
             {
                 _this.Width = 68;
                 _this.HorizontalAlignment = HorizontalAlignment.Left;
+
+                /* HACK: Force a binding update in case the button should NOT be enabled.
+                 * Reason: If a button is a SecondaryCommand, its IsEnabled is forcibly set 
+                 * to false whenever the overflow panel is hidden. If we just move the button 
+                 * from SecondaryCommands to PrimaryCommands, whatever voodoo magic the 
+                 * CommandBar uses to set IsEnabled correctly never gets cast. So set it to IsEnabled,
+                 * refresh the DataContext, and hope that nobody has manually set IsEnabled=false.*/
+                _this.IsEnabled = true;
+                var savedDataContext = _this.DataContext;
+                _this.DataContext = null;
+                _this.DataContext = savedDataContext;
             }
         }
         public bool IsSecondaryCommand
@@ -59,8 +57,8 @@ namespace DigiTransit10.Controls
 
         public MovableAppBarToggleButton()
         {
-            this.InitializeComponent();
-        }
+            this.InitializeComponent();                        
+        }        
 
         public int CompareTo(ISortableAppBarButton other)
         {
