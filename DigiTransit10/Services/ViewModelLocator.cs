@@ -47,6 +47,7 @@ namespace DigiTransit10.Services
             SimpleIoc.Default.Register<TripFormViewModel>();
             SimpleIoc.Default.Register<TripResultViewModel>();
             SimpleIoc.Default.Register<FavoritesViewModel>();
+            SimpleIoc.Default.Register<SearchViewModel>();
         }
 
         //Viewmodels
@@ -54,6 +55,7 @@ namespace DigiTransit10.Services
         public TripFormViewModel TripForm => ServiceLocator.Current.GetInstance<TripFormViewModel>();
         public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
         public FavoritesViewModel Favorites => ServiceLocator.Current.GetInstance<FavoritesViewModel>();
+        public SearchViewModel Search => ServiceLocator.Current.GetInstance<SearchViewModel>();
 
         public async Task CleanupAsync()
         {

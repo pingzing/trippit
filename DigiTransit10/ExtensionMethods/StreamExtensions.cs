@@ -39,13 +39,16 @@ namespace DigiTransit10.ExtensionMethods
             JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
             object deserializedValue;
-            using (var sr = new StreamReader(stream))
-            using (var jsonTextReader = new JsonTextReader(sr))
+            using (stream)
             {
-                deserializedValue = serializer.Deserialize(jsonTextReader);
-            }
+                using (var sr = new StreamReader(stream))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    deserializedValue = serializer.Deserialize(jsonTextReader);
+                }
 
-            return deserializedValue;
+                return deserializedValue;
+            }
         }
 
         /// <summary>
@@ -60,13 +63,16 @@ namespace DigiTransit10.ExtensionMethods
             JsonSerializer serializer = JsonSerializer.Create(serializationSettings);
 
             T deserializedValue;
-            using (var sr = new StreamReader(stream))
-            using (var jsonTextReader = new JsonTextReader(sr))
+            using (stream)
             {
-                deserializedValue = serializer.Deserialize<T>(jsonTextReader);
-            }
+                using (var sr = new StreamReader(stream))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    deserializedValue = serializer.Deserialize<T>(jsonTextReader);
+                }
 
-            return deserializedValue;
+                return deserializedValue;
+            }
         }
     }
 }

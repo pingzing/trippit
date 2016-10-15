@@ -30,6 +30,7 @@ namespace DigiTransit10.Controls
         private Geopoint _lastKnownGeopoint;
 
         public event EventHandler MapElementsChanged;
+        public event TypedEventHandler<MapControl, object> MapCenterChanged;
 
         public static readonly DependencyProperty ShowUserOnMapProperty =
             DependencyProperty.Register("ShowUserOnMap", typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(false,
@@ -329,13 +330,21 @@ namespace DigiTransit10.Controls
             set { SetValue(IsInteractionEnabledProperty, value); }
         }
 
+        //Updates the mapcontrol via x:bind binding
+        public static readonly DependencyProperty ZoomLevelProperty =
+            DependencyProperty.Register("ZoomLevel", typeof(double), typeof(DigiTransitMap), new PropertyMetadata(10.0));
+        public double ZoomLevel
+        {
+            get { return (double)GetValue(ZoomLevelProperty); }
+            set { SetValue(ZoomLevelProperty, value); }
+        }              
+
         public DigiTransitMap()
         {
             this.InitializeComponent();
 
             //Default location of Helsinki's Rautatientori
-            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
-            DigiTransitMapControl.ZoomLevel = 10;
+            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });            
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -367,6 +376,11 @@ namespace DigiTransit10.Controls
             _loadingDelayTimer.Stop();
             DigiTransitMapControl.Opacity = 1;
             LoadingRing.Visibility = Visibility.Collapsed;
+        }
+
+        private void DigiTransitMapControl_CenterChanged(MapControl sender, object args)
+        {
+            MapCenterChanged?.Invoke(sender, args);
         }
 
         private void AddMapLines(IEnumerable<MapPolyline> polylines)
@@ -632,6 +646,10 @@ namespace DigiTransit10.Controls
         public GeoboundingBox GetMapViewBoundingBox()
         {
             var geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
+            if(geopath == null)
+            {
+                return null;
+            }
             return GetCoordinateGeoboundingBox(geopath.Positions);
         }
 
@@ -651,6 +669,6 @@ namespace DigiTransit10.Controls
             };
 
             return new GeoboundingBox(topLeft, bottomRight);
-        }
+        }        
     }
 }

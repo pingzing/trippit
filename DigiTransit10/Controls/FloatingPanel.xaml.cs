@@ -78,6 +78,7 @@ namespace DigiTransit10.Controls
             get { return (object)GetValue(InnerContentProperty); }
             set { SetValue(InnerContentProperty, value); }
         }               
+
         public double ExpandedHeight
         {
             get { return (double)GetValue(ExpandedHeightProperty); }

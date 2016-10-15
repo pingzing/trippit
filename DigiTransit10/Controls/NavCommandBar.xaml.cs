@@ -360,6 +360,16 @@ namespace DigiTransit10.Controls
                 FavoritesButton.IsSelected = true;
                 _currentlySelected = FavoritesButton;
             }
+            if(_navigationService.CurrentPageType == typeof(Views.SearchPage))
+            {
+                SearchButton.IsSelected = true;
+                _currentlySelected = SearchButton;
+            }
+            if(_navigationService.CurrentPageType == typeof(Views.SettingsPage))
+            {
+                SettingsButton.IsSelected = true;
+                _currentlySelected = SettingsButton;
+            }
         }
 
         private void UpdateButtonLabels(bool isOpen)

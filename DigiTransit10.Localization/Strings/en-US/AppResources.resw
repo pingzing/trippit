@@ -319,4 +319,16 @@
   <data name="LiteralPinToStart" xml:space="preserve">
     <value>Pin to Start</value>
   </data>
+  <data name="SearchPage_Header" xml:space="preserve">
+    <value>SEARCH</value>
+  </data>
+  <data name="SearchPage_LinesHeader" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="SearchPage_NearbyHeader" xml:space="preserve">
+    <value>Nearby</value>
+  </data>
+  <data name="SearchPage_StopsHeader" xml:space="preserve">
+    <value>Stops</value>
+  </data>
 </root>

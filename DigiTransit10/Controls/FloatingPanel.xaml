@@ -120,6 +120,8 @@
         <ContentControl x:Name="PanelContent"
                         Grid.Row="1"                                                  
                         Content="{x:Bind InnerContent, Mode=OneWay}"
-                        HorizontalContentAlignment="Stretch"/>
+                        HorizontalContentAlignment="Stretch"
+                        VerticalAlignment="{x:Bind VerticalContentAlignment, Mode=OneWay}"
+                        VerticalContentAlignment="{x:Bind VerticalContentAlignment, Mode=OneWay}"/>
     </Grid>
 </UserControl>
