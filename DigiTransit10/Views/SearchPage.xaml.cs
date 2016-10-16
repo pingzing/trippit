@@ -25,12 +25,16 @@ namespace DigiTransit10.Views
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        private DispatcherTimer _mapScrollThrottle = new DispatcherTimer();
+
         public SearchViewModel ViewModel => DataContext as SearchViewModel;
 
         public SearchPage()
         {
-            this.InitializeComponent();                              
-        }
+            this.InitializeComponent();
+            _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(250);
+            _mapScrollThrottle.Tick += MapScrollThrottle_Tick;            
+        }        
 
         private void NarrowSearchPanel_Loaded(object sender, RoutedEventArgs e)
         {
@@ -106,29 +110,46 @@ namespace DigiTransit10.Views
             }
         }
 
-        //todo: add throttle here
+        //todo: add throttle here, otherwise it spaaaaams
         private void PageMap_MapCenterChanged(MapControl sender, object args)
-        {                        
-            if(selectedPivotIndex != 0)
-            {
-                return;
-            }
+        {
+            _mapScrollThrottle.Stop();
+            _mapScrollThrottle.Start();
+        }
+
+        private void MapScrollThrottle_Tick(object sender, object args)
+        {
+            _mapScrollThrottle.Stop();
+            
             GeoboundingBox boundingBox = PageMap.GetMapViewBoundingBox();
-            if(boundingBox == null)
+            if (boundingBox == null)
             {
                 return;
             }
-            if(ViewModel?.UpdateNearbyPlacesCommand.CanExecute(boundingBox) == true)
+            if (ViewModel?.UpdateNearbyPlacesCommand.CanExecute(boundingBox) == true)
             {
                 ViewModel.UpdateNearbyPlacesCommand.Execute(boundingBox);
             }
         }
-
-        int selectedPivotIndex = 0;
+        
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Pivot pivot = (Pivot)sender;
-            selectedPivotIndex = pivot.SelectedIndex;
+            SearchSection selectedSection = SearchSection.Nearby;
+            switch (pivot.SelectedIndex)
+            {
+                case 0:
+                    selectedSection = SearchSection.Nearby;
+                    break;
+                case 1:
+                    selectedSection = SearchSection.Lines;
+                    break;
+                case 2:
+                    selectedSection = SearchSection.Stops;
+                    break;
+            }
+
+            ViewModel.SectionChangedCommand.Execute(selectedSection);
         }
     }
 }

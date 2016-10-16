@@ -36,7 +36,7 @@
                     <PivotItem x:Name="NearbyPivot"                                
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
                         <ListView x:Name="NearbyList"
-                                  ItemsSource="{x:Bind NearbyPlacesResultList, Mode=OneWay}">
+                                  ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -44,7 +44,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=LocationTarget}"/>
+                                        <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
                                         <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
                                     </Grid>
                                 </DataTemplate>
@@ -132,6 +132,7 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="SearchPageBottomBar.Visibility" Value="Visible"/>
                         <Setter Target="NarrowSearchPanel.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -167,6 +168,7 @@
                                 RelativePanel.AlignRightWithPanel="True"
                                 RelativePanel.AlignBottomWithPanel="True"
                                 MapCenterChanged="PageMap_MapCenterChanged"
+                                Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"
                                 ZoomLevel="13"/>
         
         <!--Wide view-->
@@ -206,4 +208,10 @@
         </lclCtls:FloatingPanel>
 
     </RelativePanel>
+
+    <Page.BottomAppBar>
+        <lclCtls:NavCommandBar x:Name="SearchPageBottomBar"
+                               x:DeferLoadStrategy="Lazy"
+                               Visibility="Collapsed"/>
+    </Page.BottomAppBar>
 </Page>

@@ -1,4 +1,5 @@
-﻿using DigiTransit10.Models.ApiModels;
+﻿using DigiTransit10.Models;
+using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
@@ -14,11 +15,19 @@ using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.ViewModels
 {
+    public enum SearchSection
+    {
+        Nearby,
+        Lines,
+        Stops
+    }
+
     public class SearchViewModel : ViewModelBase
     {
         private readonly INetworkService _networkService;
 
         private CancellationTokenSource _cts;
+        private SearchSection _activeSection;
 
         private bool _isLoading;
         public bool IsLoading
@@ -27,11 +36,11 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _isLoading, value); }
         }
 
-        private ObservableCollection<object> _nearbyPlacesResultList = new ObservableCollection<object>();
-        public ObservableCollection<object> NearbyPlacesResultList
+        private ObservableCollection<ApiStop> _nearbyStopsResultList = new ObservableCollection<ApiStop>();
+        public ObservableCollection<ApiStop> NearbyStopsResultList
         {
-            get { return _nearbyPlacesResultList; }
-            set { Set(ref _nearbyPlacesResultList, value); }
+            get { return _nearbyStopsResultList; }
+            set { Set(ref _nearbyStopsResultList, value); }
         }
 
         private ObservableCollection<ApiRoute> _linesResultList = new ObservableCollection<ApiRoute>();
@@ -46,6 +55,13 @@ namespace DigiTransit10.ViewModels
         {
             get { return _stopsResultList; }
             set { Set(ref _stopsResultList, value); }
+        }
+
+        private ObservableCollection<IMapPoi> _mapPlaces = new ObservableCollection<IMapPoi>();
+        public ObservableCollection<IMapPoi> MapPlaces
+        {
+            get { return _mapPlaces; }
+            set { Set(ref _mapPlaces, value); }
         }
 
         private string _linesSearchBoxText;
@@ -64,7 +80,8 @@ namespace DigiTransit10.ViewModels
 
         public RelayCommand<GeoboundingBox> UpdateNearbyPlacesCommand => new RelayCommand<GeoboundingBox>(UpdateNearbyPlaces);       
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
-        public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);        
+        public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
+        public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);        
 
         public SearchViewModel(INetworkService networkService)
         {
@@ -79,6 +96,11 @@ namespace DigiTransit10.ViewModels
 
         private async void UpdateNearbyPlaces(GeoboundingBox obj)
         {
+            if(_activeSection != SearchSection.Nearby)
+            {
+                return;
+            }
+
             if(_cts != null && !_cts.IsCancellationRequested)
             {
                 _cts.Cancel();
@@ -94,7 +116,7 @@ namespace DigiTransit10.ViewModels
             {                
                 return;
             }
-            NearbyPlacesResultList = new ObservableCollection<object>(response.Result);
+            NearbyStopsResultList = new ObservableCollection<ApiStop>(response.Result);
 
             IsLoading = false;
         }
@@ -122,8 +144,16 @@ namespace DigiTransit10.ViewModels
                 IsLoading = false;
                 StopsResultList.Clear();
                 return;
-            }                                               
-            StopsResultList = new ObservableCollection<ApiStop>(response.Result);                
+            }
+            StopsResultList = new ObservableCollection<ApiStop>(response.Result);
+            MapPlaces = new ObservableCollection<IMapPoi>(response.Result
+                .Select(x => new Place
+                    {
+                        Lat = x.Lat,
+                        Lon = x.Lon,
+                        Name = x.Name,
+                        Type = ModelEnums.PlaceType.Stop
+                    }));
 
             IsLoading = false;
         }
@@ -155,6 +185,12 @@ namespace DigiTransit10.ViewModels
             LinesResultList = new ObservableCollection<ApiRoute>(response.Result);
 
             IsLoading = false;            
+        }
+
+        private void SectionChanged(SearchSection newSection)
+        {
+            _activeSection = newSection;
+            _cts.Cancel();
         }
     }
 }

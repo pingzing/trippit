@@ -119,7 +119,7 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.name),
                     new GqlReturnValue(ApiGqlMembers.code),
                     new GqlReturnValue(ApiGqlMembers.routes,
-                        new GqlReturnValue(ApiGqlMembers.type)
+                        new GqlReturnValue(ApiGqlMembers.mode)
                     )
                 );
 
