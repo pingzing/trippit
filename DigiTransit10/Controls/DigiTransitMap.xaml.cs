@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Ioc;
 using Windows.Devices.Sensors;
 using System.Collections.Specialized;
 using DigiTransit10.ExtensionMethods;
+using Windows.Foundation.Metadata;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -313,7 +314,10 @@ namespace DigiTransit10.Controls
                 _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Auto;
                 _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Auto;
                 _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;
-                _this.DigiTransitMapControl.AllowFocusOnInteraction = true;
+                if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "AllowFocusOnInteraction"))
+                {
+                    _this.DigiTransitMapControl.AllowFocusOnInteraction = true;
+                }
             }
             else
             {
@@ -321,7 +325,10 @@ namespace DigiTransit10.Controls
                 _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Disabled;
                 _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Disabled;
                 _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Disabled;
-                _this.DigiTransitMapControl.AllowFocusOnInteraction = false;
+                if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "AllowFocusOnInteraction"))
+                {
+                    _this.DigiTransitMapControl.AllowFocusOnInteraction = false;
+                }
             }
         }
         public bool IsInteractionEnabled
@@ -644,13 +651,21 @@ namespace DigiTransit10.Controls
         }
 
         public GeoboundingBox GetMapViewBoundingBox()
-        {
-            var geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
-            if(geopath == null)
+        {            
+            //Only available in AU and later
+            if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "GetVisibleRegion"))
             {
-                return null;
+                Geopath geopath = DigiTransitMapControl.GetVisibleRegion(MapVisibleRegionKind.Full);
+                if (geopath == null)
+                {
+                    return null;
+                }
+                return GetCoordinateGeoboundingBox(geopath.Positions);
             }
-            return GetCoordinateGeoboundingBox(geopath.Positions);
+            else //pre-AU
+            {
+                return GetBounds();                
+            }            
         }
 
         private GeoboundingBox GetCoordinateGeoboundingBox(IEnumerable<BasicGeoposition> coords)
@@ -669,6 +684,37 @@ namespace DigiTransit10.Controls
             };
 
             return new GeoboundingBox(topLeft, bottomRight);
-        }        
+        }
+
+        //less-good replacement for pre-AU machines
+        //doesn't handle rotated maps. maybe an issue? Maybe just disable rotation anywhere we use this...
+        private GeoboundingBox GetBounds()
+        {
+            if (DigiTransitMapControl.Center.Position.Latitude == 0) { return default(GeoboundingBox); }
+
+            double degreePerPixel = (156543.04 * Math.Cos(DigiTransitMapControl.Center.Position.Latitude * Math.PI / 180)) / (111325 * Math.Pow(2, DigiTransitMapControl.ZoomLevel));
+
+            double mHalfWidthInDegrees = DigiTransitMapControl.ActualWidth * degreePerPixel / 0.9;
+            double mHalfHeightInDegrees = DigiTransitMapControl.ActualHeight * degreePerPixel / 1.7;
+
+            double mNorth = DigiTransitMapControl.Center.Position.Latitude + mHalfHeightInDegrees;
+            double mWest = DigiTransitMapControl.Center.Position.Longitude - mHalfWidthInDegrees;
+            double mSouth = DigiTransitMapControl.Center.Position.Latitude - mHalfHeightInDegrees;
+            double mEast = DigiTransitMapControl.Center.Position.Longitude + mHalfWidthInDegrees;
+
+            GeoboundingBox mBounds = new GeoboundingBox(
+                new BasicGeoposition()
+                {
+                    Latitude = mNorth,
+                    Longitude = mWest
+                },
+                new BasicGeoposition()
+                {
+                    Latitude = mSouth,
+                    Longitude = mEast
+                });            
+
+            return mBounds;
+        }
     }
 }

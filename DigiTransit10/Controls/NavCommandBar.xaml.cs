@@ -11,6 +11,7 @@ using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using System.Collections.Generic;
 using Windows.UI.ViewManagement;
+using DigiTransit10.Helpers;
 
 namespace DigiTransit10.Controls
 {
@@ -81,20 +82,26 @@ namespace DigiTransit10.Controls
             UpdateCommandsVisibilityTracking(this.PrimaryCommands);
             UpdateCommandsVisibilityTracking(this.SecondaryCommands);
 
-            InputPane.GetForCurrentView().Showing += InputPane_Showing;
-            InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone)
+            {
+                InputPane.GetForCurrentView().Showing += InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            }
         }        
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
         {
             Views.Busy.BusyChanged -= BusyView_BusyChanged;
-            InputPane.GetForCurrentView().Showing -= InputPane_Showing;
-            InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone)
+            {
+                InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            }
         }
 
         //---Explanation
         /* This is a weird one. If a page has a BottomBar, it stays stuck to the top
-         * of the keyboard, should the software keyboard be shown. Unfortunately, it
+         * of the keyboard, should the software keyboard be shown on a phone. Unfortunately, it
          * fails to do a layout check to see if the focused textbox is occluded by the 
          * app bar. So, we work around it by just hiding the damn bar when the keyboard 
          * is visible.
@@ -103,11 +110,13 @@ namespace DigiTransit10.Controls
         private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
         {            
             this.Opacity = 0;
+            this.IsHitTestVisible = false;
         }
 
         private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
         {            
             this.Opacity = 1;
+            this.IsHitTestVisible = true;
         }        
         //---end explanation
 
