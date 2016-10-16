@@ -44,7 +44,7 @@ namespace DigiTransit10.Views
             if (list == null)
             {
                 return;
-            }            
+            }
 
             if(list.SelectionMode == ListViewSelectionMode.Multiple)
             {

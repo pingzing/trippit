@@ -13,7 +13,7 @@ namespace DigiTransit10.Controls
 {
     [ContentProperty(Name = "InnerContent")]
     public sealed partial class FloatingPanel : UserControl
-    {        
+    {
         // Divided into static and non-static so we can use it as both a Dependency Property's default
         // value AND reference it in XAML.
         public static double DefaultCollapsedPanelHeightStatic = 18;
@@ -27,7 +27,7 @@ namespace DigiTransit10.Controls
 
         private VisualState _currentState;
         private VisualState _expandedState;
-        private VisualState _collapsedState;        
+        private VisualState _collapsedState;
 
         public static readonly DependencyProperty CollapsedHeightProperty =
                     DependencyProperty.Register("CollapsedHeight", typeof(double), typeof(FloatingPanel), new PropertyMetadata(DefaultCollapsedPanelHeightStatic,
@@ -77,7 +77,7 @@ namespace DigiTransit10.Controls
         {
             get { return (object)GetValue(InnerContentProperty); }
             set { SetValue(InnerContentProperty, value); }
-        }               
+        }
 
         public double ExpandedHeight
         {
@@ -87,7 +87,7 @@ namespace DigiTransit10.Controls
 
         public FloatingPanel()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
             this.Loaded += FloatingPanel_Loaded;
             this.FloatingPanelStateGroup.CurrentStateChanged += (s, e) =>
             {
@@ -96,13 +96,13 @@ namespace DigiTransit10.Controls
         }
 
         private void FloatingPanel_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             _expandedState = FloatingPanelStateGroup.States[ExpandedPanelStateIndex];
             _collapsedState = FloatingPanelStateGroup.States[CollapsedPanelStateIndex];
 
             ExpandedHeightKeyFrame.Value = ExpandedHeight;
             CollapsedHeightKeyFrame.Value = CollapsedHeight;
-                        
+
             ExpandedHeightStoryboard.Completed += (s1, args1) =>
             {
                 PanelGrid.Height = ExpandedHeight;
@@ -111,13 +111,13 @@ namespace DigiTransit10.Controls
             CollapsedHeightStoryboard.Completed += (s2, args2) =>
             {
                 PanelGrid.Height = CollapsedHeight;
-            };                  
+            };
 
             VisualStateManager.GoToState(this, _currentState?.Name ?? _expandedState.Name, false);
         }
 
         private void GridGrabHeader_Tapped(object sender, TappedRoutedEventArgs e)
-        {            
+        {
             if (_currentState == null ||
                 _currentState == _expandedState)
             {
@@ -132,8 +132,8 @@ namespace DigiTransit10.Controls
                 ExpandingTranslationAnimation.From = translationDelta;
                 VisualStateManager.GoToState(this, _expandedState.Name, true);
             }
-        }        
-             
+        }
+
         private void GridGrabHeader_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Manip started!");
@@ -148,8 +148,8 @@ namespace DigiTransit10.Controls
 
         //todo: replace this series of manipulations with Composition namespace stuff. Perf on mobile SUCKS        
         private void GridGrabHeader_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {                       
-            double proposedNewTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY + e.Delta.Translation.Y;            
+        {
+            double proposedNewTrans = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY + e.Delta.Translation.Y;
 
             if (PanelGrid.Height - proposedNewTrans >= ExpandedHeight)
             {
@@ -166,24 +166,24 @@ namespace DigiTransit10.Controls
         }
 
         private void GridGrabHeader_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
-        {                       
+        {
             double snapPoint = (ExpandedHeight - CollapsedHeight) * .3; //found by trial and error. "feels" right.
-            double currentTransform = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;            
+            double currentTransform = ((CompositeTransform)PanelGrid.RenderTransform).TranslateY;
 
             if (_currentState == _expandedState)
             {
-                if(currentTransform > snapPoint) 
+                if(currentTransform > snapPoint)
                 {
                     SnapCollapsedAfterManipulate();
                 }
-                else 
+                else
                 {
                     SnapExpandedAfterManipulate(currentTransform);
                 }
             }
             else //current state is collapsedState
             {
-                if(ExpandedHeight - CollapsedHeight - currentTransform > snapPoint) 
+                if(ExpandedHeight - CollapsedHeight - currentTransform > snapPoint)
                 {
                     SnapExpandedAfterManipulate(currentTransform);
                 }
@@ -191,7 +191,7 @@ namespace DigiTransit10.Controls
                 {
                     SnapCollapsedAfterManipulate();
                 }
-            }          
+            }
         }
 
         private void SnapCollapsedAfterManipulate()
@@ -218,7 +218,7 @@ namespace DigiTransit10.Controls
             }
             else
             {
-                PanelGrid.Height = CollapsedHeight;                
+                PanelGrid.Height = CollapsedHeight;
             }
             ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = 0;
         }
@@ -232,7 +232,7 @@ namespace DigiTransit10.Controls
             }
             else
             {
-                PanelGrid.Height = ExpandedHeight;                
+                PanelGrid.Height = ExpandedHeight;
             }
             ((CompositeTransform)PanelGrid.RenderTransform).TranslateY = 0;
         }

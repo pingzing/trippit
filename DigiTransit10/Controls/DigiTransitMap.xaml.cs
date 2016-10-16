@@ -67,7 +67,7 @@ namespace DigiTransit10.Controls
         {
             get { return (bool)GetValue(ShowUserOnMapProperty); }
             set { SetValue(ShowUserOnMapProperty, value); }
-        }        
+        }
 
         public static readonly DependencyProperty ColoredMapLinesProperty =
             DependencyProperty.Register(nameof(ColoredMapLines), typeof(IList<ColoredMapLine>), typeof(DigiTransitMap), new PropertyMetadata(null,
@@ -344,14 +344,14 @@ namespace DigiTransit10.Controls
         {
             get { return (double)GetValue(ZoomLevelProperty); }
             set { SetValue(ZoomLevelProperty, value); }
-        }              
+        }
 
         public DigiTransitMap()
         {
             this.InitializeComponent();
 
             //Default location of Helsinki's Rautatientori
-            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });            
+            DigiTransitMapControl.Center = new Geopoint(new BasicGeoposition { Altitude = 0.0, Latitude = 60.1709, Longitude = 24.9413 });
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -549,7 +549,7 @@ namespace DigiTransit10.Controls
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
         {
             await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
-        }        
+        }
 
         public GeoboundingBox GetBoundingBoxWithIds(Guid poisId)
         {
@@ -563,7 +563,7 @@ namespace DigiTransit10.Controls
             List<BasicGeoposition> coords = new List<BasicGeoposition>();
             var iconsCoords = DigiTransitMapControl.MapElements
                 .OfType<MapIcon>()
-                .Where(x => 
+                .Where(x =>
                     {
                         Guid? id = MapElementExtensions.GetPoiId(x) as Guid?;
                         if(id == null || id != poisId)
@@ -573,7 +573,7 @@ namespace DigiTransit10.Controls
                         else
                         {
                             return true;
-                        }                        
+                        }
                     })
                 .Select(x => x.Location.Position);
             coords.AddRange(iconsCoords);
@@ -596,7 +596,7 @@ namespace DigiTransit10.Controls
             coords.AddRange(lineCoords);
 
             return GetCoordinateGeoboundingBox(coords);
-        }        
+        }
 
         public GeoboundingBox GetPlacesBoundingBox(IEnumerable<BasicGeoposition> pois)
         {
@@ -608,7 +608,7 @@ namespace DigiTransit10.Controls
             }
 
             var poisInMap = DigiTransitMapControl.MapElements.OfType<MapIcon>().Join(
-                    pois, 
+                    pois,
                     x => x.Location.Position,
                     y => y,
                     (x, y) => x)
@@ -651,7 +651,7 @@ namespace DigiTransit10.Controls
         }
 
         public GeoboundingBox GetMapViewBoundingBox()
-        {            
+        {
             //Only available in AU and later
             if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "GetVisibleRegion"))
             {
@@ -664,8 +664,8 @@ namespace DigiTransit10.Controls
             }
             else //pre-AU
             {
-                return GetBounds();                
-            }            
+                return GetBounds();
+            }
         }
 
         private GeoboundingBox GetCoordinateGeoboundingBox(IEnumerable<BasicGeoposition> coords)
@@ -712,7 +712,7 @@ namespace DigiTransit10.Controls
                 {
                     Latitude = mSouth,
                     Longitude = mEast
-                });            
+                });
 
             return mBounds;
         }

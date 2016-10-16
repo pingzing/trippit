@@ -14,7 +14,7 @@ namespace DigiTransit10.ExtensionMethods
             return geo.Altitude == other.Altitude
                 && geo.Latitude == other.Latitude
                 && geo.Longitude == other.Longitude;
-        }        
+        }
 
         public static BasicGeoposition Create(double altitude, double longitutde, double latitude)
         {

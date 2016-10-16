@@ -1,4 +1,5 @@
-﻿using DigiTransit10.Models;
+﻿using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Command;
@@ -29,11 +30,42 @@ namespace DigiTransit10.ViewModels
         private CancellationTokenSource _cts;
         private SearchSection _activeSection;
 
-        private bool _isLoading;
-        public bool IsLoading
+
+        public bool IsLoading => IsNearbyStopsLoading
+            || IsLinesLoading
+            || IsStopsLoading;
+
+        private bool _isNearbyStopsLoading;
+        public bool IsNearbyStopsLoading
         {
-            get { return _isLoading; }
-            set { Set(ref _isLoading, value); }
+            get { return _isNearbyStopsLoading; }
+            set
+            {
+                _isNearbyStopsLoading = value;
+                RaisePropertyChanged(nameof(IsLoading));
+            }
+        }
+
+        private bool _isLinesLoading;
+        public bool IsLinesLoading
+        {
+            get { return _isLinesLoading; }
+            set
+            {
+                _isLinesLoading = value;
+                RaisePropertyChanged(nameof(IsLoading));
+            }
+        }
+
+        private bool _isStopsLoading;
+        public bool IsStopsLoading
+        {
+            get { return _isStopsLoading; }
+            set
+            {
+                _isStopsLoading = value;
+                RaisePropertyChanged(nameof(IsLoading));
+            }
         }
 
         private ObservableCollection<ApiStop> _nearbyStopsResultList = new ObservableCollection<ApiStop>();
@@ -78,14 +110,14 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _stopsSearchBoxText, value); }
         }
 
-        public RelayCommand<GeoboundingBox> UpdateNearbyPlacesCommand => new RelayCommand<GeoboundingBox>(UpdateNearbyPlaces);       
+        public RelayCommand<GeoboundingBox> UpdateNearbyPlacesCommand => new RelayCommand<GeoboundingBox>(UpdateNearbyPlaces);
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
-        public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);        
+        public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);
 
         public SearchViewModel(INetworkService networkService)
         {
-            _networkService = networkService;        
+            _networkService = networkService;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
@@ -107,18 +139,14 @@ namespace DigiTransit10.ViewModels
             }
 
             _cts = new CancellationTokenSource();
-
-            IsLoading = true;
-
-            var response = await _networkService.GetStopsByBoundingBox(obj, _cts.Token);
-                        
-            if (response.IsFailure)
-            {                
+            IsNearbyStopsLoading = true;
+            ApiResult<IEnumerable<ApiStop>> response = await _networkService.GetStopsByBoundingBox(obj, _cts.Token);
+            if (response.IsFailure || _cts.IsCancellationRequested)
+            {
                 return;
             }
             NearbyStopsResultList = new ObservableCollection<ApiStop>(response.Result);
-
-            IsLoading = false;
+            IsNearbyStopsLoading = false;
         }
 
         private async void SearchStops(string searchText)
@@ -135,13 +163,12 @@ namespace DigiTransit10.ViewModels
             }
             _cts = new CancellationTokenSource();
 
-            IsLoading = true;
+            IsStopsLoading = true;
 
-            //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var response = await _networkService.GetStopsAsync(searchText);
+            var response = await _networkService.GetStopsAsync(searchText, _cts.Token);
             if(response.IsFailure || _cts.IsCancellationRequested)
             {
-                IsLoading = false;
+                IsStopsLoading = false;
                 StopsResultList.Clear();
                 return;
             }
@@ -155,7 +182,7 @@ namespace DigiTransit10.ViewModels
                         Type = ModelEnums.PlaceType.Stop
                     }));
 
-            IsLoading = false;
+            IsStopsLoading = false;
         }
 
         private async void SearchLines(string searchText)
@@ -172,25 +199,25 @@ namespace DigiTransit10.ViewModels
             }
             _cts = new CancellationTokenSource();
 
-            IsLoading = true;
+            IsLinesLoading = true;
 
-            //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var response = await _networkService.GetLinesAsync(searchText);
+            var response = await _networkService.GetLinesAsync(searchText, _cts.Token);
             if(response.IsFailure || _cts.IsCancellationRequested)
             {
-                IsLoading = false;
+                IsLinesLoading = false;
                 StopsResultList.Clear();
                 return;
-            }            
+            }
             LinesResultList = new ObservableCollection<ApiRoute>(response.Result);
 
-            IsLoading = false;            
+            IsLinesLoading = false;
         }
 
         private void SectionChanged(SearchSection newSection)
         {
             _activeSection = newSection;
-            _cts?.Cancel();
+            //_cts?.Cancel();
+            //IsLoading = false;
         }
     }
 }

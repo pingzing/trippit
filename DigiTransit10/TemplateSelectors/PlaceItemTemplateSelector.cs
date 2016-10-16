@@ -23,22 +23,22 @@ namespace DigiTransit10.TemplateSelectors
             if(place != null)
             {
                 if(place.Type == ModelEnums.PlaceType.Address)
-                {                    
+                {
                     return AddressTemplate;
                 }
                 else if(place.Type == ModelEnums.PlaceType.Stop)
-                {                    
+                {
                     return StopTemplate;
-                }                
+                }
                 else if(place.Type == ModelEnums.PlaceType.UserCurrentLocation)
-                {                   
+                {
                     return UserCurrentLocationTemplate;
                 }
                 else if(place.Type == ModelEnums.PlaceType.FavoritePlace)
-                {                    
+                {
                     return FavoritePlaceTemplate;
                 }
-            }            
+            }
             return base.SelectTemplateCore(item, container);
         }
 

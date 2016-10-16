@@ -26,14 +26,24 @@ namespace DigiTransit10.Views
     public sealed partial class SearchPage : Page
     {
         private DispatcherTimer _mapScrollThrottle = new DispatcherTimer();
+        private DispatcherTimer _linesTypingThrottle = new DispatcherTimer();
+        private string _linesSearchText;
+        private DispatcherTimer _stopsTypingThrottle = new DispatcherTimer();
+        private string _stopsSearchText;
 
         public SearchViewModel ViewModel => DataContext as SearchViewModel;
 
         public SearchPage()
         {
             this.InitializeComponent();
-            _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(250);
-            _mapScrollThrottle.Tick += MapScrollThrottle_Tick;            
+            _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(500);
+            _mapScrollThrottle.Tick += MapScrollThrottle_Tick;
+
+            _linesTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
+            _linesTypingThrottle.Tick += LinesTypingThrottle_Tick;
+
+            _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
+            _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
         }        
 
         private void NarrowSearchPanel_Loaded(object sender, RoutedEventArgs e)
@@ -76,25 +86,35 @@ namespace DigiTransit10.Views
 
         private void StopsSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
+            _stopsTypingThrottle.Stop();
             if (ViewModel?.SearchStopsCommand.CanExecute(args.QueryText) == true)
             {
                 ViewModel.SearchStopsCommand.Execute(args.QueryText);
             }
-        }
+        }        
 
         private void StopsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             string searchText = sender.Text;
-            if (args.CheckCurrent() 
+            if (args.CheckCurrent()
                 && ViewModel?.SearchStopsCommand.CanExecute(searchText) == true)
             {
-                ViewModel.SearchStopsCommand.Execute(searchText);
+                _stopsSearchText = searchText;
+                _stopsTypingThrottle.Stop();
+                _stopsTypingThrottle.Start();
             }
         }
 
+        private void StopsTypingThrottle_Tick(object sender, object e)
+        {
+            _stopsTypingThrottle.Stop();
+            ViewModel.SearchStopsCommand.Execute(_stopsSearchText);
+        }        
+
         private void LinesSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            if (ViewModel?.SearchLinesCommand.CanExecute(args.QueryText) == true)
+            _linesTypingThrottle.Stop();
+            if(ViewModel?.SearchLinesCommand.CanExecute(args.QueryText) == true)
             {
                 ViewModel.SearchLinesCommand.Execute(args.QueryText);
             }
@@ -103,14 +123,21 @@ namespace DigiTransit10.Views
         private void LinesSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             string searchText = sender.Text;
-            if (args.CheckCurrent() 
+            if (args.CheckCurrent()
                 && ViewModel?.SearchLinesCommand.CanExecute(searchText) == true)
             {
-                ViewModel.SearchLinesCommand.Execute(searchText);
+                _linesSearchText = searchText;
+                _linesTypingThrottle.Stop();
+                _linesTypingThrottle.Start();
             }
         }
 
-        //todo: add throttle here, otherwise it spaaaaams
+        private void LinesTypingThrottle_Tick(object sender, object e)
+        {
+            _linesTypingThrottle.Stop();
+            ViewModel.SearchLinesCommand.Execute(_linesSearchText);
+        }
+        
         private void PageMap_MapCenterChanged(MapControl sender, object args)
         {
             _mapScrollThrottle.Stop();
@@ -120,7 +147,7 @@ namespace DigiTransit10.Views
         private void MapScrollThrottle_Tick(object sender, object args)
         {
             _mapScrollThrottle.Stop();
-            
+
             GeoboundingBox boundingBox = PageMap.GetMapViewBoundingBox();
             if (boundingBox == null)
             {
@@ -131,7 +158,7 @@ namespace DigiTransit10.Views
                 ViewModel.UpdateNearbyPlacesCommand.Execute(boundingBox);
             }
         }
-        
+
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Pivot pivot = (Pivot)sender;

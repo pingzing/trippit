@@ -39,8 +39,8 @@ namespace DigiTransit10.Controls
             }
         }
 
-        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;        
-       
+        public TripResultViewModel ViewModel => DataContext as TripResultViewModel;
+
         public TripResultContent()
         {
             this.InitializeComponent();
@@ -53,7 +53,7 @@ namespace DigiTransit10.Controls
             this.Unloaded += TripResultContent_Unloaded;
             Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
             Messenger.Default.Register<MessageTypes.ViewPlanStrips>(this, SwitchToListState);
-        }        
+        }
 
         private void TripResultContent_Loaded(object sender, RoutedEventArgs e)
         {
@@ -61,7 +61,7 @@ namespace DigiTransit10.Controls
             {
                 (this.Parent as FrameworkElement).SizeChanged += Parent_SizeChanged;
             }
-            ClipToBounds();            
+            ClipToBounds();
         }
 
         private void TripResultContent_Unloaded(object sender, RoutedEventArgs e)
@@ -107,12 +107,12 @@ namespace DigiTransit10.Controls
             {
                 VisualStateManager.GoToState(this, _tripListState.Name, false);
             }
-        }        
+        }
 
         private void DirectionsFloatingPanel_Loaded(object sender, RoutedEventArgs e)
         {
             DirectionsFloatingPanel.ExpandedHeight = this.ActualHeight * .66;
-            this.SizeChanged += TripResultContent_SizeChanged;            
+            this.SizeChanged += TripResultContent_SizeChanged;
         }
 
         private void TripResultContent_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -135,7 +135,7 @@ namespace DigiTransit10.Controls
             }
 
             //Frame clicked point on the map
-            TripLeg clickedLeg = (TripLeg)e.ClickedItem;            
+            TripLeg clickedLeg = (TripLeg)e.ClickedItem;
             var boundingBox = SingleMap.GetBoundingBoxWithIds(clickedLeg.TemporaryId);
             double bottomMargin = DirectionsFloatingPanel.IsOpen ? DirectionsFloatingPanel.ExpandedHeight + 10 : 10;
             SingleMap.TrySetViewBoundsAsync(boundingBox, new Thickness(10, 10, 10, bottomMargin), MapAnimationKind.Bow).DoNotAwait();
@@ -179,6 +179,6 @@ namespace DigiTransit10.Controls
         private void RaisePropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }        
+        }
     }
 }
