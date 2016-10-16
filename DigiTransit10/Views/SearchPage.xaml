@@ -54,6 +54,8 @@
                     <PivotItem x:Name="LinesPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_LinesHeader}">
                         <ListView x:Name="LinesList"
+                                  SelectionChanged="LinesList_SelectionChanged"
+                                  SelectionMode="Single"                                  
                                   ItemsSource="{x:Bind LinesResultList, Mode=OneWay}">
                             <ListView.Header>
                                 <AutoSuggestBox x:Name="LinesSearchBox"
@@ -169,6 +171,7 @@
                                 RelativePanel.AlignBottomWithPanel="True"
                                 MapCenterChanged="PageMap_MapCenterChanged"
                                 Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"
+                                ColoredMapLines="{x:Bind ViewModel.MapLines, Mode=OneWay}"
                                 ZoomLevel="13"/>
         
         <!--Wide view-->

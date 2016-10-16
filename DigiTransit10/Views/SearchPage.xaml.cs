@@ -1,4 +1,5 @@
-﻿using DigiTransit10.ViewModels;
+﻿using DigiTransit10.Models.ApiModels;
+using DigiTransit10.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -177,6 +178,17 @@ namespace DigiTransit10.Views
             }
 
             ViewModel.SectionChangedCommand.Execute(selectedSection);
+        }
+
+        private void LinesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //toggle view state of selected element
+            //trigger selection changed in viewmodel
+            ApiRoute selectedItem = (ApiRoute)e.AddedItems.FirstOrDefault();
+            if(ViewModel?.UpdateSelectedLineCommand.CanExecute(selectedItem) == true)
+            {
+                ViewModel.UpdateSelectedLineCommand.Execute(selectedItem);
+            }
         }
     }
 }

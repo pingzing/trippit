@@ -2,6 +2,7 @@
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
+using DigiTransit10.Styles;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using System;
@@ -13,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
+using DigiTransit10.ExtensionMethods;
 
 namespace DigiTransit10.ViewModels
 {
@@ -29,7 +31,6 @@ namespace DigiTransit10.ViewModels
 
         private CancellationTokenSource _cts;
         private SearchSection _activeSection;
-
 
         public bool IsLoading => IsNearbyStopsLoading
             || IsLinesLoading
@@ -96,6 +97,13 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _mapPlaces, value); }
         }
 
+        private ObservableCollection<ColoredMapLine> _mapLines = new ObservableCollection<ColoredMapLine>();
+        public ObservableCollection<ColoredMapLine> MapLines
+        {
+            get { return _mapLines; }
+            set { Set(ref _mapLines, value); }
+        }
+
         private string _linesSearchBoxText;
         public string LinesSearchBoxText
         {
@@ -114,6 +122,12 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
         public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);
+        public RelayCommand<ApiRoute> UpdateSelectedLineCommand => new RelayCommand<ApiRoute>(UpdateSelectedLine,
+            UpdateSelectedLineCanExecute);
+        private bool UpdateSelectedLineCanExecute(ApiRoute arg)
+        {
+            return arg != null;
+        }
 
         public SearchViewModel(INetworkService networkService)
         {
@@ -208,16 +222,27 @@ namespace DigiTransit10.ViewModels
                 StopsResultList.Clear();
                 return;
             }
-            LinesResultList = new ObservableCollection<ApiRoute>(response.Result);
+            LinesResultList = new ObservableCollection<ApiRoute>(response.Result);            
 
             IsLinesLoading = false;
         }
 
+        private void UpdateSelectedLine(ApiRoute obj)
+        {
+            MapLines.Clear();
+
+            List<ColoredMapLinePoint> linePoints = obj.Patterns
+                .First()
+                .Geometry                
+                .Select(x => new ColoredMapLinePoint(BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat), HslColors.GetModeColor(obj.Mode)))
+                .ToList();
+            var mapLine = new ColoredMapLine(linePoints);
+            MapLines = new ObservableCollection<ColoredMapLine>(new List<ColoredMapLine> { mapLine });
+        }
+
         private void SectionChanged(SearchSection newSection)
         {
-            _activeSection = newSection;
-            //_cts?.Cancel();
-            //IsLoading = false;
+            _activeSection = newSection;            
         }
     }
 }
