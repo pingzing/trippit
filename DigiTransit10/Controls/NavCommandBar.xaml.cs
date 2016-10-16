@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using System.Collections.Generic;
+using Windows.UI.ViewManagement;
 
 namespace DigiTransit10.Controls
 {
@@ -40,7 +41,7 @@ namespace DigiTransit10.Controls
             _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
-            this.Unloaded += NavCommandBar_Unloaded;            
+            this.Unloaded += NavCommandBar_Unloaded;
 
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
@@ -78,13 +79,37 @@ namespace DigiTransit10.Controls
 
             UpdateButtonLabels(IsOpen);
             UpdateCommandsVisibilityTracking(this.PrimaryCommands);
-            UpdateCommandsVisibilityTracking(this.SecondaryCommands);            
-        }
+            UpdateCommandsVisibilityTracking(this.SecondaryCommands);
+
+            InputPane.GetForCurrentView().Showing += InputPane_Showing;
+            InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+        }        
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
         {
             Views.Busy.BusyChanged -= BusyView_BusyChanged;
+            InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+            InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
         }
+
+        //---Explanation
+        /* This is a weird one. If a page has a BottomBar, it stays stuck to the top
+         * of the keyboard, should the software keyboard be shown. Unfortunately, it
+         * fails to do a layout check to see if the focused textbox is occluded by the 
+         * app bar. So, we work around it by just hiding the damn bar when the keyboard 
+         * is visible.
+         * Also, we're using Opacity instead of Visibility so a.) we don't trigger a 
+         * relayout and b.) so we don't stomp all over our visual states.*/
+        private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {            
+            this.Opacity = 0;
+        }
+
+        private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
+        {            
+            this.Opacity = 1;
+        }        
+        //---end explanation
 
         private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {

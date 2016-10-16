@@ -190,7 +190,7 @@ namespace DigiTransit10.ViewModels
         private void SectionChanged(SearchSection newSection)
         {
             _activeSection = newSection;
-            _cts.Cancel();
+            _cts?.Cancel();
         }
     }
 }

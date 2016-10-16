@@ -211,7 +211,7 @@
 
     <Page.BottomAppBar>
         <lclCtls:NavCommandBar x:Name="SearchPageBottomBar"
-                               x:DeferLoadStrategy="Lazy"
+                               x:DeferLoadStrategy="Lazy"                               
                                Visibility="Collapsed"/>
     </Page.BottomAppBar>
 </Page>
