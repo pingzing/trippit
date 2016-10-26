@@ -14,7 +14,7 @@ namespace DigiTransit10.ExtensionMethods
             "PoiId",
             typeof(Guid),
             typeof(MapElementExtensions),
-            new PropertyMetadata(Guid.Empty));        
+            new PropertyMetadata(Guid.Empty));
 
         public static void SetPoiId(DependencyObject element, Guid id)
         {

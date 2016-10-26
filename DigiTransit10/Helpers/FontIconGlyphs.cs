@@ -29,5 +29,6 @@ namespace DigiTransit10.Helpers
         public static string Thumbtack => "\uE840";
         public static string RightArrow => "\uE09F";
         public static string Ellipsis => "\uE10C";
+        public static string Bus => "\uE806";
     }
 }

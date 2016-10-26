@@ -6,7 +6,7 @@ namespace DigiTransit10.Helpers
     public struct GenericResult : IResult
     {
         public IFailure Failure { get; }
-        public bool IsSuccess { get; }        
+        public bool IsSuccess { get; }
         public bool IsFailure { get; }
 
         public GenericResult(bool success)
@@ -20,7 +20,7 @@ namespace DigiTransit10.Helpers
         {
             IsSuccess = false;
             IsFailure = true;
-            Failure = failure;            
+            Failure = failure;
         }
 
         public static GenericResult Fail => new GenericResult(new GenericFailure());

@@ -25,8 +25,8 @@ namespace DigiTransit10.Models.ApiModels
         public string ShortName { get; set; }
         [JsonProperty("longName")]
         public string LongName { get; set; }
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("mode")]
+        public ApiMode Mode { get; set; }
         [JsonProperty("desc")]
         public string Desc { get; set; }
         [JsonProperty("url")]

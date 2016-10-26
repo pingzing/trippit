@@ -49,5 +49,13 @@ namespace DigiTransit10.Models.ApiModels
         public static string stoptimesWithoutPatterns => nameof(stoptimesWithoutPatterns);
         public static string scheduledArrival => nameof(scheduledArrival);
         public static string numberOfDepartures => nameof(numberOfDepartures);
+        public static string longName => nameof(longName);
+        public static string patterns => nameof(patterns);
+        public static string geometry => nameof(geometry);
+        public static string stopsByBbox => nameof(stopsByBbox);
+        public static string minLat => nameof(minLat);
+        public static string maxLat => nameof(maxLat);
+        public static string minLon => nameof(minLon);
+        public static string maxLon => nameof(maxLon);
     }
 }

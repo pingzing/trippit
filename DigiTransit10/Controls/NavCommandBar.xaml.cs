@@ -10,6 +10,8 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using System.Collections.Generic;
+using Windows.UI.ViewManagement;
+using DigiTransit10.Helpers;
 
 namespace DigiTransit10.Controls
 {
@@ -21,9 +23,9 @@ namespace DigiTransit10.Controls
         DispatcherTimer _visibilityChangedThrottle = new DispatcherTimer();
 
         public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);
-        
+
         public NavCommandBar()
-        {                     
+        {
             this.InitializeComponent();
             if(ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.CommandBar", "OverflowButtonVisibility"))
             {
@@ -40,7 +42,7 @@ namespace DigiTransit10.Controls
             _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
             _navigationService.Frame.Navigated += Frame_Navigated;
             this.Loaded += NavCommandBar_Loaded;
-            this.Unloaded += NavCommandBar_Unloaded;            
+            this.Unloaded += NavCommandBar_Unloaded;
 
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
@@ -59,7 +61,7 @@ namespace DigiTransit10.Controls
                 ReflowCommands(RenderSize, RenderSize);
                 _visibilityChangedThrottle.Stop();
             };
-        }        
+        }
 
         private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
         {
@@ -67,9 +69,9 @@ namespace DigiTransit10.Controls
             bool isOpen = (bool)_this.GetValue(dp);
             _this.UpdateButtonLabels(isOpen);
         }
-        
+
         private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             UpdateNavSeparatorVisibility();
             this.UpdateLayout();
 
@@ -78,13 +80,45 @@ namespace DigiTransit10.Controls
 
             UpdateButtonLabels(IsOpen);
             UpdateCommandsVisibilityTracking(this.PrimaryCommands);
-            UpdateCommandsVisibilityTracking(this.SecondaryCommands);            
+            UpdateCommandsVisibilityTracking(this.SecondaryCommands);
+
+            if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone)
+            {
+                InputPane.GetForCurrentView().Showing += InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding += InputPane_Hiding;
+            }
         }
 
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
         {
             Views.Busy.BusyChanged -= BusyView_BusyChanged;
+            if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone)
+            {
+                InputPane.GetForCurrentView().Showing -= InputPane_Showing;
+                InputPane.GetForCurrentView().Hiding -= InputPane_Hiding;
+            }
         }
+
+        //---Explanation
+        /* This is a weird one. If a page has a BottomBar, it stays stuck to the top
+         * of the keyboard, should the software keyboard be shown on a phone. Unfortunately, it
+         * fails to do a layout check to see if the focused textbox is occluded by the 
+         * app bar. So, we work around it by just hiding the damn bar when the keyboard 
+         * is visible.
+         * Also, we're using Opacity instead of Visibility so a.) we don't trigger a 
+         * relayout and b.) so we don't stomp all over our visual states.*/
+        private void InputPane_Showing(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            this.Opacity = 0;
+            this.IsHitTestVisible = false;
+        }
+
+        private void InputPane_Hiding(InputPane sender, InputPaneVisibilityEventArgs args)
+        {
+            this.Opacity = 1;
+            this.IsHitTestVisible = true;
+        }
+        //---end explanation
 
         private void NavCommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -116,7 +150,7 @@ namespace DigiTransit10.Controls
             foreach (KeyValuePair<ICommandBarElement, long> element in _visibilityTrackedElements)
             {
                 var visibilityTrackable = element.Key as FrameworkElement;
-                if (visibilityTrackable != null 
+                if (visibilityTrackable != null
                     && !(PrimaryCommands.Contains(element.Key) || SecondaryCommands.Contains(element.Key)))
                 {
                     visibilityTrackable.UnregisterPropertyChangedCallback(VisibilityProperty, element.Value);
@@ -142,15 +176,15 @@ namespace DigiTransit10.Controls
                 }
             }
         }
-        
+
         private void OnCommandBarElementVisibilityChanged(DependencyObject sender, DependencyProperty dp)
-        {            
+        {
             /* We don't want to reflow immediately--if several buttons change visibility at once, the 
              * various Reflow calls end up stepping all over each others' toes. So instead, we've got 
              * a tiny timer (~5ms) that batches our Reflow commands together. The actual Reflow
              command happens in the Timer's .Tick event.*/
             _visibilityChangedThrottle.Stop();
-            _visibilityChangedThrottle.Start();            
+            _visibilityChangedThrottle.Start();
         }
 
         //Disable the bar when we have a Loading/Busy overlay visible.
@@ -178,7 +212,7 @@ namespace DigiTransit10.Controls
 
             //shrinking or staying the same
             if (newSize.Width <= oldSize.Width)
-            {                
+            {
                 while ((navWidth + primaryCommandsWidth) > currWidth) //reflow is necessary
                 {
                     if (this.NavigationButtons.Children.Count > navElementsToKeep)
@@ -208,7 +242,7 @@ namespace DigiTransit10.Controls
 
             //growing or staying the same
             if (newSize.Width >= oldSize.Width)
-            {                
+            {
                 while (currWidth - navWidth - primaryCommandsWidth >= appButtonWidth
                     && this.SecondaryCommands.Count > 0) //the bar has space for at least one button, and there are buttons to add
                 {
@@ -228,10 +262,10 @@ namespace DigiTransit10.Controls
                     {
                         this.SecondaryCommands.Remove(barButton);
                         //Insert to Primary bar
-                        this.PrimaryCommands.Add(barButton);                                                                                                
+                        this.PrimaryCommands.Add(barButton);
                         ((ISortableAppBarButton)barButton).IsSecondaryCommand = false;
                         TryRemoveSecondarySeparator();
-                        
+
                         primaryCommandsWidth += appButtonWidth;
                     }
                     else
@@ -251,7 +285,7 @@ namespace DigiTransit10.Controls
                             navCommand.IsEnabled = true;
                             TryRemoveSecondarySeparator();
                             UpdateButtonLabels(IsOpen);
-                                                      
+
                             navWidth += appButtonWidth;
                         }
                     }
@@ -359,6 +393,16 @@ namespace DigiTransit10.Controls
             {
                 FavoritesButton.IsSelected = true;
                 _currentlySelected = FavoritesButton;
+            }
+            if(_navigationService.CurrentPageType == typeof(Views.SearchPage))
+            {
+                SearchButton.IsSelected = true;
+                _currentlySelected = SearchButton;
+            }
+            if(_navigationService.CurrentPageType == typeof(Views.SettingsPage))
+            {
+                SettingsButton.IsSelected = true;
+                _currentlySelected = SettingsButton;
             }
         }
 

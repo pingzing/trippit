@@ -22,6 +22,7 @@ using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
 using static DigiTransit10.Helpers.Enums;
 using System.Linq;
 using MetroLog;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.Services
 {
@@ -34,6 +35,8 @@ namespace DigiTransit10.Services
 
         Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -58,7 +61,7 @@ namespace DigiTransit10.Services
         //---GEOCODING REQUESTS---
 
         public async Task<ApiResult<GeocodingResponse>> SearchAddressAsync(string searchString, CancellationToken token = default(CancellationToken))
-        {            
+        {
             string urlString = $"{DefaultGeocodingRequestUrl}" +
                 $"search?text={searchString}" +
                 $"&boundary.rect.min_lat={GeocodingConstants.BoundaryRectMinLat}" +
@@ -87,7 +90,7 @@ namespace DigiTransit10.Services
                 return new ApiResult<GeocodingResponse>(geoResponse);
             }
             catch(Exception ex) when (ex is COMException || ex is HttpRequestException || ex is OperationCanceledException)
-            {                
+            {
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.Canceled);
@@ -103,7 +106,7 @@ namespace DigiTransit10.Services
         //---GRAPHQL REQUESTS---
 
         public async Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken))
-        {            
+        {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.stops)
@@ -116,7 +119,7 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.name),
                     new GqlReturnValue(ApiGqlMembers.code),
                     new GqlReturnValue(ApiGqlMembers.routes,
-                        new GqlReturnValue(ApiGqlMembers.type)
+                        new GqlReturnValue(ApiGqlMembers.mode)
                     )
                 );
 
@@ -143,7 +146,7 @@ namespace DigiTransit10.Services
                 return new ApiResult<List<ApiStop>>(result);
             }
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {                
+            {
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.Canceled);
@@ -245,9 +248,9 @@ namespace DigiTransit10.Services
                 }
 
                 return new ApiResult<ApiPlan>(result);
-            }            
+            }
             catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {                
+            {
                 if (ex is OperationCanceledException)
                 {
                     return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
@@ -257,7 +260,126 @@ namespace DigiTransit10.Services
                     LogException(ex);
                     return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
                 }
-            }            
+            }
+        }
+
+        public async Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.routes)
+                .WithParameters(new GqlParameter(ApiGqlMembers.name, searchString))
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.shortName),
+                    new GqlReturnValue(ApiGqlMembers.longName),
+                    new GqlReturnValue(ApiGqlMembers.mode),
+                    new GqlReturnValue(ApiGqlMembers.patterns,
+                        new GqlReturnValue(ApiGqlMembers.stops,
+                            new GqlReturnValue(ApiGqlMembers.name),
+                            new GqlReturnValue(ApiGqlMembers.lat),
+                            new GqlReturnValue(ApiGqlMembers.lon)
+                        ),
+                        new GqlReturnValue(ApiGqlMembers.geometry,
+                            new GqlReturnValue(ApiGqlMembers.lat),
+                            new GqlReturnValue(ApiGqlMembers.lon)
+                        )
+                    )
+                );
+
+            string parsedQuery = query.ParseToJsonString();
+            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
+            Uri uri = new Uri(DefaultGqlRequestUrl);
+
+            try
+            {
+                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                if (response == null || !response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure(response).DoNotAwait();
+                    return ApiResult<IEnumerable<ApiRoute>>.Fail;
+                }
+
+                IEnumerable<ApiRoute> result = await UnwrapGqlResposne<IEnumerable<ApiRoute>>(response);
+
+                if (!result.Any())
+                {
+                    LogLogicFailure(FailureReason.NoResults);
+                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoResults);
+                }
+
+                return new ApiResult<IEnumerable<ApiRoute>>(result);
+            }
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
+            {
+                if (ex is OperationCanceledException)
+                {
+                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.Canceled);
+                }
+                else
+                {
+                    LogException(ex);
+                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoConnection);
+                }
+            }
+        }
+
+        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox,
+            CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.stopsByBbox)
+                .WithParameters(
+                    new GqlParameter(ApiGqlMembers.minLat, boundingBox.NorthwestCorner.Latitude),
+                    new GqlParameter(ApiGqlMembers.minLon, boundingBox.NorthwestCorner.Longitude),
+                    new GqlParameter(ApiGqlMembers.maxLat, boundingBox.SoutheastCorner.Latitude),
+                    new GqlParameter(ApiGqlMembers.maxLon, boundingBox.SoutheastCorner.Longitude)
+                )
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.name),
+                    new GqlReturnValue(ApiGqlMembers.code),
+                    new GqlReturnValue(ApiGqlMembers.lat),
+                    new GqlReturnValue(ApiGqlMembers.lon),
+                    new GqlReturnValue(ApiGqlMembers.patterns,
+                        new GqlReturnValue(ApiGqlMembers.name),
+                        new GqlReturnValue(ApiGqlMembers.route,
+                            new GqlReturnValue(ApiGqlMembers.shortName),
+                            new GqlReturnValue(ApiGqlMembers.longName)
+                        )
+                    )
+                );
+
+            string parsedQuery = query.ParseToJsonString();
+            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
+            Uri uri = new Uri(DefaultGqlRequestUrl);
+
+            try
+            {
+                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                if (response == null || !response.IsSuccessStatusCode)
+                {
+                    LogHttpFailure(response).DoNotAwait();
+                    return ApiResult<IEnumerable<ApiStop>>.Fail;
+                }
+
+                IEnumerable<ApiStop> result = await UnwrapGqlResposne<IEnumerable<ApiStop>>(response);
+
+                if (!result.Any())
+                {
+                    LogLogicFailure(FailureReason.NoResults);
+                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
+                }
+
+                return new ApiResult<IEnumerable<ApiStop>>(result);
+            }
+            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
+            {
+                if (ex is OperationCanceledException)
+                {
+                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.Canceled);
+                }
+                else
+                {
+                    LogException(ex);
+                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoConnection);
+                }
+            }
         }
 
         private HttpStringContent CreateJsonStringContent(string requestString)
@@ -274,7 +396,7 @@ namespace DigiTransit10.Services
         }
 
         private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method")
-        {           
+        {
             if (response.Content != null)
             {
                 string errorResponse = await response.Content?.ReadAsStringAsync();
@@ -288,13 +410,13 @@ namespace DigiTransit10.Services
         }
 
         private void LogLogicFailure(FailureReason reason, [CallerMemberName]string callerMethod = "Unknown method()")
-        {            
+        {
             _logger.Error($"{callerMethod} call failed. Reason: {reason}.");
         }
 
         private void LogException(Exception ex, [CallerMemberName]string caller = "Unknown")
         {
-            _logger.Error($"{caller} threw exception: ", ex);            
+            _logger.Error($"{caller} threw exception: ", ex);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace DigiTransit10
                 //{
                 //    return $"Current log: {LogManagerFactory.DefaultLogManager.GetCompressedLogs().Result.}";
                 //});
-        }        
+        }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {            
@@ -86,7 +86,7 @@ namespace DigiTransit10
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
-            DispatcherHelper.Initialize();                        
+            DispatcherHelper.Initialize();
             await Task.CompletedTask;
         }
 
@@ -134,7 +134,7 @@ namespace DigiTransit10
             await Locator.CleanupAsync();
 
             await base.OnSuspendingAsync(s, e, prelaunchActivated);
-        }        
+        }
     }
 }
 

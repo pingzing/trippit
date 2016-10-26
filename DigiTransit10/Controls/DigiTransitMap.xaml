@@ -18,12 +18,12 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-
-        <!--MapElements (contains MapIcons and MapPolylines) cannot be databound; it must have stuff added in code-behind.
-        XAML stuff can live in the MapItemsControl, which _can_ be databound.-->
+        
         <Maps:MapControl x:Name="DigiTransitMapControl"
+                         CenterChanged="DigiTransitMapControl_CenterChanged"
+                         Opacity="0"
                          Visibility="Collapsed"
-                         Opacity="0">
+                         ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}">
             <Maps:MapControl.Children>
                 <local:MapSelfMarker x:Name="SelfMarker" Visibility="Collapsed"/>
             </Maps:MapControl.Children>

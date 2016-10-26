@@ -33,7 +33,7 @@ namespace DigiTransit10.Models
         public PlaceType Type { get; set; }
         public double? Confidence { get; set; }
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
-        public Guid OptionalId { get; set; }    
+        public Guid OptionalId { get; set; }
 
         public static FavoritePlace MyLocationPlace
         {
@@ -118,7 +118,7 @@ namespace DigiTransit10.Models
         {
             //this should take into account placetype (rank Stops higher than addresses) and confidence. if no confidence, fall back to alphabetical            
             int scoreSoFar = 0;
-            scoreSoFar = this.Type.CompareTo(other.Type);// * -1; //we want descending order, default is ascending
+            scoreSoFar = this.Type.CompareTo(other.Type);
             if (scoreSoFar != 0)
             {
                 return scoreSoFar;

@@ -22,7 +22,7 @@
                                     PageType="views:MainPage"                                   
                                     Position="0"/>
             <local:NavAppBarButton x:Name="FavoritesButton"
-                                    Command="{x:Bind NavigateCommand}"                                   
+                                    Command="{x:Bind NavigateCommand}"
                                     Foreground="{ThemeResource SystemAccentColor}"
                                     Icon="Favorite"                                   
                                     Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Favorites}"
@@ -30,17 +30,20 @@
                                     CommandParameter="{x:Bind FavoritesButton.PageType, Mode=OneWay}"
                                     Position="1"/>
             <local:NavAppBarButton x:Name="SearchButton"
+                                   Command="{x:Bind NavigateCommand}"
                                    Foreground="{ThemeResource SystemAccentColor}"
                                    Icon="Find"
                                    Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Search}"
-                                   
-                                   
+                                   PageType="views:SearchPage"
+                                   CommandParameter="{x:Bind SearchButton.PageType, Mode=OneWay}"                                   
                                    Position="2"/>
             <local:NavAppBarButton x:Name="SettingsButton"
+                                   Command="{x:Bind NavigateCommand}"
                                    Foreground="{ThemeResource SystemAccentColor}"
                                    Icon="Setting"
                                    Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Settings}"
-                                   
+                                   PageType="views:SettingsPage"
+                                   CommandParameter="{x:Bind SettingsButton.PageType, Mode=OneWay}"
                                    Position="3"/>
             <AppBarSeparator x:Name="NavButtonSeparator" Visibility="Collapsed"/>
         </StackPanel>
