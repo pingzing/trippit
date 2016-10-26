@@ -1,4 +1,5 @@
 ﻿using DigiTransit10.Models;
+using Windows.Devices.Geolocation;
 
 namespace DigiTransit10.Helpers
 {
@@ -31,6 +32,19 @@ namespace DigiTransit10.Helpers
         /// Indicates that the active map should center on its collection of displayed favorites.
         /// </summary>
         public class CenterAroundFavoritesOnMap { }
+
+        /// <summary>
+        /// Indicates that the active map should center on the given location.
+        /// </summary>
+        public class CenterMapOnGeoposition
+        {
+            public BasicGeoposition Position { get; private set; }
+
+            public CenterMapOnGeoposition(BasicGeoposition position)
+            {
+                Position = position;
+            }
+        }
 
         /// <summary>
         /// Indicates that a TripPlanStrip has been tapped, and we should zoom in to display its details.

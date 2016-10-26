@@ -11,6 +11,8 @@ using DigiTransit10.ExtensionMethods;
 using System.Threading.Tasks;
 using DigiTransit10.ViewModels.ControlViewModels;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Navigation;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,6 +37,12 @@ namespace DigiTransit10.Views
             BindingOperations.SetBinding(FavoritesViewSource,
                 CollectionViewSource.SourceProperty,
                 collectionViewSourceBinding);
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Debug.WriteLine("Favorites navigated to!");
+            base.OnNavigatedTo(e);
         }
 
         private void FavoritesListView_ItemClick(object sender, ItemClickEventArgs e)

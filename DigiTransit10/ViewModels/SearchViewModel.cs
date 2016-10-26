@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using DigiTransit10.ExtensionMethods;
+using Windows.UI.Xaml.Navigation;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.ViewModels
 {
@@ -28,6 +30,7 @@ namespace DigiTransit10.ViewModels
     public class SearchViewModel : ViewModelBase
     {
         private readonly INetworkService _networkService;
+        private readonly IGeolocationService _geolocation;
 
         private CancellationTokenSource _cts;
         private SearchSection _activeSection;
@@ -129,9 +132,19 @@ namespace DigiTransit10.ViewModels
             return arg != null;
         }
 
-        public SearchViewModel(INetworkService networkService)
+        public SearchViewModel(INetworkService networkService, IGeolocationService geolocation)
         {
             _networkService = networkService;
+            _geolocation = geolocation;
+        }
+
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
+            if(result.HasResult)
+            {
+                Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
+            }
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)

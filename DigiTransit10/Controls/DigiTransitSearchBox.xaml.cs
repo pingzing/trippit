@@ -27,8 +27,7 @@ namespace DigiTransit10.Controls
     {
         private static readonly IPlaceComparer _placeComparer = new IPlaceComparer();
         private static readonly SettingsService _settingsService;
-        private static readonly INetworkService _networkService;
-        private static readonly IMessenger _messengerService;
+        private static readonly INetworkService _networkService;        
         private static readonly IFavoritesService _favoritesService;
 
         private CancellationTokenSource _currentToken = new CancellationTokenSource();
@@ -115,8 +114,7 @@ namespace DigiTransit10.Controls
                 return;
             }
             _networkService = ServiceLocator.Current.GetInstance<INetworkService>();
-            _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();
-            _messengerService = ServiceLocator.Current.GetInstance<IMessenger>();
+            _settingsService = ServiceLocator.Current.GetInstance<SettingsService>();            
             _favoritesService = ServiceLocator.Current.GetInstance<IFavoritesService>();
         }
 

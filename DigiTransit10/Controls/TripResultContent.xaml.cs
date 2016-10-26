@@ -50,14 +50,15 @@ namespace DigiTransit10.Controls
 
             this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
             this.Loaded += TripResultContent_Loaded;
-            this.Unloaded += TripResultContent_Unloaded;
-            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
-            Messenger.Default.Register<MessageTypes.ViewPlanStrips>(this, SwitchToListState);
+            this.Unloaded += TripResultContent_Unloaded;            
         }
 
         private void TripResultContent_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.Parent != null)
+            Messenger.Default.Register<MessageTypes.ViewPlanDetails>(this, SwitchToDetailedState);
+            Messenger.Default.Register<MessageTypes.ViewPlanStrips>(this, SwitchToListState);
+
+            if (this.Parent != null)
             {
                 (this.Parent as FrameworkElement).SizeChanged += Parent_SizeChanged;
             }
@@ -66,6 +67,9 @@ namespace DigiTransit10.Controls
 
         private void TripResultContent_Unloaded(object sender, RoutedEventArgs e)
         {
+            Messenger.Default.Unregister<MessageTypes.ViewPlanDetails>(this);
+            Messenger.Default.Unregister<MessageTypes.ViewPlanStrips>(this);
+
             if (this.Parent != null)
             {
                 (this.Parent as FrameworkElement).SizeChanged -= Parent_SizeChanged;

@@ -50,6 +50,7 @@ namespace DigiTransit10.Services
             SimpleIoc.Default.Register<TripResultViewModel>();
             SimpleIoc.Default.Register<FavoritesViewModel>();
             SimpleIoc.Default.Register<SearchViewModel>();
+            SimpleIoc.Default.Register<SettingsViewModel>();
         }
 
         //Viewmodels
@@ -58,6 +59,7 @@ namespace DigiTransit10.Services
         public TripResultViewModel TripResult => ServiceLocator.Current.GetInstance<TripResultViewModel>();
         public FavoritesViewModel Favorites => ServiceLocator.Current.GetInstance<FavoritesViewModel>();
         public SearchViewModel Search => ServiceLocator.Current.GetInstance<SearchViewModel>();
+        public SettingsViewModel Settings => ServiceLocator.Current.GetInstance<SettingsViewModel>();
 
         public async Task CleanupAsync()
         {

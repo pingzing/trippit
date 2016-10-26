@@ -172,6 +172,7 @@
                                 MapCenterChanged="PageMap_MapCenterChanged"
                                 Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"
                                 ColoredMapLines="{x:Bind ViewModel.MapLines, Mode=OneWay}"
+                                ShowUserOnMap="True"
                                 ZoomLevel="13"/>
         
         <!--Wide view-->

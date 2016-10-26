@@ -1,19 +1,16 @@
-﻿using DigiTransit10.Models.ApiModels;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
+using DigiTransit10.Models.ApiModels;
 using DigiTransit10.ViewModels;
+using GalaSoft.MvvmLight.Messaging;
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -26,6 +23,8 @@ namespace DigiTransit10.Views
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        private VisualState _narrowVisualState;
+
         private DispatcherTimer _mapScrollThrottle = new DispatcherTimer();
         private DispatcherTimer _linesTypingThrottle = new DispatcherTimer();
         private string _linesSearchText;
@@ -36,7 +35,7 @@ namespace DigiTransit10.Views
 
         public SearchPage()
         {
-            this.InitializeComponent();
+            this.InitializeComponent();            
             _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _mapScrollThrottle.Tick += MapScrollThrottle_Tick;
 
@@ -45,7 +44,67 @@ namespace DigiTransit10.Views
 
             _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
-        }        
+            _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == "VisualStateNarrow");            
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Messenger.Default.Register<MessageTypes.CenterMapOnGeoposition>(this, CenterMapOnLocation);
+            base.OnNavigatedTo(e);
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
+            base.OnNavigatedFrom(e);
+        }
+
+        private async void CenterMapOnLocation(MessageTypes.CenterMapOnGeoposition args)
+        {
+            const double initialZoomAdjustment = 0.003;
+            const double narrowZoomAdjustment = 0.0019;
+
+            // Create a box surrounding the specified point to emulate a zoom level on the map.
+            // We're using a simulated bounding box, because we need to be able to specify a margin,
+            // to accommodate either the the floating content panels.
+            BasicGeoposition northwest = BasicGeopositionExtensions.Create
+            (
+                0.0,
+                args.Position.Longitude - initialZoomAdjustment,
+                args.Position.Latitude + initialZoomAdjustment
+            );
+            BasicGeoposition southeast = BasicGeopositionExtensions.Create
+            (
+                0.0,
+                args.Position.Longitude + initialZoomAdjustment,
+                args.Position.Latitude - initialZoomAdjustment
+            );            
+            if (AdaptiveVisualStateGroup.CurrentState == _narrowVisualState)
+            {
+                //Zoom in a little further when in the narrow view, otherwise we get too many stops.
+                northwest.Longitude += narrowZoomAdjustment;
+                northwest.Latitude -= narrowZoomAdjustment;
+
+                southeast.Longitude -= narrowZoomAdjustment;
+                southeast.Latitude += narrowZoomAdjustment;
+
+                GeoboundingBox box = new GeoboundingBox(northwest, southeast);
+                if (NarrowSearchPanel.IsOpen)
+                {
+                    double bottomMargin = NarrowSearchPanel.ExpandedHeight;                    
+                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, bottomMargin), MapAnimationKind.None);
+                }
+                else
+                {                    
+                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, 0), MapAnimationKind.None);
+                }
+            }
+            else
+            {
+                GeoboundingBox box = new GeoboundingBox(northwest, southeast);
+                await PageMap.TrySetViewBoundsAsync(box, new Thickness(400, 0, 0, 0), MapAnimationKind.None);
+            }
+        }
 
         private void NarrowSearchPanel_Loaded(object sender, RoutedEventArgs e)
         {
