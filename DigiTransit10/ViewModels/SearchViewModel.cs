@@ -174,6 +174,13 @@ namespace DigiTransit10.ViewModels
             }
             NearbyStopsResultList = new ObservableCollection<ApiStop>(response.Result);
             IsNearbyStopsLoading = false;
+            MapPlaces = new ObservableCollection<IMapPoi>(response.Result
+                .Select(x => new BasicMapPoi
+                    {
+                        Coords = BasicGeopositionExtensions.Create(0, x.Lon, x.Lat),
+                        Name = x.Name
+                    })
+                .ToList());
         }
 
         private async void SearchStops(string searchText)

@@ -40,12 +40,7 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
-            }
+            SplashFactory = (e) => new Views.Splash(e);            
 
             #region App settings
 
@@ -70,6 +65,11 @@ namespace DigiTransit10
         {            
             if (Window.Current.Content as ModalDialog == null)
             {
+                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+                {
+                    StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
+                }
+
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                          
 
