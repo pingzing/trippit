@@ -18,6 +18,11 @@ using MetroLog;
 using MetroLog.Targets;
 using System.Diagnostics;
 using System;
+using DigiTransit10.Models;
+using Newtonsoft.Json;
+using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Ioc;
+using DigiTransit10.Views;
 
 namespace DigiTransit10
 {
@@ -35,7 +40,12 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);            
+            SplashFactory = (e) => new Views.Splash(e);
+
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
+            }
 
             #region App settings
 
@@ -57,16 +67,11 @@ namespace DigiTransit10
         }        
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
-        {
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                StatusBar.GetForCurrentView().HideAsync().DoNotAwait();
-            }
-
+        {            
             if (Window.Current.Content as ModalDialog == null)
             {
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
+                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                          
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -81,7 +86,7 @@ namespace DigiTransit10
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
 
-            DispatcherHelper.Initialize();            
+            DispatcherHelper.Initialize();                        
             await Task.CompletedTask;
         }
 
@@ -90,8 +95,37 @@ namespace DigiTransit10
             // long-running startup tasks go here
 
             // end here
+            
+            switch(DetermineStartCause(args))
+            {
+                case AdditionalKinds.SecondaryTile:
+                    var tileArgs = args as LaunchActivatedEventArgs;
+                    if(tileArgs != null && !String.IsNullOrWhiteSpace(tileArgs.Arguments))
+                    {
+                        var payload = JsonConvert.DeserializeObject<SecondaryTilePayload>(tileArgs.Arguments);
+                        SessionState[NavParamKeys.SecondaryTilePayload] = payload;                            
+                        if (NavigationService.CurrentPageType == typeof(Views.MainPage))
+                        {
+                            SimpleIoc.Default.GetInstance<IMessenger>().Send(payload);
+                        }
+                        else
+                        {
+                            await NavigationService.NavigateAsync(typeof(Views.MainPage));
+                        }
+                    }
+                    else
+                    {
+                        await NavigationService.NavigateAsync(typeof(Views.MainPage));
+                    }
 
-            NavigationService.Navigate(typeof(Views.MainPage));
+                    break;
+
+                case AdditionalKinds.Toast: //we don't have toasts yet! so just do whatever.                    
+                default:
+                    await NavigationService.NavigateAsync(typeof(Views.MainPage));
+                    break;
+            }
+            
             await Task.CompletedTask;
         }
 

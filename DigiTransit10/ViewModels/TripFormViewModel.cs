@@ -19,10 +19,8 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using static DigiTransit10.Helpers.Enums;
-using Template10.Services.NavigationService;
 using DigiTransit10.ViewModels.ControlViewModels;
 using MetroLog;
-using Newtonsoft.Json;
 using static DigiTransit10.Helpers.MessageTypes;
 using DigiTransit10.Helpers.PageNavigationContainers;
 using DigiTransit10.ExtensionMethods;
@@ -240,6 +238,8 @@ namespace DigiTransit10.ViewModels
             _dialogService = dialogService;
             _favoritesService = favoritesService;
             _logger = logger;
+
+            _messengerService.Register<SecondaryTilePayload>(this, SecondaryTileInvoked);
         }
 
         private void TransitTogglePannel()
@@ -617,15 +617,16 @@ namespace DigiTransit10.ViewModels
             }
         }
 
+        //todo: refactor the favorite/secondary tile stuff to use the same type if possible
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
 
             BootStrapper.BackRequested += BootStrapper_BackRequested;
 
-            if (mode != NavigationMode.Back && mode != NavigationMode.Refresh)
+            if (mode != NavigationMode.Back)
             {
-                //---PlanTripFromFavorites
+                //---Plan trip from favorites
                 var placeArgs = parameter as NavigateWithFavoritePlaceArgs;
                 if (placeArgs != null)
                 {
@@ -663,12 +664,43 @@ namespace DigiTransit10.ViewModels
                         PlanTripCommand.Execute(null);
                     }
                 }
-            }
-            //---End PlanTripFromFavorites            
+
+                //---Plan trip from tile                                
+                if(SessionState.ContainsKey(NavParamKeys.SecondaryTilePayload))
+                {
+                    var secondaryTileArgs = (SecondaryTilePayload)SessionState[NavParamKeys.SecondaryTilePayload];
+                    SecondaryTileInvoked(secondaryTileArgs);
+                    SessionState.Remove(NavParamKeys.SecondaryTilePayload);
+                }
+            }            
 
             await FillPinnedFavorites();
 
             await Task.CompletedTask;
+        }
+
+        private void SecondaryTileInvoked(SecondaryTilePayload secondaryTileArgs)
+        {
+            if (secondaryTileArgs.SecondaryTileType == TileType.FavoritePlace)
+            {
+                var firstPlace = secondaryTileArgs.SecondaryTilePlaces.First();
+                ToPlace = new Place { Type = PlaceType.Address, Lat = (float)firstPlace.Lat, Lon = (float)firstPlace.Lon, Name = firstPlace.Name };
+                if (PlanTripCommand.CanExecute(null))
+                {
+                    PlanTripCommand.Execute(null);
+                }
+            }
+            else if (secondaryTileArgs.SecondaryTileType == TileType.FavoriteRoute) //todo: allow more than just from & to here
+            {
+                var firstPlace = secondaryTileArgs.SecondaryTilePlaces.First();
+                FromPlace = new Place { Type = PlaceType.Address, Lat = (float)firstPlace.Lat, Lon = (float)firstPlace.Lon, Name = firstPlace.Name };
+                var lastPlace = secondaryTileArgs.SecondaryTilePlaces.Last();
+                ToPlace = new Place { Type = PlaceType.Address, Lat = (float)lastPlace.Lat, Lon = (float)lastPlace.Lon, Name = lastPlace.Name };
+                if (PlanTripCommand.CanExecute(null))
+                {
+                    PlanTripCommand.Execute(null);
+                }
+            }
         }
 
         private void BootStrapper_BackRequested(object sender, HandledEventArgs e)

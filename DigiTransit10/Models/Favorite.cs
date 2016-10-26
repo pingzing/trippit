@@ -133,7 +133,7 @@ namespace DigiTransit10.Models
         public Guid FavoriteId { get; set; }
         public double IconFontSize { get; set; }
         public List<string> RouteGeometryStrings { get; set; }
-        public List<FavoriteRoutePlace> RoutePlaces { get; set; }
+        public List<SimpleFavoritePlace> RoutePlaces { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName]string name = "")
@@ -148,7 +148,7 @@ namespace DigiTransit10.Models
     }
 
     //Only used for seralization due to its small footprint.
-    public struct FavoriteRoutePlace
+    public struct SimpleFavoritePlace
     {
         public string Name { get; set; }
         public double Lat { get; set; }

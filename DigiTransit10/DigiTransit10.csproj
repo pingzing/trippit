@@ -225,6 +225,7 @@
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
     <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
+    <Compile Include="Models\SecondaryTilePayload.cs" />
     <Compile Include="Models\TripLegIntermediateStop.cs" />
     <Compile Include="Models\TripLeg.cs" />
     <Compile Include="Models\TripQueryDetails.cs" />

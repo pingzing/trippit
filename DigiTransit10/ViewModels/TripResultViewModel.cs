@@ -204,14 +204,14 @@ namespace DigiTransit10.ViewModels
 
             TripLeg startPlace = routeToSave.ItineraryLegs.First();
             TripLeg endPlace = routeToSave.ItineraryLegs.Last();
-            var places = new List<FavoriteRoutePlace>();
-            places.Add(new FavoriteRoutePlace
+            var places = new List<SimpleFavoritePlace>();
+            places.Add(new SimpleFavoritePlace
             {
                 Lat = startPlace.StartCoords.Latitude,
                 Lon = startPlace.StartCoords.Longitude,
                 Name = routeToSave.StartingPlaceName
             });
-            places.Add(new FavoriteRoutePlace
+            places.Add(new SimpleFavoritePlace
             {
                 Lat = endPlace.EndCoords.Latitude,
                 Lon = endPlace.EndCoords.Longitude,

@@ -29,7 +29,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
-            _logger = logger;
+            _logger = logger;            
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
 
@@ -40,19 +40,24 @@ namespace DigiTransit10.ViewModels
         }
 
 
-        public TripFormViewModel TripFormViewModel => ((App) BootStrapper.Current).Locator.TripForm;
-        public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
-        public FavoritesViewModel FavoritesViewModel => ((App)BootStrapper.Current).Locator.Favorites;
-
-        private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
+        public TripFormViewModel TripFormViewModel
         {
-            _logger.Debug("Entering MainViewModel.PlanFound...");
-            if(planFoundMessage.VisualState == MessageTypes.VisualStateType.Narrow)
+            get
             {
-                _logger.Debug("Navigating from MainViewModel to TripResultPage in Narrow view...");
-                NavigationService.NavigateAsync(typeof(TripResultPage));
+                TripFormViewModel tripForm = ((App) BootStrapper.Current).Locator.TripForm;
+                tripForm.SessionState = SessionState;
+                return tripForm;
             }
         }
+        public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;        
+
+        private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
+        {            
+            if(planFoundMessage.VisualState == MessageTypes.VisualStateType.Narrow)
+            {                
+                NavigationService.NavigateAsync(typeof(TripResultPage));
+            }
+        }        
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {

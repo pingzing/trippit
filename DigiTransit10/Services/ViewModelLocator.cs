@@ -5,13 +5,15 @@ using DigiTransit10.Backend;
 using GalaSoft.MvvmLight.Messaging;
 using System.Threading.Tasks;
 using MetroLog;
+using Template10.Services.NavigationService;
 
 namespace DigiTransit10.Services
 {
     public class ViewModelLocator
     {
         private const string LocalSettingsService = "LocalSettingsService";
-        private const string RoamingSettingsService = "RoamingSettingsService";
+        private const string RoamingSettingsService = "RoamingSettingsService";        
+
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
@@ -21,7 +23,7 @@ namespace DigiTransit10.Services
                 //design-time stuff
             }
             else
-            {
+            {                
                 IFileService fileService = new FileService();
                 SimpleIoc.Default.Register(() => fileService);
 
