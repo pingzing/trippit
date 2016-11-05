@@ -61,7 +61,8 @@ namespace DigiTransit10.Views
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {            
+        {
+            PageMap = null;
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
             base.OnNavigatedFrom(e);
         }
@@ -215,6 +216,10 @@ namespace DigiTransit10.Views
         {
             _mapScrollThrottle.Stop();
 
+            if(PageMap == null)
+            {
+                return;
+            }
             GeoboundingBox boundingBox = PageMap.GetMapViewBoundingBox();
             if (boundingBox == null)
             {
