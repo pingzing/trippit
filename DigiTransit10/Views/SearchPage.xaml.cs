@@ -61,8 +61,7 @@ namespace DigiTransit10.Views
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            PageMap = null;
+        {            
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
             base.OnNavigatedFrom(e);
         }
