@@ -8,28 +8,19 @@
     xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"    
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400"
-    Unloaded="UserControl_Unloaded">
+    d:DesignWidth="400">
     <UserControl.Resources>
-        <Storyboard x:Name="HideLoadingScreenStoryboard">
-            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="LoadingRing" d:IsOptimized="True"/>
-            <DoubleAnimation Duration="0:0:0.5" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="DigiTransitMapControl" d:IsOptimized="True"/>
-        </Storyboard>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        
-        <Maps:MapControl x:Name="DigiTransitMapControl"
-                         CenterChanged="DigiTransitMapControl_CenterChanged"
-                         Opacity="0"
-                         Visibility="Collapsed"
+
+        <Maps:MapControl x:Name="DigiTransitMapControl"                         
+                         Opacity="1"
+                         Visibility="Visible"
                          ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}">
             <Maps:MapControl.Children>
                 <local:MapSelfMarker x:Name="SelfMarker" Visibility="Collapsed"/>
             </Maps:MapControl.Children>
         </Maps:MapControl>
-
-        <!--Visibility updated from code-behind.-->        
-        <ProgressRing x:Name="LoadingRing" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" IsActive="True" Width="50" Height="50"/>
     </Grid>
 </UserControl>

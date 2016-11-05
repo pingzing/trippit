@@ -23,11 +23,13 @@ namespace DigiTransit10.Views
     /// </summary>
     public sealed partial class FavoritesPage : Page
     {
-        public FavoritesViewModel ViewModel => this.DataContext as FavoritesViewModel;
+        public FavoritesViewModel ViewModel { get; set; }
 
         public FavoritesPage()
         {
             this.InitializeComponent();
+            ViewModel = DataContext as FavoritesViewModel;
+            //NavigationCacheMode = NavigationCacheMode.Enabled;
 
             //Doing this in code-behind, because doing it in XAML breaks the XAML designer.
             var collectionViewSourceBinding = new Binding();
@@ -37,6 +39,13 @@ namespace DigiTransit10.Views
             BindingOperations.SetBinding(FavoritesViewSource,
                 CollectionViewSource.SourceProperty,
                 collectionViewSourceBinding);
+
+            this.Unloaded += FavoritesPage_Unloaded;
+        }
+
+        private void FavoritesPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel = null;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

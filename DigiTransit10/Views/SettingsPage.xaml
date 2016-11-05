@@ -5,10 +5,14 @@
     xmlns:local="using:DigiTransit10.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    xmlns:lclCtls="using:DigiTransit10.Controls"
     DataContext="{Binding Source={StaticResource Locator}, Path=Settings}"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <lclCtls:DigiTransitMap/>
+        <!--<Maps:MapControl/>-->
+        <Image Source="ms-appx:///Assets/Images/Wide310x150Logo.png"/>
     </Grid>
 </Page>

@@ -24,8 +24,7 @@ namespace DigiTransit10.Controls
     public sealed partial class DigiTransitMap : UserControl
     {
         private readonly IGeolocationService _geolocationService;
-
-        private DispatcherTimer _loadingDelayTimer = new DispatcherTimer();
+        
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
         private Geopoint _lastKnownGeopoint;
@@ -51,9 +50,7 @@ namespace DigiTransit10.Controls
 
             bool newBool = (bool)e.NewValue;
             if (newBool)
-            {
-                _this.SelfMarker.Visibility = Visibility.Visible;
-                MapControl.SetNormalizedAnchorPoint(_this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
+            {                
                 _this.StartLiveUpdates();
             }
             else
@@ -357,33 +354,33 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-
-            _loadingDelayTimer.Interval = TimeSpan.FromMilliseconds(750);
-            _loadingDelayTimer.Tick += _layoutUpdateTimer_Tick;
-            this.Loaded += DigiTransitMap_Loaded;
+                      
+            this.Unloaded += DigiTransitMap_Unloaded;
+            this.DigiTransitMapControl.CenterChanged += DigiTransitMapControl_CenterChanged;
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
         }
 
-        private void DigiTransitMap_Loaded(object sender, RoutedEventArgs e)
+        private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
         {
-            DigiTransitMapControl.Visibility = Visibility.Visible;
-            _loadingDelayTimer.Start();
-        }
-
-        private void _layoutUpdateTimer_Tick(object sender, object e)
-        {
-            HideLoadingScreenStoryboard.Begin();
-            HideLoadingScreenStoryboard.Completed += HideLoadingScreenStoryboard_Completed;
-        }
-
-        private void HideLoadingScreenStoryboard_Completed(object sender, object e)
-        {
-            _loadingDelayTimer.Tick -= HideLoadingScreenStoryboard_Completed;
-            _loadingDelayTimer.Stop();
-            DigiTransitMapControl.Opacity = 1;
-            LoadingRing.Visibility = Visibility.Collapsed;
-        }
+            if (_liveUpdateToken != null)
+            {
+                StopLiveUpdates();
+            }
+            var places = Places as INotifyCollectionChanged;
+            if (places != null)
+            {
+                places.CollectionChanged -= OnPlacesCollectionChanged;
+            }
+            var mapLines = ColoredMapLines as INotifyCollectionChanged;
+            if(mapLines != null)
+            {
+                mapLines.CollectionChanged -= OnColoredMapLinePointsCollectionChanged;
+            }            
+            this.DigiTransitMapControl.CenterChanged -= DigiTransitMapControl_CenterChanged;
+            Bindings.StopTracking();
+            this.DigiTransitMapControl = null;
+        }                        
 
         private void DigiTransitMapControl_CenterChanged(MapControl sender, object args)
         {
@@ -499,6 +496,11 @@ namespace DigiTransit10.Controls
             _lastKnownGeopoint = args.Position.Coordinate.Point;
             if (ShowUserOnMap)
             {
+                if(this.SelfMarker.Visibility == Visibility.Collapsed)
+                {
+                    this.SelfMarker.Visibility = Visibility.Visible;
+                    MapControl.SetNormalizedAnchorPoint(this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
+                }
                 MapControl.SetLocation(SelfMarker, args.Position.Coordinate.Point);
             }
         }
@@ -508,18 +510,15 @@ namespace DigiTransit10.Controls
             _lastKnownHeading = args.Reading;
             if(ShowUserOnMap)
             {
+                if (this.SelfMarker.Visibility == Visibility.Collapsed)
+                {
+                    this.SelfMarker.Visibility = Visibility.Visible;
+                    MapControl.SetNormalizedAnchorPoint(this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
+                }
                 SelfMarker.IsArrowVisible = true;
                 SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
             }
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (_liveUpdateToken != null)
-            {
-                StopLiveUpdates();
-            }
-        }
+        }        
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation, bool retryOnFailure = false)
         {

@@ -36,6 +36,7 @@ namespace DigiTransit10.Views
         public SearchPage()
         {
             this.InitializeComponent();            
+
             _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _mapScrollThrottle.Tick += MapScrollThrottle_Tick;
 
@@ -44,7 +45,13 @@ namespace DigiTransit10.Views
 
             _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
-            _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == "VisualStateNarrow");            
+            _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == "VisualStateNarrow");
+            this.Unloaded += SearchPage_Unloaded1;        
+        }
+
+        private void SearchPage_Unloaded1(object sender, RoutedEventArgs e)
+        {
+            Bindings.StopTracking();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -55,6 +62,7 @@ namespace DigiTransit10.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            PageMap = null;
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
             base.OnNavigatedFrom(e);
         }

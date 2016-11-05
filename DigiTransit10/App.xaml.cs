@@ -81,7 +81,7 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };
             }
-
+            
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            

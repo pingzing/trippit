@@ -27,13 +27,7 @@ namespace DigiTransit10.Views
     {
         public SettingsPage()
         {
-            this.InitializeComponent();
-            Messenger.Default.Register<MessageTypes.CenterAroundFavoritesOnMap>(this, Test);
-        }
-
-        private void Test(MessageTypes.CenterAroundFavoritesOnMap obj)
-        {
-            Debug.WriteLine("Test message fired in SettingsPage.");
-        }
+            this.InitializeComponent();            
+        }        
     }
 }

@@ -290,14 +290,14 @@ namespace DigiTransit10.Services
 
             try
             {
-                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                HttpResponseMessage response = await _networkClient.PostAsync(uri, stringContent, token).ConfigureAwait(false);
                 if (response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
                     return ApiResult<IEnumerable<ApiRoute>>.Fail;
                 }
 
-                IEnumerable<ApiRoute> result = await UnwrapGqlResposne<IEnumerable<ApiRoute>>(response);
+                IEnumerable<ApiRoute> result = await UnwrapGqlResposne<IEnumerable<ApiRoute>>(response).ConfigureAwait(false);
 
                 if (!result.Any())
                 {
@@ -351,14 +351,14 @@ namespace DigiTransit10.Services
 
             try
             {
-                var response = await _networkClient.PostAsync(uri, stringContent, token);
+                HttpResponseMessage response = await _networkClient.PostAsync(uri, stringContent, token).ConfigureAwait(false);
                 if (response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
                     return ApiResult<IEnumerable<ApiStop>>.Fail;
                 }
 
-                IEnumerable<ApiStop> result = await UnwrapGqlResposne<IEnumerable<ApiStop>>(response);
+                IEnumerable<ApiStop> result = await UnwrapGqlResposne<IEnumerable<ApiStop>>(response).ConfigureAwait(false);
 
                 if (!result.Any())
                 {
@@ -389,7 +389,7 @@ namespace DigiTransit10.Services
 
         private async Task<T> UnwrapGqlResposne<T>(HttpResponseMessage response)
         {
-            return (await response.Content.ReadAsInputStreamAsync())
+            return (await response.Content.ReadAsInputStreamAsync().AsTask().ConfigureAwait(false))
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<ApiDataContainer>()
                 .Data.First.First.ToObject<T>();
