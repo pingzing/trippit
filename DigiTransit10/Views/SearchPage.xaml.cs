@@ -211,8 +211,8 @@ namespace DigiTransit10.Views
         private void PageMap_MapTapped(MapControl sender, MapInputEventArgs args)
         {
             var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
-            ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = args.Location;
-            flyout.ShowAt(this, args.Position);
+            ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;            
+            flyout.ShowAt(sender, args.Position);            
         }
 
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -332,6 +332,9 @@
     <value>Stops</value>
   </data>
   <data name="SearchPage_MapContextMenuFindPlacesHere" xml:space="preserve">
-    <value>Find places near this point</value>
+    <value>Find stops near this point</value>
+  </data>
+  <data name="SearchPage_MapContextFindPlacesAtMe" xml:space="preserve">
+    <value>Find stops near me</value>
   </data>
 </root>

@@ -29,6 +29,8 @@ namespace DigiTransit10.ViewModels
 
     public class SearchViewModel : ViewModelBase
     {
+        private const int GeocircleRadius = 750;
+        private const int GeocircleNumberOfPoints = 100;
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
 
@@ -129,11 +131,12 @@ namespace DigiTransit10.ViewModels
         }
 
         public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
+        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);        
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
         public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);
         public RelayCommand<ApiRoute> UpdateSelectedLineCommand => new RelayCommand<ApiRoute>(UpdateSelectedLine,
-            UpdateSelectedLineCanExecute);
+            UpdateSelectedLineCanExecute);        
         private bool UpdateSelectedLineCanExecute(ApiRoute arg)
         {
             return arg != null;
@@ -145,16 +148,10 @@ namespace DigiTransit10.ViewModels
             _geolocation = geolocation;
         }
 
-        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {
-            MapCircles.Clear();
-            GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
-            if(result.HasResult)
-            {
-                Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
-                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, 750, 100)));
-                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, 750));
-            }
+        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {            
+            MoveNearbyCircleToUser();
+            return Task.CompletedTask;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
@@ -166,8 +163,22 @@ namespace DigiTransit10.ViewModels
         private async void MoveNearbyCircle(Geopoint point)
         {
             MapCircles.Clear();
-            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, 750, 100)));
-            await UpdateNearbyPlaces(new Geocircle(point.Position, 750));
+            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadius, GeocircleNumberOfPoints)));
+            await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadius));
+        }
+
+        private async void MoveNearbyCircleToUser()
+        {
+            IsNearbyStopsLoading = true;
+            GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
+            if (result.HasResult)
+            {
+                MapCircles.Clear();
+                Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
+                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadius, GeocircleNumberOfPoints)));
+                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadius));
+            }
+            IsNearbyStopsLoading = false;
         }
 
         private async Task UpdateNearbyPlaces(Geocircle circle)
@@ -184,7 +195,12 @@ namespace DigiTransit10.ViewModels
 
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
-            ApiResult<IEnumerable<ApiStop>> response = await _networkService.GetStopsByBoundingRadius((float)circle.Center.Latitude, (float)circle.Center.Longitude, (int)circle.Radius, _cts.Token);
+            ApiResult<IEnumerable<ApiStop>> response = await _networkService.GetStopsByBoundingRadius(
+                (float)circle.Center.Latitude, 
+                (float)circle.Center.Longitude, 
+                (int)circle.Radius, 
+                _cts.Token
+            );
             if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 return;

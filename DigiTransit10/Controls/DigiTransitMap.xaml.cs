@@ -345,7 +345,7 @@ namespace DigiTransit10.Controls
             }
             if(args.Action == NotifyCollectionChangedAction.Reset)
             {
-                RemoveMapPolygons(DigiTransitMapControl.MapElements.OfType<MapPolygon>());
+                SetMapPolygons(null); //replace with something smarter if we ever use the polygons collection for anything except circles
             }
             if(args.NewItems != null)
             {

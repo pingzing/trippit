@@ -177,7 +177,9 @@
                                 ShowUserOnMap="True"
                                 ZoomLevel="13">
             <FlyoutBase.AttachedFlyout>
-                <MenuFlyout>
+                <MenuFlyout Placement="Bottom">
+                    <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=SearchPage_MapContextFindPlacesAtMe}"
+                                    Command="{x:Bind ViewModel.MoveNearbyCircleToUserCommand}"/>
                     <!--CommandParameter set in code-behind as the flyout is being shown.-->
                     <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=SearchPage_MapContextMenuFindPlacesHere}"
                                     Command="{x:Bind ViewModel.MoveNearbyCircleCommand}"/>
