@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 10/14/2016 20:40:08
+// 	Generated: 11/06/2016 22:34:55
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -830,6 +830,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("SearchPage_StopsHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Find places near this point"
+        /// </summary>
+        public static string SearchPage_MapContextMenuFindPlacesHere
+        {
+            get
+            {
+                return resourceLoader.GetString("SearchPage_MapContextMenuFindPlacesHere");
             }
         }
     }

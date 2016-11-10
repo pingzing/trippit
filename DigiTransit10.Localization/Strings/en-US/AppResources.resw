@@ -331,4 +331,7 @@
   <data name="SearchPage_StopsHeader" xml:space="preserve">
     <value>Stops</value>
   </data>
+  <data name="SearchPage_MapContextMenuFindPlacesHere" xml:space="preserve">
+    <value>Find places near this point</value>
+  </data>
 </root>

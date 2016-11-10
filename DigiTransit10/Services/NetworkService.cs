@@ -1,28 +1,26 @@
-﻿using System;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.GraphQL;
+using DigiTransit10.Helpers;
+using DigiTransit10.Models;
+using DigiTransit10.Models.ApiModels;
+using DigiTransit10.Models.Geocoding;
+using DigiTransit10.Services.SettingsServices;
+using MetroLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
-using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Models;
-using DigiTransit10.Models.ApiModels;
-using DigiTransit10.Services.SettingsServices;
-using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
-using DigiTransit10.GraphQL;
-using DigiTransit10.Helpers;
-using DigiTransit10.Models.Geocoding;
-using static DigiTransit10.Models.ModelEnums;
-using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
 using static DigiTransit10.Helpers.Enums;
-using System.Linq;
-using MetroLog;
-using Windows.Devices.Geolocation;
+using HttpResponseMessage = Windows.Web.Http.HttpResponseMessage;
+using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 
 namespace DigiTransit10.Services
 {
@@ -37,6 +35,7 @@ namespace DigiTransit10.Services
         Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -122,41 +121,15 @@ namespace DigiTransit10.Services
                         new GqlReturnValue(ApiGqlMembers.mode)
                     )
                 );
-
-            string parsedQuery = query.ParseToJsonString();
-
-            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
-            try
+            var response = await GetGraphQLAsync<List<ApiStop>>(query);
+            if(response.HasResult && !response.Result.Any())
             {
-                var response = await _networkClient.PostAsync(uri, stringContent, token);
-                if (response == null || !response.IsSuccessStatusCode)
-                {
-                    LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<List<ApiStop>>.Fail;
-                }
-
-                var result = await UnwrapGqlResposne<List<ApiStop>>(response);
-
-                if (result.Count == 0)
-                {
-                    LogLogicFailure(FailureReason.NoResults);
-                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoResults);
-                }
-
-                return new ApiResult<List<ApiStop>>(result);
+                LogLogicFailure(FailureReason.NoResults);
+                return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoResults);
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {
-                if (ex is OperationCanceledException)
-                {
-                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.Canceled);
-                }
-                else
-                {
-                    LogException(ex);
-                    return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoConnection);
-                }
-            }
+
+            return response;
+                       
         }
 
         /// <summary>
@@ -226,41 +199,15 @@ namespace DigiTransit10.Services
                         )
                     )
                 );
-            string parsedQuery = query.ParseToJsonString();
 
-            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
-
-            try
+            var response = await GetGraphQLAsync<ApiPlan>(query, token);
+            if(response.HasResult && response.Result?.Itineraries.Any() != true)
             {
-                var response = await _networkClient.PostAsync(uri, stringContent, token);
-                if (response == null || !response.IsSuccessStatusCode)
-                {
-                    LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<ApiPlan>.Fail;
-                }
-
-                var result = await UnwrapGqlResposne<ApiPlan>(response);
-
-                if (result.Itineraries.Count == 0)
-                {
-                    LogLogicFailure(FailureReason.NoResults);
-                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
-                }
-
-                return new ApiResult<ApiPlan>(result);
+                LogLogicFailure(FailureReason.NoResults);
+                return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {
-                if (ex is OperationCanceledException)
-                {
-                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.Canceled);
-                }
-                else
-                {
-                    LogException(ex);
-                    return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoConnection);
-                }
-            }
+
+            return response;            
         }
 
         public async Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
@@ -284,41 +231,14 @@ namespace DigiTransit10.Services
                     )
                 );
 
-            string parsedQuery = query.ParseToJsonString();
-            HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
-            Uri uri = new Uri(DefaultGqlRequestUrl);
-
-            try
+            ApiResult<IEnumerable<ApiRoute>> response = await GetGraphQLAsync<IEnumerable<ApiRoute>>(query, token);
+            if (response.HasResult && !response.Result.Any())
             {
-                HttpResponseMessage response = await _networkClient.PostAsync(uri, stringContent, token).ConfigureAwait(false);
-                if (response == null || !response.IsSuccessStatusCode)
-                {
-                    LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<IEnumerable<ApiRoute>>.Fail;
-                }
-
-                IEnumerable<ApiRoute> result = await UnwrapGqlResposne<IEnumerable<ApiRoute>>(response).ConfigureAwait(false);
-
-                if (!result.Any())
-                {
-                    LogLogicFailure(FailureReason.NoResults);
-                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoResults);
-                }
-
-                return new ApiResult<IEnumerable<ApiRoute>>(result);
+                LogLogicFailure(FailureReason.NoResults);
+                return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoResults);
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
-            {
-                if (ex is OperationCanceledException)
-                {
-                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.Canceled);
-                }
-                else
-                {
-                    LogException(ex);
-                    return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoConnection);
-                }
-            }
+
+            return response;
         }
 
         public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox,
@@ -345,6 +265,69 @@ namespace DigiTransit10.Services
                     )
                 );
 
+            ApiResult<IEnumerable<ApiStop>> response = await GetGraphQLAsync<IEnumerable<ApiStop>>(query, token);
+            if (response.HasResult && !response.Result.Any())
+            {
+                LogLogicFailure(FailureReason.NoResults);
+                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
+            }
+
+            return response;
+        }
+
+        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,  
+            CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.stopsByRadius)
+                .WithParameters(
+                    new GqlParameter(ApiGqlMembers.lat, lat),
+                    new GqlParameter(ApiGqlMembers.lon, lon),
+                    new GqlParameter(ApiGqlMembers.radius, radiusMeters)
+                )
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.edges,
+                        new GqlReturnValue(ApiGqlMembers.node,
+                            new GqlReturnValue(ApiGqlMembers.stop,
+                                new GqlReturnValue(ApiGqlMembers.name),
+                                new GqlReturnValue(ApiGqlMembers.code),
+                                new GqlReturnValue(ApiGqlMembers.lat),
+                                new GqlReturnValue(ApiGqlMembers.lon),
+                                new GqlReturnValue(ApiGqlMembers.patterns,
+                                    new GqlReturnValue(ApiGqlMembers.name),
+                                    new GqlReturnValue(ApiGqlMembers.route,
+                                        new GqlReturnValue(ApiGqlMembers.shortName),
+                                        new GqlReturnValue(ApiGqlMembers.longName)
+                                    )
+                                )
+                            )
+                        )
+                    )
+                );
+
+            var response = await GetGraphQLAsync<ApiStopAtDistanceConnection>(query, token).ConfigureAwait(false);
+            if(response.HasResult)
+            {
+                IEnumerable<ApiStop> stops = response.Result.Edges?.Select(x => x.Node.Stop);
+                if(stops == null)
+                {
+                    LogLogicFailure(FailureReason.Unspecified);
+                    return ApiResult<IEnumerable<ApiStop>>.Fail;
+                }
+                if(!stops.Any())
+                {
+                    LogLogicFailure(FailureReason.NoResults);
+                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
+                }
+                return new ApiResult<IEnumerable<ApiStop>>(stops);
+            }
+            else
+            {
+                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.Unspecified);
+            }
+        }
+
+        private async Task<ApiResult<T>> GetGraphQLAsync<T>(GqlQuery query, CancellationToken token = default(CancellationToken))
+        {
             string parsedQuery = query.ParseToJsonString();
             HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
             Uri uri = new Uri(DefaultGqlRequestUrl);
@@ -352,32 +335,25 @@ namespace DigiTransit10.Services
             try
             {
                 HttpResponseMessage response = await _networkClient.PostAsync(uri, stringContent, token).ConfigureAwait(false);
-                if (response == null || !response.IsSuccessStatusCode)
+                if(response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<IEnumerable<ApiStop>>.Fail;
+                    return ApiResult<T>.Fail;
                 }
 
-                IEnumerable<ApiStop> result = await UnwrapGqlResposne<IEnumerable<ApiStop>>(response).ConfigureAwait(false);
-
-                if (!result.Any())
-                {
-                    LogLogicFailure(FailureReason.NoResults);
-                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
-                }
-
-                return new ApiResult<IEnumerable<ApiStop>>(result);
+                T result = await UnwrapGqlResposne<T>(response).ConfigureAwait(false);
+                return new ApiResult<T>(result);                
             }
-            catch (Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
+            catch(Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
             {
-                if (ex is OperationCanceledException)
+                if(ex is OperationCanceledException)
                 {
-                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.Canceled);
+                    return ApiResult<T>.FailWithReason(FailureReason.Canceled);
                 }
                 else
                 {
                     LogException(ex);
-                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoConnection);
+                    return ApiResult<T>.FailWithReason(FailureReason.NoConnection);
                 }
             }
         }
@@ -393,7 +369,7 @@ namespace DigiTransit10.Services
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<ApiDataContainer>()
                 .Data.First.First.ToObject<T>();
-        }
+        }        
 
         private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method")
         {

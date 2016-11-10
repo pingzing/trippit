@@ -24,8 +24,7 @@ namespace DigiTransit10.Views
     public sealed partial class SearchPage : Page
     {
         private VisualState _narrowVisualState;
-
-        private DispatcherTimer _mapScrollThrottle = new DispatcherTimer();
+        
         private DispatcherTimer _linesTypingThrottle = new DispatcherTimer();
         private string _linesSearchText;
         private DispatcherTimer _stopsTypingThrottle = new DispatcherTimer();
@@ -36,9 +35,6 @@ namespace DigiTransit10.Views
         public SearchPage()
         {
             this.InitializeComponent();            
-
-            _mapScrollThrottle.Interval = TimeSpan.FromMilliseconds(500);
-            _mapScrollThrottle.Tick += MapScrollThrottle_Tick;
 
             _linesTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _linesTypingThrottle.Tick += LinesTypingThrottle_Tick;
@@ -69,12 +65,12 @@ namespace DigiTransit10.Views
 
         private async void CenterMapOnLocation(MessageTypes.CenterMapOnGeoposition args)
         {
-            const double initialZoomAdjustment = 0.003;
-            const double narrowZoomAdjustment = 0.0019;
+            const double initialZoomAdjustment = 0.01;
+            const double narrowZoomAdjustment = 0.005;
 
             // Create a box surrounding the specified point to emulate a zoom level on the map.
             // We're using a simulated bounding box, because we need to be able to specify a margin,
-            // to accommodate either the the floating content panels.
+            // to accommodate either of the the floating content panels.
             BasicGeoposition northwest = BasicGeopositionExtensions.Create
             (
                 0.0,
@@ -89,7 +85,8 @@ namespace DigiTransit10.Views
             );            
             if (AdaptiveVisualStateGroup.CurrentState == _narrowVisualState)
             {
-                //Zoom in a little further when in the narrow view, otherwise we get too many stops.
+                //Zoom in a little further when in the narrow view, otherwise we're in a little too close 
+                //for the narrow field of view
                 northwest.Longitude += narrowZoomAdjustment;
                 northwest.Latitude -= narrowZoomAdjustment;
 
@@ -208,27 +205,14 @@ namespace DigiTransit10.Views
         
         private void PageMap_MapCenterChanged(MapControl sender, object args)
         {
-            _mapScrollThrottle.Stop();
-            _mapScrollThrottle.Start();
+            //nothing for now. if we never need this, just delete this handler.
         }
 
-        private void MapScrollThrottle_Tick(object sender, object args)
+        private void PageMap_MapTapped(MapControl sender, MapInputEventArgs args)
         {
-            _mapScrollThrottle.Stop();
-
-            if(PageMap == null)
-            {
-                return;
-            }
-            GeoboundingBox boundingBox = PageMap.GetMapViewBoundingBox();
-            if (boundingBox == null)
-            {
-                return;
-            }
-            if (ViewModel?.UpdateNearbyPlacesCommand.CanExecute(boundingBox) == true)
-            {
-                ViewModel.UpdateNearbyPlacesCommand.Execute(boundingBox);
-            }
+            var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
+            ((MenuFlyoutItem)flyout.Items[0]).CommandParameter = args.Location;
+            flyout.ShowAt(this, args.Position);
         }
 
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

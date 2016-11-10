@@ -24,6 +24,6 @@ namespace DigiTransit10.ExtensionMethods
         public static Guid GetPoiId(DependencyObject element)
         {
             return (Guid)element.GetValue(PoiId);
-        }
+        }       
     }
 }

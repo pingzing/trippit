@@ -16,6 +16,7 @@ using Windows.Devices.Sensors;
 using System.Collections.Specialized;
 using DigiTransit10.ExtensionMethods;
 using Windows.Foundation.Metadata;
+using static DigiTransit10.ExtensionMethods.MapElementExtensions;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -31,6 +32,8 @@ namespace DigiTransit10.Controls
 
         public event EventHandler MapElementsChanged;
         public event TypedEventHandler<MapControl, object> MapCenterChanged;
+        public event TypedEventHandler<MapControl, MapInputEventArgs> MapTapped;
+        public event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapRightTapped;
 
         public static readonly DependencyProperty ShowUserOnMapProperty =
             DependencyProperty.Register("ShowUserOnMap", typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(false,
@@ -255,7 +258,7 @@ namespace DigiTransit10.Controls
             }
             if(args.Action == NotifyCollectionChangedAction.Reset)
             {
-                SetMapIcons(new List<MapIcon>());
+                SetMapIcons(null);
             }
 
             if (args.NewItems != null)
@@ -285,6 +288,92 @@ namespace DigiTransit10.Controls
                 }
                 RemoveMapIcons(removedIcons);
             }
+        }        
+
+        // Using a DependencyProperty as the backing store for ColoredCircles.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ColoredCirclesProperty =
+            DependencyProperty.Register("ColoredCircles", typeof(IEnumerable<ColoredGeocircle>), typeof(DigiTransitMap), new PropertyMetadata(null, OnColoredCirclesChanged));
+        private static void OnColoredCirclesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DigiTransitMap _this = d as DigiTransitMap;
+            if (_this == null)
+            {
+                return;
+            }
+
+            var oldCollection = e.OldValue as INotifyCollectionChanged;
+            var newCollection = e.NewValue as INotifyCollectionChanged;
+            if (oldCollection != null)
+            {
+                oldCollection.CollectionChanged -= _this.OnColoredCirclesCollectionChanged;
+            }
+            if (newCollection != null)
+            {
+                newCollection.CollectionChanged += _this.OnColoredCirclesCollectionChanged;
+            }
+
+            var newList = e.NewValue as IEnumerable<ColoredGeocircle>;
+            if (newList == null || !newList.Any())
+            {
+                _this.SetMapPolygons(null);
+                return;
+            }
+
+            List<MapPolygon> polygons = new List<MapPolygon>();
+            foreach(var circle in newList)
+            {
+                var polygon = new MapPolygon();
+                polygon.FillColor = circle.FillColor;
+                polygon.Path = new Geopath(circle.CirclePoints.Select(x => x.Position));
+                polygon.StrokeColor = circle.StrokeColor;
+                polygon.StrokeThickness = circle.StrokeThickness;                
+                polygons.Add(polygon);
+            }
+            _this.SetMapPolygons(polygons);
+        }
+
+        public IEnumerable<ColoredGeocircle> ColoredCircles
+        {
+            get { return (IEnumerable<ColoredGeocircle>)GetValue(ColoredCirclesProperty); }
+            set { SetValue(ColoredCirclesProperty, value); }
+        }
+        private void OnColoredCirclesCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            if(args.Action == NotifyCollectionChangedAction.Move)
+            {
+                return;
+            }
+            if(args.Action == NotifyCollectionChangedAction.Reset)
+            {
+                RemoveMapPolygons(DigiTransitMapControl.MapElements.OfType<MapPolygon>());
+            }
+            if(args.NewItems != null)
+            {
+                var newPolygons = new List<MapPolygon>();
+                foreach(var circle in args.NewItems.OfType<ColoredGeocircle>())
+                {
+                    var polygon = new MapPolygon();
+                    polygon.FillColor = circle.FillColor;
+                    polygon.Path = new Geopath(circle.CirclePoints.Select(x => x.Position));
+                    polygon.StrokeColor = circle.StrokeColor;
+                    polygon.StrokeThickness = circle.StrokeThickness;                    
+                    newPolygons.Add(polygon);
+                }
+                AddMapPolygons(newPolygons);
+            }
+
+            if(args.OldItems != null)
+            {
+                var removedPolygons = new List<MapPolygon>();
+                foreach(var circle in args.OldItems.OfType<ColoredGeocircle>())
+                {
+                    var removedPolygon = DigiTransitMapControl.MapElements
+                        .OfType<MapPolygon>()
+                        .FirstOrDefault(x => x.Path.Positions.SequenceEqual(circle.CirclePoints.Select(y => y.Position)));
+                    removedPolygons.Add(removedPolygon);
+                }
+                RemoveMapPolygons(removedPolygons);
+            }
         }
 
         public static readonly DependencyProperty IsInteractionEnabledProperty =
@@ -310,7 +399,7 @@ namespace DigiTransit10.Controls
                 _this.DigiTransitMapControl.PanInteractionMode = MapPanInteractionMode.Auto;
                 _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Auto;
                 _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Auto;
-                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;
+                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;                
                 if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "AllowFocusOnInteraction"))
                 {
                     _this.DigiTransitMapControl.AllowFocusOnInteraction = true;
@@ -357,6 +446,8 @@ namespace DigiTransit10.Controls
                       
             this.Unloaded += DigiTransitMap_Unloaded;
             this.DigiTransitMapControl.CenterChanged += DigiTransitMapControl_CenterChanged;
+            this.DigiTransitMapControl.MapTapped += DigiTransitMapControl_MapTapped;
+            this.DigiTransitMapControl.MapRightTapped += DigiTransitMapControl_MapRightTapped;
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
         }
@@ -376,8 +467,15 @@ namespace DigiTransit10.Controls
             if(mapLines != null)
             {
                 mapLines.CollectionChanged -= OnColoredMapLinePointsCollectionChanged;
-            }            
+            }
+            var mapCircles = ColoredCircles as INotifyCollectionChanged;
+            if(mapCircles != null)
+            {
+                mapCircles.CollectionChanged -= OnColoredCirclesCollectionChanged;
+            }
             this.DigiTransitMapControl.CenterChanged -= DigiTransitMapControl_CenterChanged;
+            this.DigiTransitMapControl.MapTapped -= DigiTransitMapControl_MapTapped;
+            this.DigiTransitMapControl.MapRightTapped -= DigiTransitMapControl_MapRightTapped;
             Bindings.StopTracking();
             this.DigiTransitMapControl = null;
         }                        
@@ -385,6 +483,16 @@ namespace DigiTransit10.Controls
         private void DigiTransitMapControl_CenterChanged(MapControl sender, object args)
         {
             MapCenterChanged?.Invoke(sender, args);
+        }
+
+        private void DigiTransitMapControl_MapRightTapped(MapControl sender, MapRightTappedEventArgs args)
+        {
+            MapRightTapped?.Invoke(sender, args);
+        }
+
+        private void DigiTransitMapControl_MapTapped(MapControl sender, MapInputEventArgs args)
+        {
+            MapTapped?.Invoke(sender, args);
         }
 
         private void AddMapLines(IEnumerable<MapPolyline> polylines)
@@ -410,9 +518,12 @@ namespace DigiTransit10.Controls
         private void SetMapLines(IEnumerable<MapPolyline> polylines)
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapPolyline>().ToList();
-
             if (polylines == null)
             {
+                if(oldList != null)
+                {
+                    RemoveMapLines(oldList);
+                }
                 return;
             }
 
@@ -455,9 +566,12 @@ namespace DigiTransit10.Controls
         private void SetMapIcons(IEnumerable<MapIcon> icons)
         {
             var oldList = DigiTransitMapControl.MapElements.OfType<MapIcon>().ToList();
-
             if (icons == null)
             {
+                if(oldList != null)
+                {
+                    RemoveMapIcons(oldList);
+                }
                 return;
             }
 
@@ -473,6 +587,51 @@ namespace DigiTransit10.Controls
             if (oldList != null)
             {
                 RemoveMapIcons(oldList.Except(icons));
+            }
+        }
+
+        private void AddMapPolygons(IEnumerable<MapPolygon> polygons)
+        {
+            foreach(var newPolygon in polygons)
+            {
+                DigiTransitMapControl.MapElements.Add(newPolygon);
+            }
+            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }        
+
+        private void RemoveMapPolygons(IEnumerable<MapPolygon> polygons)
+        {
+            foreach(var oldPolygon in polygons)
+            {
+                DigiTransitMapControl.MapElements.Remove(oldPolygon);
+            }
+            MapElementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void SetMapPolygons(IEnumerable<MapPolygon> polygons)
+        {
+            var oldList = DigiTransitMapControl.MapElements.OfType<MapPolygon>().ToList();
+            if (polygons == null)
+            {
+                if (oldList != null)
+                {
+                    RemoveMapPolygons(oldList);
+                }
+                return;
+            }
+
+            if(oldList != null)
+            {
+                AddMapPolygons(polygons.Except(oldList));
+            }
+            else
+            {
+                AddMapPolygons(polygons);
+            }
+
+            if(oldList != null)
+            {
+                RemoveMapPolygons(oldList.Except(polygons));
             }
         }
 
@@ -714,6 +873,6 @@ namespace DigiTransit10.Controls
                 });
 
             return mBounds;
-        }
+        }        
     }
 }

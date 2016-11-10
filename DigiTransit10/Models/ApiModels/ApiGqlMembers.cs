@@ -57,5 +57,10 @@ namespace DigiTransit10.Models.ApiModels
         public static string maxLat => nameof(maxLat);
         public static string minLon => nameof(minLon);
         public static string maxLon => nameof(maxLon);
+        public static string stopsByRadius => nameof(stopsByRadius);
+        public static string radius => nameof(radius);
+        public static string edges => nameof(edges);
+        public static string node => nameof(node);
+        public static string stop => nameof(stop);
     }
 }

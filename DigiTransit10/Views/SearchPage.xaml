@@ -169,11 +169,21 @@
                                 RelativePanel.AlignLeftWithPanel="True"
                                 RelativePanel.AlignRightWithPanel="True"
                                 RelativePanel.AlignBottomWithPanel="True"
-                                MapCenterChanged="PageMap_MapCenterChanged"
-                                Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"
                                 ColoredMapLines="{x:Bind ViewModel.MapLines, Mode=OneWay}"
+                                ColoredCircles="{x:Bind ViewModel.MapCircles, Mode=OneWay}"
+                                MapCenterChanged="PageMap_MapCenterChanged"
+                                MapTapped="PageMap_MapTapped"
+                                Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"                                
                                 ShowUserOnMap="True"
-                                ZoomLevel="13"/>
+                                ZoomLevel="13">
+            <FlyoutBase.AttachedFlyout>
+                <MenuFlyout>
+                    <!--CommandParameter set in code-behind as the flyout is being shown.-->
+                    <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=SearchPage_MapContextMenuFindPlacesHere}"
+                                    Command="{x:Bind ViewModel.MoveNearbyCircleCommand}"/>
+                </MenuFlyout>
+            </FlyoutBase.AttachedFlyout>
+        </lclCtls:DigiTransitMap>
         
         <!--Wide view-->
         <Grid x:Name="WideSearchGrid"
