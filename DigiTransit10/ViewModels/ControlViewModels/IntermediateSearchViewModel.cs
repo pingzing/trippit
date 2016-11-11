@@ -10,7 +10,7 @@ using Template10.Mvvm;
 namespace DigiTransit10.ViewModels.
     ControlViewModels
 {
-    public class IntermediateSearchViewModel : ViewModelBase
+    public class IntermediateSearchViewModel : BindableBase
     {
         private readonly TripFormViewModel _parentVm;
 

@@ -17,6 +17,7 @@ using Windows.Devices.Geolocation;
 using DigiTransit10.ExtensionMethods;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Messaging;
+using DigiTransit10.ViewModels.ControlViewModels;
 
 namespace DigiTransit10.ViewModels
 {
@@ -24,7 +25,8 @@ namespace DigiTransit10.ViewModels
     {
         Nearby,
         Lines,
-        Stops
+        Stops,
+        None
     }
 
     public class SearchViewModel : ViewModelBase
@@ -34,6 +36,10 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
 
+        private List<IMapPoi> _hiddenMapPlaces = new List<IMapPoi>();
+        private List<IMapPoi> _hiddenMapNearbyPlaces = new List<IMapPoi>();
+        private List<ColoredMapLine> _hiddenMapLines = new List<ColoredMapLine>();
+        private List<ColoredGeocircle> _hiddenMapCircles = new List<ColoredGeocircle>();
         private CancellationTokenSource _cts;
         private SearchSection _activeSection;
 
@@ -81,8 +87,8 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _nearbyStopsResultList, value); }
         }
 
-        private ObservableCollection<ApiRoute> _linesResultList = new ObservableCollection<ApiRoute>();
-        public ObservableCollection<ApiRoute> LinesResultList
+        private ObservableCollection<LineSearchElementViewModel> _linesResultList = new ObservableCollection<LineSearchElementViewModel>();
+        public ObservableCollection<LineSearchElementViewModel> LinesResultList
         {
             get { return _linesResultList; }
             set { Set(ref _linesResultList, value); }
@@ -131,12 +137,12 @@ namespace DigiTransit10.ViewModels
         }
 
         public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
-        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);        
+        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
-        public RelayCommand<SearchSection> SectionChangedCommand => new RelayCommand<SearchSection>(SectionChanged);
+        public RelayCommand<SearchSectionChangedEventArgs> SectionChangedCommand => new RelayCommand<SearchSectionChangedEventArgs>(SectionChanged);
         public RelayCommand<ApiRoute> UpdateSelectedLineCommand => new RelayCommand<ApiRoute>(UpdateSelectedLine,
-            UpdateSelectedLineCanExecute);        
+            UpdateSelectedLineCanExecute);
         private bool UpdateSelectedLineCanExecute(ApiRoute arg)
         {
             return arg != null;
@@ -149,13 +155,23 @@ namespace DigiTransit10.ViewModels
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {            
-            MoveNearbyCircleToUser();
+        {
+            if (_activeSection == SearchSection.Nearby)
+            {
+                MoveNearbyCircleToUser();                
+            }
             return Task.CompletedTask;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            MapCircles.Clear();
+            MapPlaces.Clear();
+            MapLines.Clear();
+            _hiddenMapPlaces.Clear();
+            _hiddenMapNearbyPlaces.Clear();
+            _hiddenMapLines.Clear();
+            _hiddenMapCircles.Clear();
             _cts?.Cancel();
             return Task.CompletedTask;
         }
@@ -183,12 +199,12 @@ namespace DigiTransit10.ViewModels
 
         private async Task UpdateNearbyPlaces(Geocircle circle)
         {
-            if(_activeSection != SearchSection.Nearby)
+            if (_activeSection != SearchSection.Nearby)
             {
                 return;
             }
 
-            if(_cts != null && !_cts.IsCancellationRequested)
+            if (_cts != null && !_cts.IsCancellationRequested)
             {
                 _cts.Cancel();
             }
@@ -196,9 +212,9 @@ namespace DigiTransit10.ViewModels
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
             ApiResult<IEnumerable<ApiStop>> response = await _networkService.GetStopsByBoundingRadius(
-                (float)circle.Center.Latitude, 
-                (float)circle.Center.Longitude, 
-                (int)circle.Radius, 
+                (float)circle.Center.Latitude,
+                (float)circle.Center.Longitude,
+                (int)circle.Radius,
                 _cts.Token
             );
             if (response.IsFailure || _cts.IsCancellationRequested)
@@ -209,16 +225,16 @@ namespace DigiTransit10.ViewModels
             IsNearbyStopsLoading = false;
             MapPlaces = new ObservableCollection<IMapPoi>(response.Result
                 .Select(x => new BasicMapPoi
-                    {
-                        Coords = BasicGeopositionExtensions.Create(0, x.Lon, x.Lat),
-                        Name = x.Name
-                    })
+                {
+                    Coords = BasicGeopositionExtensions.Create(0, x.Lon, x.Lat),
+                    Name = x.Name
+                })
                 .ToList());
         }
 
         private async void SearchStops(string searchText)
         {
-            if(String.IsNullOrWhiteSpace(searchText))
+            if (String.IsNullOrWhiteSpace(searchText))
             {
                 StopsResultList.Clear();
                 return;
@@ -233,7 +249,7 @@ namespace DigiTransit10.ViewModels
             IsStopsLoading = true;
 
             var response = await _networkService.GetStopsAsync(searchText, _cts.Token);
-            if(response.IsFailure || _cts.IsCancellationRequested)
+            if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 IsStopsLoading = false;
                 StopsResultList.Clear();
@@ -242,12 +258,12 @@ namespace DigiTransit10.ViewModels
             StopsResultList = new ObservableCollection<ApiStop>(response.Result);
             MapPlaces = new ObservableCollection<IMapPoi>(response.Result
                 .Select(x => new Place
-                    {
-                        Lat = x.Lat,
-                        Lon = x.Lon,
-                        Name = x.Name,
-                        Type = ModelEnums.PlaceType.Stop
-                    }));
+                {
+                    Lat = x.Lat,
+                    Lon = x.Lon,
+                    Name = x.Name,
+                    Type = ModelEnums.PlaceType.Stop
+                }));
 
             IsStopsLoading = false;
         }
@@ -269,13 +285,13 @@ namespace DigiTransit10.ViewModels
             IsLinesLoading = true;
 
             var response = await _networkService.GetLinesAsync(searchText, _cts.Token);
-            if(response.IsFailure || _cts.IsCancellationRequested)
+            if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 IsLinesLoading = false;
                 StopsResultList.Clear();
                 return;
             }
-            LinesResultList = new ObservableCollection<ApiRoute>(response.Result);            
+            LinesResultList = new ObservableCollection<LineSearchElementViewModel>(response.Result.Select(x => new LineSearchElementViewModel { BackingLine = x }));
 
             IsLinesLoading = false;
         }
@@ -286,16 +302,60 @@ namespace DigiTransit10.ViewModels
 
             List<ColoredMapLinePoint> linePoints = obj.Patterns
                 .First()
-                .Geometry                
+                .Geometry
                 .Select(x => new ColoredMapLinePoint(BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat), HslColors.GetModeColor(obj.Mode)))
                 .ToList();
             var mapLine = new ColoredMapLine(linePoints);
             MapLines = new ObservableCollection<ColoredMapLine>(new List<ColoredMapLine> { mapLine });
         }
 
-        private void SectionChanged(SearchSection newSection)
+        private void SectionChanged(SearchSectionChangedEventArgs args)
         {
-            _activeSection = newSection;            
+            _activeSection = args.NewSection;
+            switch (args.OldSection)
+            {
+                case SearchSection.Lines:
+                    _hiddenMapLines.Clear();
+                    _hiddenMapLines.AddRange(MapLines);
+                    MapLines.Clear();
+                    break;
+                case SearchSection.Nearby:
+                    _hiddenMapNearbyPlaces.Clear();
+                    _hiddenMapNearbyPlaces.AddRange(MapPlaces);
+                    _hiddenMapCircles.Clear();
+                    _hiddenMapCircles.AddRange(MapCircles);
+                    MapPlaces.Clear();
+                    MapCircles.Clear();
+                    break;
+                case SearchSection.Stops:
+                    _hiddenMapPlaces.Clear();
+                    _hiddenMapPlaces.AddRange(MapPlaces);
+                    MapPlaces.Clear();
+                    break;
+                case SearchSection.None:
+                    break; //do nothing
+                default:
+                    throw new ArgumentOutOfRangeException("newSection", "You forgot to add the last case in SectionChanged on the SearchViewModel, dunce!");
+            }
+
+
+            switch (_activeSection)
+            {
+                case SearchSection.Lines:
+                    MapLines.AddRange(_hiddenMapLines);
+                    break;
+                case SearchSection.Nearby:
+                    MapCircles.AddRange(_hiddenMapCircles);
+                    MapPlaces.AddRange(_hiddenMapNearbyPlaces);                    
+                    break;
+                case SearchSection.Stops:
+                    MapPlaces.AddRange(_hiddenMapPlaces);
+                    break;
+                case SearchSection.None:
+                    throw new ArgumentOutOfRangeException("newSection", "You can't have the ActiveSection be None, dunce!");
+                default:
+                    throw new ArgumentOutOfRangeException("newSection", "You forgot to add the last case in SectionChanged on the SearchViewModel, dunce!");
+            }
         }
     }
 }

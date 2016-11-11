@@ -33,7 +33,7 @@ namespace DigiTransit10.Services
 
         Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
     }
@@ -210,7 +210,7 @@ namespace DigiTransit10.Services
             return response;            
         }
 
-        public async Task<ApiResult<IEnumerable<ApiRoute>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
         {
             GqlQuery query = new GqlQuery(ApiGqlMembers.routes)
                 .WithParameters(new GqlParameter(ApiGqlMembers.name, searchString))
@@ -235,10 +235,10 @@ namespace DigiTransit10.Services
             if (response.HasResult && !response.Result.Any())
             {
                 LogLogicFailure(FailureReason.NoResults);
-                return ApiResult<IEnumerable<ApiRoute>>.FailWithReason(FailureReason.NoResults);
+                return ApiResult<IEnumerable<TransitLine>>.FailWithReason(FailureReason.NoResults);
             }
 
-            return response;
+            return new ApiResult<IEnumerable<TransitLine>>(response.Result.Select(x => new TransitLine(x)));
         }
 
         public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox,

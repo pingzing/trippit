@@ -26,7 +26,7 @@ namespace DigiTransit10.Models
         public string ShortName { get; set; }
         public float DistanceMeters { get; set; }
 
-        public List<TripLegIntermediateStop> IntermediateStops { get; set; }
+        public List<TransitStop> IntermediateStops { get; set; }
         public string LegGeometryString { get; set; }
 
 
@@ -62,7 +62,7 @@ namespace DigiTransit10.Models
             }
 
             IntermediateStops = apiLeg.IntermediateStops
-                .Select(x => new TripLegIntermediateStop
+                .Select(x => new TransitStop
                 {
                     Coords = new BasicGeoposition { Altitude = 0.0, Latitude = x.Lat, Longitude = x.Lon },
                     Name = x.Name

@@ -2,7 +2,7 @@
 
 namespace DigiTransit10.Models
 {
-    public class TripLegIntermediateStop
+    public class TransitStop
     {
         public string Name { get; set; }
         public BasicGeoposition Coords { get; set; }

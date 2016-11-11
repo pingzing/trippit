@@ -13,9 +13,9 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class TripDetailListIntermediates : UserControl
     {
-        private ObservableCollection<TripLegIntermediateStop> ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>();
+        private ObservableCollection<TransitStop> ItemsBackingCollection = new ObservableCollection<TransitStop>();
 
-        private List<TripLegIntermediateStop> _backingIntermediatesList = null;
+        private List<TransitStop> _backingIntermediatesList = null;
         private string _backingSimpleText = null;
         private bool _isShowingIntermediateStops = false;
 
@@ -56,12 +56,12 @@ namespace DigiTransit10.Controls
 
             if(_this._isShowingIntermediateStops)
             {
-                _this.ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>(_this._backingIntermediatesList);
+                _this.ItemsBackingCollection = new ObservableCollection<TransitStop>(_this._backingIntermediatesList);
             }
             else
             {
-                TripLegIntermediateStop simpleTextProxy = new TripLegIntermediateStop { Name = _this._backingSimpleText };
-                _this.ItemsBackingCollection = new ObservableCollection<TripLegIntermediateStop>();
+                TransitStop simpleTextProxy = new TransitStop { Name = _this._backingSimpleText };
+                _this.ItemsBackingCollection = new ObservableCollection<TransitStop>();
                 _this.ItemsBackingCollection.Add(simpleTextProxy);
             }
             _this.IntermediateStopsControl.ItemsSource = _this.ItemsBackingCollection;
@@ -87,7 +87,7 @@ namespace DigiTransit10.Controls
             if (_isShowingIntermediateStops)
             {
                 ItemsBackingCollection.Clear();
-                ItemsBackingCollection.Add(new TripLegIntermediateStop { Name = _backingSimpleText });
+                ItemsBackingCollection.Add(new TransitStop { Name = _backingSimpleText });
             }
             else
             {

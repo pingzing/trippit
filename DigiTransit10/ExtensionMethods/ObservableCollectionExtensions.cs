@@ -7,6 +7,24 @@ namespace DigiTransit10.ExtensionMethods
 {
     public static class ObservableCollectionExtensions
     {
+        public static void AddRange<T>(this ObservableCollection<T> _this, IEnumerable<T> range)
+        {
+            if(range == null)
+            {
+                return;
+            }
+
+            if(!range.Any())
+            {
+                return;
+            }
+
+            foreach(T item in range)
+            {
+                _this.Add(item);
+            }
+        }
+
         //todo: move the AddSorteds to an IListExtensions class
         public static void AddSorted<T>(this IList<T> col, T newElement)
         {

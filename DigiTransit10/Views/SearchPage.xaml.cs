@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
@@ -217,8 +218,22 @@ namespace DigiTransit10.Views
 
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Pivot pivot = (Pivot)sender;
-            SearchSection selectedSection = SearchSection.Nearby;
+            var pivot = (Pivot)sender;            
+            var oldSection = SearchSection.None;
+            var oldSectionPivot = e.RemovedItems.FirstOrDefault() as PivotItem;
+            if (oldSectionPivot?.Name == "NearbyPivot")
+            {
+                oldSection = SearchSection.Nearby;
+            }
+            else if(oldSectionPivot?.Name == "LinesPivot")
+            {
+                oldSection = SearchSection.Lines;
+            }
+            else if(oldSectionPivot?.Name == "StopsPivot")
+            {
+                oldSection = SearchSection.Stops;
+            }
+            var selectedSection = SearchSection.Nearby;
             switch (pivot.SelectedIndex)
             {
                 case 0:
@@ -232,7 +247,8 @@ namespace DigiTransit10.Views
                     break;
             }
 
-            ViewModel.SectionChangedCommand.Execute(selectedSection);
+            var args = new SearchSectionChangedEventArgs(oldSection, selectedSection);
+            ViewModel.SectionChangedCommand.Execute(args);
         }
 
         private void LinesList_SelectionChanged(object sender, SelectionChangedEventArgs e)

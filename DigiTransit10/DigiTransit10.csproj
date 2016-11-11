@@ -127,6 +127,9 @@
     <Compile Include="Controls\GroupedFavoriteList.cs" />
     <Compile Include="Controls\GroupedPlaceList.cs" />
     <Compile Include="Controls\ISortableAppBarButton.cs" />
+    <Compile Include="Controls\LineSearchElement.xaml.cs">
+      <DependentUpon>LineSearchElement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MapSelfMarker.xaml.cs">
       <DependentUpon>MapSelfMarker.xaml</DependentUpon>
     </Compile>
@@ -230,8 +233,10 @@
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
     <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
+    <Compile Include="Models\SearchSectionChangedEventArgs.cs" />
     <Compile Include="Models\SecondaryTilePayload.cs" />
-    <Compile Include="Models\TripLegIntermediateStop.cs" />
+    <Compile Include="Models\TransitLine.cs" />
+    <Compile Include="Models\TransitStop.cs" />
     <Compile Include="Models\TripLeg.cs" />
     <Compile Include="Models\TripQueryDetails.cs" />
     <Compile Include="Models\ColoredMapLinePoint.cs" />
@@ -278,6 +283,7 @@
     <Compile Include="TemplateSelectors\FavoritesListTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Models\TripItinerary.cs" />
@@ -483,6 +489,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FloatingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LineSearchElement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
