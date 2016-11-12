@@ -1,25 +1,25 @@
-using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Helpers;
-using DigiTransit10.Models;
-using DigiTransit10.Services;
+using Windows.UI.Xaml;
+using System.Threading.Tasks;
 using DigiTransit10.Services.SettingsServices;
-using GalaSoft.MvvmLight.Ioc;
-using GalaSoft.MvvmLight.Messaging;
+using Windows.ApplicationModel.Activation;
+using Template10.Controls;
+using Template10.Common;
+using Windows.UI.Xaml.Data;
+using DigiTransit10.Services;
 using GalaSoft.MvvmLight.Threading;
+using Windows.ApplicationModel;
+using DigiTransit10.Helpers;
+using Windows.UI.ViewManagement;
+using Windows.Foundation.Metadata;
+using DigiTransit10.ExtensionMethods;
+using Microsoft.HockeyApp;
 using MetroLog;
 using MetroLog.Targets;
-using Microsoft.HockeyApp;
-using Newtonsoft.Json;
 using System;
-using System.Threading.Tasks;
-using Template10.Common;
-using Template10.Controls;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using DigiTransit10.Models;
+using Newtonsoft.Json;
+using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace DigiTransit10
 {
@@ -50,12 +50,7 @@ namespace DigiTransit10
 
             LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
 
-            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");
-            //todo: figure out if there's a way to make this work
-                //.SetExceptionDescriptionLoader((Exception ex) =>
-                //{
-                //    return $"Current log: {LogManagerFactory.DefaultLogManager.GetCompressedLogs().Result.}";
-                //});
+            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");            
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
