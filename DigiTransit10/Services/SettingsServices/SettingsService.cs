@@ -1,18 +1,13 @@
-using System;
-using Template10.Common;
-using Template10.Utils;
-using Windows.UI.Xaml;
-using DigiTransit10.Helpers;
-using DigiTransit10.Models;
-using System.Collections.Generic;
-using Template10.Services.SettingsService;
 using Newtonsoft.Json;
-using Windows.Globalization;
-using Windows.System.UserProfile;
-using System.Linq;
-using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight.Messaging;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
+using Template10.Common;
+using Template10.Services.SettingsService;
+using Template10.Utils;
+using Windows.Globalization;
+using Windows.UI.Xaml;
 
 namespace DigiTransit10.Services.SettingsServices
 {

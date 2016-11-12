@@ -1,25 +1,22 @@
 ﻿using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Models;
-using DigiTransit10.Services;
+using DigiTransit10.Helpers;
 using DigiTransit10.Localization.Strings;
+using DigiTransit10.Models;
+using DigiTransit10.Models.Geocoding;
+using DigiTransit10.Services;
+using DigiTransit10.Services.SettingsServices;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using System.Linq;
-using DigiTransit10.Models.ApiModels;
-using DigiTransit10.Models.Geocoding;
-using GalaSoft.MvvmLight.Threading;
-using DigiTransit10.Services.SettingsServices;
-using DigiTransit10.Helpers;
-using GalaSoft.MvvmLight.Messaging;
 
 namespace DigiTransit10.Controls
 {

@@ -1,17 +1,17 @@
-﻿using System;
+﻿using DigiTransit10.Helpers;
 using GalaSoft.MvvmLight.Command;
-using Template10.Services.NavigationService;
-using Windows.UI.Xaml.Controls;
-using Windows.Foundation;
-using System.Linq;
-using Windows.UI.Xaml;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Template10.Services.NavigationService;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using System.Collections.Generic;
 using Windows.UI.ViewManagement;
-using DigiTransit10.Helpers;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10.Controls
 {

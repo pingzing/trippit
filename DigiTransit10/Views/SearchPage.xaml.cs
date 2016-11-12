@@ -1,12 +1,10 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
 using DigiTransit10.Models;
-using DigiTransit10.Models.ApiModels;
 using DigiTransit10.ViewModels;
 using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
@@ -20,9 +18,6 @@ using Windows.UI.Xaml.Navigation;
 
 namespace DigiTransit10.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class SearchPage : Page
     {
         private const double FloatingPanelHeightFraction = 0.5;
@@ -44,7 +39,7 @@ namespace DigiTransit10.Views
 
             _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
-            _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == "VisualStateNarrow");
+            _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == Constants.VisualStateNarrow);
             this.Unloaded += SearchPage_Unloaded1;
         }
 

@@ -17,13 +17,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.Collections.Generic;
+using DigiTransit10.Services;
 using SharpDX;
 using SharpDX.DirectWrite;
-using System.Reflection;
-using DigiTransit10.Services;
-using GalaSoft.MvvmLight.Ioc;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DigiTransit10.Helpers.FontLoading

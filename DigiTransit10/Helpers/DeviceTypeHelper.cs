@@ -1,5 +1,4 @@
 ﻿using Windows.System.Profile;
-using Windows.UI.ViewManagement;
 
 namespace DigiTransit10.Helpers
 {

@@ -1,18 +1,15 @@
-﻿using DigiTransit10.Localization.Strings;
-using DigiTransit10.Models.ApiModels;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Shapes;
-using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Models;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 

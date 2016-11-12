@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DigiTransit10.Models.ApiModels;
+using System;
 using System.Collections.Generic;
-using DigiTransit10.Models.ApiModels;
 
 namespace DigiTransit10.Models
 {

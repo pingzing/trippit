@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DigiTransit10.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DigiTransit10.Models;
 
 namespace DigiTransit10.Controls
 {

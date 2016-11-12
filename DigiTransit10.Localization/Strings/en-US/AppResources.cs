@@ -23,8 +23,8 @@
 namespace DigiTransit10.Localization.Strings
 {
     using Windows.ApplicationModel.Resources;
-    
-    
+
+
     public partial class AppResources
     {
         

@@ -1,21 +1,20 @@
-using DigiTransit10.ViewModels;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Controls.Primitives;
+using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
 using DigiTransit10.Models;
+using DigiTransit10.Storyboards;
+using DigiTransit10.ViewModels;
+using DigiTransit10.ViewModels.ControlViewModels;
+using GalaSoft.MvvmLight.Messaging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Input;
 using Template10.Common;
-using DigiTransit10.Helpers;
-using GalaSoft.MvvmLight.Messaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Animation;
-using DigiTransit10.Storyboards;
-using DigiTransit10.ExtensionMethods;
+using Windows.UI.Xaml.Navigation;
 using static DigiTransit10.Helpers.MessageTypes;
-using System;
-using DigiTransit10.ViewModels.ControlViewModels;
 
 namespace DigiTransit10.Views
 {

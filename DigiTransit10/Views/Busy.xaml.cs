@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Template10.Common;
 using Template10.Controls;
 using Windows.UI.Xaml;

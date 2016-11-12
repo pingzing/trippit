@@ -1,6 +1,4 @@
-﻿using DigiTransit10.GraphQL;
-
-namespace DigiTransit10.Models.ApiModels
+﻿namespace DigiTransit10.Models.ApiModels
 {
     /// <summary>
     /// A basic static class that contains properties for defining all the member names the server uses in GQL queries

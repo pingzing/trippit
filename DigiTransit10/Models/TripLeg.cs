@@ -1,6 +1,4 @@
-﻿using DigiTransit10.Helpers;
-using DigiTransit10.Models.ApiModels;
-using DigiTransit10.Styles;
+﻿using DigiTransit10.Models.ApiModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

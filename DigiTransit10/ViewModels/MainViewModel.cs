@@ -1,17 +1,15 @@
-using Template10.Mvvm;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Template10.Services.NavigationService;
-using Windows.UI.Xaml.Navigation;
 using DigiTransit10.Helpers;
 using DigiTransit10.Services;
-using GalaSoft.MvvmLight.Messaging;
-using Template10.Common;
 using DigiTransit10.Views;
-using Windows.UI.Xaml.Media.Animation;
+using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Template10.Common;
+using Template10.Mvvm;
+using Template10.Services.NavigationService;
+using Windows.UI.Xaml.Navigation;
 
 namespace DigiTransit10.ViewModels
 {

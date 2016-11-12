@@ -1,9 +1,9 @@
-﻿using System;
+﻿using DigiTransit10.Helpers;
+using System;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using DigiTransit10.Helpers;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236

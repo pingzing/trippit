@@ -1,23 +1,21 @@
-﻿using DigiTransit10.Helpers;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using DigiTransit10.Styles;
+using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
-using DigiTransit10.ExtensionMethods;
 using Windows.UI.Xaml.Navigation;
-using GalaSoft.MvvmLight.Messaging;
-using DigiTransit10.ViewModels.ControlViewModels;
 
 namespace DigiTransit10.ViewModels
 {

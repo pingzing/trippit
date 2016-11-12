@@ -1,10 +1,7 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Models.ApiModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 

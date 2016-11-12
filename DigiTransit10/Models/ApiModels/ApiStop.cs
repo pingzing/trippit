@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.Models.ApiModels

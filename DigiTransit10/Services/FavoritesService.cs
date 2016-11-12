@@ -1,17 +1,13 @@
 ﻿using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.Services.SettingsServices;
-using GalaSoft.MvvmLight.Messaging;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 

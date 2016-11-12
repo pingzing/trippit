@@ -1,10 +1,5 @@
 ﻿using DigiTransit10.Models;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Template10.Mvvm;
 
 namespace DigiTransit10.ViewModels.

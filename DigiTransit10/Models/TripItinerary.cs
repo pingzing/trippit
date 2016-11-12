@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using DigiTransit10.Models.ApiModels;
-using System.Collections.Generic;
+﻿using DigiTransit10.Models.ApiModels;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DigiTransit10.Models
 {

@@ -1,11 +1,10 @@
-﻿using DigiTransit10.ViewModels;
+﻿using DigiTransit10.Backend;
+using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
-using DigiTransit10.Backend;
 using GalaSoft.MvvmLight.Messaging;
-using System.Threading.Tasks;
 using MetroLog;
-using Template10.Services.NavigationService;
+using Microsoft.Practices.ServiceLocation;
+using System.Threading.Tasks;
 
 namespace DigiTransit10.Services
 {

@@ -1,17 +1,15 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using DigiTransit10.ExtensionMethods;
+﻿using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
-using DigiTransit10.Helpers;
 using System;
-using Windows.UI.Xaml.Controls.Maps;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.Devices.Geolocation;
-using System.Collections.Generic;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Controls.Primitives;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236

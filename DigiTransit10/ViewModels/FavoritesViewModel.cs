@@ -1,24 +1,24 @@
-﻿using DigiTransit10.Helpers;
+﻿using DigiTransit10.Controls;
+using DigiTransit10.ExtensionMethods;
+using DigiTransit10.Helpers;
+using DigiTransit10.Helpers.PageNavigationContainers;
+using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Services;
 using DigiTransit10.Services.SettingsServices;
+using DigiTransit10.Views;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
-using System.Collections.ObjectModel;
-using Template10.Mvvm;
 using System;
-using GalaSoft.MvvmLight.Command;
-using System.Linq;
 using System.Collections.Generic;
-using DigiTransit10.Controls;
-using DigiTransit10.ExtensionMethods;
-using DigiTransit10.Localization.Strings;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Navigation;
+using Template10.Mvvm;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
-using DigiTransit10.Views;
-using DigiTransit10.Helpers.PageNavigationContainers;
+using Windows.UI.Xaml.Navigation;
 
 namespace DigiTransit10.ViewModels
 {
