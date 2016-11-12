@@ -129,7 +129,7 @@ namespace DigiTransit10.Services
             }
 
             return response;
-                       
+
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace DigiTransit10.Services
                 return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
             }
 
-            return response;            
+            return response;
         }
 
         public async Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
@@ -275,7 +275,7 @@ namespace DigiTransit10.Services
             return response;
         }
 
-        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,  
+        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,
             CancellationToken token = default(CancellationToken))
         {
             GqlQuery query = new GqlQuery(ApiGqlMembers.stopsByRadius)
@@ -342,7 +342,7 @@ namespace DigiTransit10.Services
                 }
 
                 T result = await UnwrapGqlResposne<T>(response).ConfigureAwait(false);
-                return new ApiResult<T>(result);                
+                return new ApiResult<T>(result);
             }
             catch(Exception ex) when (ex is HttpRequestException || ex is COMException || ex is OperationCanceledException)
             {
@@ -369,7 +369,7 @@ namespace DigiTransit10.Services
                 .AsStreamForRead()
                 .DeseriaizeJsonFromStream<ApiDataContainer>()
                 .Data.First.First.ToObject<T>();
-        }        
+        }
 
         private async Task LogHttpFailure(HttpResponseMessage response, [CallerMemberName] string callerMethod = "Unknown Method")
         {

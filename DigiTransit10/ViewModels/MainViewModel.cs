@@ -29,7 +29,7 @@ namespace DigiTransit10.ViewModels
             _networkService = networkService;
             _messengerService = messengerService;
             _settingsService = settings;
-            _logger = logger;            
+            _logger = logger;
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
 
@@ -49,15 +49,15 @@ namespace DigiTransit10.ViewModels
                 return tripForm;
             }
         }
-        public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;        
+        public TripResultViewModel TripResultViewModel => ((App) BootStrapper.Current).Locator.TripResult;
 
         private void PlanFound(MessageTypes.PlanFoundMessage planFoundMessage)
-        {            
+        {
             if(planFoundMessage.VisualState == MessageTypes.VisualStateType.Narrow)
-            {                
+            {
                 NavigationService.NavigateAsync(typeof(TripResultPage));
             }
-        }        
+        }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {

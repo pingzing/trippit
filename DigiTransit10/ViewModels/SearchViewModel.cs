@@ -39,6 +39,7 @@ namespace DigiTransit10.ViewModels
         private List<IMapPoi> _hiddenMapPlaces = new List<IMapPoi>();
         private List<IMapPoi> _hiddenMapNearbyPlaces = new List<IMapPoi>();
         private List<ColoredMapLine> _hiddenMapLines = new List<ColoredMapLine>();
+        private List<IMapPoi> _hiddenMapLinePlaces = new List<IMapPoi>();
         private List<ColoredGeocircle> _hiddenMapCircles = new List<ColoredGeocircle>();
         private CancellationTokenSource _cts;
         private SearchSection _activeSection;
@@ -141,9 +142,9 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
         public RelayCommand<SearchSectionChangedEventArgs> SectionChangedCommand => new RelayCommand<SearchSectionChangedEventArgs>(SectionChanged);
-        public RelayCommand<ApiRoute> UpdateSelectedLineCommand => new RelayCommand<ApiRoute>(UpdateSelectedLine,
+        public RelayCommand<LineSearchElementViewModel> UpdateSelectedLineCommand => new RelayCommand<LineSearchElementViewModel>(UpdateSelectedLine,
             UpdateSelectedLineCanExecute);
-        private bool UpdateSelectedLineCanExecute(ApiRoute arg)
+        private bool UpdateSelectedLineCanExecute(LineSearchElementViewModel arg)
         {
             return arg != null;
         }
@@ -158,7 +159,7 @@ namespace DigiTransit10.ViewModels
         {
             if (_activeSection == SearchSection.Nearby)
             {
-                MoveNearbyCircleToUser();                
+                MoveNearbyCircleToUser();
             }
             return Task.CompletedTask;
         }
@@ -171,6 +172,7 @@ namespace DigiTransit10.ViewModels
             _hiddenMapPlaces.Clear();
             _hiddenMapNearbyPlaces.Clear();
             _hiddenMapLines.Clear();
+            _hiddenMapLinePlaces.Clear();
             _hiddenMapCircles.Clear();
             _cts?.Cancel();
             return Task.CompletedTask;
@@ -296,19 +298,28 @@ namespace DigiTransit10.ViewModels
             IsLinesLoading = false;
         }
 
-        private void UpdateSelectedLine(ApiRoute obj)
+        private void UpdateSelectedLine(LineSearchElementViewModel element)
         {
             MapLines.Clear();
 
-            List<ColoredMapLinePoint> linePoints = obj.Patterns
-                .First()
-                .Geometry
-                .Select(x => new ColoredMapLinePoint(BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat), HslColors.GetModeColor(obj.Mode)))
+            List<ColoredMapLinePoint> linePoints = element
+                .BackingLine
+                .Points
+                .Select(x => new ColoredMapLinePoint(
+                                    BasicGeopositionExtensions.Create(0.0, x.Longitude, x.Latitude),
+                                    HslColors.GetModeColor(element.BackingLine.TransitMode)))
                 .ToList();
             var mapLine = new ColoredMapLine(linePoints);
             MapLines = new ObservableCollection<ColoredMapLine>(new List<ColoredMapLine> { mapLine });
+            List<IMapPoi> stops = new List<IMapPoi>();
+            foreach(var stop in element.BackingLine.Stops)
+            {
+                stops.Add(new BasicMapPoi {Coords = stop.Coords, Name = stop.Name });
+            }
+            MapPlaces = new ObservableCollection<IMapPoi>(stops);
         }
 
+        //todo: handle narrow <-> wide changes a little better. since the pivot selection isn't synced, the circles/icons/etc on the map get a little out of sync
         private void SectionChanged(SearchSectionChangedEventArgs args)
         {
             _activeSection = args.NewSection;
@@ -317,6 +328,9 @@ namespace DigiTransit10.ViewModels
                 case SearchSection.Lines:
                     _hiddenMapLines.Clear();
                     _hiddenMapLines.AddRange(MapLines);
+                    _hiddenMapLinePlaces.Clear();
+                    _hiddenMapLinePlaces.AddRange(MapPlaces);
+                    MapPlaces.Clear();
                     MapLines.Clear();
                     break;
                 case SearchSection.Nearby:
@@ -343,10 +357,11 @@ namespace DigiTransit10.ViewModels
             {
                 case SearchSection.Lines:
                     MapLines.AddRange(_hiddenMapLines);
+                    MapPlaces.AddRange(_hiddenMapLinePlaces);
                     break;
                 case SearchSection.Nearby:
                     MapCircles.AddRange(_hiddenMapCircles);
-                    MapPlaces.AddRange(_hiddenMapNearbyPlaces);                    
+                    MapPlaces.AddRange(_hiddenMapNearbyPlaces);
                     break;
                 case SearchSection.Stops:
                     MapPlaces.AddRange(_hiddenMapPlaces);

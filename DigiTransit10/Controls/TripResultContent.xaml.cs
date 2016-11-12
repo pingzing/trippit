@@ -50,7 +50,7 @@ namespace DigiTransit10.Controls
 
             this.DataContextChanged += (s, e) => RaisePropertyChanged(nameof(ViewModel));
             this.Loaded += TripResultContent_Loaded;
-            this.Unloaded += TripResultContent_Unloaded;            
+            this.Unloaded += TripResultContent_Unloaded;
         }
 
         private void TripResultContent_Loaded(object sender, RoutedEventArgs e)

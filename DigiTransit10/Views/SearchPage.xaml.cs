@@ -3,6 +3,7 @@ using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.Models.ApiModels;
 using DigiTransit10.ViewModels;
+using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Diagnostics;
@@ -24,8 +25,9 @@ namespace DigiTransit10.Views
     /// </summary>
     public sealed partial class SearchPage : Page
     {
+        private const double FloatingPanelHeightFraction = 0.5;
+
         private VisualState _narrowVisualState;
-        
         private DispatcherTimer _linesTypingThrottle = new DispatcherTimer();
         private string _linesSearchText;
         private DispatcherTimer _stopsTypingThrottle = new DispatcherTimer();
@@ -35,7 +37,7 @@ namespace DigiTransit10.Views
 
         public SearchPage()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
 
             _linesTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _linesTypingThrottle.Tick += LinesTypingThrottle_Tick;
@@ -43,7 +45,7 @@ namespace DigiTransit10.Views
             _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
             _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
             _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == "VisualStateNarrow");
-            this.Unloaded += SearchPage_Unloaded1;        
+            this.Unloaded += SearchPage_Unloaded1;
         }
 
         private void SearchPage_Unloaded1(object sender, RoutedEventArgs e)
@@ -59,7 +61,6 @@ namespace DigiTransit10.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            PageMap = null;
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
             base.OnNavigatedFrom(e);
         }
@@ -83,7 +84,7 @@ namespace DigiTransit10.Views
                 0.0,
                 args.Position.Longitude + initialZoomAdjustment,
                 args.Position.Latitude - initialZoomAdjustment
-            );            
+            );
             if (AdaptiveVisualStateGroup.CurrentState == _narrowVisualState)
             {
                 //Zoom in a little further when in the narrow view, otherwise we're in a little too close 
@@ -97,11 +98,11 @@ namespace DigiTransit10.Views
                 GeoboundingBox box = new GeoboundingBox(northwest, southeast);
                 if (NarrowSearchPanel.IsOpen)
                 {
-                    double bottomMargin = NarrowSearchPanel.ExpandedHeight;                    
+                    double bottomMargin = NarrowSearchPanel.ExpandedHeight;
                     await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, bottomMargin), MapAnimationKind.None);
                 }
                 else
-                {                    
+                {
                     await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, 0), MapAnimationKind.None);
                 }
             }
@@ -114,7 +115,7 @@ namespace DigiTransit10.Views
 
         private void NarrowSearchPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            NarrowSearchPanel.ExpandedHeight = this.ActualHeight * .50;
+            NarrowSearchPanel.ExpandedHeight = this.ActualHeight * FloatingPanelHeightFraction;
             this.SizeChanged += SearchPage_SizeChanged;
             this.Unloaded += SearchPage_Unloaded;
             if (this.Parent != null)
@@ -133,7 +134,7 @@ namespace DigiTransit10.Views
 
         private void SearchPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            NarrowSearchPanel.ExpandedHeight = this.ActualHeight * .50;
+            NarrowSearchPanel.ExpandedHeight = this.ActualHeight * FloatingPanelHeightFraction;
             ClipToBounds();
         }
 
@@ -148,7 +149,7 @@ namespace DigiTransit10.Views
             {
                 Rect = new Rect(0, 0, this.ActualWidth, this.ActualHeight)
             };
-        }        
+        }
 
         private void StopsSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
@@ -157,7 +158,7 @@ namespace DigiTransit10.Views
             {
                 ViewModel.SearchStopsCommand.Execute(args.QueryText);
             }
-        }        
+        }
 
         private void StopsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -175,7 +176,7 @@ namespace DigiTransit10.Views
         {
             _stopsTypingThrottle.Stop();
             ViewModel.SearchStopsCommand.Execute(_stopsSearchText);
-        }        
+        }
 
         private void LinesSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
@@ -203,22 +204,10 @@ namespace DigiTransit10.Views
             _linesTypingThrottle.Stop();
             ViewModel.SearchLinesCommand.Execute(_linesSearchText);
         }
-        
-        private void PageMap_MapCenterChanged(MapControl sender, object args)
-        {
-            //nothing for now. if we never need this, just delete this handler.
-        }
-
-        private void PageMap_MapTapped(MapControl sender, MapInputEventArgs args)
-        {
-            var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
-            ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;            
-            flyout.ShowAt(sender, args.Position);            
-        }
 
         private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var pivot = (Pivot)sender;            
+            var pivot = (Pivot)sender;
             var oldSection = SearchSection.None;
             var oldSectionPivot = e.RemovedItems.FirstOrDefault() as PivotItem;
             if (oldSectionPivot?.Name == "NearbyPivot")
@@ -255,11 +244,35 @@ namespace DigiTransit10.Views
         {
             //toggle view state of selected element
             //trigger selection changed in viewmodel
-            ApiRoute selectedItem = (ApiRoute)e.AddedItems.FirstOrDefault();
+            var selectedItem = (LineSearchElementViewModel)e.AddedItems.FirstOrDefault();
             if(ViewModel?.UpdateSelectedLineCommand.CanExecute(selectedItem) == true)
             {
                 ViewModel.UpdateSelectedLineCommand.Execute(selectedItem);
             }
+
+            var deselectedItem = (LineSearchElementViewModel)e.RemovedItems.FirstOrDefault();
+            if (deselectedItem?.ToggleLineStopsVisibilityCommand.CanExecute(null) == true)
+            {
+                deselectedItem.ToggleLineStopsVisibilityCommand.Execute(null);
+            }
+
+            if (selectedItem?.ToggleLineStopsVisibilityCommand.CanExecute(null) == true)
+            {
+                selectedItem.ToggleLineStopsVisibilityCommand.Execute(null);
+            }
+
+            GeoboundingBox lineBox = PageMap.GetAllMapElementsBoundingBox();
+            var mapMargin = AdaptiveVisualStateGroup.CurrentState == _narrowVisualState
+                ? new Thickness(10, 10, 10, (this.NarrowSearchPanel.ExpandedHeight) + 10)
+                : new Thickness(410, 10, 10, 10);
+            PageMap.TrySetViewBoundsAsync(lineBox, mapMargin, MapAnimationKind.Linear).DoNotAwait();
+        }
+
+        private void PageMap_MapRightTapped(MapControl sender, MapRightTappedEventArgs args)
+        {
+            var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
+            ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;
+            flyout.ShowAt(sender, args.Position);
         }
     }
 }

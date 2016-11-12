@@ -12,7 +12,7 @@ namespace DigiTransit10.Services
     public class ViewModelLocator
     {
         private const string LocalSettingsService = "LocalSettingsService";
-        private const string RoamingSettingsService = "RoamingSettingsService";        
+        private const string RoamingSettingsService = "RoamingSettingsService";
 
         static ViewModelLocator()
         {
@@ -23,7 +23,7 @@ namespace DigiTransit10.Services
                 //design-time stuff
             }
             else
-            {                
+            {
                 IFileService fileService = new FileService();
                 SimpleIoc.Default.Register(() => fileService);
 

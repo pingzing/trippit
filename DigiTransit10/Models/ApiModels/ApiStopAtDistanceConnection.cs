@@ -10,7 +10,7 @@ namespace DigiTransit10.Models.ApiModels
         /// <summary>
         /// Non-nullable.
         /// </summary>
-        [JsonProperty("pageInfo")]        
+        [JsonProperty("pageInfo")]
         public ApiPageInfo PageInfo { get; set; }
     }
 }

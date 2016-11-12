@@ -11,6 +11,7 @@
     xmlns:Media="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
     xmlns:models="using:DigiTransit10.ViewModels"
+    xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -67,28 +68,8 @@
                                                 TextChanged="LinesSearchBox_TextChanged"/>
                             </ListView.Header>
                             <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon Grid.Column="0"                                                   
-                                                  FontFamily="{StaticResource HslPiktoFrameFont}" 
-                                                  Foreground="{Binding Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                                                  Glyph="{Binding Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
-                                        <TextBlock Grid.Column="1" 
-                                                   Margin="5 0 0 0" 
-                                                   Text="{Binding ShortName}"
-                                                   TextTrimming="Clip"/>
-                                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
-                                                   Text="{Binding LongName}"
-                                                   Style="{ThemeResource CaptionTextBlockStyle}"/>
-                                    </Grid>
+                                <DataTemplate x:DataType="ctlVms:LineSearchElementViewModel">
+                                    <lclCtls:LineSearchElement DataContext="{x:Bind}"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -170,9 +151,8 @@
                                 RelativePanel.AlignRightWithPanel="True"
                                 RelativePanel.AlignBottomWithPanel="True"
                                 ColoredMapLines="{x:Bind ViewModel.MapLines, Mode=OneWay}"
-                                ColoredCircles="{x:Bind ViewModel.MapCircles, Mode=OneWay}"
-                                MapCenterChanged="PageMap_MapCenterChanged"
-                                MapTapped="PageMap_MapTapped"
+                                ColoredCircles="{x:Bind ViewModel.MapCircles, Mode=OneWay}"                                
+                                MapRightTapped="PageMap_MapRightTapped"
                                 Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"                                
                                 ShowUserOnMap="True"
                                 ZoomLevel="13">

@@ -25,7 +25,7 @@ namespace DigiTransit10.Controls
     public sealed partial class DigiTransitMap : UserControl
     {
         private readonly IGeolocationService _geolocationService;
-        
+
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
         private Geopoint _lastKnownGeopoint;
@@ -53,7 +53,7 @@ namespace DigiTransit10.Controls
 
             bool newBool = (bool)e.NewValue;
             if (newBool)
-            {                
+            {
                 _this.StartLiveUpdates();
             }
             else
@@ -288,7 +288,7 @@ namespace DigiTransit10.Controls
                 }
                 RemoveMapIcons(removedIcons);
             }
-        }        
+        }
 
         // Using a DependencyProperty as the backing store for ColoredCircles.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ColoredCirclesProperty =
@@ -326,7 +326,7 @@ namespace DigiTransit10.Controls
                 polygon.FillColor = circle.FillColor;
                 polygon.Path = new Geopath(circle.CirclePoints.Select(x => x.Position));
                 polygon.StrokeColor = circle.StrokeColor;
-                polygon.StrokeThickness = circle.StrokeThickness;                
+                polygon.StrokeThickness = circle.StrokeThickness;
                 polygons.Add(polygon);
             }
             _this.SetMapPolygons(polygons);
@@ -356,7 +356,7 @@ namespace DigiTransit10.Controls
                     polygon.FillColor = circle.FillColor;
                     polygon.Path = new Geopath(circle.CirclePoints.Select(x => x.Position));
                     polygon.StrokeColor = circle.StrokeColor;
-                    polygon.StrokeThickness = circle.StrokeThickness;                    
+                    polygon.StrokeThickness = circle.StrokeThickness;
                     newPolygons.Add(polygon);
                 }
                 AddMapPolygons(newPolygons);
@@ -399,7 +399,7 @@ namespace DigiTransit10.Controls
                 _this.DigiTransitMapControl.PanInteractionMode = MapPanInteractionMode.Auto;
                 _this.DigiTransitMapControl.ZoomInteractionMode = MapInteractionMode.Auto;
                 _this.DigiTransitMapControl.RotateInteractionMode = MapInteractionMode.Auto;
-                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;                
+                _this.DigiTransitMapControl.TiltInteractionMode = MapInteractionMode.Auto;
                 if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.Maps.MapControl", "AllowFocusOnInteraction"))
                 {
                     _this.DigiTransitMapControl.AllowFocusOnInteraction = true;
@@ -443,7 +443,7 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-                      
+
             this.Unloaded += DigiTransitMap_Unloaded;
             this.DigiTransitMapControl.CenterChanged += DigiTransitMapControl_CenterChanged;
             this.DigiTransitMapControl.MapTapped += DigiTransitMapControl_MapTapped;
@@ -478,7 +478,7 @@ namespace DigiTransit10.Controls
             this.DigiTransitMapControl.MapRightTapped -= DigiTransitMapControl_MapRightTapped;
             Bindings.StopTracking();
             this.DigiTransitMapControl = null;
-        }                        
+        }
 
         private void DigiTransitMapControl_CenterChanged(MapControl sender, object args)
         {
@@ -597,7 +597,7 @@ namespace DigiTransit10.Controls
                 DigiTransitMapControl.MapElements.Add(newPolygon);
             }
             MapElementsChanged?.Invoke(this, EventArgs.Empty);
-        }        
+        }
 
         private void RemoveMapPolygons(IEnumerable<MapPolygon> polygons)
         {
@@ -677,10 +677,15 @@ namespace DigiTransit10.Controls
                 SelfMarker.IsArrowVisible = true;
                 SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
             }
-        }        
+        }
 
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation, bool retryOnFailure = false)
         {
+            if(DigiTransitMapControl == null)
+            {
+                return;
+            }
+
             if(margin != null && DeviceTypeHelper.GetDeviceFormFactorType() != DeviceFormFactorType.Phone)
             {
                 //Margins are a little smaller on desktop for some reason. investigate this a little further, may just be a DPI thing?
@@ -777,7 +782,7 @@ namespace DigiTransit10.Controls
 
         public GeoboundingBox GetAllMapElementsBoundingBox()
         {
-            if(DigiTransitMapControl.MapElements == null
+            if(DigiTransitMapControl?.MapElements == null
                 || DigiTransitMapControl.MapElements.Count <= 0)
             {
                 return null;
@@ -873,6 +878,6 @@ namespace DigiTransit10.Controls
                 });
 
             return mBounds;
-        }        
+        }
     }
 }

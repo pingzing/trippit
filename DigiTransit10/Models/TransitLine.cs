@@ -18,7 +18,7 @@ namespace DigiTransit10.Models
         public IEnumerable<TransitStop> Stops { get; set; }
         public IEnumerable<BasicGeoposition> Points { get; set; }
 
-        public TransitLine() { }         
+        public TransitLine() { }
 
         public TransitLine(ApiRoute route)
         {

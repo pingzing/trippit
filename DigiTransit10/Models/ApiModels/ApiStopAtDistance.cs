@@ -8,7 +8,7 @@ namespace DigiTransit10.Models.ApiModels
         /// Non-nullable.
         /// </summary>
         [JsonProperty("id")]
-        public string Id { get; set; }        
+        public string Id { get; set; }
         [JsonProperty("stop")]
         public ApiStop Stop { get; set; }
         [JsonProperty("distance")]

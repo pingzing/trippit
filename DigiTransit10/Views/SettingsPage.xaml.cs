@@ -27,7 +27,7 @@ namespace DigiTransit10.Views
     {
         public SettingsPage()
         {
-            this.InitializeComponent();            
-        }        
+            this.InitializeComponent();
+        }
     }
 }

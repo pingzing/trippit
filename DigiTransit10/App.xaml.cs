@@ -40,7 +40,7 @@ namespace DigiTransit10
         public App()
         {
             InitializeComponent();
-            SplashFactory = (e) => new Views.Splash(e);            
+            SplashFactory = (e) => new Views.Splash(e);
 
             #region App settings
 
@@ -62,7 +62,7 @@ namespace DigiTransit10
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
-        {            
+        {
             if (Window.Current.Content as ModalDialog == null)
             {
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -71,7 +71,7 @@ namespace DigiTransit10
                 }
 
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                          
+                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -81,7 +81,7 @@ namespace DigiTransit10
                     ModalContent = new Views.Busy(),
                 };
             }
-            
+
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
@@ -95,7 +95,7 @@ namespace DigiTransit10
             // long-running startup tasks go here
 
             // end here
-            
+
             switch(DetermineStartCause(args))
             {
                 case AdditionalKinds.SecondaryTile:
@@ -103,7 +103,7 @@ namespace DigiTransit10
                     if(tileArgs != null && !String.IsNullOrWhiteSpace(tileArgs.Arguments))
                     {
                         var payload = JsonConvert.DeserializeObject<SecondaryTilePayload>(tileArgs.Arguments);
-                        SessionState[NavParamKeys.SecondaryTilePayload] = payload;                            
+                        SessionState[NavParamKeys.SecondaryTilePayload] = payload;
                         if (NavigationService.CurrentPageType == typeof(Views.MainPage))
                         {
                             SimpleIoc.Default.GetInstance<IMessenger>().Send(payload);
@@ -125,7 +125,7 @@ namespace DigiTransit10
                     await NavigationService.NavigateAsync(typeof(Views.MainPage));
                     break;
             }
-            
+
             await Task.CompletedTask;
         }
 

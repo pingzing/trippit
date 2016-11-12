@@ -19,7 +19,7 @@ namespace DigiTransit10.ExtensionMethods
         public static void SerializeJsonToStream(this Stream stream, object value, JsonSerializerSettings serializationSettings = null)
         {
             JsonSerializer ser = JsonSerializer.Create(serializationSettings);
-            
+
             using (var writer = new StreamWriter(stream))
             using (var jsonWriter = new JsonTextWriter(writer))
             {

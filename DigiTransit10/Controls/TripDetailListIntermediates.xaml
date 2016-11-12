@@ -17,7 +17,7 @@
             </TransitionCollection>
         </ItemsControl.ItemContainerTransitions>
         <ItemsControl.ItemTemplate>
-            <DataTemplate x:DataType="models:TripLegIntermediateStop">
+            <DataTemplate x:DataType="models:TransitStop">
                 <TextBlock x:Name="IntermediateStopPanel" Foreground="Gray" Text="{x:Bind Name}" Style="{StaticResource BaseTextBlockStyle}"/>
             </DataTemplate>
         </ItemsControl.ItemTemplate>

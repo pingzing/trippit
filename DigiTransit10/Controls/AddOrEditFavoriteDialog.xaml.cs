@@ -172,7 +172,7 @@ namespace DigiTransit10.Controls
             SingleMap.MapElementsChanged += SingleMap_MapElementsChanged;
             _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
             _dialogType = AddOrEditDialogType.Add;
-        }        
+        }
 
         public AddOrEditFavoriteDialog(IFavorite favoriteToEdit) : this()
         {

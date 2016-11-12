@@ -129,7 +129,7 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IFavorite> PinToStartCommand => new RelayCommand<IFavorite>(PinToStart);
         public RelayCommand<IFavorite> PinToMainPageCommand => new RelayCommand<IFavorite>(PinToMainPage);
         public RelayCommand<IList<object>> SelectionChangedCommand => new RelayCommand<IList<object>>(SelectionChanged);
-        public RelayCommand<IFavorite> SetAsRouteCommand => new RelayCommand<IFavorite>(SetAsRoute);        
+        public RelayCommand<IFavorite> SetAsRouteCommand => new RelayCommand<IFavorite>(SetAsRoute);
 
         public FavoritesViewModel(INetworkService networkService, IMessenger messengerService,
             IFavoritesService favoritesService, ITileService tileService, IDialogService dialogService)
@@ -250,7 +250,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private async void PinToStart(IFavorite obj)
-        {            
+        {
             if (ListSelectionMode == ListViewSelectionMode.Multiple
                 && _selectedItems != null
                 && _selectedItems.Count > 0)

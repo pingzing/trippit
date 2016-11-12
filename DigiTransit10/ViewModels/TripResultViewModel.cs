@@ -110,33 +110,33 @@ namespace DigiTransit10.ViewModels
         }
 
         private async void PlanFound(MessageTypes.PlanFoundMessage _)
-        {                        
+        {
             if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
             {
                 return;
             }
-            
-            var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;            
+
+            var foundPlan = BootStrapper.Current.SessionState[NavParamKeys.PlanResults] as TripPlan;
             BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
             if (foundPlan?.PlanItineraries == null)
-            {                
+            {
                 return;
-            }            
-            TripResults.Clear();            
+            }
+            TripResults.Clear();
             FromName = foundPlan.StartingPlaceName ?? AppResources.TripPlanStrip_StartingPlaceDefault;
             ToName = foundPlan.EndingPlaceName ?? AppResources.TripPlanStrip_EndPlaceDefault;
-            
+
             //----todo: leaking abstraction here, see if we can move this to the view
             // Give the control enough time to animate back from the DetailedState, 
             // so that when the TripPlanStrip does it's second render pass, it gets accurate values.            
             if (IsInDetailedState)
-            {                
+            {
                 GoBackToTripList();
                 await Task.Delay(450);
             }
             //----end todo            
             foreach (TripItinerary itinerary in foundPlan.PlanItineraries)
-            {                
+            {
                 TripResults.Add(itinerary);
             }
         }
@@ -153,7 +153,7 @@ namespace DigiTransit10.ViewModels
                 .Zip(legIds, (x, id) => { x.TemporaryId = id; return x; })
                 .ToList();
 
-            ColoredMapLines.Clear();            
+            ColoredMapLines.Clear();
             int legIndex = 0;
             foreach(TripLeg leg in model.ItineraryLegs)
             {
@@ -170,16 +170,16 @@ namespace DigiTransit10.ViewModels
                         }
                     })
                     .ToList();
-                var mapLine = new ColoredMapLine(coloredPoints, legIds[legIndex]);                
+                var mapLine = new ColoredMapLine(coloredPoints, legIds[legIndex]);
                 ColoredMapLines.Add(mapLine);
                 legIndex++;
-            }                                              
+            }
 
             var stops = new List<IMapPoi>();
             stops.AddRange(model.ItineraryLegs.Zip(legIds, (x, id) => {
                 IMapPoi poi = x.StartPlaceToPoi();
                 poi.OptionalId = id;
-                return poi;                
+                return poi;
             }));
             IMapPoi endPoi = model.ItineraryLegs.Last().EndPlaceToPoi();
             endPoi.OptionalId = legIds.Last();

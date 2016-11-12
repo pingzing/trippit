@@ -5,11 +5,48 @@
     xmlns:local="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:DigiTransit10.Models"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <FontIcon Grid.Column="0"                                                   
+                  FontFamily="{StaticResource HslPiktoFrameFont}" 
+                  Foreground="{x:Bind ViewModel.BackingLine.TransitMode, Mode=OneWay, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                  Glyph="{x:Bind ViewModel.BackingLine.TransitMode, Mode=OneWay, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+        <TextBlock Grid.Column="1" 
+                   Margin="5 0 0 0" 
+                   Text="{x:Bind ViewModel.BackingLine.ShortName, Mode=OneWay}"
+                   TextTrimming="Clip"/>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2"
+                   Text="{x:Bind ViewModel.BackingLine.LongName, Mode=OneWay}"
+                   Style="{ThemeResource CaptionTextBlockStyle}"/>
+        <ItemsControl x:Name="IntermediateStopsControl"
+                      Grid.Row="2"
+                      Grid.ColumnSpan="2"
+                      ItemsSource="{x:Bind ViewModel.VisibleStops, Mode=OneWay}"
+                      Margin="10 0 0 0"
+                      Visibility="{x:Bind ViewModel.VisibleStops.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}">
+            <ItemsControl.ItemContainerTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition HorizontalOffset="50" VerticalOffset="0"/>
+                </TransitionCollection>
+            </ItemsControl.ItemContainerTransitions>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:TransitStop">
+                    <TextBlock x:Name="IntermediateStopPanel" Foreground="{StaticResource DarkTransparentForegroundBrush}" Text="{x:Bind Name}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

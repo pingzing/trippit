@@ -11,6 +11,6 @@ using Windows.UI.Xaml.Navigation;
 namespace DigiTransit10.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
-    {        
+    {
     }
 }
