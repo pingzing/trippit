@@ -486,8 +486,7 @@ namespace DigiTransit10.Controls
             this.DigiTransitMapControl.CenterChanged -= DigiTransitMapControl_CenterChanged;
             this.DigiTransitMapControl.MapTapped -= DigiTransitMapControl_MapTapped;
             this.DigiTransitMapControl.MapRightTapped -= DigiTransitMapControl_MapRightTapped;
-            Bindings.StopTracking();
-            this.DigiTransitMapControl = null;
+            Bindings.StopTracking();            
         }
 
         private void DigiTransitMapControl_CenterChanged(MapControl sender, object args)
