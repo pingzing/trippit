@@ -20,7 +20,7 @@
     <PackageCertificateKeyFile>DigiTransit10_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <HockeyAppResourceId>c2a732e8165446bc81e0ea6087509c2b</HockeyAppResourceId>
     <PackageCertificateThumbprint>036E78C9FA6B8FCA2C69F7439A83AAB49A2256B7</PackageCertificateThumbprint>
   </PropertyGroup>
