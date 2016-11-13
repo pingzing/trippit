@@ -28,7 +28,8 @@ namespace DigiTransit10.Models
                 ?.Select(x => new TransitStop
                     {
                         Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat),
-                        Name = x.Name
+                        Name = x.Name,
+                        Code = x.Code
                     });
             Points = route.Patterns
                 .FirstOrDefault()

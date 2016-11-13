@@ -79,8 +79,8 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private ObservableCollection<ApiStop> _nearbyStopsResultList = new ObservableCollection<ApiStop>();
-        public ObservableCollection<ApiStop> NearbyStopsResultList
+        private ObservableCollection<TransitStop> _nearbyStopsResultList = new ObservableCollection<TransitStop>();
+        public ObservableCollection<TransitStop> NearbyStopsResultList
         {
             get { return _nearbyStopsResultList; }
             set { Set(ref _nearbyStopsResultList, value); }
@@ -93,8 +93,8 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _linesResultList, value); }
         }
 
-        private ObservableCollection<ApiStop> _stopsResultList = new ObservableCollection<ApiStop>();
-        public ObservableCollection<ApiStop> StopsResultList
+        private ObservableCollection<TransitStop> _stopsResultList = new ObservableCollection<TransitStop>();
+        public ObservableCollection<TransitStop> StopsResultList
         {
             get { return _stopsResultList; }
             set { Set(ref _stopsResultList, value); }
@@ -211,7 +211,7 @@ namespace DigiTransit10.ViewModels
 
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
-            ApiResult<IEnumerable<ApiStop>> response = await _networkService.GetStopsByBoundingRadius(
+            ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsByBoundingRadius(
                 (float)circle.Center.Latitude,
                 (float)circle.Center.Longitude,
                 (int)circle.Radius,
@@ -221,13 +221,13 @@ namespace DigiTransit10.ViewModels
             {
                 return;
             }
-            NearbyStopsResultList = new ObservableCollection<ApiStop>(response.Result);
+            NearbyStopsResultList = new ObservableCollection<TransitStop>(response.Result);
             IsNearbyStopsLoading = false;
             MapPlaces = new ObservableCollection<IMapPoi>(response.Result
                 .Select(x => new BasicMapPoi
                 {
-                    Coords = BasicGeopositionExtensions.Create(0, x.Lon, x.Lat),
-                    Name = x.Name
+                    Coords = x.Coords,
+                    Name = x.NameAndCode
                 })
                 .ToList());
         }
@@ -255,13 +255,18 @@ namespace DigiTransit10.ViewModels
                 StopsResultList.Clear();
                 return;
             }
-            StopsResultList = new ObservableCollection<ApiStop>(response.Result);
-            MapPlaces = new ObservableCollection<IMapPoi>(response.Result
+            StopsResultList = new ObservableCollection<TransitStop>(response.Result.Select(x => new TransitStop
+            {
+                Name = x.Name,
+                Code = x.Code,
+                Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat)
+            }));
+            MapPlaces = new ObservableCollection<IMapPoi>(StopsResultList
                 .Select(x => new Place
                 {
-                    Lat = x.Lat,
-                    Lon = x.Lon,
-                    Name = x.Name,
+                    Lat = (float)x.Coords.Latitude,
+                    Lon = (float)x.Coords.Longitude,
+                    Name = x.NameAndCode,
                     Type = ModelEnums.PlaceType.Stop
                 }));
 

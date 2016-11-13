@@ -35,7 +35,7 @@ namespace DigiTransit10.Services
         Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -122,6 +122,10 @@ namespace DigiTransit10.Services
                     )
                 );
             var response = await GetGraphQLAsync<List<ApiStop>>(query);
+            if(!response.HasResult)
+            {
+                return ApiResult<List<ApiStop>>.FailWithReason(response.Failure.Reason);
+            }
             if(response.HasResult && !response.Result.Any())
             {
                 LogLogicFailure(FailureReason.NoResults);
@@ -201,7 +205,11 @@ namespace DigiTransit10.Services
                 );
 
             var response = await GetGraphQLAsync<ApiPlan>(query, token);
-            if(response.HasResult && response.Result?.Itineraries.Any() != true)
+            if (!response.HasResult)
+            {
+                return ApiResult<ApiPlan>.FailWithReason(response.Failure.Reason);
+            }
+            if (response.HasResult && response.Result?.Itineraries.Any() != true)
             {
                 LogLogicFailure(FailureReason.NoResults);
                 return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
@@ -232,6 +240,10 @@ namespace DigiTransit10.Services
                 );
 
             ApiResult<IEnumerable<ApiRoute>> response = await GetGraphQLAsync<IEnumerable<ApiRoute>>(query, token);
+            if(!response.HasResult)
+            {
+                return ApiResult<IEnumerable<TransitLine>>.FailWithReason(response.Failure.Reason);
+            }
             if (response.HasResult && !response.Result.Any())
             {
                 LogLogicFailure(FailureReason.NoResults);
@@ -266,6 +278,10 @@ namespace DigiTransit10.Services
                 );
 
             ApiResult<IEnumerable<ApiStop>> response = await GetGraphQLAsync<IEnumerable<ApiStop>>(query, token);
+            if (!response.HasResult)
+            {
+                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(response.Failure.Reason);
+            }
             if (response.HasResult && !response.Result.Any())
             {
                 LogLogicFailure(FailureReason.NoResults);
@@ -275,7 +291,7 @@ namespace DigiTransit10.Services
             return response;
         }
 
-        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,
+        public async Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,
             CancellationToken token = default(CancellationToken))
         {
             GqlQuery query = new GqlQuery(ApiGqlMembers.stopsByRadius)
@@ -307,22 +323,27 @@ namespace DigiTransit10.Services
             var response = await GetGraphQLAsync<ApiStopAtDistanceConnection>(query, token).ConfigureAwait(false);
             if(response.HasResult)
             {
-                IEnumerable<ApiStop> stops = response.Result.Edges?.Select(x => x.Node.Stop);
+                IEnumerable<TransitStop> stops = response.Result.Edges?.Select(x => new TransitStop
+                {
+                    Coords = BasicGeopositionExtensions.Create(0.0, x.Node.Stop.Lon, x.Node.Stop.Lat),
+                    Code = x.Node.Stop.Code,
+                    Name = x.Node.Stop.Name
+                });
                 if(stops == null)
                 {
                     LogLogicFailure(FailureReason.Unspecified);
-                    return ApiResult<IEnumerable<ApiStop>>.Fail;
+                    return ApiResult<IEnumerable<TransitStop>>.Fail;
                 }
                 if(!stops.Any())
                 {
                     LogLogicFailure(FailureReason.NoResults);
-                    return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
-                }
-                return new ApiResult<IEnumerable<ApiStop>>(stops);
+                    return ApiResult<IEnumerable<TransitStop>>.FailWithReason(FailureReason.NoResults);
+                }                
+                return new ApiResult<IEnumerable<TransitStop>>(stops);
             }
             else
             {
-                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.Unspecified);
+                return ApiResult<IEnumerable<TransitStop>>.FailWithReason(FailureReason.Unspecified);
             }
         }
 

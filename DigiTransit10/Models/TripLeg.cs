@@ -63,7 +63,8 @@ namespace DigiTransit10.Models
                 .Select(x => new TransitStop
                 {
                     Coords = new BasicGeoposition { Altitude = 0.0, Latitude = x.Lat, Longitude = x.Lon },
-                    Name = x.Name
+                    Name = x.Name,
+                    Code = x.Code
                 }).ToList();
 
             LegGeometryString = apiLeg.LegGeometry.Points;

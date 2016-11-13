@@ -517,11 +517,15 @@ namespace DigiTransit10.Controls
                 Place foundPlace = new Place
                 {
                     Id = stop.Id,
-                    Name = $"{stop.Name}, {stop.Code}",
+                    Name = stop.Name,
                     Lat = stop.Lat,
                     Lon = stop.Lon,
                     Type = ModelEnums.PlaceType.Stop
                 };
+                if (!String.IsNullOrWhiteSpace(stop.Code))
+                {
+                    foundPlace.Name += $", {stop.Code}";
+                }
                 _stopList.AddSorted(foundPlace, _placeComparer);
             }
             _stopList.SortInPlace(x => x, _placeComparer);

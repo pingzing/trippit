@@ -10,7 +10,8 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Media="using:Microsoft.Xaml.Interactions.Media" 
     xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
-    xmlns:models="using:DigiTransit10.ViewModels"
+    xmlns:models="using:DigiTransit10.Models"
+    xmlns:vms="using:DigiTransit10.ViewModels"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,7 +19,7 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=Search}">
 
     <Page.Resources>
-        <DataTemplate x:Key="SearchPanelTemplate" x:DataType="models:SearchViewModel">
+        <DataTemplate x:Key="SearchPanelTemplate" x:DataType="vms:SearchViewModel">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -39,14 +40,14 @@
                         <ListView x:Name="NearbyList"
                                   ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}">
                             <ListView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="models:TransitStop">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
+                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -88,14 +89,14 @@
                                                 TextChanged="StopsSearchBox_TextChanged"/>
                             </ListView.Header>
                             <ListView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="models:TransitStop">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{Binding Name}" />
+                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

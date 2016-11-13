@@ -6,6 +6,9 @@ Style Resources/
 Raw Assets/
 Design Reference/
 maps-api-key.txt
+Package.StoreAssociation.xml
+*.appx           
+_pkginfo.txt                            
 
 #Ignore all .pfx files except for the temporary signing key. The CI server needs it to build successfully
 *.pfx
