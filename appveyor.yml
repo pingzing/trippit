@@ -12,3 +12,6 @@ matrix:
     
 before_build:
     - nuget restore
+    - ps: |
+    cd DigiTransit10
+    New-Item maps-api.txt
