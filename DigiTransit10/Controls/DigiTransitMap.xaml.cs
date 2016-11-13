@@ -12,6 +12,7 @@ using Windows.Devices.Geolocation;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -34,8 +35,17 @@ namespace DigiTransit10.Controls
         public event TypedEventHandler<MapControl, MapInputEventArgs> MapTapped;
         public event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapRightTapped;
 
+
+        public static readonly DependencyProperty MapServiceTokenProperty =
+            DependencyProperty.Register(nameof(MapServiceToken), typeof(string), typeof(DigiTransitMap), new PropertyMetadata(null));
+        public string MapServiceToken
+        {
+            get { return (string)GetValue(MapServiceTokenProperty); }
+            set { SetValue(MapServiceTokenProperty, value); }
+        }
+
         public static readonly DependencyProperty ShowUserOnMapProperty =
-            DependencyProperty.Register("ShowUserOnMap", typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(false,
+            DependencyProperty.Register(nameof(ShowUserOnMap), typeof(bool), typeof(DigiTransitMap), new PropertyMetadata(false,
                 ShowUserOnMapChanged));
         private static void ShowUserOnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -449,6 +459,7 @@ namespace DigiTransit10.Controls
             this.DigiTransitMapControl.MapRightTapped += DigiTransitMapControl_MapRightTapped;
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
+            MapServiceToken = MapHelper.MapApiToken.Value;            
         }
 
         private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
@@ -667,12 +678,7 @@ namespace DigiTransit10.Controls
         {
             _lastKnownHeading = args.Reading;
             if(ShowUserOnMap)
-            {
-                if (this.SelfMarker.Visibility == Visibility.Collapsed)
-                {
-                    this.SelfMarker.Visibility = Visibility.Visible;
-                    MapControl.SetNormalizedAnchorPoint(this.SelfMarker, new Point(MapSelfMarker.RenderTransformOriginX, MapSelfMarker.RenderTransformOriginY));
-                }
+            {                
                 SelfMarker.IsArrowVisible = true;
                 SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
             }
