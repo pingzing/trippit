@@ -5,6 +5,7 @@ namespace DigiTransit10.Models
 {
     public class TransitStop
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public BasicGeoposition Coords { get; set; }

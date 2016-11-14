@@ -259,7 +259,7 @@ namespace DigiTransit10.ViewModels
             {
                 Name = x.Name,
                 Code = x.Code,
-                Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat)
+                Coords = x.Coords
             }));
             MapPlaces = new ObservableCollection<IMapPoi>(StopsResultList
                 .Select(x => new Place

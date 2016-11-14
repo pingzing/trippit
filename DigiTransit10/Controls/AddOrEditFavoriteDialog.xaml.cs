@@ -56,7 +56,7 @@ namespace DigiTransit10.Controls
                         FavoriteRoute.RouteGeometryStrings
                             .SelectMany(str => GooglePolineDecoder.Decode(str))
                             .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue)),
-                        FavoriteRoute.FavoriteId)
+                        FavoriteRoute.Id)
                     };
                 }
                 else
@@ -264,11 +264,11 @@ namespace DigiTransit10.Controls
                     ResultFavorite = new FavoritePlace
                     {
                         Confidence = null,
-                        FavoriteId = _favoritePlace.FavoriteId,
+                        Id = _favoritePlace.Id,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
                         IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
-                        Id = null,
+                        StringId = null,
                         Lat = _favoritePlace.Lat,
                         Lon = _favoritePlace.Lon,
                         Name = _favoritePlace.Name,
@@ -280,7 +280,7 @@ namespace DigiTransit10.Controls
                 {
                     ResultFavorite = new FavoriteRoute
                     {
-                        FavoriteId = FavoriteRoute.FavoriteId,
+                        Id = FavoriteRoute.Id,
                         FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                         IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
                         IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
@@ -295,11 +295,11 @@ namespace DigiTransit10.Controls
                 ResultFavorite = new FavoritePlace
                 {
                     Confidence = null,
-                    FavoriteId = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     FontIconGlyph = PossibleIconsList[SelectedIconIndex].Glyph,
                     IconFontFace = PossibleIconsList[SelectedIconIndex].FontFamily.Source,
                     IconFontSize = PossibleIconsList[SelectedIconIndex].FontSize,
-                    Id = null,
+                    StringId = null,
                     Lat = SearchBoxPlace.Lat,
                     Lon = SearchBoxPlace.Lon,
                     Name = SearchBoxPlace.Name,

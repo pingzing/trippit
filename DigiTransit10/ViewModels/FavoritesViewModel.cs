@@ -279,12 +279,12 @@ namespace DigiTransit10.ViewModels
             {
                 foreach (var fave in _selectedItems.Cast<IFavorite>())
                 {
-                    _settingsService.PushFavoriteId(fave.FavoriteId);
+                    _settingsService.PushFavoriteId(fave.Id);
                 }
             }
             else
             {
-                _settingsService.PushFavoriteId(obj.FavoriteId);
+                _settingsService.PushFavoriteId(obj.Id);
             }
         }
 
@@ -317,14 +317,14 @@ namespace DigiTransit10.ViewModels
             {
                 foreach (var editedFave in args.EditedFavorites)
                 {
-                    var toEdit = GroupedFavoritePlaces.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
+                    var toEdit = GroupedFavoritePlaces.FirstOrDefault(x => x.Id == editedFave.Id);
                     if (toEdit != null)
                     {
                         RemoveFavoritePlace(toEdit);
                         AddFavoritePlace(editedFave);
                     }
 
-                    toEdit = GroupedFavoriteRoutes.FirstOrDefault(x => x.FavoriteId == editedFave.FavoriteId);
+                    toEdit = GroupedFavoriteRoutes.FirstOrDefault(x => x.Id == editedFave.Id);
                     if (toEdit != null)
                     {
                         RemoveFavoriteRoute(toEdit);
@@ -360,8 +360,8 @@ namespace DigiTransit10.ViewModels
             IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
                     .SelectMany(str => GooglePolineDecoder.Decode(str))
                     .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
-            var mapLine = new ColoredMapLine(mapPoints, faveRoute.FavoriteId);
-            mapLine.OptionalId = faveRoute.FavoriteId;
+            var mapLine = new ColoredMapLine(mapPoints, faveRoute.Id);
+            mapLine.OptionalId = faveRoute.Id;
             MappableFavoriteRoutes.Add(mapLine);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));
@@ -373,7 +373,7 @@ namespace DigiTransit10.ViewModels
 
             var faveRoute = (FavoriteRoute)route;
             ColoredMapLine toRemove = MappableFavoriteRoutes
-                .FirstOrDefault(x => x.OptionalId == faveRoute.FavoriteId);
+                .FirstOrDefault(x => x.OptionalId == faveRoute.Id);
             MappableFavoriteRoutes.Remove(toRemove);
 
             RaisePropertyChanged(nameof(IsFavoritesEmpty));

@@ -247,7 +247,7 @@ namespace DigiTransit10.Controls
                 element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
                 element.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                MapElementExtensions.SetPoiId(element, place.OptionalId);
+                MapElementExtensions.SetPoiId(element, place.Id);
                 icons.Add(element);
             }
 

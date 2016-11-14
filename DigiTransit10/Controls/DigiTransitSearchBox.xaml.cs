@@ -399,7 +399,7 @@ namespace DigiTransit10.Controls
                 SelectedPlace = new Place
                 {
                     Confidence = null,
-                    Id = null,
+                    StringId = null,
                     Lat = 0,
                     Lon = 0,
                     Name = args.QueryText,
@@ -457,7 +457,7 @@ namespace DigiTransit10.Controls
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Features.Select(x => x.Properties.Id).ToList();
-            List<IPlace> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            List<IPlace> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.StringId)).ToList();
             foreach (var stale in stalePlaces)
             {
                 _addressList.Remove(stale);
@@ -465,9 +465,9 @@ namespace DigiTransit10.Controls
 
             foreach (var place in result.Features)
             {
-                if (_addressList.Any(x => x.Id == place.Properties.Id))
+                if (_addressList.Any(x => x.StringId == place.Properties.Id))
                 {
-                    IPlace address = _addressList.First(x => x.Id == place.Properties.Id);
+                    IPlace address = _addressList.First(x => x.StringId == place.Properties.Id);
                     if (address.Confidence != place.Properties.Confidence)
                     {
                         address.Confidence = place.Properties.Confidence;
@@ -477,7 +477,7 @@ namespace DigiTransit10.Controls
                 string name = place.Properties.Name;
                 Place foundPlace = new Place
                 {
-                    Id = place.Properties.Id,
+                    StringId = place.Properties.Id,
                     Name = name,
                     Lat = (float)place.Geometry.Coordinates[1],
                     Lon = (float)place.Geometry.Coordinates[0],
@@ -502,7 +502,7 @@ namespace DigiTransit10.Controls
 
             //Remove entries in old list not in new response
             List<string> responseIds = result.Select(x => x.Id).ToList();
-            List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.Id)).ToList();
+            List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.StringId)).ToList();
             foreach (var stale in stalePlaces)
             {
                 _stopList.Remove(stale);
@@ -510,16 +510,16 @@ namespace DigiTransit10.Controls
 
             foreach (var stop in result)
             {
-                if (_stopList.Any(x => x.Id == stop.Id))
+                if (_stopList.Any(x => x.StringId == stop.Id))
                 {
                     continue;
                 }
                 Place foundPlace = new Place
                 {
-                    Id = stop.Id,
+                    StringId = stop.Id,
                     Name = stop.Name,
-                    Lat = stop.Lat,
-                    Lon = stop.Lon,
+                    Lat = stop.Coords.Latitude,
+                    Lon = stop.Coords.Longitude,
                     Type = ModelEnums.PlaceType.Stop
                 };
                 if (!String.IsNullOrWhiteSpace(stop.Code))

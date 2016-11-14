@@ -10,7 +10,7 @@ namespace DigiTransit10.Models
     //todo: consider implementing INotifyPropertyChanged here
     public interface IFavorite : IComparable<IFavorite>, INotifyPropertyChanged
     {
-        Guid FavoriteId { get; set; }
+        Guid Id { get; set; }
         string UserChosenName { get; set; }
         string FontIconGlyph { get; set; }
         string IconFontFace { get; set; }
@@ -23,7 +23,7 @@ namespace DigiTransit10.Models
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Id { get; set; }
+        public string StringId { get; set; }
         private string _userChosenName;
         public string UserChosenName
         {
@@ -63,14 +63,13 @@ namespace DigiTransit10.Models
                 }
             }
         }
-        public Guid FavoriteId { get; set; }   
+        public Guid Id { get; set; }   
         public double IconFontSize { get; set; }
         public string Name { get; set; }
-        public float Lat { get; set; }
-        public float Lon { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
         public PlaceType Type { get; set; }
-        public double? Confidence { get; set; }
-        public Guid OptionalId { get; set; }
+        public double? Confidence { get; set; }        
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };        
 
         private void RaisePropertyChanged([CallerMemberName]string name = "")
@@ -130,7 +129,7 @@ namespace DigiTransit10.Models
                 }
             }
         }
-        public Guid FavoriteId { get; set; }
+        public Guid Id { get; set; }
         public double IconFontSize { get; set; }
         public List<string> RouteGeometryStrings { get; set; }
         public List<SimpleFavoritePlace> RoutePlaces { get; set; }

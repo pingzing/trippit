@@ -28,7 +28,7 @@ namespace DigiTransit10.Services
         {
             string tileArgs = GetTileArgs(favorite);
             Uri imageUri = new Uri("ms-appx:///Assets/Images/Square150x150Logo.png");
-            var tile = new SecondaryTile(favorite.FavoriteId.ToString(), favorite.UserChosenName, tileArgs, imageUri, TileSize.Square150x150);
+            var tile = new SecondaryTile(favorite.Id.ToString(), favorite.UserChosenName, tileArgs, imageUri, TileSize.Square150x150);
             tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Images/Wide310x150Logo.png");
             tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Images/Square71x71Logo.png");
             tile.VisualElements.ShowNameOnSquare150x150Logo = true;

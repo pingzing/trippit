@@ -11,10 +11,10 @@ namespace DigiTransit10.Models
         /// <summary>
         /// Optional.
         /// </summary>
-        string Id { get; set; }
+        string StringId { get; set; }
         new string Name { get; set; }
-        float Lat { get; set; }
-        float Lon { get; set; }
+        double Lat { get; set; }
+        double Lon { get; set; }
         PlaceType Type { get; set; }
         /// <summary>
         /// Optional.
@@ -26,14 +26,32 @@ namespace DigiTransit10.Models
     {
         private static IPlaceComparer _comparer = new IPlaceComparer();
 
-        public string Id { get; set; }
+        public string StringId { get; set; }
         public string Name { get; set; }
-        public float Lat { get; set; }
-        public float Lon { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
         public PlaceType Type { get; set; }
         public double? Confidence { get; set; }
         public BasicGeoposition Coords => new BasicGeoposition { Altitude = 0.0, Latitude = Lat, Longitude = Lon };
-        public Guid OptionalId { get; set; }
+        public Guid Id
+        {
+            get
+            {
+                Guid outGuid;
+                if(Guid.TryParse(StringId, out outGuid))
+                {
+                    return outGuid;
+                }
+                else
+                {
+                    return Guid.Empty;
+                }
+            }
+            set
+            {
+                StringId = value.ToString();
+            }
+        }
 
         public static FavoritePlace MyLocationPlace
         {
@@ -42,7 +60,7 @@ namespace DigiTransit10.Models
                 return new FavoritePlace
                 {
                     Confidence = null,
-                    FavoriteId = Guid.Empty,
+                    Id = Guid.Empty,
                     Type = PlaceType.UserCurrentLocation,
                     UserChosenName = AppResources.SuggestBoxHeader_MyLocation,
                     Name = AppResources.SuggestBoxHeader_MyLocation
@@ -67,7 +85,7 @@ namespace DigiTransit10.Models
             {
                 return false;
             }
-            return this.Id == other.Id
+            return this.StringId == other.StringId
                 && this.Name.Equals(other.Name)
                 && this.Lat == other.Lat
                 && this.Lon == other.Lon
@@ -105,7 +123,7 @@ namespace DigiTransit10.Models
             unchecked
             {
                 var hashCode = Name?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ Id?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ StringId?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ Lat.GetHashCode();
                 hashCode = (hashCode * 397) ^ Lon.GetHashCode();
                 hashCode = (hashCode * 397) ^ (int)Type;

@@ -176,11 +176,11 @@ namespace DigiTransit10.ViewModels
             var stops = new List<IMapPoi>();
             stops.AddRange(model.ItineraryLegs.Zip(legIds, (x, id) => {
                 IMapPoi poi = x.StartPlaceToPoi();
-                poi.OptionalId = id;
+                poi.Id = id;
                 return poi;
             }));
             IMapPoi endPoi = model.ItineraryLegs.Last().EndPlaceToPoi();
-            endPoi.OptionalId = legIds.Last();
+            endPoi.Id = legIds.Last();
             stops.Add(endPoi);
 
             MapStops = stops;
@@ -194,7 +194,7 @@ namespace DigiTransit10.ViewModels
             var route = new FavoriteRoute
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
-                FavoriteId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 IconFontFace = Constants.SegoeMdl2FontName,
                 IconFontSize = Constants.SymbolFontSize,
                 UserChosenName = $"{routeToSave.StartingPlaceName} → {routeToSave.EndingPlaceName}",

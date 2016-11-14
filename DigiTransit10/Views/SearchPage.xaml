@@ -19,6 +19,17 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=Search}">
 
     <Page.Resources>
+        <DataTemplate x:Key="TransitStopTemplate" x:DataType="models:TransitStop">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
+                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
+            </Grid>
+        </DataTemplate>
+        
         <DataTemplate x:Key="SearchPanelTemplate" x:DataType="vms:SearchViewModel">
             <Grid>
                 <Grid.RowDefinitions>
@@ -38,19 +49,8 @@
                     <PivotItem x:Name="NearbyPivot"                                
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
                         <ListView x:Name="NearbyList"
+                                  ItemTemplate="{StaticResource TransitStopTemplate}"
                                   ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:TransitStop">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
                         </ListView>
                     </PivotItem>
                     <PivotItem x:Name="LinesPivot"
@@ -78,6 +78,7 @@
                     <PivotItem x:Name="StopsPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_StopsHeader}">
                         <ListView x:Name="StopsList"
+                                  ItemTemplate="{StaticResource TransitStopTemplate}"
                                   ItemsSource="{x:Bind StopsResultList, Mode=OneWay}">
                             <ListView.Header>
                                 <AutoSuggestBox x:Name="StopsSearchBox"
@@ -88,18 +89,6 @@
                                                 Text="{Binding StopsSearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                 TextChanged="StopsSearchBox_TextChanged"/>
                             </ListView.Header>
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:TransitStop">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-                                        <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
                         </ListView>
                     </PivotItem>
                 </Pivot>

@@ -300,15 +300,17 @@ namespace DigiTransit10.ViewModels
                 }
                 ToPlace = places.Last(); // but for now, magic numbers wheee            
 
-                ApiCoordinates fromCoords = new ApiCoordinates { Lat = FromPlace.Lat, Lon = FromPlace.Lon };
+                ApiCoordinates fromCoords = new ApiCoordinates { Lat = (float)FromPlace.Lat, Lon = (float)FromPlace.Lon };
                 List<ApiCoordinates> intermediateCoords = IntermediatePlaces
-                    .Select(x => new ApiCoordinates { Lat = x.IntermediatePlace.Lat, Lon = x.IntermediatePlace.Lon })
+                    .Select(x => new ApiCoordinates { Lat = (float)x.IntermediatePlace.Lat, Lon = (float)x.IntermediatePlace.Lon })
                     .ToList();
-                ApiCoordinates toCoords = new ApiCoordinates { Lat = ToPlace.Lat, Lon = ToPlace.Lon };
+                ApiCoordinates toCoords = new ApiCoordinates { Lat = (float)ToPlace.Lat, Lon = (float)ToPlace.Lon };
                 TripQueryDetails details = new TripQueryDetails(
                     fromCoords,
+                    FromPlace.Name,
                     intermediateCoords,
                     toCoords,
+                    ToPlace.Name,
                     IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
                     SelectedDate.DateTime,
                     IsArrivalChecked == true,
@@ -326,16 +328,14 @@ namespace DigiTransit10.ViewModels
                     return;
                 }
 
-                var newPlan = new TripPlan(result.Result, FromPlace.Name, ToPlace.Name);
-
                 if (!BootStrapper.Current.SessionState.ContainsKey(NavParamKeys.PlanResults))
                 {
-                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
+                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result.Result);
                 }
                 else
                 {
                     BootStrapper.Current.SessionState.Remove(NavParamKeys.PlanResults);
-                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, newPlan);
+                    BootStrapper.Current.SessionState.Add(NavParamKeys.PlanResults, result.Result);
                 }
 
                 _messengerService.Send(new MessageTypes.PlanFoundMessage(CurrentVisualState));
@@ -379,7 +379,7 @@ namespace DigiTransit10.ViewModels
                             Lat = (float)task.Result.Result.Features[0].Geometry.Coordinates[1],
                             Name = task.Result.Result.Features[0].Properties.Name,
                             Type = PlaceType.Address,
-                            Id = task.Result.Result.Features[0].Properties.Id,
+                            StringId = task.Result.Result.Features[0].Properties.Id,
                             Confidence = task.Result.Result.Features[0].Properties.Confidence
                         };
                         return true;
@@ -455,7 +455,7 @@ namespace DigiTransit10.ViewModels
             var newFavoritePlace = new FavoritePlace
             {
                 FontIconGlyph = FontIconGlyphs.FilledStar,
-                FavoriteId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 IconFontFace = ((FontFamily)App.Current.Resources[Constants.SymbolThemeFontResource]).Source,
                 IconFontSize = Constants.SymbolFontSize,
                 Lat = place.Lat,
@@ -504,7 +504,7 @@ namespace DigiTransit10.ViewModels
 
         private void RemovePinnedFavorite(IFavorite favorite)
         {
-            _settingsService.RemovedFavoriteId(favorite.FavoriteId);
+            _settingsService.RemovedFavoriteId(favorite.Id);
             FillPinnedFavorites().DoNotAwait();
         }
 
@@ -558,7 +558,7 @@ namespace DigiTransit10.ViewModels
             PlanTripCommand.RaiseCanExecuteChanged();
         }
 
-        private async Task HandleTripFailure(ApiResult<ApiPlan> result)
+        private async Task HandleTripFailure(ApiResult<TripPlan> result)
         {
             string errorMessage = null;
             if (!String.IsNullOrEmpty(result.Failure.FriendlyError))

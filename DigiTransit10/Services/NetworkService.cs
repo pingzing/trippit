@@ -31,10 +31,9 @@ namespace DigiTransit10.Services
 
         Task<ApiResult<GeocodingResponse>> SearchAddressAsync(string searchString, CancellationToken token = default(CancellationToken));
 
-        Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<TripPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));        
         Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
     }
 
@@ -104,7 +103,7 @@ namespace DigiTransit10.Services
 
         //---GRAPHQL REQUESTS---
 
-        public async Task<ApiResult<List<ApiStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<IEnumerable<TransitStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
@@ -124,15 +123,21 @@ namespace DigiTransit10.Services
             var response = await GetGraphQLAsync<List<ApiStop>>(query);
             if(!response.HasResult)
             {
-                return ApiResult<List<ApiStop>>.FailWithReason(response.Failure.Reason);
+                return ApiResult<IEnumerable<TransitStop>>.FailWithReason(response.Failure.Reason);
             }
             if(response.HasResult && !response.Result.Any())
             {
                 LogLogicFailure(FailureReason.NoResults);
-                return ApiResult<List<ApiStop>>.FailWithReason(FailureReason.NoResults);
+                return ApiResult<IEnumerable<TransitStop>>.FailWithReason(FailureReason.NoResults);
             }
 
-            return response;
+            return new ApiResult<IEnumerable<TransitStop>>(response.Result.Select(x => new TransitStop
+            {
+                Name = x.Name,
+                Code = x.Code,
+                Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat),
+                Id = x.Id
+            }));
 
         }
 
@@ -142,7 +147,7 @@ namespace DigiTransit10.Services
         /// <param name="details"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<ApiResult<ApiPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken))
+        public async Task<ApiResult<TripPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken))
         {
             Uri uri = new Uri(DefaultGqlRequestUrl);
 
@@ -207,15 +212,15 @@ namespace DigiTransit10.Services
             var response = await GetGraphQLAsync<ApiPlan>(query, token);
             if (!response.HasResult)
             {
-                return ApiResult<ApiPlan>.FailWithReason(response.Failure.Reason);
+                return ApiResult<TripPlan>.FailWithReason(response.Failure.Reason);
             }
             if (response.HasResult && response.Result?.Itineraries.Any() != true)
             {
                 LogLogicFailure(FailureReason.NoResults);
-                return ApiResult<ApiPlan>.FailWithReason(FailureReason.NoResults);
+                return ApiResult<TripPlan>.FailWithReason(FailureReason.NoResults);
             }
 
-            return response;
+            return new ApiResult<TripPlan>(new TripPlan(response.Result, details.FromPlaceString, details.ToPlaceString));
         }
 
         public async Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken))
@@ -251,44 +256,6 @@ namespace DigiTransit10.Services
             }
 
             return new ApiResult<IEnumerable<TransitLine>>(response.Result.Select(x => new TransitLine(x)));
-        }
-
-        public async Task<ApiResult<IEnumerable<ApiStop>>> GetStopsByBoundingBox(GeoboundingBox boundingBox,
-            CancellationToken token = default(CancellationToken))
-        {
-            GqlQuery query = new GqlQuery(ApiGqlMembers.stopsByBbox)
-                .WithParameters(
-                    new GqlParameter(ApiGqlMembers.minLat, boundingBox.NorthwestCorner.Latitude),
-                    new GqlParameter(ApiGqlMembers.minLon, boundingBox.NorthwestCorner.Longitude),
-                    new GqlParameter(ApiGqlMembers.maxLat, boundingBox.SoutheastCorner.Latitude),
-                    new GqlParameter(ApiGqlMembers.maxLon, boundingBox.SoutheastCorner.Longitude)
-                )
-                .WithReturnValues(
-                    new GqlReturnValue(ApiGqlMembers.name),
-                    new GqlReturnValue(ApiGqlMembers.code),
-                    new GqlReturnValue(ApiGqlMembers.lat),
-                    new GqlReturnValue(ApiGqlMembers.lon),
-                    new GqlReturnValue(ApiGqlMembers.patterns,
-                        new GqlReturnValue(ApiGqlMembers.name),
-                        new GqlReturnValue(ApiGqlMembers.route,
-                            new GqlReturnValue(ApiGqlMembers.shortName),
-                            new GqlReturnValue(ApiGqlMembers.longName)
-                        )
-                    )
-                );
-
-            ApiResult<IEnumerable<ApiStop>> response = await GetGraphQLAsync<IEnumerable<ApiStop>>(query, token);
-            if (!response.HasResult)
-            {
-                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(response.Failure.Reason);
-            }
-            if (response.HasResult && !response.Result.Any())
-            {
-                LogLogicFailure(FailureReason.NoResults);
-                return ApiResult<IEnumerable<ApiStop>>.FailWithReason(FailureReason.NoResults);
-            }
-
-            return response;
         }
 
         public async Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters,

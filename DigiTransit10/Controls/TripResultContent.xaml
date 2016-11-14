@@ -451,6 +451,7 @@
                              Background="{ThemeResource HighOpacityBackgroundBrush}"                             
                              Loaded="DirectionsFloatingPanel_Loaded"
                              VerticalAlignment="Bottom"
+                             VerticalContentAlignment="Top"
                              RenderTransformOrigin="0.5,0.5"
                              Visibility="Collapsed">
             <local:FloatingPanel.RenderTransform>
@@ -463,7 +464,8 @@
                           IsItemClickEnabled="True"
                           ItemsSource="{x:Bind ViewModel.SelectedDetailLegs, Mode=OneWay}"
                           ItemTemplateSelector="{StaticResource DetailedTripListLegSelector}"
-                          ItemClick="DetailedTripList_OnItemClick">
+                          ItemClick="DetailedTripList_OnItemClick"
+                          VerticalAlignment="Top">
                 <ListView.ItemContainerTransitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>

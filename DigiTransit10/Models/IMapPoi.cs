@@ -7,6 +7,6 @@ namespace DigiTransit10.Models
     {
         string Name { get; set; }
         BasicGeoposition Coords { get; }
-        Guid OptionalId { get; set; }
+        Guid Id { get; set; }
     }
 }

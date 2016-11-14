@@ -85,7 +85,7 @@ namespace DigiTransit10.Services
         {
             _favorites.Add(newFavorite);
 
-            _settingsService.PushFavoriteId(newFavorite.FavoriteId);
+            _settingsService.PushFavoriteId(newFavorite.Id);
             FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(new List<IFavorite> { newFavorite }, null, null));
         }
 
@@ -94,7 +94,7 @@ namespace DigiTransit10.Services
             bool success = _favorites.Remove(toRemove);
             if (success)
             {
-                _settingsService.RemovedFavoriteId(toRemove.FavoriteId);
+                _settingsService.RemovedFavoriteId(toRemove.Id);
                 FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, new List<IFavorite> { toRemove }, null));
             }            
         }
@@ -105,7 +105,7 @@ namespace DigiTransit10.Services
             {
                 foreach(var fave in deletedFaves)
                 {
-                    _settingsService.RemovedFavoriteId(fave.FavoriteId);
+                    _settingsService.RemovedFavoriteId(fave.Id);
                 }
                 FavoritesChanged?.Invoke(this, new FavoritesChangedEventArgs(null, deletedFaves.ToList(), null));
             }
@@ -118,7 +118,7 @@ namespace DigiTransit10.Services
         /// <returns>Success if the favorite is successfully found and modified, false otherwise.</returns>
         public bool EditFavorite(IFavorite edited)
         {
-            var found = _favorites.FirstOrDefault(x => x.FavoriteId == edited.FavoriteId);
+            var found = _favorites.FirstOrDefault(x => x.Id == edited.Id);
             if(found == null)
             {
                 return false;
@@ -161,7 +161,7 @@ namespace DigiTransit10.Services
         {
             var idList = _settingsService.PinnedFavoriteIds;
             return (await GetFavoritesAsync())
-                .Where(x => idList.Any(y => x.FavoriteId == y))
+                .Where(x => idList.Any(y => x.Id == y))
                 .ToImmutableList();
         }
 
