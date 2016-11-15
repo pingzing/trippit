@@ -29,13 +29,13 @@
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutSubItem Text="Pin to...">
-                            <MenuFlyoutItem Text="Start"/>
-                            <MenuFlyoutItem Text="Main page"/>
+                        <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"/>
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"/>
                         </MenuFlyoutSubItem>
-                        <MenuFlyoutItem Text="Set as destination"/>
-                        <MenuFlyoutItem Text="Set as origin"/>
-                        <MenuFlyoutItem Text="Add to favorites"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsDestination}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsOrigin}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_AddToFavorites}"/>
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
                 <Interactivity:Interaction.Behaviors>

@@ -17,14 +17,14 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 11/10/2016 16:23:09
+// 	Generated: 11/16/2016 01:07:58
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
 {
     using Windows.ApplicationModel.Resources;
-
-
+    
+    
     public partial class AppResources
     {
         
@@ -852,6 +852,94 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("SearchPage_MapContextFindPlacesAtMe");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Add to favorites"
+        /// </summary>
+        public static string Flyout_AddToFavorites
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_AddToFavorites");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Edit"
+        /// </summary>
+        public static string Flyout_Edit
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_Edit");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Main page"
+        /// </summary>
+        public static string Flyout_MainPage
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_MainPage");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Pin to..."
+        /// </summary>
+        public static string Flyout_PinTo
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_PinTo");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Select"
+        /// </summary>
+        public static string Flyout_Select
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_Select");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Set as destination"
+        /// </summary>
+        public static string Flyout_SetAsDestination
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_SetAsDestination");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Set as origin"
+        /// </summary>
+        public static string Flyout_SetAsOrigin
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_SetAsOrigin");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Start"
+        /// </summary>
+        public static string Flyout_Start
+        {
+            get
+            {
+                return resourceLoader.GetString("Flyout_Start");
             }
         }
     }
