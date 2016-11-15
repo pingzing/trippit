@@ -6,6 +6,7 @@ using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -62,8 +63,12 @@ namespace DigiTransit10.Views
 
         private async void CenterMapOnLocation(MessageTypes.CenterMapOnGeoposition args)
         {
-            const double initialZoomAdjustment = 0.01;
-            const double narrowZoomAdjustment = 0.005;
+            await TrySetMapViewWithMargin(args.Position, .01);
+        }
+
+        private async Task TrySetMapViewWithMargin(BasicGeoposition pos, double boundingBoxZoomAdjustment, MapAnimationKind mapAnimation = MapAnimationKind.None)
+        {
+            double narrowZoomAdjustment = boundingBoxZoomAdjustment / 2;
 
             // Create a box surrounding the specified point to emulate a zoom level on the map.
             // We're using a simulated bounding box, because we need to be able to specify a margin,
@@ -71,19 +76,19 @@ namespace DigiTransit10.Views
             BasicGeoposition northwest = BasicGeopositionExtensions.Create
             (
                 0.0,
-                args.Position.Longitude - initialZoomAdjustment,
-                args.Position.Latitude + initialZoomAdjustment
+                pos.Longitude - boundingBoxZoomAdjustment,
+                pos.Latitude + boundingBoxZoomAdjustment
             );
             BasicGeoposition southeast = BasicGeopositionExtensions.Create
             (
                 0.0,
-                args.Position.Longitude + initialZoomAdjustment,
-                args.Position.Latitude - initialZoomAdjustment
+                pos.Longitude + boundingBoxZoomAdjustment,
+                pos.Latitude - boundingBoxZoomAdjustment
             );
             if (AdaptiveVisualStateGroup.CurrentState == _narrowVisualState)
             {
-                //Zoom in a little further when in the narrow view, otherwise we're in a little too close 
-                //for the narrow field of view
+                // Zoom in a little further when in the narrow view, otherwise we're a little
+                // too far out for the narrow field of view
                 northwest.Longitude += narrowZoomAdjustment;
                 northwest.Latitude -= narrowZoomAdjustment;
 
@@ -94,17 +99,17 @@ namespace DigiTransit10.Views
                 if (NarrowSearchPanel.IsOpen)
                 {
                     double bottomMargin = NarrowSearchPanel.ExpandedHeight;
-                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, bottomMargin), MapAnimationKind.None);
+                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, bottomMargin), mapAnimation);
                 }
                 else
                 {
-                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, 0), MapAnimationKind.None);
+                    await PageMap.TrySetViewBoundsAsync(box, new Thickness(0, 0, 0, 0), mapAnimation);
                 }
             }
             else
             {
                 GeoboundingBox box = new GeoboundingBox(northwest, southeast);
-                await PageMap.TrySetViewBoundsAsync(box, new Thickness(400, 0, 0, 0), MapAnimationKind.None);
+                await PageMap.TrySetViewBoundsAsync(box, new Thickness(410, 0, 0, 0), mapAnimation);
             }
         }
 
@@ -268,6 +273,24 @@ namespace DigiTransit10.Views
             var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
             ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;
             flyout.ShowAt(sender, args.Position);
+        }
+
+        private void NearbyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedStop = e.AddedItems.FirstOrDefault() as TransitStop;
+            if (selectedStop != null)
+            {
+                TrySetMapViewWithMargin(selectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();
+            }
+        }
+
+        private void StopsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedStop = e.AddedItems.FirstOrDefault() as TransitStop;
+            if (selectedStop != null)
+            {
+                TrySetMapViewWithMargin(selectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();
+            }
         }
     }
 }

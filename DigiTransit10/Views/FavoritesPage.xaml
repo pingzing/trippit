@@ -20,14 +20,6 @@
     mc:Ignorable="d"
     Loaded="Page_Loaded">
 
-    <Page.Transitions>
-        <TransitionCollection>
-            <NavigationThemeTransition>
-                <SuppressNavigationTransitionInfo />
-            </NavigationThemeTransition>
-        </TransitionCollection>
-    </Page.Transitions>
-
     <Page.Resources>
         <!--Favorites set in code-behind to make the designer happy.-->
         <CollectionViewSource x:Key="FavoritesViewSourceKey"
@@ -185,11 +177,6 @@
 
         <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
             <Grid Margin="10">
-                <Grid.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
-                    </TransitionCollection>
-                </Grid.ChildrenTransitions>
 
                 <TextBlock x:Name="EmptyListTextBlock"                    
                                Visibility="{x:Bind IsFavoritesEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
@@ -280,11 +267,6 @@
             <!--  secondary commands  -->
             <controls:PageHeader.SecondaryCommands>
             </controls:PageHeader.SecondaryCommands>
-            <controls:PageHeader.Transitions>
-                <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True"/>
-                </TransitionCollection>
-            </controls:PageHeader.Transitions>
         </controls:PageHeader>
 
         <Grid x:Name="ContentRoot"
@@ -310,11 +292,6 @@
                             ContentTemplate="{StaticResource FavoritesTemplate}"
                             HorizontalContentAlignment="Stretch"
                             Visibility="Collapsed">
-                <ContentControl.Transitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
-                    </TransitionCollection>
-                </ContentControl.Transitions>
             </ContentControl>
 
             <Grid x:Name="WideFavoritesPanel" 
@@ -329,16 +306,6 @@
                   VerticalAlignment="Stretch"
                   Visibility="Collapsed"
                   Width="400">
-                <Grid.Transitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
-                    </TransitionCollection>
-                </Grid.Transitions>
-                <Grid.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"/>
-                    </TransitionCollection>
-                </Grid.ChildrenTransitions>
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

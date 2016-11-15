@@ -27,6 +27,22 @@
                 </Grid.ColumnDefinitions>
                 <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
                 <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutSubItem Text="Pin to...">
+                            <MenuFlyoutItem Text="Start"/>
+                            <MenuFlyoutItem Text="Main page"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem Text="Set as destination"/>
+                        <MenuFlyoutItem Text="Set as origin"/>
+                        <MenuFlyoutItem Text="Add to favorites"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="RightTapped">
+                        <Behaviors:OpenFlyoutAction/>
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
             </Grid>
         </DataTemplate>
         
@@ -50,7 +66,8 @@
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
                         <ListView x:Name="NearbyList"
                                   ItemTemplate="{StaticResource TransitStopTemplate}"
-                                  ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}">
+                                  ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}"
+                                  SelectionChanged="NearbyList_SelectionChanged">
                         </ListView>
                     </PivotItem>
                     <PivotItem x:Name="LinesPivot"
@@ -79,7 +96,8 @@
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_StopsHeader}">
                         <ListView x:Name="StopsList"
                                   ItemTemplate="{StaticResource TransitStopTemplate}"
-                                  ItemsSource="{x:Bind StopsResultList, Mode=OneWay}">
+                                  ItemsSource="{x:Bind StopsResultList, Mode=OneWay}"
+                                  SelectionChanged="StopsList_SelectionChanged">
                             <ListView.Header>
                                 <AutoSuggestBox x:Name="StopsSearchBox"
                                                 Grid.Row="0"
