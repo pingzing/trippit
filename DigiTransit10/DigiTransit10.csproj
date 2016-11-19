@@ -144,6 +144,12 @@
     <Compile Include="Controls\NavCommandBar.xaml.cs">
       <DependentUpon>NavCommandBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StopSearchContent.xaml.cs">
+      <DependentUpon>StopSearchContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StopSearchElement.xaml.cs">
+      <DependentUpon>StopSearchElement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TripDetailListIntermediates.xaml.cs">
       <DependentUpon>TripDetailListIntermediates.xaml</DependentUpon>
     </Compile>
@@ -287,6 +293,8 @@
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\StopSearchContentViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\StopSearchElementViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Models\TripItinerary.cs" />
@@ -514,6 +522,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NavCommandBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StopSearchContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StopSearchElement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
