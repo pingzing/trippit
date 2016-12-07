@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using DigiTransit10.ViewModels.ControlViewModels;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -19,9 +8,41 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class StopSearchContent : UserControl
     {
+        private VisualState _currentState;
+
+        public StopSearchContentViewModel ViewModel => DataContext as StopSearchContentViewModel;
+
         public StopSearchContent()
         {
             this.InitializeComponent();
+            this.Common.CurrentStateChanged += (s, args) => _currentState = args.NewState;
+            this.Loaded += StopSearchContent_Loaded;
+            this.Unloaded += StopSearchContent_Unloaded;
+        }
+
+        private void StopSearchContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.LoadedCommand.Execute(null);
+        }
+
+        private void StopSearchContent_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.UnloadedCommand.Execute(null);
+        }
+
+        private void StopsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+
+        }
+
+        private void StopsSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+
+        }
+
+        private void StopsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

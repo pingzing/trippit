@@ -19,33 +19,6 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=Search}">
 
     <Page.Resources>
-        <DataTemplate x:Key="TransitStopTemplate" x:DataType="models:TransitStop">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <FontIcon Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-                <TextBlock Grid.Column="1" Margin="5 0 0 0" Text="{x:Bind NameAndCode}"/>
-                <FlyoutBase.AttachedFlyout>
-                    <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
-                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"/>
-                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"/>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsDestination}"/>
-                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsOrigin}"/>
-                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_AddToFavorites}"/>
-                    </MenuFlyout>
-                </FlyoutBase.AttachedFlyout>
-                <Interactivity:Interaction.Behaviors>
-                    <Core:EventTriggerBehavior EventName="RightTapped">
-                        <Behaviors:OpenFlyoutAction/>
-                    </Core:EventTriggerBehavior>
-                </Interactivity:Interaction.Behaviors>
-            </Grid>
-        </DataTemplate>
-        
         <DataTemplate x:Key="SearchPanelTemplate" x:DataType="vms:SearchViewModel">
             <Grid>
                 <Grid.RowDefinitions>
@@ -64,11 +37,7 @@
                        SelectionChanged="SearchPivot_SelectionChanged">
                     <PivotItem x:Name="NearbyPivot"                                
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
-                        <ListView x:Name="NearbyList"
-                                  ItemTemplate="{StaticResource TransitStopTemplate}"
-                                  ItemsSource="{x:Bind NearbyStopsResultList, Mode=OneWay}"
-                                  SelectionChanged="NearbyList_SelectionChanged">
-                        </ListView>
+                        <lclCtls:StopSearchContent DataContext="{x:Bind NearbyStopsViewModel}"/>
                     </PivotItem>
                     <PivotItem x:Name="LinesPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_LinesHeader}">
@@ -87,27 +56,14 @@
                             </ListView.Header>
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="ctlVms:LineSearchElementViewModel">
-                                    <lclCtls:LineSearchElement DataContext="{x:Bind}"/>
+                                    <lclCtls:LineSearchElement DataContext="{x:Bind }"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
                     </PivotItem>
                     <PivotItem x:Name="StopsPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_StopsHeader}">
-                        <ListView x:Name="StopsList"
-                                  ItemTemplate="{StaticResource TransitStopTemplate}"
-                                  ItemsSource="{x:Bind StopsResultList, Mode=OneWay}"
-                                  SelectionChanged="StopsList_SelectionChanged">
-                            <ListView.Header>
-                                <AutoSuggestBox x:Name="StopsSearchBox"
-                                                Grid.Row="0"
-                                                Margin="0 0 0 10"
-                                                QueryIcon="Find"
-                                                QuerySubmitted="StopsSearchBox_QuerySubmitted"
-                                                Text="{Binding StopsSearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                TextChanged="StopsSearchBox_TextChanged"/>
-                            </ListView.Header>
-                        </ListView>
+                        <lclCtls:StopSearchContent DataContext="{x:Bind SearchStopsViewModel}"/>
                     </PivotItem>
                 </Pivot>
             </Grid>

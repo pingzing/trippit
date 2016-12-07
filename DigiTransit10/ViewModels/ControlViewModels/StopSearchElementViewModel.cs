@@ -12,8 +12,13 @@ using Template10.Services.NavigationService;
 namespace DigiTransit10.ViewModels.ControlViewModels
 {
     public class StopSearchElementViewModel : BindableBase
-    {        
-        private readonly INavigationService _navService;
+    {
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { Set(ref _isSelected, value); }
+        }
 
         private TransitStop _backingStop;
         public TransitStop BackingStop

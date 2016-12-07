@@ -2,7 +2,7 @@
 
 namespace DigiTransit10.VisualStateFramework
 {
-    public abstract class StateAwareViewModel : ViewModelBase
+    public abstract class StateAwareViewModel : BindableBase
     {
         /// <summary>
         /// A ViewModel that can set VisualStates by making use of the <see cref="VmStateChangeRequested"/> event.
@@ -28,5 +28,10 @@ namespace DigiTransit10.VisualStateFramework
         /// The name of the current VisualState. Automatically updated when changed by a <see cref="DataTrigger"/>.
         /// </summary>
         public string CurrentStateName { get; set; }
+
+        /// <summary>
+        /// The name of the VisualState to start in.
+        /// </summary>
+        public string DefaultStateName { get; set; }
     }
 }

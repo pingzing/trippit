@@ -5,11 +5,58 @@
     xmlns:local="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Media="using:Microsoft.Xaml.Interactions.Media"
+    xmlns:Behaviors="using:Template10.Behaviors"
+    xmlns:models="using:DigiTransit10.Models"
+    xmlns:vsf="using:DigiTransit10.VisualStateFramework"
+    xmlns:lclCtls="using:DigiTransit10.Controls"
+    xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid>
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="Common">
+            
+            <VisualState x:Name="Overview">
+                <VisualState.StateTriggers>
+                    <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Overview" IsDefaultState="True"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+            
+            <VisualState x:Name="Details">
+                <VisualState.StateTriggers>
+                    <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Details"/>
+                </VisualState.StateTriggers>
+            </VisualState>
+            
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
+    <Grid>
+        <ListView x:Name="StopsList"                  
+                  ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"
+                  SelectionChanged="StopsList_SelectionChanged">
+            <ListView.Header>
+                <AutoSuggestBox x:Name="StopsSearchBox"
+                                Grid.Row="0"
+                                Margin="0 0 0 10"
+                                QueryIcon="Find"
+                                QuerySubmitted="StopsSearchBox_QuerySubmitted"
+                                Text="{Binding StopsSearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                TextChanged="StopsSearchBox_TextChanged"/>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="ctlVms:StopSearchElementViewModel">
+                    <lclCtls:StopSearchElement DataContext="{x:Bind }"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!--Note: When we switch into the Details view, we need to Lock the parent's pivot.-->
+        <Pivot x:Name="StopDetailsPivot"/>
     </Grid>
+    
 </UserControl>

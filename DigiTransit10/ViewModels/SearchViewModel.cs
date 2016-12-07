@@ -79,25 +79,11 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private ObservableCollection<TransitStop> _nearbyStopsResultList = new ObservableCollection<TransitStop>();
-        public ObservableCollection<TransitStop> NearbyStopsResultList
-        {
-            get { return _nearbyStopsResultList; }
-            set { Set(ref _nearbyStopsResultList, value); }
-        }
-
         private ObservableCollection<LineSearchElementViewModel> _linesResultList = new ObservableCollection<LineSearchElementViewModel>();
         public ObservableCollection<LineSearchElementViewModel> LinesResultList
         {
             get { return _linesResultList; }
             set { Set(ref _linesResultList, value); }
-        }
-
-        private ObservableCollection<TransitStop> _stopsResultList = new ObservableCollection<TransitStop>();
-        public ObservableCollection<TransitStop> StopsResultList
-        {
-            get { return _stopsResultList; }
-            set { Set(ref _stopsResultList, value); }
         }
 
         private ObservableCollection<IMapPoi> _mapPlaces = new ObservableCollection<IMapPoi>();
@@ -133,6 +119,20 @@ namespace DigiTransit10.ViewModels
         {
             get { return _stopsSearchBoxText; }
             set { Set(ref _stopsSearchBoxText, value); }
+        }
+
+        private StopSearchContentViewModel _nearbyStopsViewModel = new StopSearchContentViewModel();
+        public StopSearchContentViewModel NearbyStopsViewModel
+        {
+            get { return _nearbyStopsViewModel; }
+            set { Set(ref _nearbyStopsViewModel, value); }
+        }
+
+        private StopSearchContentViewModel _searchStopsViewModel = new StopSearchContentViewModel();
+        public StopSearchContentViewModel SearchStopsViewModel
+        {
+            get { return _searchStopsViewModel; }
+            set { Set(ref _searchStopsViewModel, value); }
         }
 
         public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
@@ -221,7 +221,7 @@ namespace DigiTransit10.ViewModels
             {
                 return;
             }
-            NearbyStopsResultList = new ObservableCollection<TransitStop>(response.Result);
+            //set new nearbystops list //NearbyStopsResultList = new ObservableCollection<TransitStop>(response.Result);
             IsNearbyStopsLoading = false;
             MapPlaces = new ObservableCollection<IMapPoi>(response.Result
                 .Select(x => new BasicMapPoi
@@ -236,7 +236,7 @@ namespace DigiTransit10.ViewModels
         {
             if (String.IsNullOrWhiteSpace(searchText))
             {
-                StopsResultList.Clear();
+                //clear SearchStops list //StopsResultList.Clear();
                 return;
             }
 
@@ -252,23 +252,26 @@ namespace DigiTransit10.ViewModels
             if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 IsStopsLoading = false;
-                StopsResultList.Clear();
+                //Clera searchStopsList StopsResultList.Clear();
                 return;
             }
-            StopsResultList = new ObservableCollection<TransitStop>(response.Result.Select(x => new TransitStop
-            {
-                Name = x.Name,
-                Code = x.Code,
-                Coords = x.Coords
-            }));
-            MapPlaces = new ObservableCollection<IMapPoi>(StopsResultList
-                .Select(x => new Place
-                {
-                    Lat = (float)x.Coords.Latitude,
-                    Lon = (float)x.Coords.Longitude,
-                    Name = x.NameAndCode,
-                    Type = ModelEnums.PlaceType.Stop
-                }));
+            //Set SearchStopsList to result of search
+            //StopsResultList = new ObservableCollection<TransitStop>(response.Result.Select(x => new TransitStop
+            //{
+            //    Name = x.Name,
+            //    Code = x.Code,
+            //    Coords = x.Coords
+            //}));
+
+            //Same with Map POIs
+            //MapPlaces = new ObservableCollection<IMapPoi>(StopsResultList
+            //    .Select(x => new Place
+            //    {
+            //        Lat = (float)x.Coords.Latitude,
+            //        Lon = (float)x.Coords.Longitude,
+            //        Name = x.NameAndCode,
+            //        Type = ModelEnums.PlaceType.Stop
+            //    }));
 
             IsStopsLoading = false;
         }
@@ -277,7 +280,7 @@ namespace DigiTransit10.ViewModels
         {
             if (String.IsNullOrWhiteSpace(searchText))
             {
-                StopsResultList.Clear();
+                //Clear SearchStops list //StopsResultList.Clear();
                 return;
             }
 
@@ -293,7 +296,7 @@ namespace DigiTransit10.ViewModels
             if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 IsLinesLoading = false;
-                StopsResultList.Clear();
+                //Clear SearchStops list //StopsResultList.Clear();
                 return;
             }
             LinesResultList = new ObservableCollection<LineSearchElementViewModel>(response.Result.Select(x => new LineSearchElementViewModel { BackingLine = x }));

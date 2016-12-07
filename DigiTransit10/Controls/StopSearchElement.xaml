@@ -39,7 +39,7 @@
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Left"
                 Style="{StaticResource TextBlockButtonStyle}"
-                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay}"/>
+                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
         <FlyoutBase.AttachedFlyout>
             <MenuFlyout Placement="Bottom">
                 <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
