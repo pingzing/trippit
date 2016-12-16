@@ -36,6 +36,5 @@ namespace DigiTransit10.ExtensionMethods
               .GetAwaiter()
               .GetResult();
         }
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
 using DigiTransit10.Models;
-using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using DigiTransit10.Styles;
 using DigiTransit10.ViewModels.ControlViewModels;
@@ -33,6 +32,7 @@ namespace DigiTransit10.ViewModels
         private const int GeocircleNumberOfPoints = 100;
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
+        private readonly IMessenger _messenger;
 
         private List<IMapPoi> _hiddenMapPlaces = new List<IMapPoi>();
         private List<IMapPoi> _hiddenMapNearbyPlaces = new List<IMapPoi>();
@@ -121,14 +121,14 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _stopsSearchBoxText, value); }
         }
 
-        private StopSearchContentViewModel _nearbyStopsViewModel = new StopSearchContentViewModel();
+        private StopSearchContentViewModel _nearbyStopsViewModel;
         public StopSearchContentViewModel NearbyStopsViewModel
         {
             get { return _nearbyStopsViewModel; }
             set { Set(ref _nearbyStopsViewModel, value); }
         }
 
-        private StopSearchContentViewModel _searchStopsViewModel = new StopSearchContentViewModel();
+        private StopSearchContentViewModel _searchStopsViewModel;
         public StopSearchContentViewModel SearchStopsViewModel
         {
             get { return _searchStopsViewModel; }
@@ -147,10 +147,14 @@ namespace DigiTransit10.ViewModels
             return arg != null;
         }
 
-        public SearchViewModel(INetworkService networkService, IGeolocationService geolocation)
+        public SearchViewModel(INetworkService networkService, IGeolocationService geolocation, IMessenger messenger)
         {
             _networkService = networkService;
             _geolocation = geolocation;
+            _messenger = messenger;
+
+            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
+            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -196,7 +200,7 @@ namespace DigiTransit10.ViewModels
             }
             IsNearbyStopsLoading = false;
         }
-
+        
         private async Task UpdateNearbyPlaces(Geocircle circle)
         {
             if (_activeSection != SearchSection.Nearby)
@@ -211,18 +215,14 @@ namespace DigiTransit10.ViewModels
 
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
-            ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsByBoundingRadius(
-                (float)circle.Center.Latitude,
-                (float)circle.Center.Longitude,
-                (int)circle.Radius,
-                _cts.Token
-            );
-            if (response.IsFailure || _cts.IsCancellationRequested)
+            var response = await NearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);                       
+            IsNearbyStopsLoading = false;
+
+            if(response.IsFailure)
             {
                 return;
             }
-            //set new nearbystops list //NearbyStopsResultList = new ObservableCollection<TransitStop>(response.Result);
-            IsNearbyStopsLoading = false;
+
             MapPlaces = new ObservableCollection<IMapPoi>(response.Result
                 .Select(x => new BasicMapPoi
                 {
@@ -231,15 +231,9 @@ namespace DigiTransit10.ViewModels
                 })
                 .ToList());
         }
-
+        
         private async void SearchStops(string searchText)
-        {
-            if (String.IsNullOrWhiteSpace(searchText))
-            {
-                //clear SearchStops list //StopsResultList.Clear();
-                return;
-            }
-
+        {           
             if (_cts != null && !_cts.IsCancellationRequested)
             {
                 _cts.Cancel();
@@ -247,31 +241,21 @@ namespace DigiTransit10.ViewModels
             _cts = new CancellationTokenSource();
 
             IsStopsLoading = true;
-
-            var response = await _networkService.GetStopsAsync(searchText, _cts.Token);
-            if (response.IsFailure || _cts.IsCancellationRequested)
-            {
-                IsStopsLoading = false;
-                //Clera searchStopsList StopsResultList.Clear();
+            var stopsResult = await SearchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
+            IsStopsLoading = false;
+            if (stopsResult.IsFailure)
+            {                
                 return;
-            }
-            //Set SearchStopsList to result of search
-            //StopsResultList = new ObservableCollection<TransitStop>(response.Result.Select(x => new TransitStop
-            //{
-            //    Name = x.Name,
-            //    Code = x.Code,
-            //    Coords = x.Coords
-            //}));
+            }            
 
-            //Same with Map POIs
-            //MapPlaces = new ObservableCollection<IMapPoi>(StopsResultList
-            //    .Select(x => new Place
-            //    {
-            //        Lat = (float)x.Coords.Latitude,
-            //        Lon = (float)x.Coords.Longitude,
-            //        Name = x.NameAndCode,
-            //        Type = ModelEnums.PlaceType.Stop
-            //    }));
+            MapPlaces = new ObservableCollection<IMapPoi>(stopsResult.Result
+                .Select(x => new Place
+                {
+                    Lat = (float)x.Coords.Latitude,
+                    Lon = (float)x.Coords.Longitude,
+                    Name = x.NameAndCode,
+                    Type = ModelEnums.PlaceType.Stop
+                }));
 
             IsStopsLoading = false;
         }

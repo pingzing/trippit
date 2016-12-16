@@ -17,25 +17,30 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <VisualStateManager.VisualStateGroups>
-        <VisualStateGroup x:Name="Common">
-            
-            <VisualState x:Name="Overview">
-                <VisualState.StateTriggers>
-                    <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Overview" IsDefaultState="True"/>
-                </VisualState.StateTriggers>
-            </VisualState>
-            
-            <VisualState x:Name="Details">
-                <VisualState.StateTriggers>
-                    <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Details"/>
-                </VisualState.StateTriggers>
-            </VisualState>
-            
-        </VisualStateGroup>
-    </VisualStateManager.VisualStateGroups>
-
     <Grid>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="Common">
+
+                <VisualState x:Name="Overview">
+                    <VisualState.StateTriggers>
+                        <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Overview" IsDefaultState="True"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+
+                <VisualState x:Name="Details">
+                    <VisualState.StateTriggers>
+                        <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Details"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="StopsList.Visibility" Value="Collapsed"/>
+                        <Setter Target="StopDetailsPivot.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <ListView x:Name="StopsList"                  
                   ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"
                   SelectionChanged="StopsList_SelectionChanged">
@@ -56,7 +61,16 @@
         </ListView>
 
         <!--Note: When we switch into the Details view, we need to Lock the parent's pivot.-->
-        <Pivot x:Name="StopDetailsPivot"/>
+        <Pivot x:Name="StopDetailsPivot" 
+               x:DeferLoadStrategy="Lazy"
+               ItemsSource="{x:Bind ViewModel.LinesAtStop}"
+               Visibility="Collapsed">
+            <Pivot.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="I'm not implemented yet!"/>
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+        </Pivot>
     </Grid>
     
 </UserControl>

@@ -68,5 +68,18 @@ namespace DigiTransit10.Helpers
         /// Generic indicator that navigation has recently been canceled.
         /// </summary>
         public class NavigationCanceled { }
+
+        /// <summary>
+        /// Message to any listeners that the caller would like to view the details of the given stop.
+        /// </summary>
+        public class ViewStopDetails
+        {
+            public TransitStop StopSelected { get; private set; }
+
+            public ViewStopDetails(TransitStop stop)
+            {
+                StopSelected = stop;
+            }
+        }
     }
 }

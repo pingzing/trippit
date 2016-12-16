@@ -364,4 +364,7 @@
   <data name="StopSearchElement_ViewDetails" xml:space="preserve">
     <value>View stop details</value>
   </data>
+  <data name="String1" xml:space="preserve">
+    <value>View details</value>
+  </data>
 </root>

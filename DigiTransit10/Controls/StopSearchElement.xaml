@@ -10,15 +10,10 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Media="using:Microsoft.Xaml.Interactions.Media" 
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="48.667"
+    d:DesignWidth="296.667">
 
     <Grid>
-        <Grid.ChildrenTransitions>
-            <TransitionCollection>
-                <RepositionThemeTransition/>
-            </TransitionCollection>
-        </Grid.ChildrenTransitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -27,19 +22,26 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <FontIcon Grid.Row="0" Grid.Column="0" 
+        <FontIcon Grid.Column="0" Grid.Row="0"
                   FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                   Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" 
+        <TextBlock Grid.Column="1" Grid.Row="0"
                    Margin="5 0 0 0" 
                    Text="{x:Bind ViewModel.BackingStop.NameAndCode, Mode=OneWay}"/>
-        <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+        <Button x:Name="ViewDetailsButton"
+                Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                 Command="{x:Bind ViewModel.ViewDetailsCommand, Mode=OneWay}"
                 Content="{Binding Source={StaticResource Strings}, Path=StopSearchElement_ViewDetails}"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Left"
                 Style="{StaticResource TextBlockButtonStyle}"
-                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Button.Transitions>
+                <TransitionCollection>
+                    <ContentThemeTransition/>
+                </TransitionCollection>
+            </Button.Transitions>
+        </Button>
         <FlyoutBase.AttachedFlyout>
             <MenuFlyout Placement="Bottom">
                 <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">

@@ -1,4 +1,5 @@
 ﻿using DigiTransit10.ViewModels.ControlViewModels;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -42,7 +43,14 @@ namespace DigiTransit10.Controls
 
         private void StopsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            foreach (StopSearchElementViewModel vm in e.RemovedItems.OfType<StopSearchElementViewModel>())
+            {
+                vm.IsSelected = false;
+            }
+            foreach (StopSearchElementViewModel vm in e.AddedItems.OfType<StopSearchElementViewModel>())
+            {
+                vm.IsSelected = true;
+            }
         }
     }
 }

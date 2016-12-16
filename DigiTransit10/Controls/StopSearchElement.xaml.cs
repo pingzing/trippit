@@ -24,7 +24,8 @@ namespace DigiTransit10.Controls
 
         public StopSearchElement()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
+            this.DataContextChanged += (s, e) => Bindings.Update();       
         }
     }
 }

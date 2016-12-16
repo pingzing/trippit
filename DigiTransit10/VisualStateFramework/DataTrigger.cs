@@ -51,7 +51,7 @@ namespace DigiTransit10.VisualStateFramework
                 _viewModel = value;
                 _viewModel.VmStateChangeRequested += VmStateChangeRequested;
 
-                if (_viewModel.CurrentStateName == null && ViewModelStateName != null)
+                if (_viewModel.CurrentStateName == null && ViewModelStateName != null && IsDefaultState)
                 {
                     ViewModel.CurrentStateName = ViewModelStateName;
                 }

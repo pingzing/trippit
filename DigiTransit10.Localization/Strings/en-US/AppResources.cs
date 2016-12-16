@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 11/16/2016 01:07:58
+// 	Generated: 12/10/2016 13:01:53
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -940,6 +940,28 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("Flyout_Start");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "View stop details"
+        /// </summary>
+        public static string StopSearchElement_ViewDetails
+        {
+            get
+            {
+                return resourceLoader.GetString("StopSearchElement_ViewDetails");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "View details"
+        /// </summary>
+        public static string String1
+        {
+            get
+            {
+                return resourceLoader.GetString("String1");
             }
         }
     }

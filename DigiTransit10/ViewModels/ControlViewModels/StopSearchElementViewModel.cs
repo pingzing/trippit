@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.Models;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 {
     public class StopSearchElementViewModel : BindableBase
     {
+        private IMessenger _messenger;
+         
         private bool _isSelected;
         public bool IsSelected
         {
@@ -29,14 +32,15 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         public RelayCommand ViewDetailsCommand => new RelayCommand(ViewDetails);        
 
-        public StopSearchElementViewModel(TransitStop backingStop)
+        public StopSearchElementViewModel(TransitStop backingStop, IMessenger messenger)
         {
             BackingStop = backingStop;
+            _messenger = messenger;
         }        
 
         private void ViewDetails()
         {
-            //send a message to parent asking it to move into the detailed state.  
-        }       
+            _messenger.Send(new Helpers.MessageTypes.ViewStopDetails(BackingStop));
+        }
     }
 }
