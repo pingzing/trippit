@@ -47,22 +47,22 @@ namespace DigiTransit10.VisualStateFramework
                 if(value == null)
                 {
                     return;
-                }                
+                }
                 _viewModel = value;
                 _viewModel.VmStateChangeRequested += VmStateChangeRequested;
 
                 if (_viewModel.CurrentStateName == null && ViewModelStateName != null && IsDefaultState)
                 {
-                    ViewModel.CurrentStateName = ViewModelStateName;
+                    VmStateChangeRequested(_viewModel, new VmStateChangedEventArgs(ViewModelStateName));
                 }
             }
         }
 
         private void VmStateChangeRequested(StateAwareViewModel viewModel, VmStateChangedEventArgs args)
         {
+            SetActive(args.NewStateName.Equals(ViewModelStateName));
             if (viewModel.CurrentStateName != args.NewStateName)
-            {                
-                SetActive(args.NewStateName.Equals(ViewModelStateName));
+            {                                
                 viewModel.CurrentStateName = args.NewStateName;
             }
         }

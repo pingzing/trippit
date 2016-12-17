@@ -33,11 +33,13 @@
 
                 <Pivot x:Name="SearchPivot"
                        Grid.Row="1"
+                       IsLocked="{x:Bind ChildIsInDetailedState, Mode=OneWay}"
                        VerticalAlignment="Stretch"
                        SelectionChanged="SearchPivot_SelectionChanged">
                     <PivotItem x:Name="NearbyPivot"                                
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
-                        <lclCtls:StopSearchContent DataContext="{x:Bind NearbyStopsViewModel}"/>
+                        <lclCtls:StopSearchContent DataContext="{x:Bind NearbyStopsViewModel}"
+                                                   IsSearchBoxVisible="False"/>
                     </PivotItem>
                     <PivotItem x:Name="LinesPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_LinesHeader}">
@@ -63,7 +65,10 @@
                     </PivotItem>
                     <PivotItem x:Name="StopsPivot"
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_StopsHeader}">
-                        <lclCtls:StopSearchContent DataContext="{x:Bind SearchStopsViewModel}"/>
+                        <lclCtls:StopSearchContent DataContext="{x:Bind SearchStopsViewModel}"
+                                                   IsSearchBoxVisible="True"
+                                                   SearchBoxTextChanged="StopsSearchBox_TextChanged"
+                                                   SearchBoxQuerySubmitted="StopsSearchBox_QuerySubmitted"/>
                     </PivotItem>
                 </Pivot>
             </Grid>

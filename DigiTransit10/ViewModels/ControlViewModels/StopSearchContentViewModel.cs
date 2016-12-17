@@ -40,7 +40,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         {
             get { return _linesAtStop; }
             set { Set(ref _linesAtStop, value); }
-        }
+        }        
 
         public StopSearchContentViewModel(IMessenger messenger, INetworkService network)
         {
@@ -128,6 +128,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         {
             _currentState = newState;
             VmStateChangeRequested?.Invoke(this, new VmStateChangedEventArgs(newState.ToString()));
+            _messenger.Send(new MessageTypes.ViewStateChanged(this, _currentState));            
         }
     }
 }

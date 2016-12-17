@@ -1,5 +1,7 @@
 ﻿using DigiTransit10.Models;
+using DigiTransit10.ViewModels.ControlViewModels;
 using Windows.Devices.Geolocation;
+using static DigiTransit10.ViewModels.ControlViewModels.StopSearchContentViewModel;
 
 namespace DigiTransit10.Helpers
 {
@@ -79,6 +81,18 @@ namespace DigiTransit10.Helpers
             public ViewStopDetails(TransitStop stop)
             {
                 StopSelected = stop;
+            }
+        }
+
+        public class ViewStateChanged
+        {
+            public StopSearchContentViewModel Sender { get; private set; }
+            public StopSearchState ViewState { get; set; }
+
+            public ViewStateChanged(StopSearchContentViewModel sender, StopSearchState newState)
+            {
+                Sender = sender;
+                ViewState = newState;
             }
         }
     }

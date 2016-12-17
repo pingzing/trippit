@@ -135,6 +135,13 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _searchStopsViewModel, value); }
         }
 
+        private bool _childIsInDetailedState = false;
+        public bool ChildIsInDetailedState
+        {
+            get { return _childIsInDetailedState; }
+            set { Set(ref _childIsInDetailedState, value); }
+        }
+
         public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
         public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);
         public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
@@ -155,6 +162,7 @@ namespace DigiTransit10.ViewModels
 
             _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
             _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
+            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -200,7 +208,7 @@ namespace DigiTransit10.ViewModels
             }
             IsNearbyStopsLoading = false;
         }
-        
+
         private async Task UpdateNearbyPlaces(Geocircle circle)
         {
             if (_activeSection != SearchSection.Nearby)
@@ -215,10 +223,10 @@ namespace DigiTransit10.ViewModels
 
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
-            var response = await NearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);                       
+            var response = await NearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
             IsNearbyStopsLoading = false;
 
-            if(response.IsFailure)
+            if (response.IsFailure)
             {
                 return;
             }
@@ -231,9 +239,9 @@ namespace DigiTransit10.ViewModels
                 })
                 .ToList());
         }
-        
+
         private async void SearchStops(string searchText)
-        {           
+        {
             if (_cts != null && !_cts.IsCancellationRequested)
             {
                 _cts.Cancel();
@@ -244,9 +252,9 @@ namespace DigiTransit10.ViewModels
             var stopsResult = await SearchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
             IsStopsLoading = false;
             if (stopsResult.IsFailure)
-            {                
+            {
                 return;
-            }            
+            }
 
             MapPlaces = new ObservableCollection<IMapPoi>(stopsResult.Result
                 .Select(x => new Place
@@ -302,9 +310,9 @@ namespace DigiTransit10.ViewModels
             var mapLine = new ColoredMapLine(linePoints);
             MapLines = new ObservableCollection<ColoredMapLine>(new List<ColoredMapLine> { mapLine });
             List<IMapPoi> stops = new List<IMapPoi>();
-            foreach(var stop in element.BackingLine.Stops)
+            foreach (var stop in element.BackingLine.Stops)
             {
-                stops.Add(new BasicMapPoi {Coords = stop.Coords, Name = stop.Name });
+                stops.Add(new BasicMapPoi { Coords = stop.Coords, Name = stop.Name });
             }
             MapPlaces = new ObservableCollection<IMapPoi>(stops);
         }
@@ -361,6 +369,15 @@ namespace DigiTransit10.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException("newSection", "You forgot to add the last case in SectionChanged on the SearchViewModel, dunce!");
             }
+        }
+
+        private void ChildStateChanged(MessageTypes.ViewStateChanged args)
+        {
+            if (ReferenceEquals(args.Sender, NearbyStopsViewModel) && _activeSection == SearchSection.Nearby
+                || ReferenceEquals(args.Sender, SearchStopsViewModel) && _activeSection == SearchSection.Stops)
+            {
+                ChildIsInDetailedState = args.ViewState == StopSearchContentViewModel.StopSearchState.Details;
+            }            
         }
     }
 }

@@ -21,7 +21,6 @@
         
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="Common">
-
                 <VisualState x:Name="Overview">
                     <VisualState.StateTriggers>
                         <vsf:DataTrigger ViewModel="{x:Bind ViewModel}" ViewModelStateName="Overview" IsDefaultState="True"/>
@@ -51,7 +50,8 @@
                                 QueryIcon="Find"
                                 QuerySubmitted="StopsSearchBox_QuerySubmitted"
                                 Text="{Binding StopsSearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TextChanged="StopsSearchBox_TextChanged"/>
+                                TextChanged="StopsSearchBox_TextChanged"
+                                Visibility="{x:Bind IsSearchBoxVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="ctlVms:StopSearchElementViewModel">
@@ -61,15 +61,13 @@
         </ListView>
 
         <!--Note: When we switch into the Details view, we need to Lock the parent's pivot.-->
+        <!--ItemsSource="{x:Bind ViewModel.LinesAtStop}"-->
         <Pivot x:Name="StopDetailsPivot" 
                x:DeferLoadStrategy="Lazy"
-               ItemsSource="{x:Bind ViewModel.LinesAtStop}"
+               
                Visibility="Collapsed">
-            <Pivot.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="I'm not implemented yet!"/>
-                </DataTemplate>
-            </Pivot.ItemTemplate>
+            <PivotItem Header="Test Pivot 1" Content="Text"/>
+            <PivotItem Header="Test Pivot 2" Content="More text!"/>
         </Pivot>
     </Grid>
     
