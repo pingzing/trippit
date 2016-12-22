@@ -501,7 +501,7 @@ namespace DigiTransit10.Controls
             var result = response.Result;
 
             //Remove entries in old list not in new response
-            List<string> responseIds = result.Select(x => x.Id).ToList();
+            List<string> responseIds = result.Select(x => x.GtfsId).ToList();
             List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.StringId)).ToList();
             foreach (var stale in stalePlaces)
             {
@@ -510,13 +510,13 @@ namespace DigiTransit10.Controls
 
             foreach (var stop in result)
             {
-                if (_stopList.Any(x => x.StringId == stop.Id))
+                if (_stopList.Any(x => x.StringId == stop.GtfsId))
                 {
                     continue;
                 }
                 Place foundPlace = new Place
                 {
-                    StringId = stop.Id,
+                    StringId = stop.GtfsId,
                     Name = stop.Name,
                     Lat = stop.Coords.Latitude,
                     Lon = stop.Coords.Longitude,

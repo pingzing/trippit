@@ -68,6 +68,9 @@ namespace DigiTransit10.Models.ApiModels
         /// </summary>
         [JsonProperty("stoptimesWithoutPatterns")]
         public List<ApiStoptime> StoptimesWithoutPatterns { get; set; }
+        /// <summary>
+        /// Just a container for a <see cref="GraphQL.GqlInlineMethodReturnValue"/> . Shouldn't be set directly.
+        /// </summary>
         [JsonProperty("stoptimesForServiceDate")]
         public List<ApiStoptimesInPattern> StoptimesForServiceDate { get; set; }
     }

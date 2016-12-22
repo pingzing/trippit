@@ -5,7 +5,7 @@
     /// so we can avoid needing to deal with raw strings when constructing a <see cref="GqlQuery"/> .
     /// </summary>
     public static class ApiGqlMembers
-    {
+    {        
         public static string points => nameof(points);
         public static string length => nameof(length);
         public static string legGeometry => nameof(legGeometry);
@@ -29,7 +29,7 @@
         public static string mode => "mode";
         public static string modes => "modes";
         public static string duration => "duration";
-        public static string realTime => "realTime";
+        public static string realtime => "realtime";
         public static string distance => "distance";
         public static string transitLeg => "transitLeg";
         public static string stops => "stops";
@@ -60,5 +60,11 @@
         public static string edges => nameof(edges);
         public static string node => nameof(node);
         public static string stop => nameof(stop);
+        public static string pattern => nameof(pattern);
+        public static string realtimeState => nameof(realtimeState);
+        public static string scheduledDeparture => nameof(scheduledDeparture);
+        public static string realtimeArrival => nameof(realtimeArrival);
+        public static string realtimeDeparture => nameof(realtimeDeparture);
+        public static string stopHeadsign => nameof(stopHeadsign);
     }
 }

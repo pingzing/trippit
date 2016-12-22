@@ -45,5 +45,7 @@ namespace DigiTransit10.Models.ApiModels
         public long? ServiceDay { get; set; }
         [JsonProperty("trip")]
         public ApiTrip Trip { get; set; }
+        [JsonProperty("stopHeadsign")]
+        public string StopHeadsign { get; set; }
     }
 }

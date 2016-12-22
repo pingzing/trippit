@@ -245,7 +245,10 @@
     <Compile Include="Models\SearchSectionChangedEventArgs.cs" />
     <Compile Include="Models\SecondaryTilePayload.cs" />
     <Compile Include="Models\TransitLine.cs" />
+    <Compile Include="Models\TransitLineWithoutStops.cs" />
     <Compile Include="Models\TransitStop.cs" />
+    <Compile Include="Models\TransitStopDetails.cs" />
+    <Compile Include="Models\TransitStopTime.cs" />
     <Compile Include="Models\TripLeg.cs" />
     <Compile Include="Models\TripQueryDetails.cs" />
     <Compile Include="Models\ColoredMapLinePoint.cs" />

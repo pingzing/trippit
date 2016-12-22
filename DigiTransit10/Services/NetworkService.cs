@@ -35,6 +35,7 @@ namespace DigiTransit10.Services
         Task<ApiResult<TripPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));        
         Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<TransitStopDetails>> GetStopDetails(string stopId, DateTime forDate, CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -136,7 +137,7 @@ namespace DigiTransit10.Services
                 Name = x.Name,
                 Code = x.Code,
                 Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat),
-                Id = x.Id
+                GtfsId = x.GtfsId
             }));
 
         }
@@ -271,6 +272,7 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.edges,
                         new GqlReturnValue(ApiGqlMembers.node,
                             new GqlReturnValue(ApiGqlMembers.stop,
+                                new GqlReturnValue(ApiGqlMembers.gtfsId),
                                 new GqlReturnValue(ApiGqlMembers.name),
                                 new GqlReturnValue(ApiGqlMembers.code),
                                 new GqlReturnValue(ApiGqlMembers.lat),
@@ -292,6 +294,7 @@ namespace DigiTransit10.Services
             {
                 IEnumerable<TransitStop> stops = response.Result.Edges?.Select(x => new TransitStop
                 {
+                    GtfsId = x.Node.Stop.GtfsId,
                     Coords = BasicGeopositionExtensions.Create(0.0, x.Node.Stop.Lon, x.Node.Stop.Lat),
                     Code = x.Node.Stop.Code,
                     Name = x.Node.Stop.Name
@@ -312,6 +315,44 @@ namespace DigiTransit10.Services
             {
                 return ApiResult<IEnumerable<TransitStop>>.FailWithReason(FailureReason.Unspecified);
             }
+        }
+
+        public async Task<ApiResult<TransitStopDetails>> GetStopDetails(string stopId, DateTime forDate, CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.stop)
+                .WithParameters(
+                    new GqlParameter(ApiGqlMembers.id, stopId)
+                )
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.gtfsId),
+                    new GqlReturnValue(ApiGqlMembers.name),
+                    new GqlInlineMethodReturnValue(ApiGqlMembers.stoptimesForServiceDate, new List<GqlParameter> { new GqlParameter(ApiGqlMembers.date, forDate) },
+                        new GqlReturnValue(ApiGqlMembers.pattern,
+                            new GqlReturnValue(ApiGqlMembers.route,
+                                new GqlReturnValue(ApiGqlMembers.mode),
+                                new GqlReturnValue(ApiGqlMembers.shortName),
+                                new GqlReturnValue(ApiGqlMembers.longName)
+                            )
+                        ),
+                        new GqlReturnValue(ApiGqlMembers.stoptimes,
+                            new GqlReturnValue(ApiGqlMembers.realtimeState),
+                            new GqlReturnValue(ApiGqlMembers.scheduledArrival),
+                            new GqlReturnValue(ApiGqlMembers.scheduledDeparture),
+                            new GqlReturnValue(ApiGqlMembers.realtimeArrival),
+                            new GqlReturnValue(ApiGqlMembers.realtimeDeparture),
+                            new GqlReturnValue(ApiGqlMembers.realtime),
+                            new GqlReturnValue(ApiGqlMembers.stopHeadsign)
+                        )
+                    )
+                );
+
+            var response = await GetGraphQLAsync<ApiStop>(query, token);
+            if(!response.HasResult)
+            {
+                return ApiResult<TransitStopDetails>.FailWithReason(response.Failure.Reason);
+            }
+
+            return new ApiResult<TransitStopDetails>(new TransitStopDetails(response.Result));
         }
 
         private async Task<ApiResult<T>> GetGraphQLAsync<T>(GqlQuery query, CancellationToken token = default(CancellationToken))
@@ -381,6 +422,6 @@ namespace DigiTransit10.Services
         private void LogException(Exception ex, [CallerMemberName]string caller = "Unknown")
         {
             _logger.Error($"{caller} threw exception: ", ex);
-        }
+        }        
     }
 }
