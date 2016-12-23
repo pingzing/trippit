@@ -176,7 +176,7 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.endTime),
                             new GqlReturnValue(ApiGqlMembers.mode),
                             new GqlReturnValue(ApiGqlMembers.duration),
-                            new GqlReturnValue(ApiGqlMembers.realTime),
+                            new GqlReturnValue(ApiGqlMembers.realtime),
                             new GqlReturnValue(ApiGqlMembers.distance),
                             new GqlReturnValue(ApiGqlMembers.transitLeg),
                             new GqlReturnValue(ApiGqlMembers.legGeometry,
@@ -346,18 +346,18 @@ namespace DigiTransit10.Services
                     )
                 );
 
-            var response = await GetGraphQLAsync<ApiStop>(query, token);
+            ApiResult<ApiStop> response = await GetGraphQLAsync<ApiStop>(query, token);
             if(!response.HasResult)
             {
                 return ApiResult<TransitStopDetails>.FailWithReason(response.Failure.Reason);
             }
 
-            return new ApiResult<TransitStopDetails>(new TransitStopDetails(response.Result));
+            return new ApiResult<TransitStopDetails>(new TransitStopDetails(response.Result, forDate));
         }
 
         private async Task<ApiResult<T>> GetGraphQLAsync<T>(GqlQuery query, CancellationToken token = default(CancellationToken))
         {
-            string parsedQuery = query.ParseToJsonString();
+            string parsedQuery = query.ParseToJsonString(DateParsingStrategy.NoSeparators);
             HttpStringContent stringContent = CreateJsonStringContent(parsedQuery);
             Uri uri = new Uri(DefaultGqlRequestUrl);
 

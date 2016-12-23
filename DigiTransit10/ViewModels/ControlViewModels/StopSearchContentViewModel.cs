@@ -35,25 +35,71 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _stopsResultList, value); }
         }
 
-        private ObservableCollection<TransitLine> _linesAtStop = new ObservableCollection<TransitLine>();
-        public ObservableCollection<TransitLine> LinesAtStop
+        private ObservableCollection<TransitLineWithoutStops> _linesAtStop = new ObservableCollection<TransitLineWithoutStops>();
+        public ObservableCollection<TransitLineWithoutStops> LinesAtStop
         {
             get { return _linesAtStop; }
             set { Set(ref _linesAtStop, value); }
-        }        
+        }
+
+        private ObservableCollection<TransitStopTime> _departuresAtStop = new ObservableCollection<TransitStopTime>();
+        public ObservableCollection<TransitStopTime> DeparturesAtStop
+        {
+            get { return _departuresAtStop; }
+            set { Set(ref _departuresAtStop, value); }
+        }
+
+        private bool _isDetailsLoading = false;
+        public bool IsDetailsLoading
+        {
+            get { return _isDetailsLoading; }
+            set { Set(ref _isDetailsLoading, value); }
+        }
+
+        private TransitStop _selectedStop = null;
+        public TransitStop SelectedStop
+        {
+            get { return _selectedStop; }
+            set { Set(ref _selectedStop, value); }
+        }
 
         public StopSearchContentViewModel(IMessenger messenger, INetworkService network)
         {
-            _messenger = messenger;
-            _messenger.Register<MessageTypes.ViewStopDetails>(this, SwitchToDetailedView);
+            _messenger = messenger;            
             _networkService = network;
+
+            _messenger.Register<MessageTypes.ViewStopDetails>(this, SwitchToDetailedView);
         }
 
         private async void SwitchToDetailedView(MessageTypes.ViewStopDetails args)
         {
-            RaiseStateChanged(StopSearchState.Details);            
-            //await GetRoutesThatPassThroughStop(args.StopSelected);
-            //insert those routes into LinesAtStop
+            RaiseStateChanged(StopSearchState.Details);
+            SelectedStop = args.StopSelected;
+            IsDetailsLoading = true;
+            ApiResult<TransitStopDetails> stopDetailsResponse = await _networkService.GetStopDetails(args.StopSelected.GtfsId, DateTime.Now);
+            IsDetailsLoading = false;
+            
+            if(stopDetailsResponse.IsFailure)
+            {
+                //todo: show failed UI somehow
+                return;
+            }
+            LinesAtStop = new ObservableCollection<TransitLineWithoutStops>(
+                stopDetailsResponse.Result.LinesThroughStop);
+            DeparturesAtStop = new ObservableCollection<TransitStopTime>(
+                stopDetailsResponse.Result.Stoptimes
+                .Where(x => x.RealtimeDepartureDateTime >= DateTime.Now || x.ScheduledDepartureDateTime >= DateTime.Now)                
+                .ToList());
+        }
+
+        private void SwitchToOverview()
+        {
+            if (_currentState == StopSearchState.Details)
+            {                
+                RaiseStateChanged(StopSearchState.Overview);
+                LinesAtStop.Clear();
+                DeparturesAtStop.Clear();
+            }
         }
 
         public async Task<ApiResult<IEnumerable<TransitStop>>> SearchStopsAsync(string searchText, CancellationToken token)
@@ -116,11 +162,8 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
         {
-            if (_currentState == StopSearchState.Details)
-            {                
-                e.Handled = true;
-                RaiseStateChanged(StopSearchState.Overview);
-            }
+            e.Handled = true;
+            SwitchToOverview();
         }
 
         public override event VmStateChangeHandler VmStateChangeRequested;

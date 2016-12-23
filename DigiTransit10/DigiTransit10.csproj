@@ -176,6 +176,7 @@
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\SecondsSinceDayStartToTimeConverter.cs" />
     <Compile Include="Converters\SelectionChangedConverter.cs" />
+    <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />

@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 12/10/2016 13:01:53
+// 	Generated: 12/23/2016 15:13:36
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -962,6 +962,28 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("String1");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Departures"
+        /// </summary>
+        public static string StopSearchContent_DetailsDeparturesHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("StopSearchContent_DetailsDeparturesHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Lines"
+        /// </summary>
+        public static string StopSearchContent_DetailsLinesHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("StopSearchContent_DetailsLinesHeader");
             }
         }
     }

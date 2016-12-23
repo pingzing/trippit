@@ -33,7 +33,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="StopsList.Visibility" Value="Collapsed"/>
-                        <Setter Target="StopDetailsPivot.Visibility" Value="Visible"/>
+                        <Setter Target="StopDetailsPanel.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
 
@@ -60,15 +60,99 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <!--Note: When we switch into the Details view, we need to Lock the parent's pivot.-->
-        <!--ItemsSource="{x:Bind ViewModel.LinesAtStop}"-->
-        <Pivot x:Name="StopDetailsPivot" 
-               x:DeferLoadStrategy="Lazy"
-               
+        <ProgressRing IsActive="{x:Bind ViewModel.IsDetailsLoading, Mode=OneWay}" 
+                      Visibility="{x:Bind ViewModel.IsDetailsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+        <!--Note: When we switch into the Details view, we lock the parent's pivot.-->
+        <Grid x:Name="StopDetailsPanel" 
+               x:DeferLoadStrategy="Lazy"               
                Visibility="Collapsed">
-            <PivotItem Header="Test Pivot 1" Content="Text"/>
-            <PivotItem Header="Test Pivot 2" Content="More text!"/>
-        </Pivot>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"                       
+                       Style="{ThemeResource TitleTextBlockStyle}"
+                       Text="{x:Bind ViewModel.SelectedStop.Name, Mode=OneWay}"/>
+            <TextBlock Grid.Row="1"                                              
+                       Style="{ThemeResource CaptionTextBlockStyle}"
+                       Text="{x:Bind ViewModel.SelectedStop.Code, Mode=OneWay}"/>
+
+            <GridView Grid.Row="2"                       
+                      ItemsSource="{x:Bind ViewModel.LinesAtStop, Mode=OneWay}"
+                      IsItemClickEnabled="True"
+                      Margin="0 10 0 0"
+                      SelectionMode="None">
+                <GridView.Header>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" 
+                               Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsLinesHeader}"/>
+                </GridView.Header>
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" ItemWidth="80"/>
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TransitLineWithoutStops">
+                        <RelativePanel>
+                            <FontIcon x:Name="LineIcon" 
+                                      RelativePanel.AlignVerticalCenterWithPanel="True"
+                                      Glyph="{x:Bind TransitMode, Converter={StaticResource TransitModeToFontIconConverter}}"                                      
+                                      FontFamily="{StaticResource HslPiktoFrameFont}"
+                                      Foreground="{x:Bind TransitMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"/>
+                            <TextBlock x:Name="LineShortName" 
+                                       RelativePanel.RightOf="LineIcon" 
+                                       Margin="5 0 0 0"
+                                       Text="{x:Bind ShortName}"
+                                       Style="{ThemeResource BaseTextBlockStyle}"/>
+                        </RelativePanel>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+
+            <ListView Grid.Row="3"                       
+                      ItemsSource="{x:Bind ViewModel.DeparturesAtStop, Mode=OneWay}">
+                <ListView.Header>
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
+                               Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsDeparturesHeader}"/>
+                </ListView.Header>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TransitStopTime">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="65"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" 
+                                       Text="{x:Bind ScheduledDepartureDateTime, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:t}'}"
+                                       HorizontalAlignment="Right"/>
+                            <FontIcon Grid.Column="1"
+                                      Glyph="{x:Bind ViaMode, Converter={StaticResource TransitModeToFontIconConverter}}"                                      
+                                      FontFamily="{StaticResource HslPiktoFrameFont}"
+                                      Foreground="{x:Bind ViaMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                                      HorizontalAlignment="Center"
+                                      Margin="5 0 5 0"/>
+                            <TextBlock Grid.Column="2"
+                                       Text="{x:Bind ViaLineShortName}"
+                                       HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="3"
+                                       Margin="5 0 0 0"
+                                       Text="{x:Bind StopHeadsign}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
     
 </UserControl>

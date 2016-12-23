@@ -11,7 +11,7 @@ namespace DigiTransit10.GraphQL
         /// </summary>
         /// <param name="value">The Value to convert into a string.</param>
         /// <returns>The string form of the given value.</returns>
-        public static string ParseValue(object value)
+        public static string ParseValue(object value, DateParsingStrategy dateHandling = DateParsingStrategy.HyphenSeparators)
         {
             if (value is string) //because the server needs strings escaped... ◔_◔
             {
@@ -41,7 +41,13 @@ namespace DigiTransit10.GraphQL
             if(value is DateTime)
             {
                 DateTime dateTimeVal = (DateTime)value;
-                return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+                switch (dateHandling)
+                {
+                    case DateParsingStrategy.HyphenSeparators:
+                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+                    case DateParsingStrategy.NoSeparators:
+                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}{dateTimeVal.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}{dateTimeVal.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+                }                                
             }
             //server expects Times as strings (with associated double quotes and backslashes) in 24-hr HH:MM:SS format. H:M:S (24-hr) seems to be okay as well.
             if(value is TimeSpan)

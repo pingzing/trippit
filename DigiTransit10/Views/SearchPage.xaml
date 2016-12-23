@@ -36,6 +36,11 @@
                        IsLocked="{x:Bind ChildIsInDetailedState, Mode=OneWay}"
                        VerticalAlignment="Stretch"
                        SelectionChanged="SearchPivot_SelectionChanged">
+                    <Pivot.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="30"/>
+                        </DataTemplate>
+                    </Pivot.HeaderTemplate>
                     <PivotItem x:Name="NearbyPivot"                                
                                Header="{Binding Source={StaticResource Strings}, Path=SearchPage_NearbyHeader}">
                         <lclCtls:StopSearchContent DataContext="{x:Bind NearbyStopsViewModel}"

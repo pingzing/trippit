@@ -30,7 +30,8 @@
             <conv:TransitModeToFontIconConverter x:Key="TransitModeToFontIconConverter"/>
             <conv:TransitModeToForegroundBrushConverter x:Key="TransitModeToForegroundBrushConverter"/>
             <conv:UnixTimeToLocalTimeConverter x:Key="UnixTimeToLocalTimeConverter"/>
-            
+            <conv:StringFormatConverter x:Key="StringFormatConverter"/>
+
             <conv:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
             <conv:SecondsSinceDayStartToTimeConverter x:Key="SecondsSinceDayStartToTimeConverter"/>
             <conv:DateTimeToLocalTimeStringConverter x:Key="DateTimeToLocalTimeStringConverter"/>

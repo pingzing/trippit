@@ -41,7 +41,7 @@ namespace DigiTransit10.GraphQL
             return this;
         }
 
-        public string ParseToJsonString()
+        public string ParseToJsonString(DateParsingStrategy dateHandling = DateParsingStrategy.HyphenSeparators)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("{\"query\": \"{ ");
@@ -51,7 +51,7 @@ namespace DigiTransit10.GraphQL
                 foreach (var param in Parameters)
                 {
                     bool isLast = Parameters.IndexOf(param) == Parameters.Count - 1;
-                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value)}");
+                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value, dateHandling)}");
                     if (!isLast) sb.Append(", ");
                 }
             }
@@ -61,15 +61,15 @@ namespace DigiTransit10.GraphQL
                 foreach (var retVal in ReturnValues)
                 {
                     if(ReturnValues.First() == retVal) sb.Append("{");
-                    sb = ParseReturnValueRecursively(sb, retVal);
+                    sb = ParseReturnValueRecursively(sb, retVal, dateHandling);
                     if(ReturnValues.Last() == retVal) sb.Append("}");
                 }
             }
             sb.Append("}\"}\""); //close the bracket enclosing the method, and the opening query bracket
             return sb.ToString();
-        }
+        }        
 
-        private StringBuilder ParseReturnValueRecursively(StringBuilder sb, GqlReturnValue retVal)
+        private StringBuilder ParseReturnValueRecursively(StringBuilder sb, GqlReturnValue retVal, DateParsingStrategy dateHandling = DateParsingStrategy.HyphenSeparators)
         {
             sb.Append($"{retVal.Name} ");
 
@@ -81,7 +81,7 @@ namespace DigiTransit10.GraphQL
                 foreach (var param in inlineMethod.MethodParameters)
                 {
                     bool isLast = inlineMethod.MethodParameters.IndexOf(param) == paramCount - 1;
-                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value)}");
+                    sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value, dateHandling)}");
                     if (!isLast) sb.Append(",");
                 }
                 sb.Append(")");
@@ -98,5 +98,11 @@ namespace DigiTransit10.GraphQL
             if(retVal.Descendants?.Count > 0) sb.Append("}");
             return sb;
         }
+    }
+
+    public enum DateParsingStrategy
+    {
+        HyphenSeparators,
+        NoSeparators
     }
 }

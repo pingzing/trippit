@@ -367,4 +367,10 @@
   <data name="String1" xml:space="preserve">
     <value>View details</value>
   </data>
+  <data name="StopSearchContent_DetailsDeparturesHeader" xml:space="preserve">
+    <value>Departures</value>
+  </data>
+  <data name="StopSearchContent_DetailsLinesHeader" xml:space="preserve">
+    <value>Lines</value>
+  </data>
 </root>
