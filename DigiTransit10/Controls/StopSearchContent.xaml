@@ -18,7 +18,7 @@
     d:DesignWidth="400">
 
     <Grid>
-        
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="Common">
                 <VisualState x:Name="Overview">
@@ -39,9 +39,10 @@
 
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
+
         <ListView x:Name="StopsList"                  
                   ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"
+                  ItemContainerStyle="{StaticResource BlandListViewItemStyle}"
                   SelectionChanged="StopsList_SelectionChanged">
             <ListView.Header>
                 <AutoSuggestBox x:Name="StopsSearchBox"
@@ -70,7 +71,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
@@ -81,49 +81,57 @@
                        Style="{ThemeResource CaptionTextBlockStyle}"
                        Text="{x:Bind ViewModel.SelectedStop.Code, Mode=OneWay}"/>
 
-            <GridView Grid.Row="2"                       
-                      ItemsSource="{x:Bind ViewModel.LinesAtStop, Mode=OneWay}"
-                      IsItemClickEnabled="True"
-                      Margin="0 10 0 0"
-                      SelectionMode="None">
-                <GridView.Header>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" 
-                               Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsLinesHeader}"/>
-                </GridView.Header>
-                <GridView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsWrapGrid Orientation="Horizontal" ItemWidth="80"/>
-                    </ItemsPanelTemplate>
-                </GridView.ItemsPanel>
-                <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:TransitLineWithoutStops">
-                        <RelativePanel>
-                            <FontIcon x:Name="LineIcon" 
-                                      RelativePanel.AlignVerticalCenterWithPanel="True"
-                                      Glyph="{x:Bind TransitMode, Converter={StaticResource TransitModeToFontIconConverter}}"                                      
-                                      FontFamily="{StaticResource HslPiktoFrameFont}"
-                                      Foreground="{x:Bind TransitMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"/>
-                            <TextBlock x:Name="LineShortName" 
-                                       RelativePanel.RightOf="LineIcon" 
-                                       Margin="5 0 0 0"
-                                       Text="{x:Bind ShortName}"
-                                       Style="{ThemeResource BaseTextBlockStyle}"/>
-                        </RelativePanel>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
-
-            <ListView Grid.Row="3"                       
-                      ItemsSource="{x:Bind ViewModel.DeparturesAtStop, Mode=OneWay}">
-                <ListView.Header>
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}"
-                               Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsDeparturesHeader}"/>
-                </ListView.Header>
+            <ListView Grid.Row="2"                       
+                      ItemsSource="{x:Bind ViewModel.DeparturesAtStop, Mode=OneWay}"
+                      Margin="0 10 0 0">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
                 </ListView.ItemContainerStyle>
+                <ListView.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <GridView Grid.Row="0" 
+                                  ItemsSource="{x:Bind ViewModel.LinesAtStop, Mode=OneWay}"
+                                  IsItemClickEnabled="True"                                  
+                                  SelectionMode="None">
+                            <GridView.Header>
+                                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                           Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsLinesHeader}"/>
+                            </GridView.Header>
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid Orientation="Horizontal" ItemWidth="80"/>
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+                            <GridView.ItemTemplate>
+                                <DataTemplate x:DataType="models:TransitLineWithoutStops">
+                                    <RelativePanel>
+                                        <FontIcon x:Name="LineIcon" 
+                                                  RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                  Glyph="{x:Bind TransitMode, Converter={StaticResource TransitModeToFontIconConverter}}"                                      
+                                                  FontFamily="{StaticResource HslPiktoFrameFont}"
+                                                  Foreground="{x:Bind TransitMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"/>
+                                        <TextBlock x:Name="LineShortName" 
+                                                   RelativePanel.RightOf="LineIcon" 
+                                                   Margin="5 0 0 0"
+                                                   Text="{x:Bind ShortName}"
+                                                   Style="{ThemeResource BaseTextBlockStyle}"/>
+                                    </RelativePanel>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+
+                        <TextBlock Grid.Row="1" 
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsDeparturesHeader}"/>
+                    </Grid>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:TransitStopTime">
                         <Grid>
@@ -154,5 +162,5 @@
             </ListView>
         </Grid>
     </Grid>
-    
+
 </UserControl>
