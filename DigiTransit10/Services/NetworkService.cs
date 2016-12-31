@@ -176,7 +176,7 @@ namespace DigiTransit10.Services
                             new GqlReturnValue(ApiGqlMembers.endTime),
                             new GqlReturnValue(ApiGqlMembers.mode),
                             new GqlReturnValue(ApiGqlMembers.duration),
-                            new GqlReturnValue(ApiGqlMembers.realtime),
+                            new GqlReturnValue(ApiGqlMembers.realTime),
                             new GqlReturnValue(ApiGqlMembers.distance),
                             new GqlReturnValue(ApiGqlMembers.transitLeg),
                             new GqlReturnValue(ApiGqlMembers.legGeometry,

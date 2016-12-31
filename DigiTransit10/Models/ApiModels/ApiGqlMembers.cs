@@ -30,6 +30,7 @@
         public static string modes => "modes";
         public static string duration => "duration";
         public static string realtime => "realtime";
+        public static string realTime => nameof(realTime); //yes, the API uses both "realtime" and "realTime". ffs...
         public static string distance => "distance";
         public static string transitLeg => "transitLeg";
         public static string stops => "stops";

@@ -44,9 +44,9 @@ namespace DigiTransit10.GraphQL
                 switch (dateHandling)
                 {
                     case DateParsingStrategy.HyphenSeparators:
-                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}-{dateTimeVal.Date.Month.ToString("00")}-{dateTimeVal.Date.Day.ToString("00")}\\\"";
                     case DateParsingStrategy.NoSeparators:
-                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}{dateTimeVal.Date.Month.ToString(NumberFormatInfo.InvariantInfo)}{dateTimeVal.Date.Day.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+                        return $"\\\"{dateTimeVal.Date.Year.ToString(NumberFormatInfo.InvariantInfo)}{dateTimeVal.Date.Month.ToString("00")}{dateTimeVal.Date.Day.ToString("00")}\\\"";
                 }                                
             }
             //server expects Times as strings (with associated double quotes and backslashes) in 24-hr HH:MM:SS format. H:M:S (24-hr) seems to be okay as well.
