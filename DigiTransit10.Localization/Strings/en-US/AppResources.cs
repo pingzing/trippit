@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 12/23/2016 15:13:36
+// 	Generated: 01/10/2017 12:05:01
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -984,6 +984,17 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("StopSearchContent_DetailsLinesHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Unable to retreive information from the server. It's reporting that service is currently unavailable. Try agin later."
+        /// </summary>
+        public static string DialogMessage_NoTripsFoundServerDown
+        {
+            get
+            {
+                return resourceLoader.GetString("DialogMessage_NoTripsFoundServerDown");
             }
         }
     }

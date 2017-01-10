@@ -373,4 +373,7 @@
   <data name="StopSearchContent_DetailsLinesHeader" xml:space="preserve">
     <value>Lines</value>
   </data>
+  <data name="DialogMessage_NoTripsFoundServerDown" xml:space="preserve">
+    <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try agin later.</value>
+  </data>
 </root>

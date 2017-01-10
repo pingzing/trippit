@@ -79,7 +79,14 @@ namespace DigiTransit10.Services
                 if (response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<GeocodingResponse>.Fail;
+                    if (response?.StatusCode == HttpStatusCode.ServiceUnavailable)
+                    {
+                        return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.ServerDown);
+                    }
+                    else
+                    {
+                        return ApiResult<GeocodingResponse>.Fail;
+                    }
                 }
 
                 GeocodingResponse geoResponse = (await response.Content.ReadAsInputStreamAsync())
@@ -367,7 +374,15 @@ namespace DigiTransit10.Services
                 if(response == null || !response.IsSuccessStatusCode)
                 {
                     LogHttpFailure(response).DoNotAwait();
-                    return ApiResult<T>.Fail;
+
+                    if (response?.StatusCode == HttpStatusCode.ServiceUnavailable)
+                    {
+                        return ApiResult<T>.FailWithReason(FailureReason.ServerDown);
+                    }
+                    else
+                    {
+                        return ApiResult<T>.Fail;
+                    }
                 }
 
                 T result = await UnwrapGqlResposne<T>(response).ConfigureAwait(false);

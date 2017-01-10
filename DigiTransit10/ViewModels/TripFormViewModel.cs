@@ -276,11 +276,12 @@ namespace DigiTransit10.ViewModels
                     places.AddRange(IntermediatePlaces.Select(x => x.IntermediatePlace));
                 }
                 places.Add(ToPlace);
-                places = await ResolvePlaces(places, _cts.Token);
+                var resolvedPlacesAndFailure = await ResolvePlaces(places, _cts.Token);
+                places = resolvedPlacesAndFailure.Item1;
 
                 if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
                 {
-                    await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList());
+                    await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList(), resolvedPlacesAndFailure.Item2);
                     SetBusy(false);
                     return;
                 }
@@ -351,6 +352,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
+        //TODO: Replace the return value here with a List of custom types that includes a place and a FailureReason, instead of that horrible tuple thing.
         /// <summary>
         /// Takes a list of places, and resolves NameOnly or UserLocation places 
         /// into a usable Place with lat/lon coordinates. Leaves other Place types alone.
@@ -358,9 +360,10 @@ namespace DigiTransit10.ViewModels
         /// <param name="places">List of places to resolve.</param>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async Task<List<IPlace>> ResolvePlaces(List<IPlace> places, CancellationToken token)
+        private async Task<Tuple<List<IPlace>, FailureReason>> ResolvePlaces(List<IPlace> places, CancellationToken token)
         {
             List<Task<bool>> getAddressTasks = new List<Task<bool>>();
+            FailureReason reason = FailureReason.Unspecified;
             for (int i = places.Count - 1; i >= 0; i--)
             {
                 int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
@@ -371,6 +374,10 @@ namespace DigiTransit10.ViewModels
                     {
                         if (resp.Result.IsFailure)
                         {
+                            if (resp.Result.Failure != null)
+                            {
+                                reason = resp.Result.Failure.Reason;
+                            }
                             return false;
                         }
                         places[idx] = new Place
@@ -411,7 +418,7 @@ namespace DigiTransit10.ViewModels
             }
 
             await Task.WhenAll(getAddressTasks);
-            return places;
+            return new Tuple<List<IPlace>, FailureReason>(places, reason);
         }
 
         private string ConstructTransitModes(bool isBus, bool isTram, bool isTrain, bool isMetro, bool isFerry, bool isBike)
@@ -570,10 +577,13 @@ namespace DigiTransit10.ViewModels
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoResults;
             }
             else if (result.Failure.Reason == FailureReason.InternalServerError
-                     || result.Failure.Reason == FailureReason.NoConnection
-                     || result.Failure.Reason == FailureReason.ServerDown)
+                     || result.Failure.Reason == FailureReason.NoConnection)
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoServer;
+            }
+            else if(result.Failure.Reason == FailureReason.ServerDown)
+            {
+                errorMessage = AppResources.DialogMessage_NoTripsFoundServerDown;
             }
             else if(result.Failure.Reason == FailureReason.Canceled)
             {
@@ -586,8 +596,14 @@ namespace DigiTransit10.ViewModels
             await _dialogService.ShowDialog(errorMessage, AppResources.DialogTitle_NoTripsFound);
         }
 
-        private async Task HandleTripFailure(IList<IPlace> resolutionFailures)
+        private async Task HandleTripFailure(IList<IPlace> resolutionFailures, FailureReason reason = FailureReason.Unspecified)
         {
+            if (reason == FailureReason.ServerDown)
+            {
+                await _dialogService.ShowDialog(AppResources.DialogMessage_NoTripsFoundServerDown, AppResources.DialogTitle_NoLocationFound);
+                return;
+            }
+
             if (resolutionFailures.Any(x => x.Type == PlaceType.UserCurrentLocation))
             {
                 await _dialogService.ShowDialog(AppResources.DialogMessage_UserLocationFailed, AppResources.DialogTitle_NoLocationFound);
