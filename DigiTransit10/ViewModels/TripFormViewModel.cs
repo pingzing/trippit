@@ -204,10 +204,7 @@ namespace DigiTransit10.ViewModels
         public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
 
         private readonly RelayCommand _setDateToTodayCommand = null;
-        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);
-
-        private readonly RelayCommand<IPlace> _addFavoriteCommand = null;
-        public RelayCommand<IPlace> AddFavoriteCommand => _addFavoriteCommand ?? new RelayCommand<IPlace>(AddFavorite);
+        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);        
 
         private readonly RelayCommand<FavoritePlace> _favoritePlaceClickedCommand = null;
         public RelayCommand<FavoritePlace> FavoritePlaceClickedCommand
@@ -454,24 +451,7 @@ namespace DigiTransit10.ViewModels
         private void SetDateToToday()
         {
             SelectedDate = DateTime.Now;
-        }
-
-        private  void AddFavorite(IPlace place)
-        {
-            var newFavoritePlace = new FavoritePlace
-            {
-                FontIconGlyph = FontIconGlyphs.FilledStar,
-                Id = Guid.NewGuid(),
-                IconFontFace = ((FontFamily)App.Current.Resources[Constants.SymbolThemeFontResource]).Source,
-                IconFontSize = Constants.SymbolFontSize,
-                Lat = place.Lat,
-                Lon = place.Lon,
-                Name = place.Name,
-                Type = PlaceType.FavoritePlace,
-                UserChosenName = place.Name
-            };
-            _favoritesService.AddFavorite(newFavoritePlace);
-        }
+        }        
 
         private async Task FillPinnedFavorites()
         {

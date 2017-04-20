@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Controls
 {
@@ -79,8 +81,7 @@ namespace DigiTransit10.Controls
                     return false;
                 }
                 if(SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
-                    || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
-                    || SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
+                    || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation                    
                     || SelectedPlace.Lat == default(float)
                     || SelectedPlace.Lon == default(float))
                 {
@@ -159,7 +160,7 @@ namespace DigiTransit10.Controls
 
         public static readonly DependencyProperty SelectedPlaceProperty =
             DependencyProperty.Register("SelectedPlace", typeof(IPlace), typeof(DigiTransitSearchBox), new PropertyMetadata(null,
-                (obj, args) =>
+                async (obj, args) =>
                 {
                     DigiTransitSearchBox box = obj as DigiTransitSearchBox;
                     if (box == null)
@@ -178,7 +179,32 @@ namespace DigiTransit10.Controls
                     }
 
                     box.RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
-                    box.UpdateFavoriteButtonGlyph().DoNotAwait();
+
+                    if (box.SelectedPlace == null)
+                    {
+                        box.FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+                        return;
+                    }
+                    if (box.SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
+                        || box.SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
+                        || box.SelectedPlace.Lat == default(float)
+                        || box.SelectedPlace.Lon == default(float))
+                    {
+                        box.FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+                        return;
+                    }
+                    if (box.SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
+                        || (await _favoritesService.GetFavoritesAsync()).Where(x => x is FavoritePlace)
+                            .Any(x => ((FavoritePlace)x).Lat == box.SelectedPlace.Lat
+                                && ((FavoritePlace)x).Lon == box.SelectedPlace.Lon))
+                    {
+                        box.FavoriteButtonGlyph = FontIconGlyphs.FilledStar;
+                        return;
+                    }
+                    else
+                    {
+                        box.FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
+                    }
                 }));
         public IPlace SelectedPlace
         {
@@ -268,36 +294,7 @@ namespace DigiTransit10.Controls
         }
 
         public static readonly DependencyProperty ShowFavoritesButtonProperty =
-            DependencyProperty.Register("ShowFavoritesButton", typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true,
-                ShowFavoritesButtonChanged));
-        private static void ShowFavoritesButtonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var _this = d as DigiTransitSearchBox;
-            if (_this == null)
-            {
-                return;
-            }
-
-            if(e.NewValue == e.OldValue)
-            {
-                return;
-            }
-
-            if (!(e.NewValue is bool))
-            {
-                return;
-            }
-
-            bool showFavorites = (bool)e.NewValue;
-            if(showFavorites)
-            {
-                _this.AddToFavoritesBorder.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                _this.AddToFavoritesBorder.Visibility = Visibility.Collapsed;
-            }
-        }
+            DependencyProperty.Register("ShowFavoritesButton", typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true));       
         public bool ShowFavoritesButton
         {
             get { return (bool)GetValue(ShowFavoritesButtonProperty); }
@@ -529,20 +526,57 @@ namespace DigiTransit10.Controls
                 _stopList.AddSorted(foundPlace, _placeComparer);
             }
             _stopList.SortInPlace(x => x, _placeComparer);
+        }                
+
+        private async void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            FavoritePlace existingFavorite = (await _favoritesService.GetFavoritesAsync()).FirstOrDefault(x => x == SelectedPlace) as FavoritePlace;
+            if (existingFavorite != null)
+            {                
+                _favoritesService.RemoveFavorite(existingFavorite);
+                SelectedPlace = new Place
+                {
+                    Confidence = SelectedPlace.Confidence,
+                    Lat = SelectedPlace.Lat,
+                    Lon = SelectedPlace.Lon,
+                    Id = SelectedPlace.Id,
+                    Name = SelectedPlace.Name,
+                    StringId = SelectedPlace.StringId,
+                    Type = PlaceType.Address
+                };
+                return;
+            }
+
+            var newFavoritePlace = new FavoritePlace
+            {
+                FontIconGlyph = FontIconGlyphs.FilledStar,
+                Id = Guid.NewGuid(),
+                IconFontFace = ((FontFamily)App.Current.Resources[Constants.SymbolThemeFontResource]).Source,
+                IconFontSize = Constants.SymbolFontSize,
+                Lat = SelectedPlace.Lat,
+                Lon = SelectedPlace.Lon,
+                Name = SelectedPlace.Name,
+                Type = PlaceType.FavoritePlace,
+                UserChosenName = SelectedPlace.Name
+            };
+            _favoritesService.AddFavorite(newFavoritePlace);
+            SelectedPlace = newFavoritePlace;
         }
 
         private void FavoritesChanged(object sender, FavoritesChangedEventArgs args)
         {
-            if(args.AddedFavorites?.Count > 0)
+            if (args.AddedFavorites?.Count > 0)
             {
-                foreach(IPlace added in args.AddedFavorites.OfType<IPlace>())
+                foreach (IPlace added in args.AddedFavorites.OfType<IPlace>())
                 {
                     _favoritePlacesList.AddSorted(added);
                 }
             }
-            if(args.RemovedFavorites?.Count > 0)
+            if (args.RemovedFavorites?.Count > 0)
             {
-                foreach(IPlace removed in args.RemovedFavorites.OfType<IPlace>())
+                foreach (IPlace removed in args.RemovedFavorites.OfType<IPlace>())
                 {
                     _favoritePlacesList.Remove(removed);
                 }
@@ -550,43 +584,6 @@ namespace DigiTransit10.Controls
 
             RaisePropertyChanged(nameof(IsFavoriteButtonEnabled));
             RaisePropertyChanged(nameof(FavoriteButtonGlyph));
-        }
-
-        private async Task UpdateFavoriteButtonGlyph()
-        {
-            if (SelectedPlace == null)
-            {
-                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
-                return;
-            }
-            if (SelectedPlace.Type == ModelEnums.PlaceType.NameOnly
-                || SelectedPlace.Type == ModelEnums.PlaceType.UserCurrentLocation
-                || SelectedPlace.Lat == default(float)
-                || SelectedPlace.Lon == default(float))
-            {
-                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
-                return;
-            }
-            if (SelectedPlace.Type == ModelEnums.PlaceType.FavoritePlace
-                || (await _favoritesService.GetFavoritesAsync()).Where(x => x is FavoritePlace)
-                    .Any(x => ((FavoritePlace)x).Lat == SelectedPlace.Lat
-                        && ((FavoritePlace)x).Lon == SelectedPlace.Lon))
-            {
-                FavoriteButtonGlyph = FontIconGlyphs.FilledStar;
-                return;
-            }
-            else
-            {
-                FavoriteButtonGlyph = FontIconGlyphs.HollowStar;
-            }
-        }
-
-        private void AddToFavoriteButton_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-           if(FavoriteTappedCommand != null && FavoriteTappedCommand.CanExecute(SelectedPlace))
-            {
-                FavoriteTappedCommand.Execute(SelectedPlace);
-            }
         }
 
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)

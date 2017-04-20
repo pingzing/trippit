@@ -38,8 +38,7 @@
                     </StackPanel.ChildrenTransitions>
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                     
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"                                                  
-                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"
-                                                  FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
+                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
                         <Button x:Name="SwapButton"
                                         Background="Transparent"
                                         Command="{x:Bind SwapFirstLocationCommand}"
@@ -73,8 +72,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <lclCtls:DigiTransitSearchBox x:Name="ListIntermediateDestination"
-                                                                  SelectedPlace="{x:Bind IntermediatePlace, Mode=TwoWay}"
-                                                                  FavoriteTappedCommand="{x:Bind FavoriteTappedCommand}"/>
+                                                                  SelectedPlace="{x:Bind IntermediatePlace, Mode=TwoWay}"/>
                                     <Button x:Name="RemoveItemButton"                                            
                                             Grid.Row="0" Grid.Column="1"                                            
                                             Click="IntermediatePlaceRemoved_Click"
@@ -114,8 +112,7 @@
                     <lclCtls:DigiTransitSearchBox x:Name="ToBox"
                                                   Margin="0 -20 0 0"
                                                   Header="{Binding MainPage_ToHeader, Source={StaticResource Strings}}"
-                                                  SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"
-                                                  FavoriteTappedCommand="{x:Bind AddFavoriteCommand}"/>
+                                                  SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}"/>
                     <Button x:Name="AddDestinationButton"                                        
                                         Command="{x:Bind AddIntermediatePlaceCommand}"
                                         Content="{Binding Source={StaticResource Strings}, Path=MainPage_AddIntermediateDestination}"

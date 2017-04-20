@@ -9,8 +9,7 @@ namespace DigiTransit10.ViewModels.
     {
         private readonly TripFormViewModel _parentVm;
 
-        public RelayCommand SwapLocationsCommand => new RelayCommand(SwapLocations);
-        public RelayCommand<IPlace> FavoriteTappedCommand => new RelayCommand<IPlace>(FavoriteTapped);
+        public RelayCommand SwapLocationsCommand => new RelayCommand(SwapLocations);        
         public RelayCommand RemoveIntermediateCommand => new RelayCommand(RemoveIntermediate);
 
         private IPlace _intermediatePlace;
@@ -43,15 +42,7 @@ namespace DigiTransit10.ViewModels.
         private void SwapLocations()
         {
             _parentVm.SwapIntermediateLocationCommand.Execute(this);
-        }
-
-        private void FavoriteTapped(IPlace obj)
-        {
-            if(_parentVm.AddFavoriteCommand.CanExecute(obj))
-            {
-                _parentVm.AddFavoriteCommand.Execute(obj);
-            }
-        }
+        }        
 
         private void RemoveIntermediate()
         {
