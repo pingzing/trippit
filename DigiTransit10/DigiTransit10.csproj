@@ -243,6 +243,7 @@
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
     <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
+    <Compile Include="Models\PlaceResolutionResult.cs" />
     <Compile Include="Models\SearchSectionChangedEventArgs.cs" />
     <Compile Include="Models\SecondaryTilePayload.cs" />
     <Compile Include="Models\TransitLine.cs" />

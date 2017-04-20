@@ -270,21 +270,21 @@ namespace DigiTransit10.ViewModels
             {
                 SetBusy(true, AppResources.TripFrom_GettingsAddresses);
 
-                List<IPlace> places = new List<IPlace> { FromPlace };
+                List<IPlace> searchPlaces = new List<IPlace> { FromPlace };
                 if (IntermediatePlaces.Count > 0)
                 {
-                    places.AddRange(IntermediatePlaces.Select(x => x.IntermediatePlace));
+                    searchPlaces.AddRange(IntermediatePlaces.Select(x => x.IntermediatePlace));
                 }
-                places.Add(ToPlace);
-                var resolvedPlacesAndFailure = await ResolvePlaces(places, _cts.Token);
-                places = resolvedPlacesAndFailure.Item1;
+                searchPlaces.Add(ToPlace);
+                IEnumerable<PlaceResolutionResult> placeResolutionResults = await ResolvePlaces(searchPlaces, _cts.Token);                
 
-                if (places.Any(x => x.Lat == default(float) || x.Lon == default(float)))
+                if (placeResolutionResults.Any(x => x.IsFailure))
                 {
-                    await HandleTripFailure(places.Where(x => x.Lat == default(float) || x.Lon == default(float)).ToList(), resolvedPlacesAndFailure.Item2);
+                    await HandlePlaceResolutionFailure(placeResolutionResults.Where(x => x.IsFailure));
                     SetBusy(false);
                     return;
                 }
+                IEnumerable<IPlace> places = placeResolutionResults.Select(x => x.ResolvedPlace);
 
                 FromPlace = places.First(); //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
                 if(IntermediatePlaces.Any())
@@ -324,7 +324,7 @@ namespace DigiTransit10.ViewModels
                 var result = await _networkService.PlanTripAsync(details, _cts.Token);
                 if (result.IsFailure)
                 {
-                    await HandleTripFailure(result);
+                    await HandleTripPlanningFailure(result);
                     SetBusy(false);
                     return;
                 }
@@ -351,8 +351,7 @@ namespace DigiTransit10.ViewModels
                 SetBusy(false);
             }
         }
-
-        //TODO: Replace the return value here with a List of custom types that includes a place and a FailureReason, instead of that horrible tuple thing.
+        
         /// <summary>
         /// Takes a list of places, and resolves NameOnly or UserLocation places 
         /// into a usable Place with lat/lon coordinates. Leaves other Place types alone.
@@ -360,27 +359,24 @@ namespace DigiTransit10.ViewModels
         /// <param name="places">List of places to resolve.</param>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async Task<Tuple<List<IPlace>, FailureReason>> ResolvePlaces(List<IPlace> places, CancellationToken token)
+        private async Task<IEnumerable<PlaceResolutionResult>> ResolvePlaces(List<IPlace> places, CancellationToken token)
         {
-            List<Task<bool>> getAddressTasks = new List<Task<bool>>();
-            FailureReason reason = FailureReason.Unspecified;
-            for (int i = places.Count - 1; i >= 0; i--)
-            {
-                int idx = i; //capturing this in the closure so it doesn't get changed out from under us in the continuation
-                if (places[idx].Type == PlaceType.NameOnly)
+            List<Task<PlaceResolutionResult>> getAddressTasks = new List<Task<PlaceResolutionResult>>();            
+            foreach (IPlace placeToFind in places)
+            {                
+                if (placeToFind.Type == PlaceType.NameOnly)
                 {
-                    Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddressAsync(places[idx].Name, token);
+                    Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddressAsync(placeToFind.Name, token);
                     getAddressTasks.Add(task.ContinueWith(resp =>
                     {
                         if (resp.Result.IsFailure)
                         {
-                            if (resp.Result.Failure != null)
-                            {
-                                reason = resp.Result.Failure.Reason;
-                            }
-                            return false;
+                            FailureReason reason = resp.Result.Failure == null
+                                ? FailureReason.Unspecified
+                                : resp.Result.Failure.Reason;
+                            return new PlaceResolutionResult(reason);
                         }
-                        places[idx] = new Place
+                        IPlace foundPlace = new Place
                         {
                             Lon = (float)task.Result.Result.Features[0].Geometry.Coordinates[0],
                             Lat = (float)task.Result.Result.Features[0].Geometry.Coordinates[1],
@@ -389,37 +385,40 @@ namespace DigiTransit10.ViewModels
                             StringId = task.Result.Result.Features[0].Properties.Id,
                             Confidence = task.Result.Result.Features[0].Properties.Confidence
                         };
-                        return true;
+                        return new PlaceResolutionResult(foundPlace);
                     }));
                 }
-                else if (places[idx].Type == PlaceType.UserCurrentLocation)
+                else if (placeToFind.Type == PlaceType.UserCurrentLocation)
                 {
                     Task<GenericResult<Geoposition>> task = _geolocationService.GetCurrentLocationAsync();
-                    getAddressTasks.Add(task.ContinueWith(resp => {
+                    getAddressTasks.Add(task.ContinueWith<PlaceResolutionResult>(resp => {
                         if(resp.Result.IsFailure)
                         {
-                            return false;
+                            return new PlaceResolutionResult(resp.Result.Failure.Reason);
                         }
                         if(resp.Result.Result.Coordinate?.Point?.Position == null)
                         {
-                            return false;
+                            return new PlaceResolutionResult(FailureReason.NoResults);
                         }
                         var loc = resp.Result.Result.Coordinate.Point.Position;
-                        places[idx] = new Place
+                        IPlace foundPlace = new Place
                         {
                             Lon = (float)loc.Longitude,
                             Lat = (float)loc.Latitude,
                             Name = AppResources.SuggestBoxHeader_MyLocation,
                             Type = PlaceType.UserCurrentLocation
                         };
-                        return true;
+                        return new PlaceResolutionResult(foundPlace);
                     }));
                 }
+                else
+                {
+                    // TODO: Rework this to not require synchronous code to be wrapped in a Task.
+                    getAddressTasks.Add(Task.FromResult(new PlaceResolutionResult(placeToFind)));
+                }
             }
-
-            await Task.WhenAll(getAddressTasks);
-            return new Tuple<List<IPlace>, FailureReason>(places, reason);
-        }
+            return await Task.WhenAll(getAddressTasks);
+        }        
 
         private string ConstructTransitModes(bool isBus, bool isTram, bool isTrain, bool isMetro, bool isFerry, bool isBike)
         {
@@ -565,7 +564,7 @@ namespace DigiTransit10.ViewModels
             PlanTripCommand.RaiseCanExecuteChanged();
         }
 
-        private async Task HandleTripFailure(ApiResult<TripPlan> result)
+        private async Task HandleTripPlanningFailure(ApiResult<TripPlan> result)
         {
             string errorMessage = null;
             if (!String.IsNullOrEmpty(result.Failure.FriendlyError))
@@ -596,15 +595,15 @@ namespace DigiTransit10.ViewModels
             await _dialogService.ShowDialog(errorMessage, AppResources.DialogTitle_NoTripsFound);
         }
 
-        private async Task HandleTripFailure(IList<IPlace> resolutionFailures, FailureReason reason = FailureReason.Unspecified)
+        private async Task HandlePlaceResolutionFailure(IEnumerable<PlaceResolutionResult> unresolvedPlaces)
         {
-            if (reason == FailureReason.ServerDown)
+            if (unresolvedPlaces.Any(x => x.Reason == FailureReason.ServerDown))
             {
                 await _dialogService.ShowDialog(AppResources.DialogMessage_NoTripsFoundServerDown, AppResources.DialogTitle_NoLocationFound);
                 return;
             }
 
-            if (resolutionFailures.Any(x => x.Type == PlaceType.UserCurrentLocation))
+            if (unresolvedPlaces.Any(x => x.ResolvedPlace.Type == PlaceType.UserCurrentLocation))
             {
                 await _dialogService.ShowDialog(AppResources.DialogMessage_UserLocationFailed, AppResources.DialogTitle_NoLocationFound);
                 return;
@@ -612,9 +611,9 @@ namespace DigiTransit10.ViewModels
 
             StringBuilder error = new StringBuilder();
             error.AppendLine(AppResources.DialogMessage_PlaceResolutionFailed);
-            foreach (var place in resolutionFailures)
+            foreach (PlaceResolutionResult result in unresolvedPlaces)
             {
-                error.AppendLine($"● {place.Name}");
+                error.AppendLine($"● {result.ResolvedPlace.Name}");
             }
             await _dialogService.ShowDialog(error.ToString(), AppResources.DialogTitle_NoLocationFound);
         }
