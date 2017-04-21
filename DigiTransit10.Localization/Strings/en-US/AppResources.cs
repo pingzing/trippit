@@ -997,5 +997,16 @@ namespace DigiTransit10.Localization.Strings
                 return resourceLoader.GetString("DialogMessage_NoTripsFoundServerDown");
             }
         }
+
+        /// <summary>
+        /// Localized resource similar to "Today".
+        /// </summary>
+        public static string CurrentDatePicker_CurrentDate
+        {
+            get
+            {
+                return resourceLoader.GetString("CurrentDatePicker_CurrentDate");
+            }
+        }
     }
 }

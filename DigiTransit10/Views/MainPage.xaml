@@ -134,14 +134,14 @@
 
                     <TextBlock x:Name="TimeHeader"                                                                                                       
                                 Margin="0 10 0 5"
-                                Text="{Binding LiteralTime, Source={StaticResource Strings}}">
+                                Text="{Binding Source={StaticResource Strings}, Path=LiteralTime}">
                         <TextBlock.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
                             </TransitionCollection>
                         </TextBlock.Transitions>
                     </TextBlock>
-                    
+
                     <lclCtls:CurrentTimePicker x:Name="TimePicker"                                                                                         
                                                HorizontalAlignment="Stretch"                                    
                                                Time="{x:Bind SelectedTime, Mode=TwoWay}"
@@ -207,11 +207,10 @@
                             </HyperlinkButton.ContentTemplate>
                         </HyperlinkButton>
 
-                        <DatePicker x:Name="DatePicker"
+                        <lclCtls:CurrentDatePicker x:Name="DatePicker"
                                     Grid.Row="1" Grid.Column="0"
                                     Grid.ColumnSpan="3"
-                                    HorizontalAlignment="Stretch"
-                                    Style="{StaticResource WideDatePickerStyle}"
+                                    HorizontalAlignment="Stretch"                                    
                                     Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
 
                         <TextBlock x:Name="TransitTypeHeader" 

@@ -236,7 +236,7 @@
                 <VisualState x:Name="UseCustomTimeState">
                     <VisualState.Setters>
                         <Setter Target="CurrentTimeBox.(TextBlock.FontFamily)" Value="{ThemeResource SymbolThemeFontFamily}"/>
-                        <Setter Target="CurrentTimeBox.(TextBlock.Text)" Value="{Binding Source={StaticResource FontIcons}, Path=BoldLeftArrow}"/>
+                        <Setter Target="CurrentTimeBox.(TextBlock.Text)" Value="{Binding BoldLeftArrow, Source={StaticResource FontIcons}}"/>
                         <Setter Target="CurrentTimeBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemAccentColor}"/>
                         <Setter Target="CurrentTimeButton.(Grid.Column)" Value="1"/>
                         <Setter Target="CurrentTimeButton.(Grid.ColumnSpan)" Value="1"/>
@@ -271,7 +271,8 @@
                 Click="CurrentTimeButton_Click"
                 Height="{StaticResource TallTextBoxHeight}"
                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-                Style="{StaticResource NoStyleButtonStyle}" RenderTransformOrigin="0.5,0.5">
+                Style="{StaticResource NoStyleButtonStyle}" 
+                RenderTransformOrigin="0.5,0.5">
             <Button.RenderTransform>
                 <CompositeTransform/>
             </Button.RenderTransform>

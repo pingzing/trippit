@@ -376,4 +376,7 @@
   <data name="DialogMessage_NoTripsFoundServerDown" xml:space="preserve">
     <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try agin later.</value>
   </data>
+  <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
+    <value>Today</value>
+  </data>
 </root>
