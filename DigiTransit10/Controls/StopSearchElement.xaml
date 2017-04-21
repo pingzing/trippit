@@ -14,6 +14,11 @@
     d:DesignWidth="296.667">
 
     <Grid>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <RepositionThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -24,10 +29,12 @@
         </Grid.ColumnDefinitions>
         <FontIcon Grid.Column="0" Grid.Row="0"
                   FontFamily="{ThemeResource SymbolThemeFontFamily}" 
-                  Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"/>
+                  Glyph="{Binding Source={StaticResource FontIcons}, Path=Flag}"
+                  VerticalAlignment="Center"/>
         <TextBlock Grid.Column="1" Grid.Row="0"
                    Margin="5 0 0 0" 
-                   Text="{x:Bind ViewModel.BackingStop.NameAndCode, Mode=OneWay}"/>
+                   Text="{x:Bind ViewModel.BackingStop.NameAndCode, Mode=OneWay}"
+                   VerticalAlignment="Center"/>
         <Button x:Name="ViewDetailsButton"
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                 Command="{x:Bind ViewModel.ViewDetailsCommand, Mode=OneWay}"
@@ -35,7 +42,8 @@
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Left"
                 Style="{StaticResource TextBlockButtonStyle}"
-                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                VerticalAlignment="Center">
             <Button.Transitions>
                 <TransitionCollection>
                     <ContentThemeTransition/>

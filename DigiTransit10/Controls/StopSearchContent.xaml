@@ -56,7 +56,7 @@
             </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="ctlVms:StopSearchElementViewModel">
-                    <lclCtls:StopSearchElement DataContext="{x:Bind }"/>
+                    <lclCtls:StopSearchElement DataContext="{x:Bind }" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

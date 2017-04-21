@@ -114,13 +114,6 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _linesSearchBoxText, value); }
         }
 
-        private string _stopsSearchBoxText;
-        public string StopsSearchBoxText
-        {
-            get { return _stopsSearchBoxText; }
-            set { Set(ref _stopsSearchBoxText, value); }
-        }
-
         private StopSearchContentViewModel _nearbyStopsViewModel;
         public StopSearchContentViewModel NearbyStopsViewModel
         {
@@ -226,7 +219,7 @@ namespace DigiTransit10.ViewModels
             var response = await NearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
             IsNearbyStopsLoading = false;
 
-            if (response.IsFailure)
+            if (response.IsFailure || _cts.IsCancellationRequested)
             {
                 return;
             }
@@ -251,7 +244,7 @@ namespace DigiTransit10.ViewModels
             IsStopsLoading = true;
             var stopsResult = await SearchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
             IsStopsLoading = false;
-            if (stopsResult.IsFailure)
+            if (stopsResult.IsFailure || _cts.IsCancellationRequested)
             {
                 return;
             }
@@ -317,7 +310,10 @@ namespace DigiTransit10.ViewModels
             MapPlaces = new ObservableCollection<IMapPoi>(stops);
         }
 
-        //todo: handle narrow <-> wide changes a little better. since the pivot selection isn't synced, the circles/icons/etc on the map get a little out of sync
+        // todo: handle narrow <-> wide changes a little better. 
+        // since the pivot selection isn't synced, the circles/icons/etc on the map get a little out of sync
+        // The solution here is to probably just bind the pivot to a collection of ViewModels once and for all
+        // and use TwoWay binding to handle the currently-selected pivot
         private void SectionChanged(SearchSectionChangedEventArgs args)
         {
             _activeSection = args.NewSection;

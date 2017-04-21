@@ -63,6 +63,13 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _selectedStop, value); }
         }
 
+        private string _stopsSearchBoxText;
+        public string StopsSearchBoxText
+        {
+            get { return _stopsSearchBoxText; }
+            set { Set(ref _stopsSearchBoxText, value); }
+        }
+
         public StopSearchContentViewModel(IMessenger messenger, INetworkService network)
         {
             _messenger = messenger;            
@@ -162,8 +169,11 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
         {
-            e.Handled = true;
-            SwitchToOverview();
+            if (_currentState == StopSearchState.Details)
+            {
+                e.Handled = true;
+                SwitchToOverview();
+            }
         }
 
         public override event VmStateChangeHandler VmStateChangeRequested;
