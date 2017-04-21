@@ -8,6 +8,9 @@ namespace DigiTransit10.Controls
 {
     public sealed partial class CurrentTimePicker : UserControl
     {
+        private readonly string UseCurrentTimeStateKey;
+        private readonly string UseCustomTimeStateKey;
+
         public static readonly DependencyProperty UseCurrentTimeProperty =
             DependencyProperty.Register("UseCurrentTime", typeof(bool), typeof(CurrentTimePicker), new PropertyMetadata(true,
                 new PropertyChangedCallback(OnUseCurrentTimeChanged)));
@@ -28,28 +31,35 @@ namespace DigiTransit10.Controls
             if(newUseCurrentTime)
             {
                 _this.UnderPicker.IsEnabled = false;
-                _this.CustomToCurrentWidthAnimatioin.KeyFrames[1].Value = _this.ControlRoot.ActualWidth;
-                if (_this.Common.CurrentState.Name == "UseCurrentTimeState")
+                _this.WidenAnimation.KeyFrames[0].Value = _this.ControlRoot.ActualWidth;
+                if (_this.ControlRoot.ActualWidth > 0)
                 {
-                    VisualStateManager.GoToState(_this, "UseCurrentTimeState", false);
+                    _this.ScaleUpBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                }
+                if (_this.Common.CurrentState.Name == _this.UseCurrentTimeStateKey)
+                {
+                    VisualStateManager.GoToState(_this, _this.UseCurrentTimeStateKey, false);
                 }
                 else
                 {
-                    VisualStateManager.GoToState(_this, "UseCurrentTimeState", true);
+                    VisualStateManager.GoToState(_this, _this.UseCurrentTimeStateKey, true);
                 }
             }
             else
             {
                 _this.Time = DateTime.Now.TimeOfDay;
                 _this.UnderPicker.IsEnabled = true;
-                _this.CurrentToCustomWidthAnimation.KeyFrames[0].Value = _this.CurrentTimeButton.ActualWidth;
-                if (_this.Common.CurrentState.Name == "UseCustomTimeState")
+                if (_this.ControlRoot.ActualWidth > 0)
                 {
-                    VisualStateManager.GoToState(_this, "UseCustomTimeState", false);
+                    _this.ScaleDownBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                }
+                if (_this.Common.CurrentState.Name == _this.UseCustomTimeStateKey)
+                {
+                    VisualStateManager.GoToState(_this, _this.UseCustomTimeStateKey, false);
                 }
                 else
                 {
-                    VisualStateManager.GoToState(_this, "UseCustomTimeState", true);
+                    VisualStateManager.GoToState(_this, _this.UseCustomTimeStateKey, true);
                 }
             }
         }
@@ -88,7 +98,9 @@ namespace DigiTransit10.Controls
         public CurrentTimePicker()
         {
             this.InitializeComponent();
-            VisualStateManager.GoToState(this, "UseCurrentTimeState", false);            
+            UseCurrentTimeStateKey = this.Common.States[0].Name;
+            UseCustomTimeStateKey = this.Common.States[1].Name;
+            VisualStateManager.GoToState(this, UseCurrentTimeStateKey, false);               
         }
 
 

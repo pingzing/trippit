@@ -31,11 +31,6 @@
 
             <DataTemplate x:Key="TopPanelHalf" x:Name="TopPanelHalfTemplate" x:DataType="vm:TripFormViewModel">
                 <StackPanel>
-                    <!--<StackPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </StackPanel.ChildrenTransitions>-->
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                     
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"                                                  
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
@@ -194,24 +189,13 @@
                                        Grid.Row="0" Grid.Column="0"
                                        Grid.ColumnSpan="2"
                                        Text="{Binding LiteralDate, Source={StaticResource Strings}}"/>
-                        
-                        <HyperlinkButton Grid.Row="0" Grid.Column="1"
-                                             Grid.ColumnSpan="2"
-                                             HorizontalAlignment="Right"
-                                             Padding="0"
-                                             Command="{x:Bind SetDateToTodayCommand}">
-                            <HyperlinkButton.ContentTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding TripForm_SetDateToNow, Source={StaticResource Strings}}"/>
-                                </DataTemplate>
-                            </HyperlinkButton.ContentTemplate>
-                        </HyperlinkButton>
 
                         <lclCtls:CurrentDatePicker x:Name="DatePicker"
-                                    Grid.Row="1" Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    HorizontalAlignment="Stretch"                                    
-                                    Date="{x:Bind SelectedDate, Mode=TwoWay}"/>
+                                                   Grid.Row="1" Grid.Column="0"
+                                                   Grid.ColumnSpan="3"
+                                                   Date="{x:Bind SelectedDate, Mode=TwoWay}"
+                                                   UseCurrentDate="{x:Bind IsUsingCurrentDate, Mode=TwoWay}"
+                                                   HorizontalAlignment="Stretch"/>
 
                         <TextBlock x:Name="TransitTypeHeader" 
                                        Grid.Row="2"

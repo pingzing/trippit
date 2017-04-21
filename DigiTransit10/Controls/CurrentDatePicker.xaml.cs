@@ -34,7 +34,10 @@ namespace DigiTransit10.Controls
             {
                 _this.UnderPicker.IsEnabled = false;
                 _this.WidenAnimation.KeyFrames[0].Value = _this.ControlRoot.ActualWidth;
-                _this.ScaleUpBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                if (_this.ControlRoot.ActualWidth > 0)
+                {
+                    _this.ScaleUpBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                }
                 if (_this.Common.CurrentState.Name == _this.UseCurrentDateStateKey)
                 {
                     VisualStateManager.GoToState(_this, _this.UseCurrentDateStateKey, false);
@@ -48,7 +51,10 @@ namespace DigiTransit10.Controls
             {
                 _this.Date = DateTime.Today;
                 _this.UnderPicker.IsEnabled = true;
-                _this.ScaleDownBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                if (_this.ControlRoot.ActualWidth > 0)
+                {
+                    _this.ScaleDownBoxFrame.Value = _this.NarrowColumn.Width.Value / _this.ControlRoot.ActualWidth;
+                }
                 if (_this.Common.CurrentState.Name == _this.UseCustomDateStateKey)
                 {
                     VisualStateManager.GoToState(_this, _this.UseCustomDateStateKey, false);

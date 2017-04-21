@@ -9,7 +9,7 @@
     x:Class="DigiTransit10.Controls.CurrentTimePicker"
     mc:Ignorable="d"
     d:DesignHeight="64"
-    d:DesignWidth="400">
+    d:DesignWidth="350">
     <UserControl.Resources>
         <Style x:Key="CurrentTimePickerStyle" TargetType="TimePicker">
             <Setter Property="IsTabStop" Value="False"/>
@@ -148,100 +148,75 @@
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="Common">
                 <VisualStateGroup.Transitions>
-                    <VisualTransition From="UseCurrentTimeState" To="UseCustomTimeState">
-                        <Storyboard x:Name="CurrentToCustomStoryboard">
-                            <DoubleAnimationUsingKeyFrames x:Name="CurrentToCustomWidthAnimation" EnableDependentAnimation="True" Storyboard.TargetProperty="Width" Storyboard.TargetName="CurrentTimeButton">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="50">
+                    <VisualTransition From="UseCurrentTimeState" GeneratedDuration="0" To="UseCustomTimeState">
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.7" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox" d:IsOptimized="True"/>
+                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.8" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="CurrentTimeButton">
+                                <EasingDoubleKeyFrame x:Name="ScaleDownBoxFrame" KeyTime="0:0:0.699" Value=".140">
                                     <EasingDoubleKeyFrame.EasingFunction>
                                         <QuarticEase EasingMode="EaseOut"/>
                                     </EasingDoubleKeyFrame.EasingFunction>
                                 </EasingDoubleKeyFrame>
+                                <DiscreteDoubleKeyFrame KeyTime="0:0:0.71" Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimation Duration="0:0:0.4" To="0" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox" d:IsOptimized="True"/>
+                            <DoubleAnimation Duration="0:0:0.8" To="90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock"/>
+                            <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemBaseMediumColor}" To="{ThemeResource SystemAccentColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
+                            <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetProperty="(Border.BorderBrush).(Brush.Opacity)" Storyboard.TargetName="border">
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                                <DiscreteDoubleKeyFrame KeyTime="0:0:0.8" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="1"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Button.Width" EnableDependentAnimation="True" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteDoubleKeyFrame KeyTime="0:0:0.7" Value="50"/>
+                            </DoubleAnimationUsingKeyFrames>
                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="CurrentTimeButton">
-                                <DiscreteObjectKeyFrame KeyTime="0">
+                                <DiscreteObjectKeyFrame KeyTime="0:0:0.7">
                                     <DiscreteObjectKeyFrame.Value>
                                         <HorizontalAlignment>Right</HorizontalAlignment>
                                     </DiscreteObjectKeyFrame.Value>
                                 </DiscreteObjectKeyFrame>
                             </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.ColumnSpan)" Storyboard.TargetName="CurrentTimeButton">
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <x:Int32>2</x:Int32>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)" Storyboard.TargetName="CurrentTimeButton">
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames>
-                            <DoubleAnimation Duration="0:0:0.8" To="90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock" d:IsOptimized="True">
-                                <DoubleAnimation.EasingFunction>
-                                    <QuadraticEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <ColorAnimation Duration="0:0:0.8" To="{ThemeResource SystemAccentColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock" d:IsOptimized="True"/>
                         </Storyboard>
                     </VisualTransition>
+
                     <VisualTransition From="UseCustomTimeState" GeneratedDuration="0" To="UseCurrentTimeState">
-                        <Storyboard x:Name="CustomToCurrentStoryboard">
-                            <DoubleAnimationUsingKeyFrames x:Name="CustomToCurrentWidthAnimatioin" EnableDependentAnimation="True" Storyboard.TargetProperty="Width" Storyboard.TargetName="CurrentTimeButton">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0" Value="50"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:1">
+                        <Storyboard>
+                            <DoubleAnimation Duration="0:0:0.7" From="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox"/>
+                            <!--This animation's Value is overridden in code-behind, and kept in sync with the control's width.-->
+                            <DoubleAnimationUsingKeyFrames x:Name="WidenAnimation" Storyboard.TargetProperty="Button.Width" EnableDependentAnimation="True" Storyboard.TargetName="CurrentTimeButton">
+                                <DiscreteDoubleKeyFrame KeyTime="0:0:0.01" Value="350"/>
+                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimationUsingKeyFrames Duration="0:0:0.8" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="CurrentTimeButton">
+                                <!--This value should be set in code-behind as well.-->
+                                <DiscreteDoubleKeyFrame x:Name="ScaleUpBoxFrame" KeyTime="0:0:0" Value="0.143"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="1">
                                     <EasingDoubleKeyFrame.EasingFunction>
                                         <QuarticEase EasingMode="EaseOut"/>
                                     </EasingDoubleKeyFrame.EasingFunction>
                                 </EasingDoubleKeyFrame>
                             </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="CurrentTimeBox">
-                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock">
-                                <EasingDoubleKeyFrame KeyTime="0" Value="90"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="0"/>
-                            </DoubleAnimationUsingKeyFrames>
+                            <DoubleAnimation Duration="0:0:0.8" From="90" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock"/>
                             <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemAccentColor}" To="{ThemeResource SystemBaseMediumColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="CurrentTimeButton">
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <HorizontalAlignment>Right</HorizontalAlignment>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                                <DiscreteObjectKeyFrame KeyTime="0:0:1">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <HorizontalAlignment>Stretch</HorizontalAlignment>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames>
+                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="border">
+                                <LinearColorKeyFrame KeyTime="0:0:0.2" Value="#00FFFFFF"/>
+                                <LinearColorKeyFrame KeyTime="0:0:0.8" Value="#FFFFFFFF"/>
+                            </ColorAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualTransition>
                 </VisualStateGroup.Transitions>
-                <VisualState x:Name="UseCurrentTimeState"/>
+                <VisualState x:Name="UseCurrentTimeState">
+                    <VisualState.Setters>
+                        <Setter Target="ArrowTextBlock.(TextBlock.Foreground)" Value="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                    </VisualState.Setters>
+                </VisualState>
                 <VisualState x:Name="UseCustomTimeState">
                     <VisualState.Setters>
-                        <Setter Target="CurrentTimeBox.(TextBlock.FontFamily)" Value="{ThemeResource SymbolThemeFontFamily}"/>
-                        <Setter Target="CurrentTimeBox.(TextBlock.Text)" Value="{Binding BoldLeftArrow, Source={StaticResource FontIcons}}"/>
-                        <Setter Target="CurrentTimeBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemAccentColor}"/>
-                        <Setter Target="CurrentTimeButton.(Grid.Column)" Value="1"/>
-                        <Setter Target="CurrentTimeButton.(Grid.ColumnSpan)" Value="1"/>
-                        <Setter Target="ArrowTextBlock.(UIElement.Visibility)" Value="Collapsed"/>
-                        <Setter Target="CurrentTimeBox.(FrameworkElement.HorizontalAlignment)" Value="Center"/>
+                        <Setter Target="ArrowTextBlock.(UIElement.RenderTransform).(CompositeTransform.Rotation)" Value="90"/>
+                        <Setter Target="ArrowTextBlock.(TextBlock.Foreground)" Value="{ThemeResource SystemControlForegroundAccentBrush}"/>
+                        <Setter Target="CurrentTimeBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemBaseMediumColor}"/>
+                        <Setter Target="CurrentTimeButton.(FrameworkElement.Width)" Value="50"/>
+                        <Setter Target="CurrentTimeButton.(FrameworkElement.HorizontalAlignment)" Value="Right"/>
+                        <Setter Target="CurrentTimeBox.(UIElement.Opacity)" Value="0"/>
                     </VisualState.Setters>
                     <Storyboard/>
                 </VisualState>
@@ -250,7 +225,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition x:Name="NarrowColumn" Width="50"/>
         </Grid.ColumnDefinitions>
 
         <TimePicker x:Name="UnderPicker"
@@ -272,7 +247,7 @@
                 Height="{StaticResource TallTextBoxHeight}"
                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
                 Style="{StaticResource NoStyleButtonStyle}" 
-                RenderTransformOrigin="0.5,0.5">
+                RenderTransformOrigin="1.0,0.5">
             <Button.RenderTransform>
                 <CompositeTransform/>
             </Button.RenderTransform>
@@ -300,7 +275,8 @@
                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
                    FontSize="20"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                   VerticalAlignment="Center" 
+                   RenderTransformOrigin="0.5,0.5">
             <TextBlock.RenderTransform>
                 <CompositeTransform/>
             </TextBlock.RenderTransform>

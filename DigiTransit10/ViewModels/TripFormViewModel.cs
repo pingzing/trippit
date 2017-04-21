@@ -44,10 +44,17 @@ namespace DigiTransit10.ViewModels
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
         private bool _isUsingCurrentTime = true;
-            public bool IsUsingCurrentTime
+        public bool IsUsingCurrentTime
         {
             get { return _isUsingCurrentTime; }
             set { Set(ref _isUsingCurrentTime, value); }
+        }
+
+        private bool _isUsingCurrentDate = true;
+        public bool IsUsingCurrentDate
+        {
+            get { return _isUsingCurrentDate; }
+            set { Set(ref _isUsingCurrentDate, value); }
         }
 
         private bool? _isArrivalChecked = false;
@@ -310,7 +317,7 @@ namespace DigiTransit10.ViewModels
                     toCoords,
                     ToPlace.Name,
                     IsUsingCurrentTime ? DateTime.Now.TimeOfDay : SelectedTime,
-                    SelectedDate.DateTime,
+                    IsUsingCurrentDate ? DateTime.Today : SelectedDate.DateTime,
                     IsArrivalChecked == true,
                     ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
                                           (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
