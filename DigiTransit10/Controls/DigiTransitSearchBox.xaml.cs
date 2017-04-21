@@ -588,7 +588,9 @@ namespace DigiTransit10.Controls
 
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (!SearchBox.IsSuggestionListOpen)
+            // Don't open the search box if the user is just adding a favorite or clearing the box
+            if (!SearchBox.IsSuggestionListOpen
+                && e.OriginalSource as Button == null)
             {
                 SearchBox.IsSuggestionListOpen = true;
             }
