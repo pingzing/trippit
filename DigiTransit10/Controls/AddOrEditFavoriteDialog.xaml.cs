@@ -208,7 +208,8 @@ namespace DigiTransit10.Controls
 
             List<FavoriteIcon> iconsList = new List<FavoriteIcon>();
 
-            List<int> fontInts = (await _fontService.GetFontGlyphsAsync(hslFamily.Source)).ToList();
+            List<int> fontInts = (await _fontService.GetFontGlyphsAsync(hslFamily.Source)).ToList();       
+
             foreach (int value in fontInts)
             {
                 var icon = new FavoriteIcon

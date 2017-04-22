@@ -25,6 +25,9 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         public enum StopSearchState { Overview, Details };
         private StopSearchState _currentState;
 
+        public enum OwnerSearchPivot { NearbyStops, Stops };
+        public OwnerSearchPivot OwnedBy { get; private set; }
+
         public RelayCommand LoadedCommand => new RelayCommand(Loaded);
         public RelayCommand UnloadedCommand => new RelayCommand(Unloaded);
 
@@ -70,10 +73,19 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _stopsSearchBoxText, value); }
         }
 
-        public StopSearchContentViewModel(IMessenger messenger, INetworkService network)
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set { Set(ref _title, value); }
+        }
+
+        public StopSearchContentViewModel(IMessenger messenger, INetworkService network, OwnerSearchPivot ownedBy, string title)
         {
             _messenger = messenger;            
             _networkService = network;
+            OwnedBy = ownedBy;
+            Title = title;
 
             _messenger.Register<MessageTypes.ViewStopDetails>(this, SwitchToDetailedView);
         }

@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
+using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Services;
 using DigiTransit10.Styles;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Navigation;
+using static DigiTransit10.ViewModels.ControlViewModels.StopSearchContentViewModel;
 
 namespace DigiTransit10.ViewModels
 {
@@ -33,6 +35,10 @@ namespace DigiTransit10.ViewModels
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
         private readonly IMessenger _messenger;
+
+        private StopSearchContentViewModel _nearbyStopsViewModel;
+        private StopSearchContentViewModel _searchStopsViewModel;
+        private LineSearchContentViewModel _linesSearchViewModel;
 
         private List<IMapPoi> _hiddenMapPlaces = new List<IMapPoi>();
         private List<IMapPoi> _hiddenMapNearbyPlaces = new List<IMapPoi>();
@@ -79,12 +85,12 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private ObservableCollection<LineSearchElementViewModel> _linesResultList = new ObservableCollection<LineSearchElementViewModel>();
-        public ObservableCollection<LineSearchElementViewModel> LinesResultList
+        private ObservableCollection<BindableBase> _searchViewModels = new ObservableCollection<BindableBase>();
+        public ObservableCollection<BindableBase> SearchViewModels
         {
-            get { return _linesResultList; }
-            set { Set(ref _linesResultList, value); }
-        }
+            get { return _searchViewModels; }
+            set { Set(ref _searchViewModels, value); }
+        }        
 
         private ObservableCollection<IMapPoi> _mapPlaces = new ObservableCollection<IMapPoi>();
         public ObservableCollection<IMapPoi> MapPlaces
@@ -105,28 +111,7 @@ namespace DigiTransit10.ViewModels
         {
             get { return _mapCircles; }
             set { Set(ref _mapCircles, value); }
-        }
-
-        private string _linesSearchBoxText;
-        public string LinesSearchBoxText
-        {
-            get { return _linesSearchBoxText; }
-            set { Set(ref _linesSearchBoxText, value); }
-        }
-
-        private StopSearchContentViewModel _nearbyStopsViewModel;
-        public StopSearchContentViewModel NearbyStopsViewModel
-        {
-            get { return _nearbyStopsViewModel; }
-            set { Set(ref _nearbyStopsViewModel, value); }
-        }
-
-        private StopSearchContentViewModel _searchStopsViewModel;
-        public StopSearchContentViewModel SearchStopsViewModel
-        {
-            get { return _searchStopsViewModel; }
-            set { Set(ref _searchStopsViewModel, value); }
-        }
+        }       
 
         private bool _childIsInDetailedState = false;
         public bool ChildIsInDetailedState
@@ -153,9 +138,14 @@ namespace DigiTransit10.ViewModels
             _geolocation = geolocation;
             _messenger = messenger;
 
-            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
-            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService);
+            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, OwnerSearchPivot.NearbyStops, AppResources.SearchPage_NearbyHeader);
+            _linesSearchViewModel = new LineSearchContentViewModel(_networkService, AppResources.SearchPage_LinesHeader);
+            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, OwnerSearchPivot.Stops, AppResources.SearchPage_StopsHeader);
             _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);
+
+            SearchViewModels.Add(_nearbyStopsViewModel);
+            SearchViewModels.Add(_linesSearchViewModel);
+            SearchViewModels.Add(_searchStopsViewModel);
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -216,7 +206,7 @@ namespace DigiTransit10.ViewModels
 
             _cts = new CancellationTokenSource();
             IsNearbyStopsLoading = true;
-            var response = await NearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
+            var response = await _nearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
             IsNearbyStopsLoading = false;
 
             if (response.IsFailure || _cts.IsCancellationRequested)
@@ -242,7 +232,7 @@ namespace DigiTransit10.ViewModels
             _cts = new CancellationTokenSource();
 
             IsStopsLoading = true;
-            var stopsResult = await SearchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
+            var stopsResult = await _searchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
             IsStopsLoading = false;
             if (stopsResult.IsFailure || _cts.IsCancellationRequested)
             {
@@ -264,8 +254,7 @@ namespace DigiTransit10.ViewModels
         private async void SearchLines(string searchText)
         {
             if (String.IsNullOrWhiteSpace(searchText))
-            {
-                //Clear SearchStops list //StopsResultList.Clear();
+            {                
                 return;
             }
 
@@ -276,16 +265,7 @@ namespace DigiTransit10.ViewModels
             _cts = new CancellationTokenSource();
 
             IsLinesLoading = true;
-
-            var response = await _networkService.GetLinesAsync(searchText, _cts.Token);
-            if (response.IsFailure || _cts.IsCancellationRequested)
-            {
-                IsLinesLoading = false;
-                //Clear SearchStops list //StopsResultList.Clear();
-                return;
-            }
-            LinesResultList = new ObservableCollection<LineSearchElementViewModel>(response.Result.Select(x => new LineSearchElementViewModel { BackingLine = x }));
-
+            await _linesSearchViewModel.GetLinesAsync(searchText, _cts.Token);
             IsLinesLoading = false;
         }
 
@@ -369,8 +349,8 @@ namespace DigiTransit10.ViewModels
 
         private void ChildStateChanged(MessageTypes.ViewStateChanged args)
         {
-            if (ReferenceEquals(args.Sender, NearbyStopsViewModel) && _activeSection == SearchSection.Nearby
-                || ReferenceEquals(args.Sender, SearchStopsViewModel) && _activeSection == SearchSection.Stops)
+            if (ReferenceEquals(args.Sender, _nearbyStopsViewModel) && _activeSection == SearchSection.Nearby
+                || ReferenceEquals(args.Sender, _searchStopsViewModel) && _activeSection == SearchSection.Stops)
             {
                 ChildIsInDetailedState = args.ViewState == StopSearchContentViewModel.StopSearchState.Details;
             }            

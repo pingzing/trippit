@@ -30,7 +30,7 @@ namespace DigiTransit10.Services
             _directWriteFactory = new Factory();
 
             CacheFontGlyphs(Constants.HslPiktoFrameFontName, HslFontGlyphs.PiktoFrame);
-            //CacheFontGlyphs(Constants.HslPiktoNormalFontName, HslFontGlyphs.PiktoNormal); //todo: get these values and put them in HslFontGlyphs
+            CacheFontGlyphs(Constants.HslPiktoNormalFontName, HslFontGlyphs.PiktoNormal);
 
             Initialization = InitializeAsync();
         }

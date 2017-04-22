@@ -299,7 +299,10 @@
     <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\FavoritesListTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\SearchPagePivotViewSelector.cs" />
+    <Compile Include="TemplateSelectors\StopsSearchTemplate.cs" />
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\LineSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchElementViewModel.cs" />
