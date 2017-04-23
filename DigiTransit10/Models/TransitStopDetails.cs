@@ -21,6 +21,7 @@ namespace DigiTransit10.Models
             LinesThroughStop = stop.StoptimesForServiceDate.Select(
                 x => new TransitLineWithoutStops
                 {
+                    GtfsId = x.Pattern.Route.GtfsId,
                     LongName = x.Pattern.Route.LongName,
                     ShortName = x.Pattern.Route.ShortName,
                     TransitMode = x.Pattern.Route.Mode

@@ -22,39 +22,17 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=Search}">
 
     <Page.Resources>
-        
+
         <DataTemplate x:Key="NearbyStopsSearchTemplate" x:DataType="ctlVms:StopSearchContentViewModel">
-            <lclCtls:StopSearchContent IsSearchBoxVisible="True"
-                                       SearchBoxTextChanged="StopsSearchBox_TextChanged"
-                                       SearchBoxQuerySubmitted="StopsSearchBox_QuerySubmitted"/>
+            <lclCtls:StopSearchContent IsSearchBoxVisible="False"/>
         </DataTemplate>
-        
+
         <DataTemplate x:Key="LinesSearchTemplate" x:DataType="ctlVms:LineSearchContentViewModel">
-            <ListView x:Name="LinesList"
-                      SelectionChanged="LinesList_SelectionChanged"
-                      SelectionMode="Single"                                  
-                      ItemsSource="{x:Bind LinesResultList, Mode=OneWay}">
-                <ListView.Header>
-                    <AutoSuggestBox x:Name="LinesSearchBox"
-                                    Grid.Row="0"
-                                    Margin="0 0 0 10"
-                                    QueryIcon="Find"
-                                    QuerySubmitted="LinesSearchBox_QuerySubmitted"
-                                    Text="{Binding LinesSearchBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    TextChanged="LinesSearchBox_TextChanged"/>
-                </ListView.Header>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="ctlVms:LineSearchElementViewModel">
-                        <lclCtls:LineSearchElement DataContext="{x:Bind }"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <lclCtls:LineSearchContent/>
         </DataTemplate>
-        
+
         <DataTemplate x:Key="StopsSearchTemplate" x:DataType="ctlVms:StopSearchContentViewModel">
-            <lclCtls:StopSearchContent IsSearchBoxVisible="True"
-                                       SearchBoxTextChanged="StopsSearchBox_TextChanged"
-                                       SearchBoxQuerySubmitted="StopsSearchBox_QuerySubmitted"/>
+            <lclCtls:StopSearchContent IsSearchBoxVisible="True"/>
         </DataTemplate>
 
         <selectors:SearchPagePivotViewSelector x:Key="SearchPivotTemplateSelector"
@@ -63,31 +41,19 @@
                                                StopsSearchTemplate="{StaticResource StopsSearchTemplate}"/>
 
         <DataTemplate x:Key="SearchPanelTemplate" x:DataType="vms:SearchViewModel">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <ProgressBar x:Name="SearchIndeterminateBar"
-                             Grid.Row="0"
-                             Background="Transparent"
-                             IsIndeterminate="{x:Bind IsLoading, Mode=OneWay}"/>
-
-                <Pivot x:Name="SearchPivot"
-                       Grid.Row="1"
-                       IsLocked="{x:Bind ChildIsInDetailedState, Mode=OneWay}"
-                       ItemsSource="{x:Bind SearchViewModels, Mode=OneWay}"
-                       ItemTemplateSelector="{StaticResource SearchPivotTemplateSelector}"
-                       VerticalAlignment="Stretch"
-                       SelectionChanged="SearchPivot_SelectionChanged">
-                    <Pivot.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="30"/>
-                        </DataTemplate>
-                    </Pivot.HeaderTemplate>
-                </Pivot>
-            </Grid>
+            <Pivot x:Name="SearchPivot"
+                   Grid.Row="1"
+                   IsLocked="{x:Bind ChildIsInDetailedState, Mode=OneWay}"
+                   ItemsSource="{x:Bind SearchViewModels, Mode=OneWay}"
+                   ItemTemplateSelector="{StaticResource SearchPivotTemplateSelector}"
+                   VerticalAlignment="Stretch"
+                   SelectedItem="{Binding SelectedPivot, Mode=TwoWay}">
+                <Pivot.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Title}" Style="{ThemeResource TitleTextBlockStyle}" FontSize="30"/>
+                    </DataTemplate>
+                </Pivot.HeaderTemplate>
+            </Pivot>
         </DataTemplate>
     </Page.Resources>
 
@@ -151,7 +117,7 @@
                 </MenuFlyout>
             </FlyoutBase.AttachedFlyout>
         </lclCtls:DigiTransitMap>
-        
+
         <!--Wide view-->
         <Grid x:Name="WideSearchGrid"
               x:DeferLoadStrategy="Lazy"
@@ -169,7 +135,7 @@
                             ContentTemplate="{StaticResource SearchPanelTemplate}"                              
                             VerticalAlignment="Stretch"/>
         </Grid>
-        
+
         <!--Narrow view-->
 
         <!--ExpandedHeight set in code-behind.-->

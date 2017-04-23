@@ -23,40 +23,41 @@ namespace DigiTransit10.Views
     {
         private const double FloatingPanelHeightFraction = 0.5;
 
-        private VisualState _narrowVisualState;
-        private DispatcherTimer _linesTypingThrottle = new DispatcherTimer();
-        private string _linesSearchText;
-        private DispatcherTimer _stopsTypingThrottle = new DispatcherTimer();
-        private string _stopsSearchText;
+        private VisualState _narrowVisualState;        
 
         public SearchViewModel ViewModel => DataContext as SearchViewModel;
 
         public SearchPage()
         {
             this.InitializeComponent();
-
-            _linesTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
-            _linesTypingThrottle.Tick += LinesTypingThrottle_Tick;
-
-            _stopsTypingThrottle.Interval = TimeSpan.FromMilliseconds(500);
-            _stopsTypingThrottle.Tick += StopsTypingThrottle_Tick;
+            
             _narrowVisualState = AdaptiveVisualStateGroup.States.First(x => x.Name == Constants.VisualStateNarrow);
-            this.Unloaded += SearchPage_Unloaded1;
+            this.Unloaded += SearchPage_Unloaded;
         }
 
-        private void SearchPage_Unloaded1(object sender, RoutedEventArgs e)
+        private void SearchPage_Unloaded(object sender, RoutedEventArgs e)
         {
             Bindings.StopTracking();
+            if (this.Parent != null)
+            {
+                (this.Parent as FrameworkElement).SizeChanged -= Parent_SizeChanged;
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            Messenger.Default.Register<MessageTypes.SearchLineSelectionChanged>(this, SearchLineSelectionChanged);
+            Messenger.Default.Register<MessageTypes.NearbyListSelectionChanged>(this, NearbyListSelectionChanged);
+            Messenger.Default.Register<MessageTypes.StopsListSelectionChanged>(this, StopsListSelectionChanged);
             Messenger.Default.Register<MessageTypes.CenterMapOnGeoposition>(this, CenterMapOnLocation);
             base.OnNavigatedTo(e);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            Messenger.Default.Unregister<MessageTypes.SearchLineSelectionChanged>(this, SearchLineSelectionChanged);
+            Messenger.Default.Unregister<MessageTypes.NearbyListSelectionChanged>(this, NearbyListSelectionChanged);
+            Messenger.Default.Unregister<MessageTypes.StopsListSelectionChanged>(this, StopsListSelectionChanged);
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
             base.OnNavigatedFrom(e);
         }
@@ -116,19 +117,10 @@ namespace DigiTransit10.Views
         private void NarrowSearchPanel_Loaded(object sender, RoutedEventArgs e)
         {
             NarrowSearchPanel.ExpandedHeight = this.ActualHeight * FloatingPanelHeightFraction;
-            this.SizeChanged += SearchPage_SizeChanged;
-            this.Unloaded += SearchPage_Unloaded;
+            this.SizeChanged += SearchPage_SizeChanged;            
             if (this.Parent != null)
             {
                 (this.Parent as FrameworkElement).SizeChanged += Parent_SizeChanged;
-            }
-        }
-
-        private void SearchPage_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (this.Parent != null)
-            {
-                (this.Parent as FrameworkElement).SizeChanged -= Parent_SizeChanged;
             }
         }
 
@@ -149,118 +141,10 @@ namespace DigiTransit10.Views
             {
                 Rect = new Rect(0, 0, this.ActualWidth, this.ActualHeight)
             };
-        }
+        }                
 
-        private void StopsSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void SearchLineSelectionChanged(MessageTypes.SearchLineSelectionChanged _)
         {
-            _stopsTypingThrottle.Stop();
-            if (ViewModel?.SearchStopsCommand.CanExecute(args.QueryText) == true)
-            {
-                ViewModel.SearchStopsCommand.Execute(args.QueryText);
-            }
-        }
-
-        private void StopsSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            string searchText = sender.Text;
-            if (args.CheckCurrent()
-                && ViewModel?.SearchStopsCommand.CanExecute(searchText) == true)
-            {
-                _stopsSearchText = searchText;
-                _stopsTypingThrottle.Stop();
-                _stopsTypingThrottle.Start();
-            }
-        }
-
-        private void StopsTypingThrottle_Tick(object sender, object e)
-        {
-            _stopsTypingThrottle.Stop();
-            ViewModel.SearchStopsCommand.Execute(_stopsSearchText);
-        }
-
-        private void LinesSearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            _linesTypingThrottle.Stop();
-            if(ViewModel?.SearchLinesCommand.CanExecute(args.QueryText) == true)
-            {
-                ViewModel.SearchLinesCommand.Execute(args.QueryText);
-            }
-        }
-
-        private void LinesSearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            string searchText = sender.Text;
-            if (args.CheckCurrent()
-                && ViewModel?.SearchLinesCommand.CanExecute(searchText) == true)
-            {
-                _linesSearchText = searchText;
-                _linesTypingThrottle.Stop();
-                _linesTypingThrottle.Start();
-            }
-        }
-
-        private void LinesTypingThrottle_Tick(object sender, object e)
-        {
-            _linesTypingThrottle.Stop();
-            ViewModel.SearchLinesCommand.Execute(_linesSearchText);
-        }
-
-        private void SearchPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var pivot = (Pivot)sender;
-            var oldSection = SearchSection.None;
-            var oldSectionPivot = e.RemovedItems.FirstOrDefault() as PivotItem;
-            if (oldSectionPivot?.Name == "NearbyPivot")
-            {
-                oldSection = SearchSection.Nearby;
-            }
-            else if(oldSectionPivot?.Name == "LinesPivot")
-            {
-                oldSection = SearchSection.Lines;
-            }
-            else if(oldSectionPivot?.Name == "StopsPivot")
-            {
-                oldSection = SearchSection.Stops;
-            }
-            var selectedSection = SearchSection.Nearby;
-            switch (pivot.SelectedIndex)
-            {
-                case 0:
-                    selectedSection = SearchSection.Nearby;
-                    break;
-                case 1:
-                    selectedSection = SearchSection.Lines;
-                    break;
-                case 2:
-                    selectedSection = SearchSection.Stops;
-                    break;
-            }
-
-            var args = new SearchSectionChangedEventArgs(oldSection, selectedSection);
-            ViewModel.SectionChangedCommand.Execute(args);
-        }
-
-        private void LinesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //toggle view state of selected element
-            //trigger selection changed in viewmodel
-            var selectedItem = (LineSearchElementViewModel)e.AddedItems.FirstOrDefault();
-            if(ViewModel?.UpdateSelectedLineCommand.CanExecute(selectedItem) == true)
-            {
-                ViewModel.UpdateSelectedLineCommand.Execute(selectedItem);
-            }
-
-            var deselectedItem = (LineSearchElementViewModel)e.RemovedItems.FirstOrDefault();
-            if (deselectedItem?.ToggleLineStopsVisibilityCommand.CanExecute(null) == true)
-            {
-                deselectedItem.ToggleLineStopsVisibilityCommand.Execute(null);
-            }
-
-            if (selectedItem?.ToggleLineStopsVisibilityCommand.CanExecute(null) == true)
-            {
-                selectedItem.ToggleLineStopsVisibilityCommand.Execute(null);
-            }
-
             GeoboundingBox lineBox = PageMap.GetAllMapElementsBoundingBox();
             var mapMargin = AdaptiveVisualStateGroup.CurrentState == _narrowVisualState
                 ? new Thickness(10, 10, 10, (this.NarrowSearchPanel.ExpandedHeight) + 10)
@@ -268,29 +152,22 @@ namespace DigiTransit10.Views
             PageMap.TrySetViewBoundsAsync(lineBox, mapMargin, MapAnimationKind.Linear).DoNotAwait();
         }
 
+        private void NearbyListSelectionChanged(MessageTypes.NearbyListSelectionChanged args)
+        {            
+            
+            TrySetMapViewWithMargin(args.SelectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();            
+        }
+
+        private void StopsListSelectionChanged(MessageTypes.StopsListSelectionChanged args)
+        {            
+            TrySetMapViewWithMargin(args.SelectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();            
+        }
+
         private void PageMap_MapRightTapped(MapControl sender, MapRightTappedEventArgs args)
         {
             var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
             ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;
             flyout.ShowAt(sender, args.Position);
-        }
-
-        private void NearbyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedStop = e.AddedItems.FirstOrDefault() as TransitStop;
-            if (selectedStop != null)
-            {
-                TrySetMapViewWithMargin(selectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();
-            }
-        }
-
-        private void StopsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedStop = e.AddedItems.FirstOrDefault() as TransitStop;
-            if (selectedStop != null)
-            {
-                TrySetMapViewWithMargin(selectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();
-            }
         }
     }
 }

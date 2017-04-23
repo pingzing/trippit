@@ -132,6 +132,9 @@
     <Compile Include="Controls\GroupedFavoriteList.cs" />
     <Compile Include="Controls\GroupedPlaceList.cs" />
     <Compile Include="Controls\ISortableAppBarButton.cs" />
+    <Compile Include="Controls\LineSearchContent.xaml.cs">
+      <DependentUpon>LineSearchContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LineSearchElement.xaml.cs">
       <DependentUpon>LineSearchElement.xaml</DependentUpon>
     </Compile>
@@ -304,6 +307,7 @@
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\SearchViewModelBase.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchElementViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
@@ -517,6 +521,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FloatingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LineSearchContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

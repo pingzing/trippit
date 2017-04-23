@@ -33,8 +33,9 @@ namespace DigiTransit10.Services
 
         Task<ApiResult<IEnumerable<TransitStop>>> GetStopsAsync(string searchString, CancellationToken token = default(CancellationToken));
         Task<ApiResult<TripPlan>> PlanTripAsync(TripQueryDetails details, CancellationToken token = default(CancellationToken));
-        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));        
-        Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(string searchString, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(IEnumerable<string> gtfsIds, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));        
         Task<ApiResult<TransitStopDetails>> GetStopDetails(string stopId, DateTime forDate, CancellationToken token = default(CancellationToken));
     }
 
@@ -241,6 +242,7 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.mode),
                     new GqlReturnValue(ApiGqlMembers.patterns,
                         new GqlReturnValue(ApiGqlMembers.stops,
+                            new GqlReturnValue(ApiGqlMembers.gtfsId),
                             new GqlReturnValue(ApiGqlMembers.name),
                             new GqlReturnValue(ApiGqlMembers.lat),
                             new GqlReturnValue(ApiGqlMembers.lon)
@@ -254,6 +256,42 @@ namespace DigiTransit10.Services
 
             ApiResult<IEnumerable<ApiRoute>> response = await GetGraphQLAsync<IEnumerable<ApiRoute>>(query, token);
             if(!response.HasResult)
+            {
+                return ApiResult<IEnumerable<TransitLine>>.FailWithReason(response.Failure.Reason);
+            }
+            if (response.HasResult && !response.Result.Any())
+            {
+                LogLogicFailure(FailureReason.NoResults);
+                return ApiResult<IEnumerable<TransitLine>>.FailWithReason(FailureReason.NoResults);
+            }
+
+            return new ApiResult<IEnumerable<TransitLine>>(response.Result.Select(x => new TransitLine(x)));
+        }
+
+        public async Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(IEnumerable<string> gtfsIds, CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.routes)
+                .WithParameters(new GqlParameter(ApiGqlMembers.ids, gtfsIds))
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.shortName),
+                    new GqlReturnValue(ApiGqlMembers.longName),
+                    new GqlReturnValue(ApiGqlMembers.mode),
+                    new GqlReturnValue(ApiGqlMembers.patterns,
+                        new GqlReturnValue(ApiGqlMembers.stops,
+                            new GqlReturnValue(ApiGqlMembers.gtfsId),
+                            new GqlReturnValue(ApiGqlMembers.name),
+                            new GqlReturnValue(ApiGqlMembers.lat),
+                            new GqlReturnValue(ApiGqlMembers.lon)
+                        ),
+                        new GqlReturnValue(ApiGqlMembers.geometry,
+                            new GqlReturnValue(ApiGqlMembers.lat),
+                            new GqlReturnValue(ApiGqlMembers.lon)
+                        )
+                    )
+                );
+
+            ApiResult<IEnumerable<ApiRoute>> response = await GetGraphQLAsync<IEnumerable<ApiRoute>>(query, token);
+            if (!response.HasResult)
             {
                 return ApiResult<IEnumerable<TransitLine>>.FailWithReason(response.Failure.Reason);
             }
@@ -336,6 +374,7 @@ namespace DigiTransit10.Services
                     new GqlInlineMethodReturnValue(ApiGqlMembers.stoptimesForServiceDate, new List<GqlParameter> { new GqlParameter(ApiGqlMembers.date, forDate) },
                         new GqlReturnValue(ApiGqlMembers.pattern,
                             new GqlReturnValue(ApiGqlMembers.route,
+                                new GqlReturnValue(ApiGqlMembers.gtfsId),
                                 new GqlReturnValue(ApiGqlMembers.mode),
                                 new GqlReturnValue(ApiGqlMembers.shortName),
                                 new GqlReturnValue(ApiGqlMembers.longName)

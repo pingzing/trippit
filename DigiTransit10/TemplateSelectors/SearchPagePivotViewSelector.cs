@@ -13,18 +13,20 @@ namespace DigiTransit10.TemplateSelectors
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            var stopSearchVm = item as StopSearchContentViewModel;
-            if (stopSearchVm != null)
+            var vm = item as ISearchViewModel;
+            if (vm != null)
             {
-                return stopSearchVm.OwnedBy == OwnerSearchPivot.NearbyStops ? NearbyStopsSearchTemplate
-                    : stopSearchVm.OwnedBy == OwnerSearchPivot.Stops ? StopsSearchTemplate
-                    : null;
-            }
-
-            var linesSearchVm = item as LineSearchContentViewModel;
-            if (linesSearchVm != null)
-            {
-                return LinesSearchTemplate;
+                switch (vm.OwnedBy)
+                {
+                    case ViewModels.SearchSection.Nearby:
+                        return NearbyStopsSearchTemplate;
+                    case ViewModels.SearchSection.Lines:
+                        return LinesSearchTemplate;
+                    case ViewModels.SearchSection.Stops:
+                        return StopsSearchTemplate;
+                    default:
+                        return null;
+                }
             }
 
             return null;

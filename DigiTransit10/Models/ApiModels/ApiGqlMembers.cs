@@ -12,16 +12,16 @@
         public static string stoptimes => nameof(stoptimes);
         public static string intermediatePlaces => nameof(intermediatePlaces);
         public static string stoptimesForServiceDate => nameof(stoptimesForServiceDate);
-        public static string id => "id";
-        public static string plan => "plan";
-        public static string from => "from";
-        public static string lat => "lat";
-        public static string lon => "lon";
-        public static string to => "to";
-        public static string numItineraries => "numItineraries";
-        public static string time => "time";
-        public static string date => "date";
-        public static string arriveBy => "arriveBy";
+        public static string id => nameof(id);
+        public static string plan => nameof(plan);
+        public static string from => nameof(from);
+        public static string lat => nameof(lat);
+        public static string lon => nameof(lon);
+        public static string to => nameof(to);
+        public static string numItineraries => nameof(numItineraries);
+        public static string time => nameof(time);
+        public static string date => nameof(date);
+        public static string arriveBy => nameof(arriveBy);
         public static string itineraries => "itineraries";
         public static string legs => "legs";
         public static string startTime => "startTime";
@@ -67,5 +67,6 @@
         public static string realtimeArrival => nameof(realtimeArrival);
         public static string realtimeDeparture => nameof(realtimeDeparture);
         public static string stopHeadsign => nameof(stopHeadsign);
+        public static string ids => nameof(ids);
     }
 }

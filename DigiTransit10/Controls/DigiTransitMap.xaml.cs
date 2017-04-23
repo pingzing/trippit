@@ -234,7 +234,7 @@ namespace DigiTransit10.Controls
             }
 
             var newList = e.NewValue as IEnumerable<IMapPoi>;
-            if(newList == null || !newList.Any())
+            if(newList == null)
             {
                 return;
             }
@@ -574,7 +574,7 @@ namespace DigiTransit10.Controls
 
         private void SetMapIcons(IEnumerable<MapIcon> icons)
         {
-            var oldList = DigiTransitMapControl.MapElements.OfType<MapIcon>().ToList();
+            List<MapIcon> oldList = DigiTransitMapControl.MapElements.OfType<MapIcon>().ToList();
             if (icons == null)
             {
                 if(oldList != null)
@@ -849,6 +849,13 @@ namespace DigiTransit10.Controls
                 Longitude = coords.Max(x => x.Longitude),
                 Latitude = coords.Min(x => x.Latitude)
             };
+
+            // This is only here because it SEEMS like in the _incredibly_ rare case that my GeoboundingBox is a point,
+            // the whole calculation goes crazy, and you enter up with a .Center in Alaska
+            if (bottomRight.Latitude ==  topLeft.Latitude && bottomRight.Longitude == topLeft.Latitude)
+            {
+                bottomRight.Latitude -= 0.000001;
+            }
 
             return new GeoboundingBox(topLeft, bottomRight);
         }

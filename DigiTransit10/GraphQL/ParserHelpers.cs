@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 
 namespace DigiTransit10.GraphQL
 {
@@ -13,6 +16,11 @@ namespace DigiTransit10.GraphQL
         /// <returns>The string form of the given value.</returns>
         public static string ParseValue(object value, DateParsingStrategy dateHandling = DateParsingStrategy.HyphenSeparators)
         {
+           if (value is GqlTuple)
+            {
+                GqlTuple tuple = value as GqlTuple;
+                return tuple.ToString();
+            }
             if (value is string) //because the server needs strings escaped... ◔_◔
             {
                 return $"\\\"{value}\\\"";
@@ -54,6 +62,23 @@ namespace DigiTransit10.GraphQL
             {
                 TimeSpan timeSpanVal = (TimeSpan)value;
                 return $"\\\"{timeSpanVal.Hours.ToString(NumberFormatInfo.InvariantInfo)}:{timeSpanVal.Minutes.ToString(NumberFormatInfo.InvariantInfo)}:{timeSpanVal.Seconds.ToString(NumberFormatInfo.InvariantInfo)}\\\"";
+            }
+            if (value is IEnumerable)
+            {
+                var array = value as IEnumerable;
+                var sb = new StringBuilder();
+                sb.Append("[");
+                foreach(object item in array)
+                {
+                    sb.Append(ParseValue(item));
+                    sb.Append(",");
+                }
+                if (sb.Length > 1)
+                {
+                    sb.Remove(sb.Length - 1, 1); // Remove the final trailing comma, just in case
+                }
+                sb.Append("]");
+                return sb.ToString();
             }
             else
             {

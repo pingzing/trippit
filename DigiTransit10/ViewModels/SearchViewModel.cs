@@ -24,8 +24,7 @@ namespace DigiTransit10.ViewModels
     {
         Nearby,
         Lines,
-        Stops,
-        None
+        Stops        
     }
 
     public class SearchViewModel : ViewModelBase
@@ -39,54 +38,11 @@ namespace DigiTransit10.ViewModels
         private StopSearchContentViewModel _nearbyStopsViewModel;
         private StopSearchContentViewModel _searchStopsViewModel;
         private LineSearchContentViewModel _linesSearchViewModel;
+        
+        private CancellationTokenSource _cts;        
 
-        private List<IMapPoi> _hiddenMapPlaces = new List<IMapPoi>();
-        private List<IMapPoi> _hiddenMapNearbyPlaces = new List<IMapPoi>();
-        private List<ColoredMapLine> _hiddenMapLines = new List<ColoredMapLine>();
-        private List<IMapPoi> _hiddenMapLinePlaces = new List<IMapPoi>();
-        private List<ColoredGeocircle> _hiddenMapCircles = new List<ColoredGeocircle>();
-        private CancellationTokenSource _cts;
-        private SearchSection _activeSection;
-
-        public bool IsLoading => IsNearbyStopsLoading
-            || IsLinesLoading
-            || IsStopsLoading;
-
-        private bool _isNearbyStopsLoading;
-        public bool IsNearbyStopsLoading
-        {
-            get { return _isNearbyStopsLoading; }
-            set
-            {
-                _isNearbyStopsLoading = value;
-                RaisePropertyChanged(nameof(IsLoading));
-            }
-        }
-
-        private bool _isLinesLoading;
-        public bool IsLinesLoading
-        {
-            get { return _isLinesLoading; }
-            set
-            {
-                _isLinesLoading = value;
-                RaisePropertyChanged(nameof(IsLoading));
-            }
-        }
-
-        private bool _isStopsLoading;
-        public bool IsStopsLoading
-        {
-            get { return _isStopsLoading; }
-            set
-            {
-                _isStopsLoading = value;
-                RaisePropertyChanged(nameof(IsLoading));
-            }
-        }
-
-        private ObservableCollection<BindableBase> _searchViewModels = new ObservableCollection<BindableBase>();
-        public ObservableCollection<BindableBase> SearchViewModels
+        private ObservableCollection<ISearchViewModel> _searchViewModels = new ObservableCollection<ISearchViewModel>();
+        public ObservableCollection<ISearchViewModel> SearchViewModels
         {
             get { return _searchViewModels; }
             set { Set(ref _searchViewModels, value); }
@@ -120,17 +76,19 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _childIsInDetailedState, value); }
         }
 
-        public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
-        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);
-        public RelayCommand<string> SearchLinesCommand => new RelayCommand<string>(SearchLines);
-        public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStops);
-        public RelayCommand<SearchSectionChangedEventArgs> SectionChangedCommand => new RelayCommand<SearchSectionChangedEventArgs>(SectionChanged);
-        public RelayCommand<LineSearchElementViewModel> UpdateSelectedLineCommand => new RelayCommand<LineSearchElementViewModel>(UpdateSelectedLine,
-            UpdateSelectedLineCanExecute);
-        private bool UpdateSelectedLineCanExecute(LineSearchElementViewModel arg)
+        private ISearchViewModel _selectedPivot;
+        public ISearchViewModel SelectedPivot
         {
-            return arg != null;
+            get { return _selectedPivot; }
+            set
+            {
+                Set(ref _selectedPivot, value);
+                UpdateSelectedPivot(value);
+            }
         }
+
+        public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
+        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);        
 
         public SearchViewModel(INetworkService networkService, IGeolocationService geolocation, IMessenger messenger)
         {
@@ -138,19 +96,21 @@ namespace DigiTransit10.ViewModels
             _geolocation = geolocation;
             _messenger = messenger;
 
-            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, OwnerSearchPivot.NearbyStops, AppResources.SearchPage_NearbyHeader);
-            _linesSearchViewModel = new LineSearchContentViewModel(_networkService, AppResources.SearchPage_LinesHeader);
-            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, OwnerSearchPivot.Stops, AppResources.SearchPage_StopsHeader);
-            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);
+            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, SearchSection.Nearby, AppResources.SearchPage_NearbyHeader);
+            _linesSearchViewModel = new LineSearchContentViewModel(_networkService, _messenger, SearchSection.Lines, AppResources.SearchPage_LinesHeader);
+            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, SearchSection.Stops, AppResources.SearchPage_StopsHeader);
+            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);            
 
             SearchViewModels.Add(_nearbyStopsViewModel);
             SearchViewModels.Add(_linesSearchViewModel);
             SearchViewModels.Add(_searchStopsViewModel);
+
+            SelectedPivot = _nearbyStopsViewModel;
         }
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (_activeSection == SearchSection.Nearby)
+            if (SelectedPivot.OwnedBy == SearchSection.Nearby)
             {
                 MoveNearbyCircleToUser();
             }
@@ -159,14 +119,10 @@ namespace DigiTransit10.ViewModels
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
-            MapCircles.Clear();
-            MapPlaces.Clear();
-            MapLines.Clear();
-            _hiddenMapPlaces.Clear();
-            _hiddenMapNearbyPlaces.Clear();
-            _hiddenMapLines.Clear();
-            _hiddenMapLinePlaces.Clear();
-            _hiddenMapCircles.Clear();
+            // TODO: Might not need these anymore. Let's comment them out and see
+            //MapCircles.Clear();
+            //MapPlaces.Clear();
+            //MapLines.Clear();
             _cts?.Cancel();
             return Task.CompletedTask;
         }
@@ -179,8 +135,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private async void MoveNearbyCircleToUser()
-        {
-            IsNearbyStopsLoading = true;
+        {            
             GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
             if (result.HasResult)
             {
@@ -188,13 +143,12 @@ namespace DigiTransit10.ViewModels
                 Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
                 MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadius, GeocircleNumberOfPoints)));
                 await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadius));
-            }
-            IsNearbyStopsLoading = false;
+            }            
         }
 
         private async Task UpdateNearbyPlaces(Geocircle circle)
         {
-            if (_activeSection != SearchSection.Nearby)
+            if (SelectedPivot.OwnedBy != SearchSection.Nearby)
             {
                 return;
             }
@@ -205,154 +159,24 @@ namespace DigiTransit10.ViewModels
             }
 
             _cts = new CancellationTokenSource();
-            IsNearbyStopsLoading = true;
-            var response = await _nearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
-            IsNearbyStopsLoading = false;
-
-            if (response.IsFailure || _cts.IsCancellationRequested)
-            {
-                return;
-            }
-
-            MapPlaces = new ObservableCollection<IMapPoi>(response.Result
-                .Select(x => new BasicMapPoi
-                {
-                    Coords = x.Coords,
-                    Name = x.NameAndCode
-                })
-                .ToList());
-        }
-
-        private async void SearchStops(string searchText)
-        {
-            if (_cts != null && !_cts.IsCancellationRequested)
-            {
-                _cts.Cancel();
-            }
-            _cts = new CancellationTokenSource();
-
-            IsStopsLoading = true;
-            var stopsResult = await _searchStopsViewModel.SearchStopsAsync(searchText, _cts.Token);
-            IsStopsLoading = false;
-            if (stopsResult.IsFailure || _cts.IsCancellationRequested)
-            {
-                return;
-            }
-
-            MapPlaces = new ObservableCollection<IMapPoi>(stopsResult.Result
-                .Select(x => new Place
-                {
-                    Lat = (float)x.Coords.Latitude,
-                    Lon = (float)x.Coords.Longitude,
-                    Name = x.NameAndCode,
-                    Type = ModelEnums.PlaceType.Stop
-                }));
-
-            IsStopsLoading = false;
-        }
-
-        private async void SearchLines(string searchText)
-        {
-            if (String.IsNullOrWhiteSpace(searchText))
-            {                
-                return;
-            }
-
-            if (_cts != null && !_cts.IsCancellationRequested)
-            {
-                _cts.Cancel();
-            }
-            _cts = new CancellationTokenSource();
-
-            IsLinesLoading = true;
-            await _linesSearchViewModel.GetLinesAsync(searchText, _cts.Token);
-            IsLinesLoading = false;
-        }
-
-        private void UpdateSelectedLine(LineSearchElementViewModel element)
-        {
-            MapLines.Clear();
-
-            List<ColoredMapLinePoint> linePoints = element
-                .BackingLine
-                .Points
-                .Select(x => new ColoredMapLinePoint(
-                                    BasicGeopositionExtensions.Create(0.0, x.Longitude, x.Latitude),
-                                    HslColors.GetModeColor(element.BackingLine.TransitMode)))
-                .ToList();
-            var mapLine = new ColoredMapLine(linePoints);
-            MapLines = new ObservableCollection<ColoredMapLine>(new List<ColoredMapLine> { mapLine });
-            List<IMapPoi> stops = new List<IMapPoi>();
-            foreach (var stop in element.BackingLine.Stops)
-            {
-                stops.Add(new BasicMapPoi { Coords = stop.Coords, Name = stop.Name });
-            }
-            MapPlaces = new ObservableCollection<IMapPoi>(stops);
-        }
-
-        // todo: handle narrow <-> wide changes a little better. 
-        // since the pivot selection isn't synced, the circles/icons/etc on the map get a little out of sync
-        // The solution here is to probably just bind the pivot to a collection of ViewModels once and for all
-        // and use TwoWay binding to handle the currently-selected pivot
-        private void SectionChanged(SearchSectionChangedEventArgs args)
-        {
-            _activeSection = args.NewSection;
-            switch (args.OldSection)
-            {
-                case SearchSection.Lines:
-                    _hiddenMapLines.Clear();
-                    _hiddenMapLines.AddRange(MapLines);
-                    _hiddenMapLinePlaces.Clear();
-                    _hiddenMapLinePlaces.AddRange(MapPlaces);
-                    MapPlaces.Clear();
-                    MapLines.Clear();
-                    break;
-                case SearchSection.Nearby:
-                    _hiddenMapNearbyPlaces.Clear();
-                    _hiddenMapNearbyPlaces.AddRange(MapPlaces);
-                    _hiddenMapCircles.Clear();
-                    _hiddenMapCircles.AddRange(MapCircles);
-                    MapPlaces.Clear();
-                    MapCircles.Clear();
-                    break;
-                case SearchSection.Stops:
-                    _hiddenMapPlaces.Clear();
-                    _hiddenMapPlaces.AddRange(MapPlaces);
-                    MapPlaces.Clear();
-                    break;
-                case SearchSection.None:
-                    break; //do nothing
-                default:
-                    throw new ArgumentOutOfRangeException("newSection", "You forgot to add the last case in SectionChanged on the SearchViewModel, dunce!");
-            }
-
-
-            switch (_activeSection)
-            {
-                case SearchSection.Lines:
-                    MapLines.AddRange(_hiddenMapLines);
-                    MapPlaces.AddRange(_hiddenMapLinePlaces);
-                    break;
-                case SearchSection.Nearby:
-                    MapCircles.AddRange(_hiddenMapCircles);
-                    MapPlaces.AddRange(_hiddenMapNearbyPlaces);
-                    break;
-                case SearchSection.Stops:
-                    MapPlaces.AddRange(_hiddenMapPlaces);
-                    break;
-                case SearchSection.None:
-                    throw new ArgumentOutOfRangeException("newSection", "You can't have the ActiveSection be None, dunce!");
-                default:
-                    throw new ArgumentOutOfRangeException("newSection", "You forgot to add the last case in SectionChanged on the SearchViewModel, dunce!");
-            }
+            await _nearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
+        }        
+        
+        private void UpdateSelectedPivot(ISearchViewModel newPivotSelection)
+        {            
+            
+            MapCircles = newPivotSelection.MapCircles;
+            MapPlaces = newPivotSelection.MapPlaces;
+            MapLines = newPivotSelection.MapLines;
+            return;            
         }
 
         private void ChildStateChanged(MessageTypes.ViewStateChanged args)
         {
-            if (ReferenceEquals(args.Sender, _nearbyStopsViewModel) && _activeSection == SearchSection.Nearby
-                || ReferenceEquals(args.Sender, _searchStopsViewModel) && _activeSection == SearchSection.Stops)
+            if (ReferenceEquals(args.Sender, _nearbyStopsViewModel) && SelectedPivot.OwnedBy == SearchSection.Nearby
+                || ReferenceEquals(args.Sender, _searchStopsViewModel) && SelectedPivot.OwnedBy == SearchSection.Stops)
             {
-                ChildIsInDetailedState = args.ViewState == StopSearchContentViewModel.StopSearchState.Details;
+                ChildIsInDetailedState = args.ViewState == StopSearchState.Details;
             }            
         }
     }

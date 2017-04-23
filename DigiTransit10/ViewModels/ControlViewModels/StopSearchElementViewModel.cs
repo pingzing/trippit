@@ -40,7 +40,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         private void ViewDetails()
         {
-            _messenger.Send(new Helpers.MessageTypes.ViewStopDetails(BackingStop));
+            _messenger.Send(new Helpers.MessageTypes.ViewStopDetails(this));
         }
     }
 }

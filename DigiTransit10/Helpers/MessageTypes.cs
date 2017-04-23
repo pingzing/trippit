@@ -1,5 +1,7 @@
 ﻿using DigiTransit10.Models;
 using DigiTransit10.ViewModels.ControlViewModels;
+using System.Collections.Generic;
+using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using static DigiTransit10.ViewModels.ControlViewModels.StopSearchContentViewModel;
 
@@ -76,9 +78,9 @@ namespace DigiTransit10.Helpers
         /// </summary>
         public class ViewStopDetails
         {
-            public TransitStop StopSelected { get; private set; }
+            public StopSearchElementViewModel StopSelected { get; private set; }
 
-            public ViewStopDetails(TransitStop stop)
+            public ViewStopDetails(StopSearchElementViewModel stop)
             {
                 StopSelected = stop;
             }
@@ -93,6 +95,54 @@ namespace DigiTransit10.Helpers
             {
                 Sender = sender;
                 ViewState = newState;
+            }
+        }
+
+        /// <summary>
+        /// Message to request that the SearchPage change which places it shows on its map.
+        /// </summary>
+        public class SearchPageMapPlacesChangeRequested
+        {
+            public BindableBase Sender { get; private set; }
+            public IEnumerable<IMapPoi> MapPlaces { get; set; }
+
+            public SearchPageMapPlacesChangeRequested(BindableBase sender, IEnumerable<IMapPoi> places)
+            {
+                Sender = sender;
+                MapPlaces = places;
+            }
+        }
+
+        /// <summary>
+        /// Informs any listeners that the selected Line in the Lines section on the
+        /// Search Page has changed.
+        /// </summary>
+        public class SearchLineSelectionChanged { }
+
+        /// <summary>
+        /// Informs any listeners that the selected Nearby Stop on the Search Page has changed.
+        /// </summary>
+        public class NearbyListSelectionChanged
+        {
+            public TransitStop SelectedStop { get; set; }
+
+            public NearbyListSelectionChanged(TransitStop stop)
+            {
+                SelectedStop = stop;
+            }
+        }
+
+        /// <summary>
+        /// Informs any listeners that the selected Stop on the Stops section of the 
+        /// Search Page has changed.
+        /// </summary>
+        public class StopsListSelectionChanged
+        {
+            public TransitStop SelectedStop { get; set; }
+            
+            public StopsListSelectionChanged(TransitStop stop)
+            {
+                SelectedStop = stop;
             }
         }
     }
