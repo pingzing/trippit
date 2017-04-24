@@ -852,7 +852,7 @@ namespace DigiTransit10.Controls
 
             // This is only here because it SEEMS like in the _incredibly_ rare case that my GeoboundingBox is a point,
             // the whole calculation goes crazy, and you enter up with a .Center in Alaska
-            if (bottomRight.Latitude ==  topLeft.Latitude && bottomRight.Longitude == topLeft.Latitude)
+            if (topLeft.Equals(bottomRight))
             {
                 bottomRight.Latitude -= 0.000001;
             }

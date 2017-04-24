@@ -5,16 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    
-    xmlns:local="using:DigiTransit10.Views"
+        
     xmlns:controls="using:Template10.Controls"
-    xmlns:lclCtls="using:DigiTransit10.Controls"
-    xmlns:Behaviors="using:Template10.Behaviors"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:Media="using:Microsoft.Xaml.Interactions.Media" 
-    xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
-    xmlns:models="using:DigiTransit10.Models"
+    xmlns:lclCtls="using:DigiTransit10.Controls"    
     xmlns:vms="using:DigiTransit10.ViewModels"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:selectors="using:DigiTransit10.TemplateSelectors"

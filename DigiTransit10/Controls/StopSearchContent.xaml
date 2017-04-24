@@ -52,10 +52,11 @@
 
         <ListView x:Name="StopsList"                  
                   Grid.Row="1"
-                  ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"
                   ItemContainerStyle="{StaticResource BlandListViewItemStyle}"
+                  ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"                  
                   SelectedItem="{Binding SelectedStop, Mode=TwoWay}"
                   SelectionChanged="StopsList_SelectionChanged">
+
             <ListView.Header>
                 <AutoSuggestBox x:Name="StopsSearchBox"
                                 Grid.Row="0"

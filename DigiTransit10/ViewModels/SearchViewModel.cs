@@ -29,8 +29,8 @@ namespace DigiTransit10.ViewModels
 
     public class SearchViewModel : ViewModelBase
     {
-        private const int GeocircleRadius = 750;
-        private const int GeocircleNumberOfPoints = 100;
+        private const int GeocircleRadiusMeters = 750;
+        private const int GeocircleNumberOfPoints = 250;
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
         private readonly IMessenger _messenger;
@@ -120,29 +120,31 @@ namespace DigiTransit10.ViewModels
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             // TODO: Might not need these anymore. Let's comment them out and see
-            //MapCircles.Clear();
-            //MapPlaces.Clear();
-            //MapLines.Clear();
+            MapCircles.Clear();
+            MapPlaces.Clear();
+            MapLines.Clear();
             _cts?.Cancel();
             return Task.CompletedTask;
         }
 
         private async void MoveNearbyCircle(Geopoint point)
         {
+            SelectedPivot = _nearbyStopsViewModel;
             MapCircles.Clear();
-            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadius, GeocircleNumberOfPoints)));
-            await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadius));
+            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+            await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadiusMeters));
         }
 
         private async void MoveNearbyCircleToUser()
-        {            
+        {
+            SelectedPivot = _nearbyStopsViewModel;
             GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
             if (result.HasResult)
             {
                 MapCircles.Clear();
                 Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
-                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadius, GeocircleNumberOfPoints)));
-                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadius));
+                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadiusMeters));
             }            
         }
 

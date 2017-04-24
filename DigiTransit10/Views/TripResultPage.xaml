@@ -15,10 +15,6 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=TripResult}"
     Loaded="Page_Loaded">
 
-    <Page.Resources>
-        <ResourceDictionary Source="ViewTemplates.xaml"/>
-    </Page.Resources>
-
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <VisualStateManager.VisualStateGroups>

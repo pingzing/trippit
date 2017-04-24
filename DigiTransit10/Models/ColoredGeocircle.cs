@@ -6,7 +6,7 @@ namespace DigiTransit10.Models
 {
     public class ColoredGeocircle
     {
-        private Color _defaultColor = new Color { A = 128, R = Colors.Gray.R, G = Colors.Gray.G, B = Colors.Gray.B };
+        public static readonly Color DefaultColor = new Color { A = 128, R = Colors.Gray.R, G = Colors.Gray.G, B = Colors.Gray.B };
 
         public IEnumerable<Geopoint> CirclePoints { get; private set; }
         public Color FillColor { get; private set; }
@@ -16,8 +16,8 @@ namespace DigiTransit10.Models
         public ColoredGeocircle(IEnumerable<Geopoint> circlePoints)
         {
             CirclePoints = circlePoints;
-            FillColor = _defaultColor;
-            StrokeColor = _defaultColor;
+            FillColor = DefaultColor;
+            StrokeColor = DefaultColor;
             StrokeThickness = 2;
         }
 
@@ -25,19 +25,11 @@ namespace DigiTransit10.Models
         {
             CirclePoints = circlePoints;
             FillColor = fillColor;
-            StrokeColor = _defaultColor;
+            StrokeColor = DefaultColor;
             StrokeThickness = 2;
-        }
+        }        
 
-        public ColoredGeocircle(IEnumerable<Geopoint> circlePoints, Color fillColor, Color strokeColor)
-        {
-            CirclePoints = circlePoints;
-            FillColor = fillColor;
-            StrokeColor = strokeColor;
-            StrokeThickness = 2;
-        }
-
-        public ColoredGeocircle(IEnumerable<Geopoint> circlePoints, Color fillColor, Color strokeColor, double strokeThickness)
+        public ColoredGeocircle(IEnumerable<Geopoint> circlePoints, Color fillColor, Color strokeColor, double strokeThickness = 2)
         {
             CirclePoints = circlePoints;
             FillColor = fillColor;
