@@ -114,15 +114,27 @@ namespace DigiTransit10.ViewModels
             {
                 MoveNearbyCircleToUser();
             }
+
+            MapCircles = SelectedPivot.MapCircles;
+            MapPlaces = SelectedPivot.MapPlaces;
+            MapLines = SelectedPivot.MapLines;
+
             return Task.CompletedTask;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
-            // TODO: Might not need these anymore. Let's comment them out and see
-            MapCircles.Clear();
-            MapPlaces.Clear();
-            MapLines.Clear();
+            MapCircles = null;
+            MapPlaces = null;
+            MapLines = null;
+
+            //TODO: HACK! For some reason, if we leave while SelectedPivot is anything by
+            // the first pivot in the collection, when we come back to the page, we hard crash with
+            // no stack trace and no (useful) error message.
+            // Theory: Maybe related to the memory leak we keep seeing with the MapControl?
+            SelectedPivot = _nearbyStopsViewModel;
+            //-----end hack
+
             _cts?.Cancel();
             return Task.CompletedTask;
         }
