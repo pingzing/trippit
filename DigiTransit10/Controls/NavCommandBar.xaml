@@ -24,7 +24,7 @@
             <local:NavAppBarButton x:Name="FavoritesButton"
                                     Command="{x:Bind NavigateCommand}"
                                     Foreground="{ThemeResource SystemAccentColor}"
-                                    Icon="Favorite"                                   
+                                    Icon="OutlineStar"
                                     Label="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Favorites}"
                                     PageType="views:FavoritesPage"
                                     CommandParameter="{x:Bind FavoritesButton.PageType, Mode=OneWay}"

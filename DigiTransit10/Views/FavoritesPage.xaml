@@ -16,7 +16,7 @@
     xmlns:models="using:DigiTransit10.Models"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:selectors="using:DigiTransit10.TemplateSelectors"
-    DataContext="{Binding Source={StaticResource Locator}, Path=Favorites}"
+    DataContext="{Binding Source={StaticResource Locator}, Mode=OneTime, Path=Favorites}"
     mc:Ignorable="d"
     Loaded="Page_Loaded">
 
@@ -257,7 +257,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:PageHeader x:Name="PageHeader" 
+        <controls:MemorySafePageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.AlignTopWithPanel="True"   
@@ -265,9 +265,9 @@
                              Text="{Binding Source={StaticResource Strings}, Path=FavoritesPage_PageHeader}">
 
             <!--  secondary commands  -->
-            <controls:PageHeader.SecondaryCommands>
-            </controls:PageHeader.SecondaryCommands>
-        </controls:PageHeader>
+            <controls:MemorySafePageHeader.SecondaryCommands>
+            </controls:MemorySafePageHeader.SecondaryCommands>
+        </controls:MemorySafePageHeader>
 
         <Grid x:Name="ContentRoot"
               RelativePanel.Below="PageHeader"

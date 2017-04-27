@@ -82,7 +82,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:PageHeader x:Name="PageHeader" 
+        <controls:MemorySafePageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.AlignTopWithPanel="True"   

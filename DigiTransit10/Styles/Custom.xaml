@@ -125,7 +125,7 @@
         <Setter Property="Foreground" Value="Gray"/>
     </Style>
 
-    <Style x:Key="PageHeaderBoldStyle" TargetType="controls:PageHeader">
+    <Style x:Key="PageHeaderBoldStyle" TargetType="controls:MemorySafePageHeader">
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>

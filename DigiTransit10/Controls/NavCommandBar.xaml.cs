@@ -19,8 +19,9 @@ namespace DigiTransit10.Controls
     {
         private readonly INavigationService _navigationService;
         private AppBarButton _currentlySelected = null;
+        private long _isOpenCallbackToken;
         private Dictionary<ICommandBarElement, long> _visibilityTrackedElements = new Dictionary<ICommandBarElement, long>();
-        DispatcherTimer _visibilityChangedThrottle = new DispatcherTimer();
+        DispatcherTimer _visibilityChangedThrottle = new DispatcherTimer();        
 
         public RelayCommand<Type> NavigateCommand => new RelayCommand<Type>(Navigate);
 
@@ -36,19 +37,29 @@ namespace DigiTransit10.Controls
             {
                 return;
             }
-
-            Views.Busy.BusyChanged += BusyView_BusyChanged;
-
             _navigationService = Template10.Common.BootStrapper.Current.NavigationService;
-            _navigationService.Frame.Navigated += Frame_Navigated;
+
             this.Loaded += NavCommandBar_Loaded;
-            this.Unloaded += NavCommandBar_Unloaded;
+            this.Unloaded += NavCommandBar_Unloaded;            
+        }
+
+        private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            NavCommandBar _this = sender as NavCommandBar;
+            bool isOpen = (bool)_this.GetValue(dp);
+            _this.UpdateButtonLabels(isOpen);
+        }
+
+        private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            Views.Busy.BusyChanged += BusyView_BusyChanged;            
+            _navigationService.Frame.Navigated += Frame_Navigated;
 
             /* AppBarButtons displayed in the NavigationButtons StackPanel won't have their Label
              * Visibility updated automatically when the AppBar opens. So instead, we listen directly 
              * to the IsOpen property, and when it changes, we update each button's IsCompact property 
              * accordingly. */
-            this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
+            _isOpenCallbackToken = this.RegisterPropertyChangedCallback(IsOpenProperty, new DependencyPropertyChangedCallback(IsOpenChanged));
             this.SizeChanged += NavCommandBar_SizeChanged;
             this.PrimaryCommands.VectorChanged += PrimaryCommands_VectorChanged;
             this.SecondaryCommands.VectorChanged += SecondaryCommands_VectorChanged;
@@ -61,17 +72,7 @@ namespace DigiTransit10.Controls
                 ReflowCommands(RenderSize, RenderSize);
                 _visibilityChangedThrottle.Stop();
             };
-        }
 
-        private void IsOpenChanged(DependencyObject sender, DependencyProperty dp)
-        {
-            NavCommandBar _this = sender as NavCommandBar;
-            bool isOpen = (bool)_this.GetValue(dp);
-            _this.UpdateButtonLabels(isOpen);
-        }
-
-        private void NavCommandBar_Loaded(object sender, RoutedEventArgs e)
-        {
             UpdateNavSeparatorVisibility();
             this.UpdateLayout();
 
@@ -92,6 +93,12 @@ namespace DigiTransit10.Controls
         private void NavCommandBar_Unloaded(object sender, RoutedEventArgs e)
         {
             Views.Busy.BusyChanged -= BusyView_BusyChanged;
+            _navigationService.Frame.Navigated -= Frame_Navigated;
+            this.UnregisterPropertyChangedCallback(IsOpenProperty, _isOpenCallbackToken);
+            this.SizeChanged -= NavCommandBar_SizeChanged;
+            this.PrimaryCommands.VectorChanged -= PrimaryCommands_VectorChanged;
+            this.SecondaryCommands.VectorChanged -= SecondaryCommands_VectorChanged;
+
             if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone)
             {
                 InputPane.GetForCurrentView().Showing -= InputPane_Showing;

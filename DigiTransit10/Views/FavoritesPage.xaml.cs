@@ -39,6 +39,7 @@ namespace DigiTransit10.Views
         private void FavoritesPage_Unloaded(object sender, RoutedEventArgs e)
         {
             ViewModel = null;
+            this.Bindings.StopTracking();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

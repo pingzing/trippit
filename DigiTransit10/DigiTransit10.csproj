@@ -141,6 +141,7 @@
     <Compile Include="Controls\MapSelfMarker.xaml.cs">
       <DependentUpon>MapSelfMarker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MemorySafePageHeader.cs" />
     <Compile Include="Controls\MovableAppBarButton.xaml.cs">
       <DependentUpon>MovableAppBarButton.xaml</DependentUpon>
     </Compile>
@@ -536,6 +537,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\MemorySafePageHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="Controls\MovableAppBarButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -599,6 +605,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Styles\HslStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Themes\generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

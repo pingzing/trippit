@@ -46,11 +46,11 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:PageHeader x:Name="PageHeader" 
+        <controls:MemorySafePageHeader x:Name="PageHeader" 
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.AlignTopWithPanel="True">
-            <controls:PageHeader.Content>
+            <controls:MemorySafePageHeader.Content>
                 <Grid Margin="-6 0 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -72,12 +72,12 @@
                                Opacity="0"
                                Style="{StaticResource BaseTextBlockStyle}"/>
                 </Grid>
-            </controls:PageHeader.Content>
+            </controls:MemorySafePageHeader.Content>
 
             <!--  secondary commands  -->
-            <controls:PageHeader.SecondaryCommands>
-            </controls:PageHeader.SecondaryCommands>
-        </controls:PageHeader>
+            <controls:MemorySafePageHeader.SecondaryCommands>
+            </controls:MemorySafePageHeader.SecondaryCommands>
+        </controls:MemorySafePageHeader>
 
         <lclCtls:TripResultContent x:Name="TripList"
                                  RelativePanel.Below="PageHeader"
