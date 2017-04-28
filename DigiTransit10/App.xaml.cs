@@ -36,8 +36,9 @@ namespace DigiTransit10
 
         public App()
         {
-            InitializeComponent();
+            InitializeComponent();            
             SplashFactory = (e) => new Views.Splash(e);
+            //this.UnhandledException += App_UnhandledException;
 
             #region App settings
 
@@ -50,7 +51,13 @@ namespace DigiTransit10
 
             LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
 
-            //HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");            
+            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");            
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // TODO: Tell the user "oh noes, bad things happening"
+            System.Diagnostics.Debugger.Break();
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)

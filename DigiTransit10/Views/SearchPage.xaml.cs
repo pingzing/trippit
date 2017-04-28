@@ -37,7 +37,9 @@ namespace DigiTransit10.Views
 
         private void SearchPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            this.Unloaded -= SearchPage_Unloaded;
             Bindings.StopTracking();
+            this.SizeChanged -= SearchPage_SizeChanged;
             if (this.Parent != null)
             {
                 (this.Parent as FrameworkElement).SizeChanged -= Parent_SizeChanged;
@@ -147,7 +149,7 @@ namespace DigiTransit10.Views
         {
             GeoboundingBox lineBox = PageMap.GetAllMapElementsBoundingBox();
             var mapMargin = AdaptiveVisualStateGroup.CurrentState == _narrowVisualState
-                ? new Thickness(10, 10, 10, (this.NarrowSearchPanel.ExpandedHeight) + 10)
+                ? new Thickness(0, 0, 0, (this.NarrowSearchPanel.ExpandedHeight) + 0)
                 : new Thickness(410, 10, 10, 10);
             PageMap.TrySetViewBoundsAsync(lineBox, mapMargin, MapAnimationKind.Linear).DoNotAwait();
         }

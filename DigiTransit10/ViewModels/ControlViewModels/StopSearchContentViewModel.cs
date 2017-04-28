@@ -20,10 +20,15 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 {
     public class StopSearchContentViewModel : StateAwareViewModel, ISearchViewModel
     {
+        private const int GeocircleRadiusMeters = 750;
+        private const int GeocircleNumberOfPoints = 250;
+
         private readonly IMessenger _messenger;
         private readonly INetworkService _networkService;
+        private readonly IGeolocationService _geolocation;
 
-        private CancellationTokenSource _cts = null;
+        private CancellationTokenSource _tokenSource = null;
+        public CancellationTokenSource TokenSource => _tokenSource;
 
         public enum StopSearchState { Overview, Details };
         private StopSearchState _currentState;
@@ -115,10 +120,12 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _stopsSearchBoxText, value); }
         }
 
-        public StopSearchContentViewModel(IMessenger messenger, INetworkService network, SearchSection ownedBy, string title)
+        public StopSearchContentViewModel(IMessenger messenger, INetworkService network, IGeolocationService geolocation, 
+            SearchSection ownedBy, string title)
         {
             _messenger = messenger;
             _networkService = network;
+            _geolocation = geolocation;
             OwnedBy = ownedBy;
             Title = title;
 
@@ -154,7 +161,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 LinesAtStop.Clear();
                 DeparturesAtStop.Clear();
             }
-        }
+        }        
 
         private async void SearchStopsAsync(string searchText)
         {
@@ -165,14 +172,14 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
-            if (_cts != null && !_cts.IsCancellationRequested)
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
             {
-                _cts.Cancel();
+                _tokenSource.Cancel();
             }
-            _cts = new CancellationTokenSource();
+            _tokenSource = new CancellationTokenSource();
 
             IsOverviewLoading = true;
-            ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsAsync(searchText, _cts.Token);
+            ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsAsync(searchText, _tokenSource.Token);
             IsOverviewLoading = false;
 
             if (response.IsFailure)
@@ -182,7 +189,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 MapPlaces.Clear();
                 return;
             }
-            if (_cts.Token.IsCancellationRequested)
+            if (_tokenSource.Token.IsCancellationRequested)
             {
                 // TODO: Show error in list
                 StopsResultList.Clear();
@@ -201,24 +208,64 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             }));
         }
 
-        // This gets special handling because the source of this request ultimately 
-        // has to come from the parent, not this control.
-        public async Task UpdateNearbyPlacesAsync(Geocircle circle, CancellationToken token)
+        internal async Task MoveNearbyCircleToUser()
         {
-            // Cancel any outstanding tokens, but use the one we get passed from the parent SearchPage ViewModel.
-            if (_cts != null && !_cts.IsCancellationRequested)
+            if (OwnedBy != SearchSection.Nearby)
             {
-                _cts.Cancel();
+                return;
             }
 
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
+            {
+                _tokenSource.Cancel();
+            }
+            _tokenSource = new CancellationTokenSource();
+
             IsOverviewLoading = true;
+
+            GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
+            if (result.HasResult)
+            {
+                MapCircles.Clear();
+                _messenger.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
+                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadiusMeters), _tokenSource.Token);
+            }
+
+            IsOverviewLoading = false;
+            
+        }
+
+        internal async Task MoveNearbyCircle(Geopoint point)
+        {
+            if (OwnedBy != SearchSection.Nearby)
+            {
+                return;
+            }
+
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
+            {
+                _tokenSource.Cancel();
+            }
+            _tokenSource = new CancellationTokenSource();
+
+            IsOverviewLoading = true;
+
+            MapCircles.Clear();
+            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+            await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadiusMeters), _tokenSource.Token);
+
+            IsOverviewLoading = false;
+        }        
+        
+        private async Task UpdateNearbyPlaces(Geocircle circle, CancellationToken token)
+        {                                   
             ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsByBoundingRadius(
                (float)circle.Center.Latitude,
                (float)circle.Center.Longitude,
                (int)circle.Radius,
                token
-            );
-            IsOverviewLoading = false;
+            );            
 
             if (response.IsFailure)
             {

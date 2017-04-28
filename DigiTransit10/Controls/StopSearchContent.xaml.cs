@@ -52,7 +52,7 @@ namespace DigiTransit10.Controls
         private void TypingTimer_Tick(object sender, object e)
         {
             _typingTimer.Stop();
-            //ViewModel.SearchStopsCommand.Execute(this.StopsSearchBox.Text);
+            ViewModel.SearchStopsCommand.Execute(this.StopsSearchBox.Text);
         }
 
         private void StopsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

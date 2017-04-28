@@ -25,6 +25,7 @@
         
         <ListView x:Name="LinesList"
                   Grid.Row="1"                  
+                  SelectionChanged="LinesList_SelectionChanged"
                   SelectedItem="{Binding SelectedLine, Mode=TwoWay}"
                   SelectionMode="Single"                                  
                   ItemsSource="{x:Bind ViewModel.LinesResultList, Mode=OneWay}">

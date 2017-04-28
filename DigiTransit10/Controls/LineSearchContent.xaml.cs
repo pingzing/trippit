@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.ViewModels.ControlViewModels;
 using System;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -34,6 +35,19 @@ namespace DigiTransit10.Controls
         {
             _typingTimer.Stop();
             ViewModel.GetLinesCommand.Execute(this.LinesSearchBox.Text);
+        }
+
+        private void LinesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (LineSearchElementViewModel vm in e.RemovedItems.OfType<LineSearchElementViewModel>())
+            {
+                vm.IsSelected = false;               
+            }
+
+            foreach (LineSearchElementViewModel vm in e.AddedItems.OfType<LineSearchElementViewModel>())
+            {
+                vm.IsSelected = true;
+            }
         }
     }
 }

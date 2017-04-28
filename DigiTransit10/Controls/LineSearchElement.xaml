@@ -36,7 +36,7 @@
                       Grid.ColumnSpan="2"
                       ItemsSource="{x:Bind ViewModel.VisibleStops, Mode=OneWay}"
                       Margin="10 0 0 0"
-                      Visibility="{x:Bind ViewModel.VisibleStops.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}">
+                      Visibility="{x:Bind ViewModel.IsSelected, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
             <ItemsControl.ItemContainerTransitions>
                 <TransitionCollection>
                     <ContentThemeTransition HorizontalOffset="50" VerticalOffset="0"/>

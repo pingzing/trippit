@@ -7,9 +7,7 @@ using Template10.Mvvm;
 namespace DigiTransit10.ViewModels.ControlViewModels
 {
     public class LineSearchElementViewModel : BindableBase
-    {
-        private bool _stopsVisible = false;
-
+    {       
         public TransitLine BackingLine { get; set; }
 
         private ObservableCollection<TransitStop> _visibleStops = new ObservableCollection<TransitStop>();
@@ -19,25 +17,27 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _visibleStops, value); }
         }
 
-        public RelayCommand ToggleLineStopsVisibilityCommand => new RelayCommand(ToggleLineStopsVisibility);
+        private bool _isSelected = false;
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                Set(ref _isSelected, value);
+                if (_isSelected)
+                {
+                    VisibleStops.AddRange(BackingLine.Stops);
+                }
+                else
+                {
+                    VisibleStops.Clear();
+                }
+            }
+        }        
 
         public LineSearchElementViewModel()
         {
             //Designer is now happy
-        }
-
-        private void ToggleLineStopsVisibility()
-        {
-            if(_stopsVisible)
-            {
-                VisibleStops.Clear();
-            }
-            else
-            {
-                VisibleStops.AddRange(BackingLine.Stops);
-            }
-
-            _stopsVisible = !_stopsVisible;
-        }
+        }        
     }
 }

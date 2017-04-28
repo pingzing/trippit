@@ -501,6 +501,7 @@ namespace DigiTransit10.Controls
 
         private void DigiTransitMapControl_MapTapped(MapControl sender, MapInputEventArgs args)
         {
+            System.Diagnostics.Debug.WriteLine("MapControl tapped.");
             MapTapped?.Invoke(sender, args);
         }
 
@@ -748,8 +749,8 @@ namespace DigiTransit10.Controls
             var lineCoords = DigiTransitMapControl.MapElements
                 .OfType<MapPolyline>().
                 Where(x =>
-                {
-                    Guid? id = MapElementExtensions.GetPoiId(x) as Guid?;
+                {                    
+                    Guid? id = x.GetValue(MapElementExtensions.PoiIdProperty) as Guid?;
                     if (id == null || id != poisId)
                     {
                         return false;

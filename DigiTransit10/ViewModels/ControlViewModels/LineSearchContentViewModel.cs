@@ -22,7 +22,8 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         private readonly INetworkService _networkService;
         private readonly IMessenger _messenger;
 
-        private CancellationTokenSource _cts = null;
+        private CancellationTokenSource _tokenSource = null;
+        public CancellationTokenSource TokenSource => _tokenSource;
 
         public SearchSection OwnedBy { get; private set; }
 
@@ -103,14 +104,14 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
-            if (_cts != null && !_cts.IsCancellationRequested)
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
             {
-                _cts.Cancel();
+                _tokenSource.Cancel();
             }
-            _cts = new CancellationTokenSource();
+            _tokenSource = new CancellationTokenSource();
 
-            ApiResult<IEnumerable<TransitLine>> response = await _networkService.GetLinesAsync(searchText, _cts.Token);
-            if (response.IsFailure || _cts.Token.IsCancellationRequested)
+            ApiResult<IEnumerable<TransitLine>> response = await _networkService.GetLinesAsync(searchText, _tokenSource.Token);
+            if (response.IsFailure || _tokenSource.Token.IsCancellationRequested)
             {
                 return;
             }
@@ -133,7 +134,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         private void UpdateSelectedLine(LineSearchElementViewModel element)
         {
-            MapLines.Clear();
+            MapLines.Clear();            
 
             List<ColoredMapLinePoint> linePoints = element
                 .BackingLine

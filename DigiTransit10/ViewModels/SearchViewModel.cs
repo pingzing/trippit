@@ -28,9 +28,7 @@ namespace DigiTransit10.ViewModels
     }
 
     public class SearchViewModel : ViewModelBase
-    {
-        private const int GeocircleRadiusMeters = 750;
-        private const int GeocircleNumberOfPoints = 250;
+    {        
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
         private readonly IMessenger _messenger;
@@ -38,8 +36,6 @@ namespace DigiTransit10.ViewModels
         private StopSearchContentViewModel _nearbyStopsViewModel;
         private StopSearchContentViewModel _searchStopsViewModel;
         private LineSearchContentViewModel _linesSearchViewModel;
-        
-        private CancellationTokenSource _cts;        
 
         private ObservableCollection<ISearchViewModel> _searchViewModels = new ObservableCollection<ISearchViewModel>();
         public ObservableCollection<ISearchViewModel> SearchViewModels
@@ -96,9 +92,12 @@ namespace DigiTransit10.ViewModels
             _geolocation = geolocation;
             _messenger = messenger;
 
-            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, SearchSection.Nearby, AppResources.SearchPage_NearbyHeader);
-            _linesSearchViewModel = new LineSearchContentViewModel(_networkService, _messenger, SearchSection.Lines, AppResources.SearchPage_LinesHeader);
-            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, SearchSection.Stops, AppResources.SearchPage_StopsHeader);
+            _nearbyStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, 
+                _geolocation, SearchSection.Nearby, AppResources.SearchPage_NearbyHeader);
+            _linesSearchViewModel = new LineSearchContentViewModel(_networkService, _messenger, 
+                SearchSection.Lines, AppResources.SearchPage_LinesHeader);
+            _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, 
+                _geolocation, SearchSection.Stops, AppResources.SearchPage_StopsHeader);
             _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);            
 
             SearchViewModels.Add(_nearbyStopsViewModel);
@@ -132,53 +131,28 @@ namespace DigiTransit10.ViewModels
             // the first pivot in the collection, when we come back to the page, we hard crash with
             // no stack trace and no (useful) error message.
             // Theory: Maybe related to the memory leak we keep seeing with the MapControl?
+            // Further theory: Probably not memory leak related, more like some race condition deep in the binding system.
+            // It RARELY happens if navigating to the page and quickly switching pivots at a very specific instant.
             SelectedPivot = _nearbyStopsViewModel;
             //-----end hack
-
-            _cts?.Cancel();
+            
             return Task.CompletedTask;
         }
 
         private async void MoveNearbyCircle(Geopoint point)
         {
             SelectedPivot = _nearbyStopsViewModel;
-            MapCircles.Clear();
-            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
-            await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadiusMeters));
+            await _nearbyStopsViewModel.MoveNearbyCircle(point);
         }
 
         private async void MoveNearbyCircleToUser()
         {
             SelectedPivot = _nearbyStopsViewModel;
-            GenericResult<Geoposition> result = await _geolocation.GetCurrentLocationAsync();
-            if (result.HasResult)
-            {
-                MapCircles.Clear();
-                Messenger.Default.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
-                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
-                await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadiusMeters));
-            }            
-        }
-
-        private async Task UpdateNearbyPlaces(Geocircle circle)
-        {
-            if (SelectedPivot.OwnedBy != SearchSection.Nearby)
-            {
-                return;
-            }
-
-            if (_cts != null && !_cts.IsCancellationRequested)
-            {
-                _cts.Cancel();
-            }
-
-            _cts = new CancellationTokenSource();
-            await _nearbyStopsViewModel.UpdateNearbyPlacesAsync(circle, _cts.Token);
-        }        
+            await _nearbyStopsViewModel.MoveNearbyCircleToUser();
+        }                
         
         private void UpdateSelectedPivot(ISearchViewModel newPivotSelection)
-        {            
-            
+        {                                   
             MapCircles = newPivotSelection.MapCircles;
             MapPlaces = newPivotSelection.MapPlaces;
             MapLines = newPivotSelection.MapLines;

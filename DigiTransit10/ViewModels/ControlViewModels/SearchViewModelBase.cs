@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.Models;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace DigiTransit10.ViewModels.ControlViewModels
 {
@@ -8,6 +9,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
     /// </summary>
     public interface ISearchViewModel
     {
+        CancellationTokenSource TokenSource { get; }
         SearchSection OwnedBy { get; }
         string Title { get; set; }
         bool IsOverviewLoading { get; set; }

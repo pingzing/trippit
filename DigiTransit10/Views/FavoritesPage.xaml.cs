@@ -21,8 +21,7 @@ namespace DigiTransit10.Views
         public FavoritesPage()
         {
             this.InitializeComponent();
-            ViewModel = DataContext as FavoritesViewModel;
-            //NavigationCacheMode = NavigationCacheMode.Enabled;
+            ViewModel = DataContext as FavoritesViewModel;            
 
             //Doing this in code-behind, because doing it in XAML breaks the XAML designer.
             var collectionViewSourceBinding = new Binding();
@@ -37,8 +36,7 @@ namespace DigiTransit10.Views
         }
 
         private void FavoritesPage_Unloaded(object sender, RoutedEventArgs e)
-        {
-            ViewModel = null;
+        {            
             this.Bindings.StopTracking();
         }
 
