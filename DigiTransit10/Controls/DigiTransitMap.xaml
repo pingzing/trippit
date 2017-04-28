@@ -13,7 +13,6 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-
         <Maps:MapControl x:Name="DigiTransitMapControl"                         
                          Opacity="1"
                          MapServiceToken="{x:Bind MapServiceToken, Mode=OneWay}"

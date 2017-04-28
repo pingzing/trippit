@@ -138,6 +138,9 @@
     <Compile Include="Controls\LineSearchElement.xaml.cs">
       <DependentUpon>LineSearchElement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CircleMapIconSource.xaml.cs">
+      <DependentUpon>CircleMapIconSource.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MapSelfMarker.xaml.cs">
       <DependentUpon>MapSelfMarker.xaml</DependentUpon>
     </Compile>
@@ -530,6 +533,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LineSearchElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CircleMapIconSource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

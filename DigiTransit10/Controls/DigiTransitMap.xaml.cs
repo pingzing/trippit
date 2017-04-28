@@ -6,17 +6,21 @@ using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -29,6 +33,8 @@ namespace DigiTransit10.Controls
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
         private Geopoint _lastKnownGeopoint;
+        private IRandomAccessStream _themeIconSource;
+        private IRandomAccessStream _greyIconSource;
 
         public event EventHandler MapElementsChanged;
         public event TypedEventHandler<MapControl, object> MapCenterChanged;
@@ -243,6 +249,7 @@ namespace DigiTransit10.Controls
             foreach(var place in newList.OfType<IMapPoi>())
             {
                 MapIcon element = new MapIcon();
+                element.Image = RandomAccessStreamReference.CreateFromStream(_this._themeIconSource);
                 element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
                 element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
@@ -276,6 +283,7 @@ namespace DigiTransit10.Controls
                 foreach (IMapPoi place in args.NewItems.OfType<IMapPoi>())
                 {
                     var element = new MapIcon();
+                    element.Image = RandomAccessStreamReference.CreateFromStream(_themeIconSource);
                     element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
                     element.Location = new Geopoint(place.Coords);
                     element.Title = place.Name;
@@ -454,12 +462,20 @@ namespace DigiTransit10.Controls
             }
 
             this.Unloaded += DigiTransitMap_Unloaded;
+            this.DigiTransitMapControl.Loaded += DigiTransitMapControl_Loaded;
             this.DigiTransitMapControl.CenterChanged += DigiTransitMapControl_CenterChanged;
             this.DigiTransitMapControl.MapTapped += DigiTransitMapControl_MapTapped;
             this.DigiTransitMapControl.MapRightTapped += DigiTransitMapControl_MapRightTapped;
 
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
-            MapServiceToken = MapHelper.MapApiToken.Value;            
+
+            MapServiceToken = MapHelper.MapApiToken.Value;
+        }
+
+        private async void DigiTransitMapControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            _themeIconSource = await CircleMapIconSource.GenerateThemeColorAsync();
+            _greyIconSource = await CircleMapIconSource.GenerateGreyedOutAsync();
         }
 
         private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
@@ -890,6 +906,6 @@ namespace DigiTransit10.Controls
                 });
 
             return mBounds;
-        }
+        }        
     }
 }

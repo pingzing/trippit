@@ -1,3 +1,4 @@
+using DigiTransit10.Controls;
 using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
 using DigiTransit10.Models;
@@ -12,6 +13,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using static DigiTransit10.Helpers.MessageTypes;
@@ -205,6 +207,6 @@ namespace DigiTransit10.Views
         private void RaisePropertyChanged([CallerMemberName]string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
+        }                
     }
 }
