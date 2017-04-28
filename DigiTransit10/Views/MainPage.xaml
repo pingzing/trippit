@@ -489,7 +489,7 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  RelativePanel.AlignTopWithPanel="True"
-                 RelativePanel.AlignBottomWithPanel="False">
+                 RelativePanel.AlignBottomWithPanel="True">
 
                 <HubSection x:Name="WideTripFormSection"                            
                             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
