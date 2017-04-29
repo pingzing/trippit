@@ -1,9 +1,12 @@
-﻿using DigiTransit10.ViewModels.ControlViewModels;
+﻿using DigiTransit10.Helpers;
+using DigiTransit10.ViewModels.ControlViewModels;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using static DigiTransit10.ExtensionMethods.MapElementExtensions;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -59,11 +62,19 @@ namespace DigiTransit10.Controls
         {
             foreach (StopSearchElementViewModel vm in e.RemovedItems.OfType<StopSearchElementViewModel>())
             {
-                vm.IsSelected = false;
+                if (vm.IsSelected)
+                {
+                    Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.None));
+                    vm.IsSelected = false;
+                }
             }
             foreach (StopSearchElementViewModel vm in e.AddedItems.OfType<StopSearchElementViewModel>())
             {
-                vm.IsSelected = true;
+                if (!vm.IsSelected)
+                {
+                    Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.PointerOver));
+                    vm.IsSelected = true;
+                }
             }
 
         }

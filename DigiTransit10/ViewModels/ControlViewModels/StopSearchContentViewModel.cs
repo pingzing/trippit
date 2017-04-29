@@ -197,14 +197,18 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
+            // We explicitly enumerate the list into memory here, other Guid.NewGuid() gets called every time we enumerate the list,
+            // making it impossible to link a Map POI to a list element.            
+            List<TransitStop> stops = response.Result.ToList();
             StopsResultList = new ObservableCollection<StopSearchElementViewModel>(
-                response.Result.Select(x => new StopSearchElementViewModel(x, _messenger)));
+                stops.Select(x => new StopSearchElementViewModel(x, _messenger)));
 
             MapPlaces.Clear();
-            MapPlaces.AddRange(response.Result.Select(x => new BasicMapPoi
+            MapPlaces.AddRange(stops.Select(x => new BasicMapPoi
             {
                 Coords = x.Coords,
                 Name = x.NameAndCode,
+                Id = x.Id
             }));
         }
 
@@ -282,14 +286,18 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
+            // We explicitly enumerate the list into memory here, other Guid.NewGuid() gets called every time we enumerate the list,
+            // making it impossible to link a Map POI to a list element.
+            List<TransitStop> stops = response.Result.ToList();
             StopsResultList = new ObservableCollection<StopSearchElementViewModel>(
-                response.Result.Select(x => new StopSearchElementViewModel(x, _messenger)));
+                stops.Select(x => new StopSearchElementViewModel(x, _messenger)));
 
             MapPlaces.Clear();
-            MapPlaces.AddRange(response.Result.Select(x => new BasicMapPoi
+            MapPlaces.AddRange(stops.Select(x => new BasicMapPoi
             {
                 Coords = x.Coords,
                 Name = x.NameAndCode,
+                Id = x.Id
             }));
         }
 

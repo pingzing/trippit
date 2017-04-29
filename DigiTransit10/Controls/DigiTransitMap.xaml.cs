@@ -21,6 +21,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
+using static DigiTransit10.ExtensionMethods.MapElementExtensions;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -30,11 +31,14 @@ namespace DigiTransit10.Controls
     {
         private readonly IGeolocationService _geolocationService;
 
+        private static IRandomAccessStream _themeIconSource;
+        private static IRandomAccessStream _themeIconPointerOverSource;
+
+        private static IRandomAccessStream _greyIconSource;
+
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
-        private Geopoint _lastKnownGeopoint;
-        private IRandomAccessStream _themeIconSource;
-        private IRandomAccessStream _greyIconSource;
+        private Geopoint _lastKnownGeopoint;        
 
         public event EventHandler MapElementsChanged;
         public event TypedEventHandler<MapControl, object> MapCenterChanged;
@@ -249,12 +253,12 @@ namespace DigiTransit10.Controls
             foreach(var place in newList.OfType<IMapPoi>())
             {
                 MapIcon element = new MapIcon();
-                element.Image = RandomAccessStreamReference.CreateFromStream(_this._themeIconSource);
+                element.Image = RandomAccessStreamReference.CreateFromStream(_themeIconSource);
                 element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
                 element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
                 element.NormalizedAnchorPoint = new Point(0.5, 1.0);
-                MapElementExtensions.SetPoiId(element, place.Id);
+                MapElementExtensions.SetPoiId(element, place.Id);                
                 icons.Add(element);
             }
 
@@ -288,6 +292,8 @@ namespace DigiTransit10.Controls
                     element.Location = new Geopoint(place.Coords);
                     element.Title = place.Name;
                     element.NormalizedAnchorPoint = new Point(0.5, 1.0);
+                    element.SetValue(PoiIdProperty, place.Id);
+                    MapElementExtensions.SetPoiId(element, place.Id);
                     newIcons.Add(element);
                 }
                 AddMapIcons(newIcons);
@@ -474,8 +480,20 @@ namespace DigiTransit10.Controls
 
         private async void DigiTransitMapControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _themeIconSource = await CircleMapIconSource.GenerateThemeColorAsync();
-            _greyIconSource = await CircleMapIconSource.GenerateGreyedOutAsync();
+            if (_themeIconSource == null)
+            {
+                _themeIconSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
+            }
+
+            if (_greyIconSource == null)
+            {
+                _greyIconSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.GreyedOut);
+            }
+
+            if (_themeIconPointerOverSource == null)
+            {
+                _themeIconPointerOverSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
+            }
         }
 
         private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
@@ -906,6 +924,52 @@ namespace DigiTransit10.Controls
                 });
 
             return mBounds;
-        }        
+        }
+
+        public void SetIconState(Guid iconId, MapIconState iconState)
+        {
+            MapIcon matchingIcon = DigiTransitMapControl.MapElements
+                .OfType<MapIcon>()
+                .FirstOrDefault(x => (Guid)x.GetValue(PoiIdProperty) == iconId);
+
+            if (matchingIcon == null)
+            {
+                return;
+            }
+
+            // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
+            matchingIcon.SetValue(MapIconStateProperty, iconState);
+        }
+
+        // TODO: (maybe) make this smarter and able to handle more than just theme colored circles
+        private void DigiTransitMapControl_MapElementPointerEntered(MapControl sender, MapElementPointerEnteredEventArgs args)
+        {
+            MapIcon icon = args.MapElement as MapIcon;
+            if (icon == null)
+            {
+                return;
+            }
+
+            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.None)
+            {
+                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
+                icon.SetValue(MapIconStateProperty, MapIconState.PointerOver); 
+            }
+        }
+
+        private void DigiTransitMapControl_MapElementPointerExited(MapControl sender, MapElementPointerExitedEventArgs args)
+        {
+            MapIcon icon = args.MapElement as MapIcon;
+            if (icon == null)
+            {
+                return;
+            }
+
+            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.PointerOver)
+            {
+                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
+                icon.SetValue(MapIconStateProperty, MapIconState.None);
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@
     "NotificationsExtensions.Win10": "14332.0.2",
     "SharpDX": "3.0.2",
     "SharpDX.Direct2D1": "3.0.2",
+    "System.ValueTuple": "4.3.0",
     "Template10": "1.1.11"
   },
   "frameworks": {

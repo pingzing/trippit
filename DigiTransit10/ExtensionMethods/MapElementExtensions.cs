@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using DigiTransit10.Controls;
+using Newtonsoft.Json;
 using System;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Maps;
 
 namespace DigiTransit10.ExtensionMethods
 {
@@ -24,6 +27,59 @@ namespace DigiTransit10.ExtensionMethods
         public static Guid GetPoiId(DependencyObject element)
         {
             return (Guid)element.GetValue(PoiIdProperty);
+        }
+
+        public enum MapIconState
+        {
+            None,
+            PointerOver
+        }
+        public static readonly DependencyProperty MapIconStateProperty = DependencyProperty.RegisterAttached(
+            "MapIconState",
+            typeof(MapIconState),
+            typeof(MapElementExtensions),
+            new PropertyMetadata(MapIconState.None, MapIconStateChanged));
+
+        private static async void MapIconStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MapIcon _this = d as MapIcon;
+            if (_this == null)
+            {
+                return;
+            }
+
+            MapIconState? oldValue = (MapIconState?)e.OldValue;
+            MapIconState? newValue = (MapIconState?)e.NewValue;
+
+            // TODO: Maybe have some logic depending on what oldState was.
+            if (newValue == null)
+            {
+                return;
+            }
+
+            IRandomAccessStream stream;
+            switch (newValue.Value)
+            {                
+                case MapIconState.PointerOver:
+                    stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
+                    _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
+                    return;
+                default:
+                case MapIconState.None:
+                    stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
+                    _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
+                    break;
+            }
+        }
+
+        public static void SetMapIconState(DependencyObject element, MapIconState state)
+        {
+            element.SetValue(MapIconStateProperty, state);
+        }
+
+        public static MapIconState GetMapIconState(DependencyObject element)
+        {
+            return (MapIconState)element.GetValue(MapIconStateProperty);
         }
     }
 }

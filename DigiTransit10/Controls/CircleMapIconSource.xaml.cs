@@ -6,6 +6,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -27,61 +29,92 @@ namespace DigiTransit10.Controls
         private static CircleMapIconSource _source;
 
         private static IRandomAccessStream _themeColoredBitmap = null;
+        private static IRandomAccessStream _themeColoredPointerOverBitmap = null;
         private static IRandomAccessStream _greyedOutBitmap = null;
+
+        public enum IconType
+        {
+            GreyedOut,
+            ThemeColor,
+            ThemeColorPointerOver
+        }
+
+        // Make sure to add any new IconTypes here.
+        private static readonly Dictionary<IconType, IRandomAccessStream> TypeToBufferMappings =
+            new Dictionary<IconType, IRandomAccessStream>
+            {
+                { IconType.GreyedOut, _greyedOutBitmap },
+                { IconType.ThemeColor, _themeColoredBitmap },
+                { IconType.ThemeColorPointerOver, _themeColoredPointerOverBitmap },
+            };
+
+        private static readonly Dictionary<IconType, UIElement> TypeToXamlMappings = 
+            new Dictionary<IconType, UIElement>(TypeToBufferMappings.Keys.Count);
 
         private static void Initialize()
         {
             _topmostGrid = Template10.Utils.XamlUtils.FirstChild<Grid>(Window.Current.Content);
             _source = new CircleMapIconSource();
             _source.RenderTransform = new CompositeTransform { TranslateX = -500 };
+
+            // Make sure to add any new IconTypes here.
+            TypeToXamlMappings.Add(IconType.GreyedOut, _source.GreyedOutCircle);
+            TypeToXamlMappings.Add(IconType.ThemeColor, _source.ThemeColoredCircle);
+            TypeToXamlMappings.Add(IconType.ThemeColorPointerOver, _source.ThemeColoredPointerOverCircle);
+
             _topmostGrid.Children.Add(_source);
             _initialized = true;
             _topmostGrid.UpdateLayout();
         }        
 
-        public static async Task<IRandomAccessStream> GenerateThemeColorAsync()
+        public static async Task<IRandomAccessStream> GenerateIconAsync(IconType iconType)
         {
             if (!_initialized)
             {
                 Initialize();
             }
-                        
-            if (_themeColoredBitmap != null)
+
+            IRandomAccessStream streamToReturn = TypeToBufferMappings[iconType];
+            if (streamToReturn == null)
             {
-                return _themeColoredBitmap;
+                UIElement elementToRender = TypeToXamlMappings[iconType];
+                streamToReturn = await ToRandomAccessStream(elementToRender);
+                return streamToReturn;
             }
             else
-            {                
-                var rtb = new RenderTargetBitmap();
-                await rtb.RenderAsync(_source.ThemeColoredCircle);
-                _themeColoredBitmap = (await rtb.GetPixelsAsync()).AsStream().AsRandomAccessStream();
-                return _themeColoredBitmap;
-            }
-        }
-
-        public static async Task<IRandomAccessStream> GenerateGreyedOutAsync()
-        {            
-            if (!_initialized)
             {
-                Initialize();
+                return streamToReturn;
             }
-
-            if (_greyedOutBitmap != null)
-            {
-                return _greyedOutBitmap;
-            }
-            else
-            {                
-                var rtb = new RenderTargetBitmap();
-                await rtb.RenderAsync(_source.GreyedOutCircle);
-                _greyedOutBitmap = (await rtb.GetPixelsAsync()).AsStream().AsRandomAccessStream();
-                return _greyedOutBitmap;
-            }
-        }
-
+        }        
+        
         public CircleMapIconSource()
         {
             this.InitializeComponent();
+        }
+
+        private static async Task<IRandomAccessStream> ToRandomAccessStream(UIElement element)
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap();
+            await rtb.RenderAsync(element);
+            IBuffer pixelBuffer = await rtb.GetPixelsAsync();
+            byte[] pixels = pixelBuffer.ToArray();
+
+            DisplayInformation displayInfo = DisplayInformation.GetForCurrentView();
+
+            var stream = new InMemoryRandomAccessStream();
+            BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+            encoder.SetPixelData(BitmapPixelFormat.Bgra8,
+                BitmapAlphaMode.Premultiplied,
+                (uint)rtb.PixelWidth,
+                (uint)rtb.PixelHeight,
+                displayInfo.RawDpiX,
+                displayInfo.RawDpiY,
+                pixels);
+
+            await encoder.FlushAsync();
+            stream.Seek(0);
+
+            return stream;
         }
     }
 }

@@ -9,21 +9,36 @@
     d:DesignHeight="100"
     d:DesignWidth="100">
     <Grid>
-        <Grid x:Name="GreyedOutCircle">
-            <Ellipse StrokeThickness="0"  Fill="Pink" 
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="GreyedOutCircle" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Ellipse StrokeThickness="1"  Fill="#7CFFFFFF" 
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="20" Height="20"/>
-            <Ellipse StrokeThickness="1" Fill="Pink"
+            <Ellipse StrokeThickness="1" Stroke="DarkGray" Fill="White"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                     Width="15" Height="15"/>
+                     Width="18" Height="18"/>
         </Grid>
-        <Grid x:Name="ThemeColoredCircle">
+        
+        <Grid x:Name="ThemeColoredCircle" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Ellipse StrokeThickness="0"  Fill="#7CFFFFFF" 
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="20" Height="20"/>
-            <Ellipse StrokeThickness="1" Fill="White"
+            <Ellipse StrokeThickness="1" Stroke="{ThemeResource SystemAccentColor}" Fill="White"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                     Width="15" Height="15"/>
+                     Width="18" Height="18"/>
+        </Grid>
+        
+        <Grid x:Name="ThemeColoredPointerOverCircle" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Ellipse StrokeThickness="0"  Fill="#7CFFFFFF" 
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="20" Height="20"/>
+            <Ellipse StrokeThickness="1" Stroke="White" Fill="{ThemeResource SystemAccentColor}"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="18" Height="18"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -17,7 +17,9 @@
                          Opacity="1"
                          MapServiceToken="{x:Bind MapServiceToken, Mode=OneWay}"
                          Visibility="Visible"                         
-                         ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}">
+                         ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}" 
+                         MapElementPointerEntered="DigiTransitMapControl_MapElementPointerEntered" 
+                         MapElementPointerExited="DigiTransitMapControl_MapElementPointerExited">
             <Maps:MapControl.Children>
                 <local:MapSelfMarker x:Name="SelfMarker" Visibility="Collapsed"/>
             </Maps:MapControl.Children>

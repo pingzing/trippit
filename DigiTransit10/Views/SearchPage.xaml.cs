@@ -52,6 +52,7 @@ namespace DigiTransit10.Views
             Messenger.Default.Register<MessageTypes.NearbyListSelectionChanged>(this, NearbyListSelectionChanged);
             Messenger.Default.Register<MessageTypes.StopsListSelectionChanged>(this, StopsListSelectionChanged);
             Messenger.Default.Register<MessageTypes.CenterMapOnGeoposition>(this, CenterMapOnLocation);
+            Messenger.Default.Register<MessageTypes.SetIconState>(this, SetMapIconState);
             base.OnNavigatedTo(e);
         }
 
@@ -61,6 +62,7 @@ namespace DigiTransit10.Views
             Messenger.Default.Unregister<MessageTypes.NearbyListSelectionChanged>(this, NearbyListSelectionChanged);
             Messenger.Default.Unregister<MessageTypes.StopsListSelectionChanged>(this, StopsListSelectionChanged);
             Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
+            Messenger.Default.Unregister<MessageTypes.SetIconState>(this);
             base.OnNavigatedFrom(e);
         }
 
@@ -155,8 +157,7 @@ namespace DigiTransit10.Views
         }
 
         private void NearbyListSelectionChanged(MessageTypes.NearbyListSelectionChanged args)
-        {            
-            
+        {                        
             TrySetMapViewWithMargin(args.SelectedStop.Coords, .005, MapAnimationKind.Linear).DoNotAwait();            
         }
 
@@ -170,6 +171,11 @@ namespace DigiTransit10.Views
             var flyout = (MenuFlyout)Flyout.GetAttachedFlyout(PageMap);
             ((MenuFlyoutItem)flyout.Items[1]).CommandParameter = args.Location;
             flyout.ShowAt(sender, args.Position);
+        }
+
+        private void SetMapIconState(MessageTypes.SetIconState args)
+        {
+            this.PageMap.SetIconState(args.MapIconId, args.NewState);
         }
     }
 }

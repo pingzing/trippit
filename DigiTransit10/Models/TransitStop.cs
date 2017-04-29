@@ -32,5 +32,10 @@ namespace DigiTransit10.Models
                 }
             }
         }
+
+        /// <summary>
+        /// An app-local ID, primarily used to link a TransitStop in a list to a POI on the map.
+        /// </summary>
+        public Guid Id { get; set; }
     }
 }

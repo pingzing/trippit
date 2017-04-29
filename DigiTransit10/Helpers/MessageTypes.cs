@@ -1,8 +1,10 @@
 ﻿using DigiTransit10.Models;
 using DigiTransit10.ViewModels.ControlViewModels;
+using System;
 using System.Collections.Generic;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
+using static DigiTransit10.ExtensionMethods.MapElementExtensions;
 using static DigiTransit10.ViewModels.ControlViewModels.StopSearchContentViewModel;
 
 namespace DigiTransit10.Helpers
@@ -143,6 +145,18 @@ namespace DigiTransit10.Helpers
             public StopsListSelectionChanged(TransitStop stop)
             {
                 SelectedStop = stop;
+            }
+        }
+
+        public class SetIconState
+        {
+            public Guid MapIconId { get; }
+            public MapIconState NewState { get; }
+
+            public SetIconState(Guid iconId, MapIconState newState)
+            {
+                MapIconId = iconId;
+                NewState = newState;
             }
         }
     }

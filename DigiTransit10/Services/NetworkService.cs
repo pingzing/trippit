@@ -145,7 +145,8 @@ namespace DigiTransit10.Services
                 Name = x.Name,
                 Code = x.Code,
                 Coords = BasicGeopositionExtensions.Create(0.0, x.Lon, x.Lat),
-                GtfsId = x.GtfsId
+                GtfsId = x.GtfsId,
+                Id = Guid.NewGuid()
             }));
 
         }
@@ -342,7 +343,8 @@ namespace DigiTransit10.Services
                     GtfsId = x.Node.Stop.GtfsId,
                     Coords = BasicGeopositionExtensions.Create(0.0, x.Node.Stop.Lon, x.Node.Stop.Lat),
                     Code = x.Node.Stop.Code,
-                    Name = x.Node.Stop.Name
+                    Name = x.Node.Stop.Name,
+                    Id = Guid.NewGuid()
                 });
                 if(stops == null)
                 {
