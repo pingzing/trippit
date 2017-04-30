@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -29,14 +22,16 @@ namespace DigiTransit10.Controls
         private static CircleMapIconSource _source;
 
         private static IRandomAccessStream _themeColoredBitmap = null;
-        private static IRandomAccessStream _themeColoredPointerOverBitmap = null;
-        private static IRandomAccessStream _greyedOutBitmap = null;
+        private static IRandomAccessStream _themeColorPointerOverBitmap = null;
+        private static IRandomAccessStream _themeColoredSelectedBitmap = null;
+        private static IRandomAccessStream _greyedOutBitmap = null;        
 
         public enum IconType
         {
             GreyedOut,
             ThemeColor,
-            ThemeColorPointerOver
+            ThemeColorPointerOver,
+            ThemeColorSelected
         }
 
         // Make sure to add any new IconTypes here.
@@ -45,7 +40,8 @@ namespace DigiTransit10.Controls
             {
                 { IconType.GreyedOut, _greyedOutBitmap },
                 { IconType.ThemeColor, _themeColoredBitmap },
-                { IconType.ThemeColorPointerOver, _themeColoredPointerOverBitmap },
+                { IconType.ThemeColorPointerOver, _themeColorPointerOverBitmap },
+                { IconType.ThemeColorSelected, _themeColoredSelectedBitmap },
             };
 
         private static readonly Dictionary<IconType, UIElement> TypeToXamlMappings = 
@@ -55,12 +51,13 @@ namespace DigiTransit10.Controls
         {
             _topmostGrid = Template10.Utils.XamlUtils.FirstChild<Grid>(Window.Current.Content);
             _source = new CircleMapIconSource();
-            _source.RenderTransform = new CompositeTransform { TranslateX = -500 };
+            _source.RenderTransform = new CompositeTransform { TranslateX = -500, TranslateY = -500 };
 
             // Make sure to add any new IconTypes here.
             TypeToXamlMappings.Add(IconType.GreyedOut, _source.GreyedOutCircle);
             TypeToXamlMappings.Add(IconType.ThemeColor, _source.ThemeColoredCircle);
             TypeToXamlMappings.Add(IconType.ThemeColorPointerOver, _source.ThemeColoredPointerOverCircle);
+            TypeToXamlMappings.Add(IconType.ThemeColorSelected, _source.ThemeColoredSelectedCircle);
 
             _topmostGrid.Children.Add(_source);
             _initialized = true;

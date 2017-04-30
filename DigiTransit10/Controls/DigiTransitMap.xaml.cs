@@ -33,6 +33,7 @@ namespace DigiTransit10.Controls
 
         private static IRandomAccessStream _themeIconSource;
         private static IRandomAccessStream _themeIconPointerOverSource;
+        private static IRandomAccessStream _themeIconSelectedSource;
 
         private static IRandomAccessStream _greyIconSource;
 
@@ -44,7 +45,7 @@ namespace DigiTransit10.Controls
         public event TypedEventHandler<MapControl, object> MapCenterChanged;
         public event TypedEventHandler<MapControl, MapInputEventArgs> MapTapped;
         public event TypedEventHandler<MapControl, MapRightTappedEventArgs> MapRightTapped;
-
+        public event TypedEventHandler<MapControl, MapElementClickEventArgs> MapElementClicked;
 
         public static readonly DependencyProperty MapServiceTokenProperty =
             DependencyProperty.Register(nameof(MapServiceToken), typeof(string), typeof(DigiTransitMap), new PropertyMetadata(null));
@@ -494,6 +495,11 @@ namespace DigiTransit10.Controls
             {
                 _themeIconPointerOverSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
             }
+
+            if (_themeIconSelectedSource == null)
+            {
+                _themeIconSelectedSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorSelected);
+            }
         }
 
         private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
@@ -537,6 +543,41 @@ namespace DigiTransit10.Controls
         {
             System.Diagnostics.Debug.WriteLine("MapControl tapped.");
             MapTapped?.Invoke(sender, args);
+        }
+
+        private void DigiTransitMapControl_MapElementClick(MapControl sender, MapElementClickEventArgs args)
+        {
+            MapElementClicked?.Invoke(sender, args);
+        }
+        
+        private void DigiTransitMapControl_MapElementPointerEntered(MapControl sender, MapElementPointerEnteredEventArgs args)
+        {
+            MapIcon icon = args.MapElement as MapIcon;
+            if (icon == null)
+            {
+                return;
+            }
+
+            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.None)
+            {
+                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
+                icon.SetValue(MapIconStateProperty, MapIconState.PointerOver);
+            }
+        }
+
+        private void DigiTransitMapControl_MapElementPointerExited(MapControl sender, MapElementPointerExitedEventArgs args)
+        {
+            MapIcon icon = args.MapElement as MapIcon;
+            if (icon == null)
+            {
+                return;
+            }
+
+            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.PointerOver)
+            {
+                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
+                icon.SetValue(MapIconStateProperty, MapIconState.None);
+            }
         }
 
         private void AddMapLines(IEnumerable<MapPolyline> polylines)
@@ -767,7 +808,7 @@ namespace DigiTransit10.Controls
                 .OfType<MapIcon>()
                 .Where(x =>
                     {
-                        Guid? id = MapElementExtensions.GetPoiId(x) as Guid?;
+                        Guid? id = x.GetValue(PoiIdProperty) as Guid?;
                         if(id == null || id != poisId)
                         {
                             return false;
@@ -784,7 +825,7 @@ namespace DigiTransit10.Controls
                 .OfType<MapPolyline>().
                 Where(x =>
                 {                    
-                    Guid? id = x.GetValue(MapElementExtensions.PoiIdProperty) as Guid?;
+                    Guid? id = x.GetValue(PoiIdProperty) as Guid?;
                     if (id == null || id != poisId)
                     {
                         return false;
@@ -942,37 +983,19 @@ namespace DigiTransit10.Controls
 
             // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
             matchingIcon.SetValue(MapIconStateProperty, iconState);
-        }
 
-        // TODO: (maybe) make this smarter and able to handle more than just theme colored circles
-        private void DigiTransitMapControl_MapElementPointerEntered(MapControl sender, MapElementPointerEnteredEventArgs args)
-        {
-            MapIcon icon = args.MapElement as MapIcon;
-            if (icon == null)
-            {
-                return;
-            }
 
-            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.None)
-            {
-                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
-                icon.SetValue(MapIconStateProperty, MapIconState.PointerOver); 
+            // Only allow one icon to be highlighted at at time by external callers.
+            if (iconState != MapIconState.None)
+            {                
+                foreach (MapIcon activeIcon in DigiTransitMapControl.MapElements.
+                    OfType<MapIcon>()
+                    .Where(x => (MapIconState)x.GetValue(MapIconStateProperty) != MapIconState.None
+                                && (Guid)x.GetValue(PoiIdProperty) != iconId))
+                {
+                    activeIcon.SetValue(MapIconStateProperty, MapIconState.None);
+                }
             }
-        }
-
-        private void DigiTransitMapControl_MapElementPointerExited(MapControl sender, MapElementPointerExitedEventArgs args)
-        {
-            MapIcon icon = args.MapElement as MapIcon;
-            if (icon == null)
-            {
-                return;
-            }
-
-            if ((MapIconState)icon.GetValue(MapIconStateProperty) == MapIconState.PointerOver)
-            {
-                // The MapIconChanged callback in the Attached Property handles Image changing on State changes. See MapElementExtensions.cs.
-                icon.SetValue(MapIconStateProperty, MapIconState.None);
-            }
-        }
+        }           
     }
 }

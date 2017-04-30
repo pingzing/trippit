@@ -1,6 +1,8 @@
 ﻿using DigiTransit10.Models;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System;
+using System.Collections.Generic;
 
 namespace DigiTransit10.ViewModels.ControlViewModels
 {
@@ -16,6 +18,6 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         ObservableCollection<IMapPoi> MapPlaces { get; set; }        
         ObservableCollection<ColoredMapLine> MapLines { get; set; }        
         ObservableCollection<ColoredGeocircle> MapCircles { get; set; }
-
+        void SetMapSelectedPlace(IEnumerable<Guid> obj);
     }
 }

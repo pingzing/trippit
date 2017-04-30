@@ -32,7 +32,8 @@ namespace DigiTransit10.ExtensionMethods
         public enum MapIconState
         {
             None,
-            PointerOver
+            PointerOver,
+            Selected
         }
         public static readonly DependencyProperty MapIconStateProperty = DependencyProperty.RegisterAttached(
             "MapIconState",
@@ -59,9 +60,14 @@ namespace DigiTransit10.ExtensionMethods
 
             IRandomAccessStream stream;
             switch (newValue.Value)
-            {                
+            {
                 case MapIconState.PointerOver:
                     stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
+                    _this.ZIndex = 999;
+                    _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
+                    return;
+                case MapIconState.Selected:
+                    stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorSelected);
                     _this.ZIndex = 999;
                     _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
                     return;
@@ -70,7 +76,7 @@ namespace DigiTransit10.ExtensionMethods
                     stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
                     _this.ZIndex = 1;
                     _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
-                    break;
+                    return;
             }
         }
 

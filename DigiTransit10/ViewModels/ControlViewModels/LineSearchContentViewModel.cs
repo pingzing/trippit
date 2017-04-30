@@ -158,5 +158,10 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
             _messenger.Send(new MessageTypes.SearchLineSelectionChanged());
         }
+
+        public void SetMapSelectedPlace(IEnumerable<Guid> obj)
+        {
+            throw new NotImplementedException(); // How to handle this?
+        }
     }
 }

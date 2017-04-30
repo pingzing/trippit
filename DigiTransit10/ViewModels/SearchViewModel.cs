@@ -84,7 +84,8 @@ namespace DigiTransit10.ViewModels
         }
 
         public RelayCommand<Geopoint> MoveNearbyCircleCommand => new RelayCommand<Geopoint>(MoveNearbyCircle);
-        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);        
+        public RelayCommand MoveNearbyCircleToUserCommand => new RelayCommand(MoveNearbyCircleToUser);
+        public RelayCommand<IEnumerable<Guid>> MapElementTappedCommand => new RelayCommand<IEnumerable<Guid>>(MapElementTapped);
 
         public SearchViewModel(INetworkService networkService, IGeolocationService geolocation, IMessenger messenger)
         {
@@ -166,6 +167,11 @@ namespace DigiTransit10.ViewModels
             {
                 ChildIsInDetailedState = args.ViewState == StopSearchState.Details;
             }            
+        }
+
+        private void MapElementTapped(IEnumerable<Guid> tappedIds)
+        {
+            SelectedPivot.SetMapSelectedPlace(tappedIds);
         }
     }
 }

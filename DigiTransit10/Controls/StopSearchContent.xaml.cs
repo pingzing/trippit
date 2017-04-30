@@ -72,7 +72,9 @@ namespace DigiTransit10.Controls
             {
                 if (!vm.IsSelected)
                 {
-                    Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.PointerOver));
+                    Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.Selected));
+                    ListView list = (ListView)sender;
+                    list.ScrollIntoView(vm, ScrollIntoViewAlignment.Default);
                     vm.IsSelected = true;
                 }
             }

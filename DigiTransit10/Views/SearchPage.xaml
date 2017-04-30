@@ -97,6 +97,7 @@
                                 ColoredMapLines="{x:Bind ViewModel.MapLines, Mode=OneWay}"
                                 ColoredCircles="{x:Bind ViewModel.MapCircles, Mode=OneWay}"                                
                                 MapRightTapped="PageMap_MapRightTapped"
+                                MapElementClicked="PageMap_MapElementClicked"
                                 Places="{x:Bind ViewModel.MapPlaces, Mode=OneWay}"                                
                                 ShowUserOnMap="True"
                                 ZoomLevel="13">

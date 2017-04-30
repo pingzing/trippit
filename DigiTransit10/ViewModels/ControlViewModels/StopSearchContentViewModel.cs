@@ -339,5 +339,19 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             VmStateChangeRequested?.Invoke(this, new VmStateChangedEventArgs(newState.ToString()));
             _messenger.Send(new MessageTypes.ViewStateChanged(this, _currentState));
         }
+
+        public void SetMapSelectedPlace(IEnumerable<Guid> obj)
+        {
+            Guid? nullableId = obj?.FirstOrDefault();
+            if (nullableId != null)
+            {
+                Guid clickedId = nullableId.Value;
+                StopSearchElementViewModel matchingStop = StopsResultList.FirstOrDefault(x => x.BackingStop.Id == clickedId);
+                if (matchingStop != null)
+                {
+                    SelectedStop = matchingStop;
+                }
+            }
+        }
     }
 }

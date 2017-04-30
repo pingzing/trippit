@@ -5,6 +5,7 @@ using DigiTransit10.ViewModels;
 using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
@@ -176,6 +177,16 @@ namespace DigiTransit10.Views
         private void SetMapIconState(MessageTypes.SetIconState args)
         {
             this.PageMap.SetIconState(args.MapIconId, args.NewState);
+        }
+
+        private void PageMap_MapElementClicked(MapControl sender, MapElementClickEventArgs args)
+        {
+            IEnumerable<Guid> tappedIds = args.MapElements
+                .OfType<MapIcon>()
+                .Select(x => (Guid)x.GetValue(MapElementExtensions.PoiIdProperty))
+                .Where(x => x != default(Guid));
+
+            ViewModel.MapElementTappedCommand.Execute(tappedIds);
         }
     }
 }

@@ -10,9 +10,10 @@
     d:DesignWidth="100">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid x:Name="GreyedOutCircle" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Ellipse StrokeThickness="1"  Fill="#7CFFFFFF" 
@@ -27,16 +28,25 @@
             <Ellipse StrokeThickness="0"  Fill="#7CFFFFFF" 
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="20" Height="20"/>
-            <Ellipse StrokeThickness="1" Stroke="{ThemeResource SystemAccentColor}" Fill="White"
+            <Ellipse StrokeThickness="1" Stroke="{ThemeResource SystemControlBackgroundAccentBrush}" Fill="White"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="18" Height="18"/>
         </Grid>
-        
+
         <Grid x:Name="ThemeColoredPointerOverCircle" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Ellipse StrokeThickness="0"  Fill="#7CFFFFFF" 
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="20" Height="20"/>
-            <Ellipse StrokeThickness="1" Stroke="White" Fill="{ThemeResource SystemAccentColor}"
+            <Ellipse StrokeThickness="1" Stroke="White" Fill="{ThemeResource SystemControlHighlightAltListAccentLowBrush}"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="18" Height="18"/>
+        </Grid>
+
+        <Grid x:Name="ThemeColoredSelectedCircle" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Ellipse StrokeThickness="0"  Fill="#7CFFFFFF" 
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Width="20" Height="20"/>
+            <Ellipse StrokeThickness="1" Stroke="White" Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      Width="18" Height="18"/>
         </Grid>
