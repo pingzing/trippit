@@ -61,8 +61,8 @@ namespace DigiTransit10.Views
             Messenger.Default.Unregister<MessageTypes.SearchLineSelectionChanged>(this, SearchLineSelectionChanged);
             Messenger.Default.Unregister<MessageTypes.NearbyListSelectionChanged>(this, NearbyListSelectionChanged);
             Messenger.Default.Unregister<MessageTypes.StopsListSelectionChanged>(this, StopsListSelectionChanged);
-            Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this);
-            Messenger.Default.Unregister<MessageTypes.SetIconState>(this);
+            Messenger.Default.Unregister<MessageTypes.CenterMapOnGeoposition>(this, CenterMapOnLocation);
+            Messenger.Default.Unregister<MessageTypes.SetIconState>(this, SetMapIconState);
             base.OnNavigatedFrom(e);
         }
 

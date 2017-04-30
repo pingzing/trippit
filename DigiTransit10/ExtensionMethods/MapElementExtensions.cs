@@ -62,11 +62,13 @@ namespace DigiTransit10.ExtensionMethods
             {                
                 case MapIconState.PointerOver:
                     stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
+                    _this.ZIndex = 999;
                     _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
                     return;
                 default:
                 case MapIconState.None:
                     stream = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
+                    _this.ZIndex = 1;
                     _this.Image = RandomAccessStreamReference.CreateFromStream(stream);
                     break;
             }

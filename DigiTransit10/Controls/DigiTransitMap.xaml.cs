@@ -926,6 +926,9 @@ namespace DigiTransit10.Controls
             return mBounds;
         }
 
+        // TODO: If we're setting an icon's state to PointerOver, maybe make sure it's the only icon in a PointerOver state?
+        // Hope that's not too slow.
+        // Maybe keep a list of all icons currently in a PointerOver state...
         public void SetIconState(Guid iconId, MapIconState iconState)
         {
             MapIcon matchingIcon = DigiTransitMapControl.MapElements
