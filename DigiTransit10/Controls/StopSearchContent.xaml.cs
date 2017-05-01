@@ -1,4 +1,5 @@
 ﻿using DigiTransit10.Helpers;
+using DigiTransit10.Models;
 using DigiTransit10.ViewModels.ControlViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -18,7 +19,13 @@ namespace DigiTransit10.Controls
         private DispatcherTimer _typingTimer = new DispatcherTimer();
 
         public StopSearchContentViewModel ViewModel => DataContext as StopSearchContentViewModel;
-        public static readonly DependencyProperty IsSearchBoxVisibleProperty = DependencyProperty.Register(nameof(IsSearchBoxVisible), typeof(bool), typeof(StopSearchContent), new PropertyMetadata(false));        
+
+        public static readonly DependencyProperty IsSearchBoxVisibleProperty = DependencyProperty.Register(nameof(IsSearchBoxVisible), typeof(bool), typeof(StopSearchContent), new PropertyMetadata(false));
+        public bool IsSearchBoxVisible
+        {
+            get { return (bool)GetValue(IsSearchBoxVisibleProperty); }
+            set { SetValue(IsSearchBoxVisibleProperty, value); }
+        }
 
         public StopSearchContent()
         {
@@ -81,10 +88,13 @@ namespace DigiTransit10.Controls
 
         }
 
-        public bool IsSearchBoxVisible
+        private void DetailsLinesGrid_Click(object sender, ItemClickEventArgs e)
         {
-            get { return (bool)GetValue(IsSearchBoxVisibleProperty); }
-            set { SetValue(IsSearchBoxVisibleProperty, value); }
+            var line = e.ClickedItem as ITransitLine;
+            if (line != null)
+            {
+                ViewModel.ViewLineCommand.Execute(line);
+            }
         }
     }
 }

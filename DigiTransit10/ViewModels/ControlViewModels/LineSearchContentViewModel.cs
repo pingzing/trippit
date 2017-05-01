@@ -120,10 +120,16 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         }
 
         // To be used by other parts of the app wanting to display info for a given line
-        public async Task GetLinesAsync(IEnumerable<string> gtfsIds, CancellationToken token)
+        public async Task GetLinesByIdAsync(string gtfsId)
         {
-            ApiResult<IEnumerable<TransitLine>> response = await _networkService.GetLinesAsync(gtfsIds, token);
-            if (response.IsFailure || token.IsCancellationRequested)
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
+            {
+                _tokenSource.Cancel();
+            }
+            _tokenSource = new CancellationTokenSource();
+
+            ApiResult<IEnumerable<TransitLine>> response = await _networkService.GetLinesAsync(new string[] { gtfsId }, _tokenSource.Token);
+            if (response.IsFailure || _tokenSource.Token.IsCancellationRequested)
             {
                 return;
             }

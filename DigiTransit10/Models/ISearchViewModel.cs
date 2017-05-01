@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using DigiTransit10.ViewModels;
 
-namespace DigiTransit10.ViewModels.ControlViewModels
+namespace DigiTransit10.Models
 {
     /// <summary>
     /// A common interface for all the ViewModels that get used on the SearchPage.

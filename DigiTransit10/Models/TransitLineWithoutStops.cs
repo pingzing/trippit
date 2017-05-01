@@ -7,7 +7,7 @@ using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.Models
 {
-    public class TransitLineWithoutStops
+    public class TransitLineWithoutStops : ITransitLine
     {
         public ApiMode TransitMode { get; set; }
         public string GtfsId { get; set; }

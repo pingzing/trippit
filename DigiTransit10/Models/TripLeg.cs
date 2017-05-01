@@ -18,11 +18,12 @@ namespace DigiTransit10.Models
         public bool IsEnd { get; set; }
         public string EndPlaceName { get; set; }
         public DateTime EndTime { get; set; }
-        public BasicGeoposition EndCoords { get; set; }
+        public BasicGeoposition EndCoords { get; set; }        
 
         public ApiMode Mode { get; set; }
         public string ShortName { get; set; }
         public float DistanceMeters { get; set; }
+        public string RouteGtfsId { get; set; }
 
         public List<TransitStop> IntermediateStops { get; set; }
         public string LegGeometryString { get; set; }
@@ -58,6 +59,7 @@ namespace DigiTransit10.Models
             {
                 ShortName = apiLeg.Route?.ShortName;
             }
+            RouteGtfsId = apiLeg.Route?.GtfsId;
 
             IntermediateStops = apiLeg.IntermediateStops
                 .Select(x => new TransitStop

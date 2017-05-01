@@ -112,7 +112,8 @@
 
                         <GridView Grid.Row="0" 
                                   ItemsSource="{x:Bind ViewModel.LinesAtStop, Mode=OneWay}"
-                                  IsItemClickEnabled="True"                                  
+                                  ItemClick="DetailsLinesGrid_Click"
+                                  IsItemClickEnabled="True"
                                   SelectionMode="None">
                             <GridView.Header>
                                 <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" 

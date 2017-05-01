@@ -99,14 +99,15 @@ namespace DigiTransit10.ViewModels
                 SearchSection.Lines, AppResources.SearchPage_LinesHeader);
             _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, 
                 _geolocation, SearchSection.Stops, AppResources.SearchPage_StopsHeader);
-            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);            
+            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);
+            _messenger.Register<MessageTypes.LineSearchRequested>(this, SearchForLine);
 
             SearchViewModels.Add(_nearbyStopsViewModel);
             SearchViewModels.Add(_linesSearchViewModel);
             SearchViewModels.Add(_searchStopsViewModel);
 
             SelectedPivot = _nearbyStopsViewModel;
-        }
+        }        
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
@@ -172,6 +173,12 @@ namespace DigiTransit10.ViewModels
         private void MapElementTapped(IEnumerable<Guid> tappedIds)
         {
             SelectedPivot.SetMapSelectedPlace(tappedIds);
+        }
+
+        private void SearchForLine(MessageTypes.LineSearchRequested args)
+        {
+            SelectedPivot = _linesSearchViewModel;
+            _linesSearchViewModel.GetLinesByIdAsync(args.Line.GtfsId).DoNotAwait();
         }
     }
 }

@@ -7,13 +7,15 @@ using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.Models
 {
-    public class TransitLine
+    public class TransitLine : ITransitLine
     {
         public ApiMode TransitMode { get; set; }
         public string ShortName { get; set; }
         public string LongName { get; set; }
+        public string GtfsId { get; set; }
+
         public IEnumerable<TransitStop> Stops { get; set; }
-        public IEnumerable<BasicGeoposition> Points { get; set; }
+        public IEnumerable<BasicGeoposition> Points { get; set; }        
 
         public TransitLine() { }
 
@@ -22,6 +24,7 @@ namespace DigiTransit10.Models
             TransitMode = route.Mode;
             ShortName = route.ShortName;
             LongName = route.LongName;
+            GtfsId = route.GtfsId;
             Stops = route.Patterns
                 .FirstOrDefault()
                 ?.Stops

@@ -1,7 +1,6 @@
-﻿using DigiTransit10.ViewModels.ControlViewModels;
+﻿using DigiTransit10.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using static DigiTransit10.ViewModels.ControlViewModels.StopSearchContentViewModel;
 
 namespace DigiTransit10.TemplateSelectors
 {

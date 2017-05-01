@@ -181,12 +181,14 @@
     <Compile Include="Converters\EmptyNullToBoolConverter.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
     <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\IsTransitModeSearchableConverter.cs" />
     <Compile Include="Converters\ListViewSelectionModeToBoolConverter.cs" />
     <Compile Include="Converters\NegateBooleanConverter.cs" />
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\SecondsSinceDayStartToTimeConverter.cs" />
     <Compile Include="Converters\SelectionChangedConverter.cs" />
     <Compile Include="Converters\StringFormatConverter.cs" />
+    <Compile Include="Converters\TransitModeToConditionalAccentColorConverter.cs" />
     <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
     <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
     <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
@@ -252,6 +254,7 @@
     <Compile Include="Models\ColoredGeocircle.cs" />
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
+    <Compile Include="Models\ITransitLine.cs" />
     <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
     <Compile Include="Models\PlaceResolutionResult.cs" />
     <Compile Include="Models\SearchSectionChangedEventArgs.cs" />
@@ -311,7 +314,7 @@
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
-    <Compile Include="ViewModels\ControlViewModels\SearchViewModelBase.cs" />
+    <Compile Include="Models\ISearchViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\StopSearchElementViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />

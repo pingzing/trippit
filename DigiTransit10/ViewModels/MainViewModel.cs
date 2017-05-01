@@ -78,7 +78,7 @@ namespace DigiTransit10.ViewModels
         }
 
         public override async Task OnNavigatingFromAsync(NavigatingEventArgs args)
-        {
+        {            
             args.Cancel = false;
             await TripFormViewModel.OnNavigatingFromAsync(args);
             await Task.CompletedTask;

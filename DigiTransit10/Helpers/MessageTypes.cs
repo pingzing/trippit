@@ -159,5 +159,15 @@ namespace DigiTransit10.Helpers
                 NewState = newState;
             }
         }
+
+        public class LineSearchRequested
+        {
+            public ITransitLine Line { get; }
+
+            public LineSearchRequested(ITransitLine line)
+            {
+                Line = line;
+            }
+        }
     }
 }

@@ -182,5 +182,18 @@ namespace DigiTransit10.Controls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
+
+        private void TransitIconButtonHost_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                TripLeg tappedLeg = button.DataContext as TripLeg;
+                if (tappedLeg != null)
+                {
+                    ViewModel.SearchForLineCommand.Execute(tappedLeg.RouteGtfsId);
+                }
+            }
+        }
     }
 }

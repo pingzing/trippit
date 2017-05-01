@@ -208,6 +208,7 @@ namespace DigiTransit10.Services
                                 new GqlReturnValue(ApiGqlMembers.lon)
                             ),
                             new GqlReturnValue(ApiGqlMembers.route,
+                                new GqlReturnValue(ApiGqlMembers.gtfsId),
                                 new GqlReturnValue(ApiGqlMembers.shortName)
                             )
                         ),

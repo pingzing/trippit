@@ -38,6 +38,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         public RelayCommand LoadedCommand => new RelayCommand(Loaded);
         public RelayCommand UnloadedCommand => new RelayCommand(Unloaded);
         public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStopsAsync);
+        public RelayCommand<ITransitLine> ViewLineCommand => new RelayCommand<ITransitLine>(ViewLine);        
 
         private ObservableCollection<StopSearchElementViewModel> _stopsResultList = new ObservableCollection<StopSearchElementViewModel>();
         public ObservableCollection<StopSearchElementViewModel> StopsResultList
@@ -118,7 +119,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         {
             get { return _stopsSearchBoxText; }
             set { Set(ref _stopsSearchBoxText, value); }
-        }
+        }        
 
         public StopSearchContentViewModel(IMessenger messenger, INetworkService network, IGeolocationService geolocation, 
             SearchSection ownedBy, string title)
@@ -301,6 +302,20 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             }));
         }
 
+        public void SetMapSelectedPlace(IEnumerable<Guid> obj)
+        {
+            Guid? nullableId = obj?.FirstOrDefault();
+            if (nullableId != null)
+            {
+                Guid clickedId = nullableId.Value;
+                StopSearchElementViewModel matchingStop = StopsResultList.FirstOrDefault(x => x.BackingStop.Id == clickedId);
+                if (matchingStop != null)
+                {
+                    SelectedStop = matchingStop;
+                }
+            }
+        }
+
         private void SendSelectionChangedMessage(StopSearchElementViewModel value)
         {
             if (OwnedBy == SearchSection.Nearby)
@@ -311,6 +326,12 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             {
                 _messenger.Send(new MessageTypes.StopsListSelectionChanged(value.BackingStop));
             }
+        }
+
+        private void ViewLine(ITransitLine line)
+        {
+            RaiseStateChanged(StopSearchState.Overview);
+            _messenger.Send(new MessageTypes.LineSearchRequested(line));
         }
 
         private void Loaded()
@@ -338,20 +359,6 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             _currentState = newState;
             VmStateChangeRequested?.Invoke(this, new VmStateChangedEventArgs(newState.ToString()));
             _messenger.Send(new MessageTypes.ViewStateChanged(this, _currentState));
-        }
-
-        public void SetMapSelectedPlace(IEnumerable<Guid> obj)
-        {
-            Guid? nullableId = obj?.FirstOrDefault();
-            if (nullableId != null)
-            {
-                Guid clickedId = nullableId.Value;
-                StopSearchElementViewModel matchingStop = StopsResultList.FirstOrDefault(x => x.BackingStop.Id == clickedId);
-                if (matchingStop != null)
-                {
-                    SelectedStop = matchingStop;
-                }
-            }
-        }
+        }        
     }
 }
