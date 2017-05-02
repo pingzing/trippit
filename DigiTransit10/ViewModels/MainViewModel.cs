@@ -10,6 +10,7 @@ using Template10.Common;
 using Template10.Mvvm;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
+using System;
 
 namespace DigiTransit10.ViewModels
 {
@@ -29,14 +30,13 @@ namespace DigiTransit10.ViewModels
             _settingsService = settings;
             _logger = logger;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
                 //set up design-time values
             }
-        }
-
+        }        
 
         public TripFormViewModel TripFormViewModel
         {
@@ -57,8 +57,15 @@ namespace DigiTransit10.ViewModels
             }
         }
 
+        private void SearchLine(MessageTypes.LineSearchRequested lineSearchMessage)
+        {
+            NavigationService.NavigateAsync(typeof(SearchPage), lineSearchMessage);
+        }
+
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
         {
+            _messengerService.Register<MessageTypes.LineSearchRequested>(this, SearchLine);
+
             if (suspensionState.Any())
             {
                 //pull cached values in from the suspensionState dict
@@ -69,6 +76,8 @@ namespace DigiTransit10.ViewModels
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
         {
+            _messengerService.Unregister<MessageTypes.LineSearchRequested>(this, SearchLine);
+
             if (suspending)
             {
                 //store cacheable values into the suspensionState dict

@@ -160,14 +160,35 @@ namespace DigiTransit10.Helpers
             }
         }
 
+        public enum LineSearchType
+        {
+            ByTransitLine,
+            ById,
+            ByString,
+        }
+
         public class LineSearchRequested
         {
-            public ITransitLine Line { get; }
+            public LineSearchType SearchType { get; set; }
+            public ITransitLine Line { get; set; }            
+            public string SearchTerm { get; set; }
+
+            /// <summary>
+            /// Do not use this constructor--it only exists to allow serialization.
+            /// </summary>
+            public LineSearchRequested() { }
 
             public LineSearchRequested(ITransitLine line)
             {
                 Line = line;
+                SearchType = LineSearchType.ByTransitLine;
             }
+
+            public LineSearchRequested(string searchTerm, LineSearchType searchType)
+            {
+                SearchTerm = searchTerm;
+                SearchType = searchType;
+            }                                    
         }
     }
 }

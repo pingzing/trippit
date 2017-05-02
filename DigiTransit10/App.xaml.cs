@@ -38,7 +38,7 @@ namespace DigiTransit10
         {
             InitializeComponent();            
             SplashFactory = (e) => new Views.Splash(e);
-            //this.UnhandledException += App_UnhandledException;
+            this.UnhandledException += App_UnhandledException;
 
             #region App settings
 

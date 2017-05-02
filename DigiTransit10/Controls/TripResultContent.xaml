@@ -438,8 +438,7 @@
             </FlyoutBase.AttachedFlyout>
         </ListView>
         
-        <local:DigiTransitMap x:Name="SingleMap"
-                              x:DeferLoadStrategy="Lazy"       
+        <local:DigiTransitMap x:Name="SingleMap"                                   
                               ColoredMapLines="{x:Bind ViewModel.ColoredMapLines, Mode=OneWay}"
                               Places="{x:Bind ViewModel.MapStops, Mode=OneWay}"
                               ShowUserOnMap="{x:Bind ViewModel.IsInDetailedState, Mode=OneWay}"

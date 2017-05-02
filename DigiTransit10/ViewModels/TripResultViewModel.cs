@@ -6,6 +6,7 @@ using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Services;
 using DigiTransit10.Services.SettingsServices;
 using DigiTransit10.Styles;
+using DigiTransit10.Views;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MetroLog;
@@ -35,6 +36,7 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<TripItinerary> ShowTripDetailsCommand => new RelayCommand<TripItinerary>(ShowTripDetails);
         public RelayCommand GoBackToTripListCommand => new RelayCommand(GoBackToTripList);
         public RelayCommand<TripItinerary> SaveRouteCommand => new RelayCommand<TripItinerary>(SaveRoute);
+        public RelayCommand<string> SearchForLineCommand => new RelayCommand<string>(SearchForLine);        
 
         private ObservableCollection<TripItinerary> _tripResults = new ObservableCollection<TripItinerary>();
         public ObservableCollection<TripItinerary> TripResults
@@ -83,7 +85,7 @@ namespace DigiTransit10.ViewModels
         {
             get { return _selectedDetailLegs; }
             set { Set(ref _selectedDetailLegs, value); }
-        }
+        }        
 
         public TripResultViewModel(INetworkService networkService, IMessenger messengerService, SettingsService settings,
             IFavoritesService favorites, IFileService fileService, ILogger logger)
@@ -219,6 +221,11 @@ namespace DigiTransit10.ViewModels
             route.RoutePlaces = places;
             route.RouteGeometryStrings = routeToSave.RouteGeometryStrings.ToList();
             _favoritesService.AddFavorite(route);
+        }
+
+        private void SearchForLine(string lineId)
+        {
+            _messengerService.Send(new MessageTypes.LineSearchRequested(lineId, MessageTypes.LineSearchType.ById));
         }
 
         private void GoBackToTripList()

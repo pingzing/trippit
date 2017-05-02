@@ -99,8 +99,7 @@ namespace DigiTransit10.ViewModels
                 SearchSection.Lines, AppResources.SearchPage_LinesHeader);
             _searchStopsViewModel = new StopSearchContentViewModel(_messenger, _networkService, 
                 _geolocation, SearchSection.Stops, AppResources.SearchPage_StopsHeader);
-            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);
-            _messenger.Register<MessageTypes.LineSearchRequested>(this, SearchForLine);
+            _messenger.Register<MessageTypes.ViewStateChanged>(this, ChildStateChanged);            
 
             SearchViewModels.Add(_nearbyStopsViewModel);
             SearchViewModels.Add(_linesSearchViewModel);
@@ -109,22 +108,44 @@ namespace DigiTransit10.ViewModels
             SelectedPivot = _nearbyStopsViewModel;
         }        
 
-        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
-            if (SelectedPivot.OwnedBy == SearchSection.Nearby)
+            _messenger.Register<MessageTypes.LineSearchRequested>(this, SearchForLine);
+
+            var searchArgs = parameter as MessageTypes.LineSearchRequested;
+            if (searchArgs != null)
             {
-                MoveNearbyCircleToUser();
+                SelectedPivot = _linesSearchViewModel;
+                if (searchArgs.SearchType == MessageTypes.LineSearchType.ById)
+                {
+                    await _linesSearchViewModel.GetLinesByIdAsync(searchArgs.SearchTerm);
+                }
+                else if (searchArgs.SearchType == MessageTypes.LineSearchType.ByTransitLine)
+                {
+                    await _linesSearchViewModel.GetLinesByIdAsync(searchArgs.Line.GtfsId);
+                }
+                else if (searchArgs.SearchType == MessageTypes.LineSearchType.ByString)
+                {
+                    _linesSearchViewModel.GetLinesAsync(searchArgs.SearchTerm);
+                }
+            }
+            else
+            {
+                if (SelectedPivot.OwnedBy == SearchSection.Nearby)
+                {
+                    MoveNearbyCircleToUser();
+                }
             }
 
             MapCircles = SelectedPivot.MapCircles;
             MapPlaces = SelectedPivot.MapPlaces;
             MapLines = SelectedPivot.MapLines;
-
-            return Task.CompletedTask;
         }
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
+            _messenger.Unregister<MessageTypes.LineSearchRequested>(this, SearchForLine);
+
             MapCircles = null;
             MapPlaces = null;
             MapLines = null;
