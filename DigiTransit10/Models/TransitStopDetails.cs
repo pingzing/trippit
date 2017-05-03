@@ -1,6 +1,7 @@
 ﻿using DigiTransit10.Models.ApiModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DigiTransit10.Models
@@ -18,17 +19,29 @@ namespace DigiTransit10.Models
             GtfsId = stop.GtfsId;
             Name = stop.Name;
             ForDate = forDate;
-            LinesThroughStop = stop.StoptimesForServiceDate.Select(
-                x => new TransitLineWithoutStops
-                {
-                    GtfsId = x.Pattern.Route.GtfsId,
-                    LongName = x.Pattern.Route.LongName,
-                    ShortName = x.Pattern.Route.ShortName,
-                    TransitMode = x.Pattern.Route.Mode
-                })
+
+
+            // TODO: Investigate why we get dupes at all. Is it our fault, or the server's fault?
+            // Consolidate all the duplicates we get from the network call.
+            LinesThroughStop = stop.StoptimesForServiceDate
+                .Where(x => x.Stoptimes.Any())
+                .GroupBy(x => x.Pattern.Route.GtfsId)
+                .Select(x => {
+                    ApiStoptimesInPattern stoptimes = x.First();
+                    return new TransitLineWithoutStops
+                    {
+                        GtfsId = stoptimes.Pattern.Route.GtfsId,
+                        LongName = stoptimes.Pattern.Route.LongName,
+                        ShortName = stoptimes.Pattern.Route.ShortName,
+                        TransitMode = stoptimes.Pattern.Route.Mode
+                    };
+                })               
                 .ToList();
+
             Stoptimes = stop.StoptimesForServiceDate.SelectMany(
-                x => x.Stoptimes.Select(y => new TransitStopTime
+                x => x.Stoptimes                   
+                .Where(z => !String.IsNullOrWhiteSpace(z.StopHeadsign))
+                .Select(y => new TransitStopTime
                 {
                     IsRealtime = y.Realtime.Value,
                     RealtimeArrival = (uint)y.RealtimeArrival.Value,
@@ -42,6 +55,6 @@ namespace DigiTransit10.Models
                 }))
                 .OrderBy(x => x.ScheduledDeparture)
                 .ToList();               
-        }
+        }       
     }
 }
