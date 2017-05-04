@@ -368,7 +368,7 @@
     <value>View details</value>
   </data>
   <data name="StopSearchContent_DetailsDeparturesHeader" xml:space="preserve">
-    <value>Departures</value>
+    <value>Upcoming Departures</value>
   </data>
   <data name="StopSearchContent_DetailsLinesHeader" xml:space="preserve">
     <value>Lines</value>
@@ -379,7 +379,7 @@
   <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
     <value>Today</value>
   </data>
-  <data name="StopSearchContent_EmptyList" xml:space="preserve">
+  <data name="StopSearchContent_DetailsEmptyDeparturesListHeader" xml:space="preserve">
     <value>Looks like there aren't any more upcoming departures today</value>
   </data>
 </root>

@@ -138,6 +138,10 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         {
             RaiseStateChanged(StopSearchState.Details);
             SelectedStop = args.StopSelected;
+
+            LinesAtStop.Clear();
+            DeparturesAtStop.Clear();
+
             IsDetailsLoading = true;
             ApiResult<TransitStopDetails> stopDetailsResponse = await _networkService.GetStopDetails(args.StopSelected.BackingStop.GtfsId, DateTime.Now);
             IsDetailsLoading = false;
@@ -149,6 +153,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             }
             LinesAtStop = new ObservableCollection<TransitLineWithoutStops>(
                 stopDetailsResponse.Result.LinesThroughStop);
+
             DeparturesAtStop = new ObservableCollection<TransitStopTime>(
                 stopDetailsResponse.Result.Stoptimes
                 .Where(x => x.RealtimeDepartureDateTime >= DateTime.Now || x.ScheduledDepartureDateTime >= DateTime.Now)
@@ -310,8 +315,15 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 Guid clickedId = nullableId.Value;
                 StopSearchElementViewModel matchingStop = StopsResultList.FirstOrDefault(x => x.BackingStop.Id == clickedId);
                 if (matchingStop != null)
-                {
-                    SelectedStop = matchingStop;
+                {                    
+                    if (_currentState == StopSearchState.Details)
+                    {
+                        SwitchToDetailedView(new MessageTypes.ViewStopDetails(matchingStop));
+                    }
+                    else
+                    {
+                        SelectedStop = matchingStop;
+                    }
                 }
             }
         }

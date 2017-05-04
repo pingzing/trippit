@@ -99,6 +99,14 @@
                       Grid.Row="2"                       
                       ItemsSource="{x:Bind ViewModel.DeparturesAtStop, Mode=OneWay}"
                       Margin="0 10 0 0">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <AddDeleteThemeTransition />
+                        <ReorderThemeTransition />
+                        <ContentThemeTransition />
+                        <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="0" FromHorizontalOffset="50" />
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -136,6 +144,7 @@
                                                   Foreground="{x:Bind TransitMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"/>
                                         <TextBlock x:Name="LineShortName" 
                                                    RelativePanel.RightOf="LineIcon" 
+                                                   Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
                                                    Margin="5 0 0 0"
                                                    Text="{x:Bind ShortName}"
                                                    Style="{ThemeResource BaseTextBlockStyle}"/>
@@ -150,7 +159,7 @@
 
                         <TextBlock Grid.Row="2"
                                    Visibility="{x:Bind ViewModel.DeparturesAtStop.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
-                                   Text="{Binding StopSearchContent_EmptyList, Source={StaticResource Strings}}"
+                                   Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsEmptyDeparturesListHeader}"
                                    Style="{StaticResource EmptyListHeaderStyle}"/>
                     </Grid>
                 </ListView.Header>
@@ -163,19 +172,23 @@
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" 
+                            <TextBlock Grid.Column="0"
+                                       x:Phase="0"
                                        Text="{x:Bind ScheduledDepartureDateTime, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:t}'}"
                                        HorizontalAlignment="Right"/>
                             <FontIcon Grid.Column="1"
+                                      x:Phase="3"
                                       Glyph="{x:Bind ViaMode, Converter={StaticResource TransitModeToFontIconConverter}}"                                      
                                       FontFamily="{StaticResource HslPiktoFrameFont}"
                                       Foreground="{x:Bind ViaMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
                                       HorizontalAlignment="Center"
                                       Margin="5 0 5 0"/>
                             <TextBlock Grid.Column="2"
+                                       x:Phase="1"
                                        Text="{x:Bind ViaLineShortName}"
                                        HorizontalAlignment="Left"/>
                             <TextBlock Grid.Column="3"
+                                       x:Phase="2"
                                        Margin="5 0 0 0"
                                        Text="{x:Bind StopHeadsign}"/>
                         </Grid>
