@@ -269,7 +269,7 @@ namespace DigiTransit10.Controls
                     {
                         this.SecondaryCommands.Remove(barButton);
                         //Insert to Primary bar
-                        this.PrimaryCommands.Add(barButton);
+                        this.PrimaryCommands.Add(barButton);                        
                         ((ISortableAppBarButton)barButton).IsSecondaryCommand = false;
                         TryRemoveSecondarySeparator();
 
@@ -287,7 +287,7 @@ namespace DigiTransit10.Controls
                             this.SecondaryCommands.Remove(navCommand);
                             //Insert to Nav Bar
                             int navButtonsCount = this.NavigationButtons.Children.Count;
-                            this.NavigationButtons.Children.Insert(navButtonsCount - 1, navCommand);
+                            this.NavigationButtons.Children.Insert(navCommand.Position, navCommand);
                             navCommand.IsSecondaryCommand = false;
                             navCommand.IsEnabled = true;
                             TryRemoveSecondarySeparator();
