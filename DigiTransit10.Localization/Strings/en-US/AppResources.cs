@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 05/04/2017 12:43:17
+// 	Generated: 05/04/2017 16:58:01
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -955,17 +955,6 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "View details"
-        /// </summary>
-        public static string String1
-        {
-            get
-            {
-                return resourceLoader.GetString("String1");
-            }
-        }
-        
-        /// <summary>
         /// Localized resource similar to "Upcoming Departures"
         /// </summary>
         public static string StopSearchContent_DetailsDeparturesHeader
@@ -1017,6 +1006,282 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("StopSearchContent_DetailsEmptyDeparturesListHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "If enabled, this will send anonymous usage information to the developer. He can use that to make future versions of the app better! =)
+        ///(or abandon features that no one uses)"
+        /// </summary>
+        public static string SettingsPage_AnalyticsExplanation
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_AnalyticsExplanation");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Analytics & telemetry"
+        /// </summary>
+        public static string SettingsPage_AnalyticsHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_AnalyticsHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Tracking"
+        /// </summary>
+        public static string SettingsPage_AnalyticsToggleHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_AnalyticsToggleHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "You can set your default To and From locations, as well as the default route optimization settings. These settings will be used to populate the search page when opening the app."
+        /// </summary>
+        public static string SettingsPage_DefaultSearchExplanation
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_DefaultSearchExplanation");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Default search options"
+        /// </summary>
+        public static string SettingsPage_DefaultSearchHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_DefaultSearchHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "From"
+        /// </summary>
+        public static string SettingsPage_FromBoxHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_FromBoxHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "SETTINGS"
+        /// </summary>
+        public static string SettingsPage_PageHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_PageHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "To"
+        /// </summary>
+        public static string SettingsPage_ToBoxHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_ToBoxHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Amount of walking"
+        /// </summary>
+        public static string SettingsPage_WalkingAmountHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_WalkingAmountHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Walking speed"
+        /// </summary>
+        public static string SettingsPage_WalkingSpeedHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_WalkingSpeedHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Bare minimum"
+        /// </summary>
+        public static string WalkingAmount_0
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingAmount_0");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Some"
+        /// </summary>
+        public static string WalkingAmount_1
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingAmount_1");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Normal"
+        /// </summary>
+        public static string WalkingAmount_2
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingAmount_2");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Lots"
+        /// </summary>
+        public static string WalkingAmount_3
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingAmount_3");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Maximum"
+        /// </summary>
+        public static string WalkingAmount_4
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingAmount_4");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Glacial"
+        /// </summary>
+        public static string WalkingSpeed_0
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_0");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "30 m/min"
+        /// </summary>
+        public static string WalkingSpeed_0_Subtitle
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_0_Subtitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Slow"
+        /// </summary>
+        public static string WalkingSpeed_1
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_1");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "50 m/min"
+        /// </summary>
+        public static string WalkingSpeed_1_Subtitle
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_1_Subtitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Normal"
+        /// </summary>
+        public static string WalkingSpeed_2
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_2");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "72 m/min"
+        /// </summary>
+        public static string WalkingSpeed_2_Subtitle
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_2_Subtitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Fast"
+        /// </summary>
+        public static string WalkingSpeed_3
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_3");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "125 m/min"
+        /// </summary>
+        public static string WalkingSpeed_3_Subtitle
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_3_Subtitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Breakneck"
+        /// </summary>
+        public static string WalkingSpeed_4
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_4");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "180 m/min"
+        /// </summary>
+        public static string WalkingSpeed_4_Subtitle
+        {
+            get
+            {
+                return resourceLoader.GetString("WalkingSpeed_4_Subtitle");
             }
         }
     }

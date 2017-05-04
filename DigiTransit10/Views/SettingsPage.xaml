@@ -5,14 +5,118 @@
     xmlns:local="using:DigiTransit10.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    
     xmlns:lclCtls="using:DigiTransit10.Controls"
+    xmlns:t10ctls="using:Template10.Controls"
+    xmlns:models="using:DigiTransit10.Models"
+    
     DataContext="{Binding Source={StaticResource Locator}, Path=Settings}"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <lclCtls:DigiTransitMap/>
-        <!--<Maps:MapControl/>-->
-        <Image Source="ms-appx:///Assets/Images/Wide310x150Logo.png"/>
-    </Grid>
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SearchBottomBar.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateWide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <t10ctls:MemorySafePageHeader x:Name="PageHeader"
+                                      RelativePanel.AlignLeftWithPanel="True"
+                                      RelativePanel.AlignRightWithPanel="True"
+                                      RelativePanel.AlignTopWithPanel="True"
+                                      Style="{StaticResource PageHeaderBoldStyle}"
+                                      Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_PageHeader}"/>
+
+        <Grid x:Name="ContentRoot"
+              RelativePanel.Below="PageHeader"
+              RelativePanel.AlignLeftWithPanel="True"
+              RelativePanel.AlignRightWithPanel="True"
+              RelativePanel.AlignBottomWithPanel="True">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="10 0 10 0">
+                <TextBlock x:Name="DefaultSearchHeader"
+                           Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_DefaultSearchHeader}"
+                           Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock x:Name="DefaultSearchExplanation"
+                           Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_DefaultSearchExplanation}"
+                           Style="{StaticResource ExplanationTextBlockStyle}"/>
+                <lclCtls:DigiTransitSearchBox x:Name="FromBox"
+                                              Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_FromBoxHeader}"                                              
+                                              HorizontalAlignment="Left"
+                                              Margin="0 10 0 0"                                              
+                                              ShowFavoritesButton="False"
+                                              TextBoxHeight="32"
+                                              Width="400"/>
+                <lclCtls:DigiTransitSearchBox x:Name="ToBox"
+                                              Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_ToBoxHeader}"
+                                              HorizontalAlignment="Left"
+                                              Margin="0 10 0 0"
+                                              ShowFavoritesButton="False"
+                                              TextBoxHeight="32"
+                                              Width="400"/>
+                <ComboBox x:Name="WalkingAmountComboBox"
+                          DisplayMemberPath="DisplayName"                          
+                          Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_WalkingAmountHeader}"                          
+                          ItemsSource="{x:Bind ViewModel.WalkingAmounts, Mode=OneWay}"
+                          Margin="0 10 0 0"
+                          SelectedItem="{Binding SelectedWalkingAmount, Mode=TwoWay}">
+                </ComboBox>
+                <ComboBox x:Name="WalkingSpeedComboBox"                         
+                          Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_WalkingSpeedHeader}"
+                          ItemsSource="{x:Bind ViewModel.WalkingSpeeds, Mode=OneWay}"
+                          Margin="0 10 0 0"
+                          SelectedItem="{Binding SelectedWalkingSpeed, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:WalkingSpeed">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Bind DisplayName}"/>
+                                <TextBlock Foreground="Gray" FontStyle="Italic" Margin="5 0 0 0" Text="{x:Bind DisplaySubtitle}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Margin="20 10 10 0">
+                <TextBlock x:Name="AnalyticsHeader"
+                           Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsHeader}"
+                           Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <ToggleSwitch x:Name="AnalyticsSwitch"
+                              Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsToggleHeader}"/>
+                <TextBlock x:Name="AnalyticsSwitchExplanation"                           
+                           Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsExplanation}"
+                           Style="{StaticResource ExplanationTextBlockStyle}"/>
+            </StackPanel>
+
+        </Grid>
+    </RelativePanel>
 </Page>

@@ -364,9 +364,6 @@
   <data name="StopSearchElement_ViewDetails" xml:space="preserve">
     <value>View stop details</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value>View details</value>
-  </data>
   <data name="StopSearchContent_DetailsDeparturesHeader" xml:space="preserve">
     <value>Upcoming Departures</value>
   </data>
@@ -381,5 +378,81 @@
   </data>
   <data name="StopSearchContent_DetailsEmptyDeparturesListHeader" xml:space="preserve">
     <value>Looks like there aren't any more upcoming departures today</value>
+  </data>
+  <data name="SettingsPage_AnalyticsExplanation" xml:space="preserve">
+    <value>If enabled, this will send anonymous usage information to the developer. He can use that to make future versions of the app better! =)
+(or abandon features that no one uses)</value>
+  </data>
+  <data name="SettingsPage_AnalyticsHeader" xml:space="preserve">
+    <value>Analytics &amp; telemetry</value>
+  </data>
+  <data name="SettingsPage_AnalyticsToggleHeader" xml:space="preserve">
+    <value>Tracking</value>
+  </data>
+  <data name="SettingsPage_DefaultSearchExplanation" xml:space="preserve">
+    <value>You can set your default To and From locations, as well as the default route optimization settings. These settings will be used to populate the search page when opening the app.</value>
+  </data>
+  <data name="SettingsPage_DefaultSearchHeader" xml:space="preserve">
+    <value>Default search options</value>
+  </data>
+  <data name="SettingsPage_FromBoxHeader" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="SettingsPage_PageHeader" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="SettingsPage_ToBoxHeader" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="SettingsPage_WalkingAmountHeader" xml:space="preserve">
+    <value>Amount of walking</value>
+  </data>
+  <data name="SettingsPage_WalkingSpeedHeader" xml:space="preserve">
+    <value>Walking speed</value>
+  </data>
+  <data name="WalkingAmount_0" xml:space="preserve">
+    <value>Bare minimum</value>
+  </data>
+  <data name="WalkingAmount_1" xml:space="preserve">
+    <value>Some</value>
+  </data>
+  <data name="WalkingAmount_2" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="WalkingAmount_3" xml:space="preserve">
+    <value>Lots</value>
+  </data>
+  <data name="WalkingAmount_4" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="WalkingSpeed_0" xml:space="preserve">
+    <value>Glacial</value>
+  </data>
+  <data name="WalkingSpeed_0_Subtitle" xml:space="preserve">
+    <value>30 m/min</value>
+  </data>
+  <data name="WalkingSpeed_1" xml:space="preserve">
+    <value>Slow</value>
+  </data>
+  <data name="WalkingSpeed_1_Subtitle" xml:space="preserve">
+    <value>50 m/min</value>
+  </data>
+  <data name="WalkingSpeed_2" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="WalkingSpeed_2_Subtitle" xml:space="preserve">
+    <value>72 m/min</value>
+  </data>
+  <data name="WalkingSpeed_3" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="WalkingSpeed_3_Subtitle" xml:space="preserve">
+    <value>125 m/min</value>
+  </data>
+  <data name="WalkingSpeed_4" xml:space="preserve">
+    <value>Breakneck</value>
+  </data>
+  <data name="WalkingSpeed_4_Subtitle" xml:space="preserve">
+    <value>180 m/min</value>
   </data>
 </root>

@@ -251,6 +251,8 @@
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicMapPoi.cs" />
+    <Compile Include="Models\WalkingAmount.cs" />
+    <Compile Include="Models\WalkingSpeed.cs" />
     <Compile Include="Models\ColoredGeocircle.cs" />
     <Compile Include="Models\ColoredMapLine.cs" />
     <Compile Include="Models\FavoriteIcon.cs" />
