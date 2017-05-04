@@ -33,12 +33,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         public enum StopSearchState { Overview, Details };
         private StopSearchState _currentState;
         
-        public SearchSection OwnedBy { get; private set; }
-
-        public RelayCommand LoadedCommand => new RelayCommand(Loaded);
-        public RelayCommand UnloadedCommand => new RelayCommand(Unloaded);
-        public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStopsAsync);
-        public RelayCommand<ITransitLine> ViewLineCommand => new RelayCommand<ITransitLine>(ViewLine);        
+        public SearchSection OwnedBy { get; private set; }    
 
         private ObservableCollection<StopSearchElementViewModel> _stopsResultList = new ObservableCollection<StopSearchElementViewModel>();
         public ObservableCollection<StopSearchElementViewModel> StopsResultList
@@ -58,8 +53,9 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         public ObservableCollection<TransitStopTime> DeparturesAtStop
         {
             get { return _departuresAtStop; }
-            set { Set(ref _departuresAtStop, value); }
-        }
+            set
+            { Set(ref _departuresAtStop, value); }
+        }                
 
         private ObservableCollection<IMapPoi> _mapPlaces = new ObservableCollection<IMapPoi>();
         public ObservableCollection<IMapPoi> MapPlaces
@@ -120,6 +116,11 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             get { return _stopsSearchBoxText; }
             set { Set(ref _stopsSearchBoxText, value); }
         }        
+                   
+        public RelayCommand LoadedCommand => new RelayCommand(Loaded);
+        public RelayCommand UnloadedCommand => new RelayCommand(Unloaded);
+        public RelayCommand<string> SearchStopsCommand => new RelayCommand<string>(SearchStopsAsync);
+        public RelayCommand<ITransitLine> ViewLineCommand => new RelayCommand<ITransitLine>(ViewLine);
 
         public StopSearchContentViewModel(IMessenger messenger, INetworkService network, IGeolocationService geolocation, 
             SearchSection ownedBy, string title)
@@ -130,7 +131,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             OwnedBy = ownedBy;
             Title = title;
 
-            _messenger.Register<MessageTypes.ViewStopDetails>(this, SwitchToDetailedView);
+            _messenger.Register<MessageTypes.ViewStopDetails>(this, SwitchToDetailedView);            
         }
 
         private async void SwitchToDetailedView(MessageTypes.ViewStopDetails args)
@@ -198,7 +199,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
-            // We explicitly enumerate the list into memory here, other Guid.NewGuid() gets called every time we enumerate the list,
+            // We explicitly enumerate the list into memory here, otherwise Guid.NewGuid() gets called every time we enumerate the list,
             // making it impossible to link a Map POI to a list element.            
             List<TransitStop> stops = response.Result.ToList();
             StopsResultList = new ObservableCollection<StopSearchElementViewModel>(
@@ -237,8 +238,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadiusMeters), _tokenSource.Token);
             }
 
-            IsOverviewLoading = false;
-            
+            IsOverviewLoading = false;            
         }
 
         internal async Task MoveNearbyCircle(Geopoint point)
@@ -287,7 +287,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
                 return;
             }
 
-            // We explicitly enumerate the list into memory here, other Guid.NewGuid() gets called every time we enumerate the list,
+            // We explicitly enumerate the list into memory here, otherwise Guid.NewGuid() gets called every time we enumerate the list,
             // making it impossible to link a Map POI to a list element.
             List<TransitStop> stops = response.Result.ToList();
             StopsResultList = new ObservableCollection<StopSearchElementViewModel>(

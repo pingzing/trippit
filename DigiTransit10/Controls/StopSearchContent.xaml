@@ -79,9 +79,9 @@
 
         <!--Note: When we switch into the Details view, we lock the parent's pivot.-->
         <Grid x:Name="StopDetailsPanel" 
-               x:DeferLoadStrategy="Lazy"
+              x:DeferLoadStrategy="Lazy"
               Grid.RowSpan="2"
-               Visibility="Collapsed">
+              Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -95,7 +95,8 @@
                        Style="{ThemeResource CaptionTextBlockStyle}"
                        Text="{x:Bind ViewModel.SelectedStop.BackingStop.Code, Mode=OneWay}"/>
 
-            <ListView Grid.Row="2"                       
+            <ListView x:Name="UpcomingDeparturesList" 
+                      Grid.Row="2"                       
                       ItemsSource="{x:Bind ViewModel.DeparturesAtStop, Mode=OneWay}"
                       Margin="0 10 0 0">
                 <ListView.ItemContainerStyle>
@@ -106,6 +107,7 @@
                 <ListView.Header>
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
@@ -145,6 +147,11 @@
                         <TextBlock Grid.Row="1" 
                                    Style="{ThemeResource SubtitleTextBlockStyle}"
                                    Text="{Binding Source={StaticResource Strings}, Path=StopSearchContent_DetailsDeparturesHeader}"/>
+
+                        <TextBlock Grid.Row="2"
+                                   Visibility="{x:Bind ViewModel.DeparturesAtStop.Count, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverterInverted}}"
+                                   Text="{Binding StopSearchContent_EmptyList, Source={StaticResource Strings}}"
+                                   Style="{StaticResource EmptyListHeaderStyle}"/>
                     </Grid>
                 </ListView.Header>
                 <ListView.ItemTemplate>

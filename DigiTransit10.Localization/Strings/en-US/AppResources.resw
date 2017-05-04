@@ -379,4 +379,7 @@
   <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
     <value>Today</value>
   </data>
+  <data name="StopSearchContent_EmptyList" xml:space="preserve">
+    <value>Looks like there aren't any more upcoming departures today</value>
+  </data>
 </root>

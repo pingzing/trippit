@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 01/10/2017 12:05:01
+// 	Generated: 05/04/2017 11:55:56
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -997,15 +997,26 @@ namespace DigiTransit10.Localization.Strings
                 return resourceLoader.GetString("DialogMessage_NoTripsFoundServerDown");
             }
         }
-
+        
         /// <summary>
-        /// Localized resource similar to "Today".
+        /// Localized resource similar to "Today"
         /// </summary>
         public static string CurrentDatePicker_CurrentDate
         {
             get
             {
                 return resourceLoader.GetString("CurrentDatePicker_CurrentDate");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Looks like there aren't any more upcoming departures today"
+        /// </summary>
+        public static string StopSearchContent_EmptyList
+        {
+            get
+            {
+                return resourceLoader.GetString("StopSearchContent_EmptyList");
             }
         }
     }

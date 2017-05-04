@@ -123,6 +123,7 @@
 
     <Style x:Key="EmptyListHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
         <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="TextWrapping" Value="WrapWholeWords"/>
     </Style>
 
     <Style x:Key="PageHeaderBoldStyle" TargetType="controls:MemorySafePageHeader">

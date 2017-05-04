@@ -20,9 +20,8 @@ namespace DigiTransit10.Models
             Name = stop.Name;
             ForDate = forDate;
 
-
-            // TODO: Investigate why we get dupes at all. Is it our fault, or the server's fault?
             // Consolidate all the duplicates we get from the network call.
+            // TODO: Investigate why we get dupes at all. Is it our fault, or the server's fault?
             LinesThroughStop = stop.StoptimesForServiceDate
                 .Where(x => x.Stoptimes.Any())
                 .GroupBy(x => x.Pattern.Route.GtfsId)
