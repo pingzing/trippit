@@ -62,7 +62,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Margin="10 0 10 0">
+            <StackPanel x:Name="DefaultSearchStackPanel" HorizontalAlignment="Stretch" Margin="10 0 10 0">
                 <TextBlock x:Name="DefaultSearchHeader"
                            Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_DefaultSearchHeader}"
                            Style="{StaticResource SubtitleTextBlockStyle}"/>
@@ -75,14 +75,14 @@
                                               Margin="0 10 0 0"                                              
                                               ShowFavoritesButton="False"
                                               TextBoxHeight="32"
-                                              Width="400"/>
+                                              Width="{x:Bind DefaultSearchStackPanel.ActualWidth, Mode=OneWay}"/>
                 <lclCtls:DigiTransitSearchBox x:Name="ToBox"
                                               Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_ToBoxHeader}"
                                               HorizontalAlignment="Left"
                                               Margin="0 10 0 0"
                                               ShowFavoritesButton="False"
                                               TextBoxHeight="32"
-                                              Width="400"/>
+                                              Width="{x:Bind DefaultSearchStackPanel.ActualWidth, Mode=OneWay}"/>
                 <ComboBox x:Name="WalkingAmountComboBox"
                           DisplayMemberPath="DisplayName"                          
                           Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_WalkingAmountHeader}"                          
@@ -106,7 +106,7 @@
                 </ComboBox>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Margin="20 10 10 0">
+            <StackPanel Grid.Row="1" Margin="10 20 10 0">
                 <TextBlock x:Name="AnalyticsHeader"
                            Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsHeader}"
                            Style="{StaticResource SubtitleTextBlockStyle}"/>
