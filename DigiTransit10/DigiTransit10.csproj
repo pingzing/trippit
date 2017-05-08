@@ -114,6 +114,9 @@
     <Compile Include="Controls\AddOrEditFavoriteDialog.xaml.cs">
       <DependentUpon>AddOrEditFavoriteDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\AnimatedPage.xaml.cs">
+      <DependentUpon>AnimatedPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CurrentDatePicker.xaml.cs">
       <DependentUpon>CurrentDatePicker.xaml</DependentUpon>
     </Compile>
@@ -510,6 +513,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\AddOrEditFavoriteDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnimatedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,4 @@
-﻿<Page
+﻿<lclCtls:AnimatedPage
     x:Class="DigiTransit10.Views.TripResultPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Behaviors="using:Template10.Behaviors"
@@ -91,4 +91,4 @@
         <lclCtls:NavCommandBar/>
     </Page.BottomAppBar>
 
-</Page>
+</lclCtls:AnimatedPage>

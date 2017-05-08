@@ -1,4 +1,5 @@
-﻿using DigiTransit10.ViewModels;
+﻿using DigiTransit10.Controls;
+using DigiTransit10.ViewModels;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -8,7 +9,7 @@ namespace DigiTransit10.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsPage : AnimatedPage
     {
         public SettingsViewModel ViewModel => this.DataContext as SettingsViewModel;
 

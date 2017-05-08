@@ -20,7 +20,7 @@ using static DigiTransit10.Helpers.MessageTypes;
 
 namespace DigiTransit10.Views
 {
-    public sealed partial class MainPage : Page, INotifyPropertyChanged
+    public sealed partial class MainPage : AnimatedPage, INotifyPropertyChanged
     {
         public MainViewModel ViewModel => this.DataContext as MainViewModel;
 
@@ -121,6 +121,8 @@ namespace DigiTransit10.Views
                 this.IsEnabled = false;
                 this.MainPageBottomBar.IsEnabled = false;
             }
+            base.OnNavigatingFrom(e);
+
         }
 
         private void ExitAnimation_Completed(object sender, object e)
@@ -150,6 +152,7 @@ namespace DigiTransit10.Views
                 var storyboard = ContinuumNavigationEntranceFactory.GetAnimation(clickedItem);
                 storyboard.Begin();
             }
+            base.OnNavigatedTo(e);
         }
 
         private void NavigationCanceledByUser(NavigationCanceled _)

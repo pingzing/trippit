@@ -1,4 +1,5 @@
-﻿using DigiTransit10.Models;
+﻿using DigiTransit10.Controls;
+using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
 using System.Diagnostics;
 using Windows.UI.Xaml;
@@ -14,7 +15,7 @@ namespace DigiTransit10.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class FavoritesPage : Page
+    public sealed partial class FavoritesPage : AnimatedPage
     {
         public FavoritesViewModel ViewModel { get; set; }
 

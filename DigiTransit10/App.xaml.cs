@@ -70,7 +70,7 @@ namespace DigiTransit10
                 }
 
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
+                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
 
                 // create modal root
                 Window.Current.Content = new ModalDialog

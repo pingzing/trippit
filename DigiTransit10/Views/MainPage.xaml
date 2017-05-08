@@ -1,4 +1,4 @@
-﻿<Page
+﻿<lclCtls:AnimatedPage
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
@@ -24,7 +24,7 @@
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                     
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"                                                  
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
-                        <Button x:Name="SwapButton"
+                    <Button x:Name="SwapButton"
                                         Background="Transparent"
                                         Command="{x:Bind SwapFirstLocationCommand}"
                                         CommandParameter="{x:Bind FromPlace, Mode=OneWay}"
@@ -40,7 +40,7 @@
                             <CompositeTransform Rotation="90"/>
                         </Button.RenderTransform>
                     </Button>
-                    
+
                     <ListView x:Name="SearchBoxesList"                              
                               ItemsSource="{x:Bind IntermediatePlaces, Mode=OneWay, FallbackValue={x:Null}}"
                               SelectionMode="None">
@@ -157,7 +157,7 @@
                           Visibility="{x:Bind IsTransitPanelVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                           HorizontalAlignment="Stretch"
                           Margin="0 0 0 10">
-                        
+
                         <Interactivity:Interaction.Behaviors>
                             <lclBhvrs:AnimateVisibilityBehavior/>
                         </Interactivity:Interaction.Behaviors>
@@ -252,7 +252,7 @@
                                 <RepositionThemeTransition/>
                             </TransitionCollection>
                         </HyperlinkButton.Transitions>
-                        
+
                         <TextBlock>
                                 <Run FontSize="20" Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/> <Run FontFamily="Segoe MDL2 Assets" Text="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
                         </TextBlock>
@@ -271,30 +271,30 @@
                               RightTapped="PinnedFavoritesControl_OnRightTapped">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                 <Grid>
-                                     <Grid.ColumnDefinitions>
-                                         <ColumnDefinition Width="Auto"/>
-                                         <ColumnDefinition Width="9*"/>
-                                         <ColumnDefinition Width="1*"/>
-                                     </Grid.ColumnDefinitions>
-                                     <FontIcon x:Name="FavoriteIcon"
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="9*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon x:Name="FavoriteIcon"
                                                Grid.Column="0"
                                                FontFamily="{Binding IconFontFace}"
                                                FontSize="{Binding IconFontSize}"
                                                Glyph="{Binding FontIconGlyph}"/>
-                                     <TextBlock x:Name="FavoriteName" 
+                                    <TextBlock x:Name="FavoriteName" 
                                                 Grid.Column="1"                              
                                                 Margin="10 0 0 0"
                                                 Text="{Binding UserChosenName}"
                                                 TextTrimming="CharacterEllipsis"
                                                 VerticalAlignment="Center"/>
-                                     <FontIcon x:Name="ArrowIcon"
+                                    <FontIcon x:Name="ArrowIcon"
                                                Grid.Column="2"                     
                                                Foreground="{ThemeResource SystemAccentColor}"
                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                                Glyph="{Binding Source={StaticResource FontIcons}, Path=RightArrow}"
                                                HorizontalAlignment="Right"/>
-                                 </Grid>
+                                </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.Transitions>
@@ -343,7 +343,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <RelativePanel x:Name="ContentRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
@@ -632,7 +632,7 @@
                                Visibility="Collapsed"/>
     </Page.BottomAppBar>
 
-</Page>
+</lclCtls:AnimatedPage>
 
 <!--For reference, delete when no longer necessary-->
 <!--<controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0"

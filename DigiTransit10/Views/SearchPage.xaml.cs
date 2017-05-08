@@ -1,4 +1,5 @@
-﻿using DigiTransit10.ExtensionMethods;
+﻿using DigiTransit10.Controls;
+using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
 using DigiTransit10.Models;
 using DigiTransit10.ViewModels;
@@ -20,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace DigiTransit10.Views
 {
-    public sealed partial class SearchPage : Page
+    public sealed partial class SearchPage : AnimatedPage
     {
         private const double FloatingPanelHeightFraction = 0.5;
 
