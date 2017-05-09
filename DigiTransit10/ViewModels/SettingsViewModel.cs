@@ -1,12 +1,22 @@
 ﻿using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
+using DigiTransit10.Services.SettingsServices;
 using System.Collections.ObjectModel;
 using Template10.Mvvm;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using System;
+using System.Linq;
+using GalaSoft.MvvmLight.Command;
 
 namespace DigiTransit10.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
+
+        private readonly SettingsService _settingsService;
 
         private ObservableCollection<WalkingAmount> _walkingAmounts = new ObservableCollection<WalkingAmount>
         {
@@ -95,12 +105,32 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedWalkingSpeed, value); }
         }
 
-        public SettingsViewModel()
-        {
-            // Get defaults from settings
 
-            // todo
-            
+        public SettingsViewModel(SettingsService settingsService)
+        {
+            _settingsService = settingsService;                    
+        }
+
+        public RelayCommand CycleThemeCommand => new RelayCommand(CycleTheme);
+        private void CycleTheme()
+        {
+            var currTheme = _settingsService.AppTheme;            
+            if (currTheme == ApplicationTheme.Light)
+            {
+                _settingsService.AppTheme = ApplicationTheme.Dark;
+            }
+            if (currTheme == ApplicationTheme.Dark)
+            {
+                _settingsService.AppTheme = ApplicationTheme.Light;
+            }
+            System.Diagnostics.Debug.WriteLine("Current theme is now:" + _settingsService.AppTheme);
+        }
+
+        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+
+
+            return base.OnNavigatedToAsync(parameter, mode, state);
         }
     }
 }

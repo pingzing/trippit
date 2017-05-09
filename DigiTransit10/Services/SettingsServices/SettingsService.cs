@@ -39,7 +39,19 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get
             {
-                var theme = Application.Current.RequestedTheme;
+                //ApplicationTheme defaultTheme = Application.Current.RequestedTheme;
+                //string value = _helper.Read(nameof(AppTheme), defaultTheme.ToString());
+
+                //ElementTheme savedTheme;
+                //if (Enum.TryParse<ElementTheme>(value, out savedTheme))
+                //{
+                //    return savedTheme;
+                //}
+                //else
+                //{
+                //    return defaultTheme.ToElementTheme();
+                //}
+                var theme = ApplicationTheme.Light;
                 var value = _helper.Read<string>(nameof(AppTheme), theme.ToString());
                 return Enum.TryParse<ApplicationTheme>(value, out theme) ? theme : ApplicationTheme.Dark;
             }

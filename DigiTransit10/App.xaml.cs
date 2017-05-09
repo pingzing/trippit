@@ -20,6 +20,7 @@ using DigiTransit10.Models;
 using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Ioc;
+using Template10.Utils;
 
 namespace DigiTransit10
 {
@@ -45,7 +46,7 @@ namespace DigiTransit10
             var _settings = SettingsService.Instance;
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
-            RequestedTheme = SettingsService.Instance.AppTheme;
+            RequestedTheme = SettingsService.Instance.AppTheme;          
 
             #endregion            
 

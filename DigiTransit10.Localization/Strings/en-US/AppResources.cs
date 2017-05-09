@@ -17,7 +17,7 @@
 // 	This code contains a helper class exposing property representations
 // 	of the string resources defined in the specified .ResW file
 // 
-// 	Generated: 05/04/2017 16:58:01
+// 	Generated: 05/09/2017 16:30:01
 // </auto-generatedInfo>
 // --------------------------------------------------------------------------------------------------
 namespace DigiTransit10.Localization.Strings
@@ -1282,6 +1282,72 @@ namespace DigiTransit10.Localization.Strings
             get
             {
                 return resourceLoader.GetString("WalkingSpeed_4_Subtitle");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Licenses"
+        /// </summary>
+        public static string SettingsPage_LicensesHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_LicensesHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "todo"
+        /// </summary>
+        public static string SettingsPage_LicensesText
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_LicensesText");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Special thanks"
+        /// </summary>
+        public static string SettingsPage_SpecialThanksHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_SpecialThanksHeader");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "todo"
+        /// </summary>
+        public static string SettingsPage_SpecialThanksText
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_SpecialThanksText");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Set your chosen application theme."
+        /// </summary>
+        public static string SettingsPage_ThemeExplanation
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_ThemeExplanation");
+            }
+        }
+        
+        /// <summary>
+        /// Localized resource similar to "Theme"
+        /// </summary>
+        public static string SettingsPage_ThemeHeader
+        {
+            get
+            {
+                return resourceLoader.GetString("SettingsPage_ThemeHeader");
             }
         }
     }

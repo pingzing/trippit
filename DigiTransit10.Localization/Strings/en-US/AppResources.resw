@@ -455,4 +455,22 @@
   <data name="WalkingSpeed_4_Subtitle" xml:space="preserve">
     <value>180 m/min</value>
   </data>
+  <data name="SettingsPage_LicensesHeader" xml:space="preserve">
+    <value>Licenses</value>
+  </data>
+  <data name="SettingsPage_LicensesText" xml:space="preserve">
+    <value>todo</value>
+  </data>
+  <data name="SettingsPage_SpecialThanksHeader" xml:space="preserve">
+    <value>Special thanks</value>
+  </data>
+  <data name="SettingsPage_SpecialThanksText" xml:space="preserve">
+    <value>todo</value>
+  </data>
+  <data name="SettingsPage_ThemeExplanation" xml:space="preserve">
+    <value>Set your chosen application theme.</value>
+  </data>
+  <data name="SettingsPage_ThemeHeader" xml:space="preserve">
+    <value>Theme</value>
+  </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using DigiTransit10.Controls;
 using DigiTransit10.ViewModels;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -21,7 +22,11 @@ namespace DigiTransit10.Views
                 // TODO: Check to make sure we only do this if SelectedItem for
                 // these are both null
                 ViewModel.SelectedWalkingAmount = ViewModel.WalkingAmounts[2];
-                ViewModel.SelectedWalkingSpeed = ViewModel.WalkingSpeeds[2];
+                ViewModel.SelectedWalkingSpeed = ViewModel.WalkingSpeeds[2];                
+            };
+            ToBox.Loaded += (s, e) =>
+            {
+                this.Focus(FocusState.Programmatic);
             };
         }
     }

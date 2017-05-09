@@ -336,6 +336,17 @@ namespace DigiTransit10.Controls
             set { SetValue(IsUserCurrentLocationListedProperty, value); }
         }
 
+        public static readonly DependencyProperty OpenOnFocusProperty =
+            DependencyProperty.Register(nameof(OpenOnFocus), typeof(bool), typeof(DigiTransitSearchBox), new PropertyMetadata(true));
+        /// <summary>
+        /// Determines whether or not the suggestion list opens automatically when the searchbox gets focus.
+        /// </summary>
+        public bool OpenOnFocus
+        {
+            get { return (bool)GetValue(OpenOnFocusProperty); }
+            set { SetValue(OpenOnFocusProperty, value); }
+        }
+               
         private async void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             if (String.IsNullOrWhiteSpace(SearchBox.Text))
@@ -590,7 +601,8 @@ namespace DigiTransit10.Controls
         {
             // Don't open the search box if the user is just adding a favorite or clearing the box
             if (!SearchBox.IsSuggestionListOpen
-                && e.OriginalSource as Button == null)
+                && e.OriginalSource as Button == null
+                && OpenOnFocus)
             {
                 SearchBox.IsSuggestionListOpen = true;
             }
