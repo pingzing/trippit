@@ -10,14 +10,14 @@ namespace DigiTransit10.Controls
     /// Note that in order for the animations to run, inheritors must call base.OnNavigatingFrom()
     /// and base.OnNavigatedTo().
     /// </summary>
-    public partial class AnimatedPage : Page
+    public class AnimatedPage : Page
     {
         private Lazy<Storyboard> _showBottomBarStoryboard;
         private Lazy<Storyboard> _defaultToStoryboard;
         private Lazy<Storyboard> _defaultFromStoryboard;
         private Lazy<Storyboard> _hideBottomBarStoryboard;
 
-        public Storyboard ToAnimation { get; set; }        
+        public Storyboard ToAnimation { get; set; }
 
         /// <summary>
         /// This is the flag that determines whether or not OnNavigating will cancel and wait for
@@ -26,14 +26,12 @@ namespace DigiTransit10.Controls
         private bool _animationCompleted;
         private bool _isNavigatingBack = false;
         private Type _navigatingToType = null;
-        private object _navigatingToParameter = null;        
-        public Storyboard FromAnimation { get; set; }        
+        private object _navigatingToParameter = null;
+        public Storyboard FromAnimation { get; set; }
 
         public AnimatedPage()
-        {
-            this.InitializeComponent();
-
-            _defaultFromStoryboard = new Lazy<Storyboard>(() => 
+        {            
+            _defaultFromStoryboard = new Lazy<Storyboard>(() =>
             {
                 Storyboard defaultFromStoryboard = new Storyboard();
                 DoubleAnimation fadeAnimation = new DoubleAnimation();
@@ -46,7 +44,7 @@ namespace DigiTransit10.Controls
                 return defaultFromStoryboard;
             });
 
-            _hideBottomBarStoryboard = new Lazy<Storyboard>(() => 
+            _hideBottomBarStoryboard = new Lazy<Storyboard>(() =>
             {
                 Storyboard hideBottomBarStoryboard = new Storyboard();
                 DoubleAnimation hideBottomAnimation = new DoubleAnimation();
@@ -63,7 +61,7 @@ namespace DigiTransit10.Controls
                 return hideBottomBarStoryboard;
             });
 
-            _defaultToStoryboard = new Lazy<Storyboard>(() => 
+            _defaultToStoryboard = new Lazy<Storyboard>(() =>
             {
                 Storyboard defaultToStoryboard = new Storyboard();
                 DoubleAnimation fadeAnimation = new DoubleAnimation();
@@ -76,7 +74,7 @@ namespace DigiTransit10.Controls
                 return defaultToStoryboard;
             });
 
-            _showBottomBarStoryboard = new Lazy<Storyboard>(() => 
+            _showBottomBarStoryboard = new Lazy<Storyboard>(() =>
             {
                 Storyboard showBottomBarStoryboard = new Storyboard();
                 DoubleAnimation showBottomAnimation = new DoubleAnimation();
@@ -86,14 +84,14 @@ namespace DigiTransit10.Controls
                 {
                     Amplitude = 0.3,
                     EasingMode = EasingMode.EaseOut
-                };                
+                };
                 showBottomAnimation.Duration = new Windows.UI.Xaml.Duration(TimeSpan.FromMilliseconds(600));
                 Storyboard.SetTargetProperty(showBottomAnimation, "(UIElement.RenderTransform).(CompositeTransform.TranslateY)");
                 Storyboard.SetTarget(showBottomAnimation, this.BottomAppBar);
                 showBottomBarStoryboard.Children.Add(showBottomAnimation);
                 return showBottomBarStoryboard;
             });
-        }                
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -112,7 +110,7 @@ namespace DigiTransit10.Controls
         }
 
         private void ToAnimation_Completed(object sender, object e)
-        {            
+        {
             if (this.BottomAppBar != null)
             {
                 this.BottomAppBar.IsEnabled = true;
@@ -120,7 +118,7 @@ namespace DigiTransit10.Controls
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {                        
+        {
             if (!_animationCompleted)
             {
                 Storyboard fromBoard = FromAnimation ?? _defaultFromStoryboard.Value;
@@ -143,14 +141,14 @@ namespace DigiTransit10.Controls
                 fromBoard.Begin();
             }
             else
-            {                
-                _animationCompleted = false; 
+            {
+                _animationCompleted = false;
             }
             base.OnNavigatingFrom(e);
         }
 
         private void FromAnimation_Completed(object sender, object e)
-        {            
+        {
             _animationCompleted = true;
             if (_isNavigatingBack)
             {
@@ -163,7 +161,7 @@ namespace DigiTransit10.Controls
 
             _isNavigatingBack = false;
             _navigatingToType = null;
-            _navigatingToParameter = null;            
-        }        
+            _navigatingToParameter = null;
+        }
     }
 }
