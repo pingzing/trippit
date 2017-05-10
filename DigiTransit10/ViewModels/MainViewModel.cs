@@ -30,7 +30,8 @@ namespace DigiTransit10.ViewModels
             _settingsService = settings;
             _logger = logger;
 
-            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);            
+            _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
+            _messengerService.Register<MessageTypes.LineSearchRequested>(this, SearchLine);
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -59,13 +60,17 @@ namespace DigiTransit10.ViewModels
 
         private void SearchLine(MessageTypes.LineSearchRequested lineSearchMessage)
         {
-            NavigationService.NavigateAsync(typeof(SearchPage), lineSearchMessage);
+            // MainViewModel shouldn't be responsible for events coming from anywhere else.
+            // Alternatively, I guess we could change the message itself to have a "Source" parameter?
+            if (NavigationService.CurrentPageType == typeof(MainPage) ||
+                NavigationService.CurrentPageType == typeof(TripResultPage))
+            {
+                NavigationService.NavigateAsync(typeof(SearchPage), lineSearchMessage);
+            }
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
-        {
-            _messengerService.Register<MessageTypes.LineSearchRequested>(this, SearchLine);
-
+        {            
             if (suspensionState.Any())
             {
                 //pull cached values in from the suspensionState dict
@@ -75,9 +80,7 @@ namespace DigiTransit10.ViewModels
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)
-        {
-            _messengerService.Unregister<MessageTypes.LineSearchRequested>(this, SearchLine);
-
+        {            
             if (suspending)
             {
                 //store cacheable values into the suspensionState dict
