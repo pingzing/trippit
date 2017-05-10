@@ -1350,5 +1350,60 @@ namespace DigiTransit10.Localization.Strings
                 return resourceLoader.GetString("SettingsPage_ThemeHeader");
             }
         }
+
+        /// <summary>
+        /// Localized resource similar to "Light"
+        /// </summary>
+        public static string LightThemeName
+        {
+            get
+            {
+                return resourceLoader.GetString("LightThemeName");
+            }
+        }
+
+        /// <summary>
+        /// Localized resource similar to "Dark"
+        /// </summary>
+        public static string DarkThemeName
+        {
+            get
+            {
+                return resourceLoader.GetString("DarkThemeName");
+            }
+        }
+
+        /// <summary>
+        /// Localized resource similar to "System Default"
+        /// </summary>
+        public static string SystemSettingThemeName
+        {
+            get
+            {
+                return resourceLoader.GetString("SystemSettingThemeName");
+            }
+        }
+
+        /// <summary>
+        /// Localized resource similar to "Display theme"
+        /// </summary>
+        public static string SettingsPage_ThemeComboBoxHeader => resourceLoader.GetString(nameof(SettingsPage_ThemeComboBoxHeader));
+
+        /// <summary>
+        /// Localized resource similar to "Favorites"
+        /// </summary>
+        public static string SettingsPage_FavoritesPanelHeader => resourceLoader.GetString(nameof(SettingsPage_FavoritesPanelHeader));
+
+        /// <summary>
+        /// Localized resource similar to "Number of pinned favorites"
+        /// </summary>
+        public static string SettingsPage_PinnedFavoritesNumberComboBoxHeader => resourceLoader.GetString(nameof(SettingsPage_PinnedFavoritesNumberComboBoxHeader));
+
+        /// <summary>
+        /// Localized resource similar to "Set the maximum number of pinned favorites to display on the main page of the app. Default: 3"
+        /// </summary>
+        public static string SettingsPage_FavoritesPanelExplanation => resourceLoader.GetString(nameof(SettingsPage_FavoritesPanelExplanation));
+
+
     }
 }

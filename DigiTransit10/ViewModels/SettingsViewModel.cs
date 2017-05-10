@@ -105,26 +105,62 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _selectedWalkingSpeed, value); }
         }
 
+        public List<string> ThemeOptions = new List<string>
+        {
+            AppResources.DarkThemeName,
+            AppResources.LightThemeName,
+            AppResources.SystemSettingThemeName
+        };
+
+        public List<int> PinnedFavoritesOptions = new List<int>
+        {
+            1, 2, 3, 4, 5, 6, 7, 8, 9
+        };
+
+
+        public ElementTheme? SelectedTheme
+        {
+            get { return _settingsService.AppTheme; }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+                if (_settingsService.AppTheme != value.Value)
+                {
+                    _settingsService.AppTheme = value.Value;
+                    RaisePropertyChanged(nameof(SelectedTheme));
+                }
+            }
+        }
+
+        public int SelectedFavoritePlacesDisplayNumber
+        {
+            get { return _settingsService.PinnedFavoritePlacesDisplayNumber; }
+            set
+            {
+                if (_settingsService.PinnedFavoritePlacesDisplayNumber != value)
+                {
+                    _settingsService.PinnedFavoritePlacesDisplayNumber = value;
+                    RaisePropertyChanged(nameof(SelectedFavoritePlacesDisplayNumber));
+                }
+            }
+        }
 
         public SettingsViewModel(SettingsService settingsService)
         {
-            _settingsService = settingsService;                    
-        }
+            _settingsService = settingsService;
 
-        public RelayCommand CycleThemeCommand => new RelayCommand(CycleTheme);
-        private void CycleTheme()
-        {
-            var currTheme = _settingsService.AppTheme;            
-            if (currTheme == ApplicationTheme.Light)
-            {
-                _settingsService.AppTheme = ApplicationTheme.Dark;
-            }
-            if (currTheme == ApplicationTheme.Dark)
-            {
-                _settingsService.AppTheme = ApplicationTheme.Light;
-            }
-            System.Diagnostics.Debug.WriteLine("Current theme is now:" + _settingsService.AppTheme);
+            SelectedWalkingAmount = _walkingAmounts
+                .FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount)
+                ?? _walkingAmounts.First(x => x.AmountType == WalkingAmountType.Normal);
+
+            SelectedWalkingSpeed = _walkingSpeeds
+                .FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed)
+                ?? _walkingSpeeds.First(x => x.SpeedType == WalkingSpeedType.Normal);
         }
+      
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {

@@ -8,6 +8,7 @@ using Template10.Services.SettingsService;
 using Template10.Utils;
 using Windows.Globalization;
 using Windows.UI.Xaml;
+using DigiTransit10.Models;
 
 namespace DigiTransit10.Services.SettingsServices
 {
@@ -35,31 +36,30 @@ namespace DigiTransit10.Services.SettingsServices
             }
         }
 
-        public ApplicationTheme AppTheme
+        public ElementTheme AppTheme
         {
             get
-            {
-                //ApplicationTheme defaultTheme = Application.Current.RequestedTheme;
-                //string value = _helper.Read(nameof(AppTheme), defaultTheme.ToString());
+            {                
+                string value = _helper.Read(nameof(AppTheme), ElementTheme.Default.ToString());
 
-                //ElementTheme savedTheme;
-                //if (Enum.TryParse<ElementTheme>(value, out savedTheme))
-                //{
-                //    return savedTheme;
-                //}
-                //else
-                //{
-                //    return defaultTheme.ToElementTheme();
-                //}
-                var theme = ApplicationTheme.Light;
-                var value = _helper.Read<string>(nameof(AppTheme), theme.ToString());
-                return Enum.TryParse<ApplicationTheme>(value, out theme) ? theme : ApplicationTheme.Dark;
+                ElementTheme savedTheme;
+                if (Enum.TryParse<ElementTheme>(value, out savedTheme))
+                {
+                    return savedTheme;
+                }
+                else
+                {
+                    return ElementTheme.Default;
+                }                
             }
             set
             {
                 _helper.Write(nameof(AppTheme), value.ToString());
-                (Window.Current.Content as FrameworkElement).RequestedTheme = value.ToElementTheme();
-                Views.Shell.HamburgerMenu.RefreshStyles(value);
+                if (value != ElementTheme.Default)
+                {
+                    (Window.Current.Content as FrameworkElement).RequestedTheme = value;
+                    Views.Shell.HamburgerMenu.RefreshStyles(value.ToApplicationTheme(), true);
+                }
             }
         }
 
@@ -172,7 +172,19 @@ namespace DigiTransit10.Services.SettingsServices
                 ApplicationLanguages.PrimaryLanguageOverride = value;
                 //do something to reload values?
             }
-        }        
+        }
+
+        public WalkingSpeedType PreferredWalkingSpeed
+        {
+            get { return _helper.Read(nameof(PreferredWalkingSpeed), WalkingSpeedType.Normal, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(WalkingSpeedType), value, SettingsStrategies.Roam); }
+        }
+
+        public WalkingAmountType PreferredWalkingAmount
+        {
+            get { return _helper.Read(nameof(PreferredWalkingAmount), WalkingAmountType.Normal, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(WalkingAmountType), value, SettingsStrategies.Roam); }
+        }
     }
 }
 

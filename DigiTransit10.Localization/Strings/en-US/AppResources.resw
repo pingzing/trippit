@@ -473,4 +473,26 @@
   <data name="SettingsPage_ThemeHeader" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="DarkThemeName" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="LightThemeName" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="SettingsPage_FavoritesPanelExplanation" xml:space="preserve">
+    <value>Set the maximum number of pinned favorites to display on the main page of the app.
+Default: 3</value>
+  </data>
+  <data name="SettingsPage_FavoritesPanelHeader" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="SettingsPage_PinnedFavoritesNumberComboBoxHeader" xml:space="preserve">
+    <value>Number of pinned favorites</value>
+  </data>
+  <data name="SettingsPage_ThemeComboBoxHeader" xml:space="preserve">
+    <value>Display theme</value>
+  </data>
+  <data name="SystemSettingThemeName" xml:space="preserve">
+    <value>System theme</value>
+  </data>
 </root>

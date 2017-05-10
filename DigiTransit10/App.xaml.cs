@@ -46,7 +46,10 @@ namespace DigiTransit10
             var _settings = SettingsService.Instance;
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
-            RequestedTheme = SettingsService.Instance.AppTheme;          
+            if (SettingsService.Instance.AppTheme != ElementTheme.Default)
+            {
+                RequestedTheme = SettingsService.Instance.AppTheme.ToApplicationTheme();
+            }            
 
             #endregion            
 

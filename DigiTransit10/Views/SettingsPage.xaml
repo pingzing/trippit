@@ -10,6 +10,7 @@
     xmlns:t10ctls="using:Template10.Controls"
     xmlns:models="using:DigiTransit10.Models"
     xmlns:conv="using:DigiTransit10.Converters"
+    xmlns:t10conv="using:Template10.Converters"
     
     IsTabStop="True"
     DataContext="{Binding Source={StaticResource Locator}, Path=Settings}"
@@ -17,6 +18,7 @@
 
     <lclCtls:AnimatedPage.Resources>
         <conv:ElementThemeToStringConverter x:Key="ElementThemeToStringConverter"/>
+        <t10conv:ChangeTypeConverter x:Key="ObjectPassthroughConverter" />
     </lclCtls:AnimatedPage.Resources>
 
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -76,6 +78,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <StackPanel x:Name="DefaultSearchStackPanel" HorizontalAlignment="Stretch" Margin="10 0 10 0">
@@ -122,20 +125,34 @@
                                Style="{StaticResource ExplanationTextBlockStyle}"/>
                 </StackPanel>
 
-                <StackPanel x:Name="ThemePanel"
-                            Grid.Row="1"
-                            Margin="10 20 10 0">
+                <StackPanel x:Name="FavoritesPanel" Grid.Row="1" Margin="10 20 10 0">
+                    <TextBlock x:Name="FavoritesPanelHeader"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_FavoritesPanelHeader}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <ComboBox x:Name="PinnedFavoritesNumberComboBox"
+                              Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_PinnedFavoritesNumberComboBoxHeader}"
+                              ItemsSource="{x:Bind ViewModel.PinnedFavoritesOptions, Converter={StaticResource ObjectPassthroughConverter}}"
+                              SelectedItem="{x:Bind ViewModel.SelectedFavoritePlacesDisplayNumber, Mode=TwoWay, Converter={StaticResource ObjectPassthroughConverter}}"/>
+                    <TextBlock x:Name="FavoritesPanelExplanation"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_FavoritesPanelExplanation}"
+                               Style="{StaticResource ExplanationTextBlockStyle}"/>
+                </StackPanel>
+
+                <StackPanel x:Name="ThemePanel" Grid.Row="2" Margin="10 20 10 0">
                     <TextBlock x:Name="ThemePanelHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_ThemeHeader}"
                                Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <Button Command="{x:Bind ViewModel.CycleThemeCommand}"/>
+                    <ComboBox x:Name="ThemeComboBox"
+                              Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_ThemeComboBoxHeader}"
+                              ItemsSource="{x:Bind ViewModel.ThemeOptions}"
+                              SelectedItem="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay, Converter={StaticResource ElementThemeToStringConverter}}"/>
                     <TextBlock x:Name="ThemeBoxExplanation"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_ThemeExplanation}"
                                Style="{StaticResource ExplanationTextBlockStyle}"/>
                 </StackPanel>
 
                 <StackPanel x:Name="AnalyticsPanel" 
-                            Grid.Row="2" 
+                            Grid.Row="3" 
                             Margin="10 20 10 0">
                     <TextBlock x:Name="AnalyticsHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsHeader}"
@@ -147,7 +164,7 @@
                                Style="{StaticResource ExplanationTextBlockStyle}"/>
                 </StackPanel>
 
-                <StackPanel x:Name="SpecialThanksPanel" Grid.Row="3" Margin="10 20 10 0">
+                <StackPanel x:Name="SpecialThanksPanel" Grid.Row="4" Margin="10 20 10 0">
                     <TextBlock x:Name="SpecialThanksHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksHeader}"
                                Style="{StaticResource SubtitleTextBlockStyle}"/>
@@ -155,7 +172,7 @@
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksText}"/>
                 </StackPanel>
 
-                <StackPanel x:Name="LicensesPanel" Grid.Row="4" Margin="10 20 10 0">
+                <StackPanel x:Name="LicensesPanel" Grid.Row="5" Margin="10 20 10 0">
                     <TextBlock x:Name="LicensesHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesHeader}"
                                Style="{StaticResource SubtitleTextBlockStyle}"/>

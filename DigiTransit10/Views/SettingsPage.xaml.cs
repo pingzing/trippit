@@ -21,12 +21,23 @@ namespace DigiTransit10.Views
             {
                 // TODO: Check to make sure we only do this if SelectedItem for
                 // these are both null
-                ViewModel.SelectedWalkingAmount = ViewModel.WalkingAmounts[2];
-                ViewModel.SelectedWalkingSpeed = ViewModel.WalkingSpeeds[2];                
+                if (ViewModel.SelectedWalkingAmount == null)
+                {
+                    ViewModel.SelectedWalkingAmount = ViewModel.WalkingAmounts[2];
+                }
+
+                if (ViewModel.SelectedWalkingSpeed == null)
+                {
+                    ViewModel.SelectedWalkingSpeed = ViewModel.WalkingSpeeds[2];
+                }
             };
             ToBox.Loaded += (s, e) =>
             {
                 this.Focus(FocusState.Programmatic);
+            };
+            ThemeComboBox.Loaded += (s, e) =>
+            {
+                Bindings.Update();
             };
         }
     }
