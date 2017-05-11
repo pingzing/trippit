@@ -185,6 +185,18 @@ namespace DigiTransit10.Services.SettingsServices
             get { return _helper.Read(nameof(PreferredWalkingAmount), WalkingAmountType.Normal, SettingsStrategies.Roam); }
             set { _helper.Write(nameof(WalkingAmountType), value, SettingsStrategies.Roam); }
         }
+
+        public IPlace PreferredFromPlace
+        {
+            get { return _helper.Read(nameof(PreferredFromPlace), (IPlace)Place.MyLocationPlace, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(PreferredFromPlace), value, SettingsStrategies.Roam); }
+        }
+
+        public IPlace PreferredToPlace
+        {
+            get { return _helper.Read<IPlace>(nameof(PreferredToPlace), null, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(PreferredToPlace), value, SettingsStrategies.Roam); }
+        }
     }
 }
 

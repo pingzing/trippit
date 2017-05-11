@@ -6,8 +6,7 @@ using Windows.Devices.Geolocation;
 using static DigiTransit10.Models.ModelEnums;
 
 namespace DigiTransit10.Models
-{
-    //todo: consider implementing INotifyPropertyChanged here
+{    
     public interface IFavorite : IComparable<IFavorite>, INotifyPropertyChanged
     {
         Guid Id { get; set; }
@@ -17,7 +16,7 @@ namespace DigiTransit10.Models
         double IconFontSize { get; set; }
     }    
 
-    public class FavoritePlace : IFavorite, IPlace, IComparable<IPlace>
+    public class FavoritePlace : IFavorite, IPlace, IComparable<IPlace>, IEquatable<IPlace>
     {
         private static IPlaceComparer _comparer = new IPlaceComparer();
 
@@ -86,6 +85,74 @@ namespace DigiTransit10.Models
         {
             return _comparer.Compare(this, other);
         }
+
+        public bool Equals(IPlace other)
+        {
+            FavoritePlace otherPlace = other as FavoritePlace;
+            if (otherPlace == null)
+            {
+                return false;
+            }
+            return this.Equals(otherPlace);
+        }
+
+        public override bool Equals(object obj)
+        {
+            FavoritePlace other = obj as FavoritePlace;
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.Equals(other);
+        }
+
+        protected bool Equals(FavoritePlace other)
+        {
+            if (object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            return this.Id == other.Id
+                && this.Name == other.Name
+                && this.Lat == other.Lat
+                && this.Lon == other.Lon
+                && this.Type == other.Type;
+        }
+
+        public static bool operator ==(FavoritePlace a, FavoritePlace b)
+        {
+            if (System.Object.ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if ((object)a == null || (object)b == null)
+            {
+                return false;
+            }
+
+            return a.Equals(b);
+        }
+
+        public static bool operator != (FavoritePlace a, FavoritePlace b)
+        {
+            return !(a == b);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = Id.GetHashCode();
+                hashCode = (hashCode * 397) ^ Name?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ Lat.GetHashCode();
+                hashCode = (hashCode * 397) ^ Lon.GetHashCode();
+                hashCode = (hashCode * 397) ^ Type.GetHashCode();
+                return hashCode;
+            }
+        }
+
     }
 
     public class FavoriteRoute : IFavorite

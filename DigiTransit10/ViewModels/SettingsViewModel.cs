@@ -51,12 +51,22 @@ namespace DigiTransit10.ViewModels
             get { return _walkingAmounts; }
             set { Set(ref _walkingAmounts, value); }
         }
-
-        private WalkingAmount _selectedWalkingAmount;
+        
         public WalkingAmount SelectedWalkingAmount
         {
-            get { return _selectedWalkingAmount; }
-            set { Set(ref _selectedWalkingAmount, value); }
+            get
+            {
+                return _walkingAmounts.FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount)
+                    ?? _walkingAmounts[2];
+            }
+            set
+            {
+                if (_settingsService.PreferredWalkingAmount != value.AmountType)
+                {
+                    _settingsService.PreferredWalkingAmount = value.AmountType;
+                    RaisePropertyChanged(nameof(SelectedWalkingAmount));
+                }
+            }
         }
 
         private ObservableCollection<WalkingSpeed> _walkingSpeeds = new ObservableCollection<WalkingSpeed>
@@ -97,12 +107,21 @@ namespace DigiTransit10.ViewModels
             get { return _walkingSpeeds; }
             set { Set(ref _walkingSpeeds, value); }
         }
-
-        private WalkingSpeed _selectedWalkingSpeed;
+        
         public WalkingSpeed SelectedWalkingSpeed
         {
-            get { return _selectedWalkingSpeed; }
-            set { Set(ref _selectedWalkingSpeed, value); }
+            get
+            {
+                return _walkingSpeeds.FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed)
+                    ?? _walkingSpeeds[2];
+            }
+            set
+            {
+                if (_settingsService.PreferredWalkingSpeed != value.SpeedType)
+                {
+                    _settingsService.PreferredWalkingSpeed = value.SpeedType;
+                }
+            }
         }
 
         public List<string> ThemeOptions = new List<string>
@@ -148,25 +167,37 @@ namespace DigiTransit10.ViewModels
             }
         }
 
+        public IPlace SelectedFromPlace
+        {
+            get { return _settingsService.PreferredFromPlace; }
+            set
+            {
+                IPlace currValue = _settingsService.PreferredFromPlace;
+                if (currValue == null || !currValue.Equals(value))
+                {
+                    _settingsService.PreferredFromPlace = value;
+                    RaisePropertyChanged(nameof(SelectedFromPlace));
+                }
+            }
+        }
+
+        public IPlace SelectedToPlace
+        {
+            get { return _settingsService.PreferredToPlace; }
+            set
+            {
+                IPlace currValue = _settingsService.PreferredToPlace;
+                if(currValue == null || !currValue.Equals(value))
+                {
+                    _settingsService.PreferredToPlace = value;
+                    RaisePropertyChanged(nameof(SelectedToPlace));
+                }
+            }
+        }
+
         public SettingsViewModel(SettingsService settingsService)
         {
-            _settingsService = settingsService;
-
-            SelectedWalkingAmount = _walkingAmounts
-                .FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount)
-                ?? _walkingAmounts.First(x => x.AmountType == WalkingAmountType.Normal);
-
-            SelectedWalkingSpeed = _walkingSpeeds
-                .FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed)
-                ?? _walkingSpeeds.First(x => x.SpeedType == WalkingSpeedType.Normal);
-        }
-      
-
-        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {
-
-
-            return base.OnNavigatedToAsync(parameter, mode, state);
-        }
+            _settingsService = settingsService;            
+        }     
     }
 }

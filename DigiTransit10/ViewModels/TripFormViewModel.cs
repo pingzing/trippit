@@ -244,6 +244,8 @@ namespace DigiTransit10.ViewModels
             _logger = logger;
 
             _messengerService.Register<SecondaryTilePayload>(this, SecondaryTileInvoked);
+            FromPlace = _settingsService.PreferredFromPlace;
+            ToPlace = _settingsService.PreferredToPlace;
         }
 
         private void TransitTogglePannel()

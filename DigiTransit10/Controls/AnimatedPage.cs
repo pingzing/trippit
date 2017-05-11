@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigiTransit10.Models;
+using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
@@ -17,17 +18,20 @@ namespace DigiTransit10.Controls
         private Lazy<Storyboard> _defaultFromStoryboard;
         private Lazy<Storyboard> _hideBottomBarStoryboard;
 
-        public Storyboard ToAnimation { get; set; }
+        private Lazy<PageAnimation> _defaultToAnimation;
+        private Lazy<PageAnimation> _defaultFromAnimation;
+
+        public PageAnimation ToAnimation { get; set; }
 
         /// <summary>
         /// This is the flag that determines whether or not OnNavigating will cancel and wait for
         /// the FromAnimation.
         /// </summary>
-        private bool _animationCompleted;
+        private bool _fromAnimationCompleted;
         private bool _isNavigatingBack = false;
         private Type _navigatingToType = null;
         private object _navigatingToParameter = null;
-        public Storyboard FromAnimation { get; set; }
+        public PageAnimation FromAnimation { get; set; }
 
         public AnimatedPage()
         {            
@@ -91,17 +95,49 @@ namespace DigiTransit10.Controls
                 showBottomBarStoryboard.Children.Add(showBottomAnimation);
                 return showBottomBarStoryboard;
             });
+
+            _defaultToAnimation = new Lazy<PageAnimation>(() => 
+            {
+                return new PageAnimation
+                {
+                    ForwardStoryboard = _defaultToStoryboard.Value,
+                    BackStoryboard = _defaultToStoryboard.Value
+                };
+            });
+
+            _defaultFromAnimation = new Lazy<PageAnimation>(() => 
+            {
+                return new PageAnimation
+                {
+                    ForwardStoryboard = _defaultFromStoryboard.Value,
+                    BackStoryboard = _defaultFromStoryboard.Value
+                };
+            });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Storyboard toBoard = ToAnimation ?? _defaultToStoryboard.Value;
+            Storyboard toBoard;
+            if (ToAnimation == null)
+            {
+                toBoard = e.NavigationMode == NavigationMode.Back
+                    ? _defaultToAnimation.Value.BackStoryboard
+                    : _defaultToAnimation.Value.ForwardStoryboard;
+            }
+            else
+            {
+                toBoard = e.NavigationMode == NavigationMode.Back
+                    ? ToAnimation.BackStoryboard
+                    : ToAnimation.ForwardStoryboard;
+            }
+
             if (toBoard != null)
             {
                 toBoard.Completed -= ToAnimation_Completed;
                 toBoard.Completed += ToAnimation_Completed;
                 if (this.BottomAppBar != null)
                 {
+                    this.BottomAppBar.IsEnabled = false;                    
                     _showBottomBarStoryboard.Value.Begin();
                 }
                 toBoard.Begin();
@@ -119,9 +155,22 @@ namespace DigiTransit10.Controls
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            if (!_animationCompleted)
+            if (!_fromAnimationCompleted)
             {
-                Storyboard fromBoard = FromAnimation ?? _defaultFromStoryboard.Value;
+                Storyboard fromBoard;
+                if (FromAnimation == null)
+                {
+                    fromBoard = e.NavigationMode == NavigationMode.Back
+                        ? _defaultFromAnimation.Value.BackStoryboard
+                        : _defaultFromAnimation.Value.ForwardStoryboard;
+                }
+                else
+                {
+                    fromBoard = e.NavigationMode == NavigationMode.Back
+                        ? FromAnimation.BackStoryboard
+                        : FromAnimation.ForwardStoryboard;
+                }
+
                 e.Cancel = true;
                 fromBoard.Completed -= FromAnimation_Completed;
                 fromBoard.Completed += FromAnimation_Completed;
@@ -142,14 +191,14 @@ namespace DigiTransit10.Controls
             }
             else
             {
-                _animationCompleted = false;
+                _fromAnimationCompleted = false;
             }
             base.OnNavigatingFrom(e);
         }
 
         private void FromAnimation_Completed(object sender, object e)
         {
-            _animationCompleted = true;
+            _fromAnimationCompleted = true;
             if (_isNavigatingBack)
             {
                 Frame.GoBack();

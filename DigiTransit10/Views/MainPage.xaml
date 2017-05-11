@@ -6,11 +6,15 @@
     xmlns:lclCtls="using:DigiTransit10.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
+    xmlns:models="using:DigiTransit10.Models"
+    
     x:Class="DigiTransit10.Views.MainPage"    
     x:Name="ThisMainPage"
+    
     mc:Ignorable="d"
     d:DesignHeight="900"
     d:DesignWidth="500"
@@ -340,11 +344,38 @@
                     </Button>
                 </Grid>
             </DataTemplate>
+
+            <Storyboard x:Key="FromStoryboard">
+                <DoubleAnimation To="200" Duration="00:00:0.333" Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                    <DoubleAnimation.EasingFunction>
+                        <CubicEase EasingMode="EaseIn"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation To="0" Duration="00:00:0.333" Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="Opacity"/>
+            </Storyboard>
+
+            <Storyboard x:Key="ToStoryboard">
+                <DoubleAnimation To="0" Duration="0:0:0" Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"/>
+                <DoubleAnimation To="1" Duration="00:00:0.333" Storyboard.TargetName="ContentRoot" Storyboard.TargetProperty="Opacity"/>
+            </Storyboard>
+
         </ResourceDictionary>
     </Page.Resources>
 
-    <RelativePanel x:Name="ContentRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <lclCtls:AnimatedPage.FromAnimation>
+        <models:PageAnimation ForwardStoryboard="{StaticResource FromStoryboard}"
+                              BackStoryboard="{StaticResource FromStoryboard}"/>
+    </lclCtls:AnimatedPage.FromAnimation>
+    <lclCtls:AnimatedPage.ToAnimation>
+        <models:PageAnimation ForwardStoryboard="{StaticResource ToStoryboard}"
+                              BackStoryboard="{StaticResource ToStoryboard}"/>
+    </lclCtls:AnimatedPage.ToAnimation>
 
+    <RelativePanel x:Name="ContentRoot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RenderTransformOrigin="0.5,0.5">
+        <RelativePanel.RenderTransform>
+            <CompositeTransform/>
+        </RelativePanel.RenderTransform>
+        
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
                 <VisualState x:Name="VisualStateNarrow">
