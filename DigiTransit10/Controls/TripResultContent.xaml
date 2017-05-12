@@ -148,22 +148,29 @@
                            Style="{ThemeResource SubtitleTextBlockStyle}"/>
 
                 <!--Second row-->
-                <StackPanel x:Name="TranitIconPanel"
-                            Grid.Row="1" Grid.Column="0"
-                            HorizontalAlignment="Right"
-                            Margin="0 10 0 10"
-                            VerticalAlignment="Top">
-                    <TextBlock x:Name="TransitIconLineName"
-                               HorizontalAlignment="Center"
-                               Text="{x:Bind ShortName}"
-                               TextAlignment="Center"
-                               Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
-                    <FontIcon x:Name="TransitIcon"                                          
-                              Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
-                              FontFamily="{StaticResource HslPiktoFrameFont}"
-                              FontSize="40"
-                              Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
-                </StackPanel>
+                <Button x:Name="TransitIconButtonHost"
+                        Grid.Row="1" Grid.Column="0"
+                        Background="Transparent"
+                        Click="TransitIconButtonHost_Click"
+                        IsHitTestVisible="{x:Bind Mode, Converter={StaticResource IsTransitModeSearchableConverter}}"
+                        HorizontalAlignment="Right"
+                        Margin="0 10 0 10"
+                        VerticalAlignment="Top">
+                    <StackPanel x:Name="TranitIconPanel">
+                        <!--Note: The text foreground color converter will break whenever the user changes their theme, until they reload the page.-->
+                        <TextBlock x:Name="TransitIconLineName"                                   
+                                   Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToConditionalAccentColorConverter}}"
+                                   HorizontalAlignment="Center"
+                                   Text="{x:Bind ShortName}"
+                                   TextAlignment="Center"
+                                   Visibility="{x:Bind ShortName, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
+                        <FontIcon x:Name="TransitIcon"                                          
+                                  Foreground="{x:Bind Mode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                                  FontFamily="{StaticResource HslPiktoFrameFont}"
+                                  FontSize="40"
+                                  Glyph="{x:Bind Mode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+                    </StackPanel>
+                </Button>
                 <Rectangle x:Name="SecondRowVerticalLine"
                            Grid.Row="1" Grid.Column="1"
                            Fill="{ThemeResource SystemControlBackgroundAccentBrush}"
