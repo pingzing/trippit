@@ -140,7 +140,13 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         private void UpdateSelectedLine(LineSearchElementViewModel element)
         {
-            MapLines.Clear();            
+            MapLines.Clear();
+            MapPlaces.Clear();
+
+            if (element == null)
+            {
+                return;
+            }
 
             List<ColoredMapLinePoint> linePoints = element
                 .BackingLine
@@ -158,8 +164,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             foreach (var stop in element.BackingLine.Stops)
             {
                 stops.Add(new BasicMapPoi { Coords = stop.Coords, Name = stop.Name });
-            }
-            MapPlaces.Clear();
+            }            
             MapPlaces.AddRange(stops);
 
             _messenger.Send(new MessageTypes.SearchLineSelectionChanged());

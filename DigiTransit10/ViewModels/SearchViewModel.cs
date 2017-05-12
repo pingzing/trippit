@@ -103,9 +103,7 @@ namespace DigiTransit10.ViewModels
 
             SearchViewModels.Add(_nearbyStopsViewModel);
             SearchViewModels.Add(_linesSearchViewModel);
-            SearchViewModels.Add(_searchStopsViewModel);
-
-            SelectedPivot = _nearbyStopsViewModel;
+            SearchViewModels.Add(_searchStopsViewModel);            
         }        
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
@@ -115,6 +113,12 @@ namespace DigiTransit10.ViewModels
             var searchArgs = parameter as MessageTypes.LineSearchRequested;
             if (searchArgs != null)
             {
+                // todo: HACK--we're getting a crash on navigation, and I think it's because we change pivots before
+                // the page has finished loading
+                // Possible fix: Wait until the underlying page his finished loading? But then we break MVVM. hmmm
+                await Task.Delay(100);
+                // HACK
+
                 SelectedPivot = _linesSearchViewModel;
                 if (searchArgs.SearchType == MessageTypes.LineSearchType.ById)
                 {
@@ -131,6 +135,11 @@ namespace DigiTransit10.ViewModels
             }
             else
             {
+                if (SelectedPivot == null)
+                {
+                    SelectedPivot = _nearbyStopsViewModel;
+                }
+
                 if (SelectedPivot.OwnedBy == SearchSection.Nearby)
                 {
                     MoveNearbyCircleToUser();
