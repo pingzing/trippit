@@ -25,7 +25,8 @@ namespace DigiTransit10.Services
         
         public AnalyticsService(SettingsService settings)
         {
-            _hockeyClient.Configure("c2a732e8165446bc81e0ea6087509c2b");            
+            _hockeyClient.Configure("c2a732e8165446bc81e0ea6087509c2b");
+            _settings = settings;        
         }
 
         public void TrackDependency(string dependencyName, string command, DateTimeOffset startTime, TimeSpan duration, bool success)

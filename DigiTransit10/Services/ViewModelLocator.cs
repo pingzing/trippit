@@ -43,7 +43,7 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
                 SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));
                 SimpleIoc.Default.Register<ITileService>(() => new TileService(settingsService, logger));
-                SimpleIoc.Default.Register<IAnalyticsService>(() => new AnalyticsService());
+                SimpleIoc.Default.Register<IAnalyticsService>(() => new AnalyticsService(settingsService));
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();

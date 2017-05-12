@@ -160,7 +160,8 @@
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsHeader}"
                                Style="{StaticResource SubtitleTextBlockStyle}"/>
                     <ToggleSwitch x:Name="AnalyticsSwitch"
-                                  Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsToggleHeader}"/>
+                                  Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsToggleHeader}"
+                                  IsOn="{x:Bind ViewModel.IsAnalyticsEnabled, Mode=TwoWay}"/>
                     <TextBlock x:Name="AnalyticsSwitchExplanation"                           
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsExplanation}"
                                Style="{StaticResource ExplanationTextBlockStyle}"/>

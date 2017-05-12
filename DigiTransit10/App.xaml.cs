@@ -21,6 +21,8 @@ using Newtonsoft.Json;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Ioc;
 using Template10.Utils;
+using Template10.Services.NavigationService;
+using Microsoft.Practices.ServiceLocation;
 
 namespace DigiTransit10
 {
@@ -30,6 +32,8 @@ namespace DigiTransit10
     [Bindable]
     sealed partial class App : Template10.Common.BootStrapper
     {
+        private IAnalyticsService _analyticsService;
+
         /// <summary>
         /// App-wide easy access to the ViewModelLocator.
         /// </summary>
@@ -43,13 +47,13 @@ namespace DigiTransit10
 
             #region App settings
 
-            var _settings = SettingsService.Instance;
+            SettingsService _settings = SettingsService.Instance;
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
             if (SettingsService.Instance.AppTheme != ElementTheme.Default)
             {
                 RequestedTheme = SettingsService.Instance.AppTheme.ToApplicationTheme();
-            }            
+            }
 
             #endregion            
 
@@ -72,7 +76,7 @@ namespace DigiTransit10
                 }
 
                 // create a new frame 
-                var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
+                INavigationService nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -81,6 +85,8 @@ namespace DigiTransit10
                     Content = new Views.Shell(nav),
                     ModalContent = new Views.Busy(),
                 };
+
+                nav.FrameFacade.Navigated += FrameFacade_Navigated;
             }
 
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
@@ -89,7 +95,7 @@ namespace DigiTransit10
 
             DispatcherHelper.Initialize();
             await Task.CompletedTask;
-        }
+        }        
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
@@ -135,6 +141,15 @@ namespace DigiTransit10
             await Locator.CleanupAsync();
 
             await base.OnSuspendingAsync(s, e, prelaunchActivated);
+        }
+
+        private void FrameFacade_Navigated(object sender, NavigatedEventArgs e)
+        {                   
+            if (_analyticsService == null)
+            {
+                _analyticsService = (IAnalyticsService)ServiceLocator.Current.GetService(typeof(IAnalyticsService));
+            }
+            _analyticsService.TrackPageView(e.PageType.Name);
         }
     }
 }

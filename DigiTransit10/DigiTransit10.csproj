@@ -290,6 +290,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
+    <Compile Include="Services\AnalyticsService.cs" />
     <Compile Include="Services\CustomFontService.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\FavoritesChangedEventArgs.cs" />
