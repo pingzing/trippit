@@ -151,8 +151,7 @@ namespace DigiTransit10.Services.SettingsServices
             get { return _helper.Read(nameof(PinnedFavoritePlacesDisplayNumber), 3, SettingsStrategies.Local); }
             set { _helper.Write(nameof(PinnedFavoritePlacesDisplayNumber), value, SettingsStrategies.Local); }
         }
-
-        //todo: make this persist somehow
+        
         public string CurrentLanguage
         {
             get
@@ -196,6 +195,22 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get { return _helper.Read<IPlace>(nameof(PreferredToPlace), null, SettingsStrategies.Roam); }
             set { _helper.Write(nameof(PreferredToPlace), value, SettingsStrategies.Roam); }
+        }
+
+        /// <summary>
+        /// This defaults to "true" in Debug configurations.
+        /// </summary>
+        public bool IsAnalyticsEnabled
+        {
+            get
+            {
+#if DEBUG
+                return _helper.Read(nameof(IsAnalyticsEnabled), true, SettingsStrategies.Roam);
+#else
+                return _helper.Read(nameof(IsAnalyticsEnabled), false, SettingsStrategies.Roam);
+#endif
+            }
+            set { _helper.Write(nameof(IsAnalyticsEnabled), value, SettingsStrategies.Roam); }
         }
     }
 }

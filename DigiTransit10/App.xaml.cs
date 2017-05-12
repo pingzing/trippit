@@ -53,9 +53,7 @@ namespace DigiTransit10
 
             #endregion            
 
-            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
-
-            HockeyClient.Current.Configure("c2a732e8165446bc81e0ea6087509c2b");            
+            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());            
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
