@@ -65,7 +65,7 @@ namespace DigiTransit10.Views
 
         private void HideShowOptionsButton_Click(object sender, RoutedEventArgs e)
         {
-            HyperlinkButton button = sender as HyperlinkButton;
+            Button button = sender as Button;
             if(button == null)
             {
                 return;

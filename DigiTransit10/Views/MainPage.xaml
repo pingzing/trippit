@@ -109,11 +109,13 @@
                         </lclCtls:DigiTransitSearchBox.Transitions>
                     </lclCtls:DigiTransitSearchBox>
                     <Button x:Name="AddDestinationButton"                                        
-                                        Command="{x:Bind AddIntermediatePlaceCommand}"
-                                        Content="{Binding Source={StaticResource Strings}, Path=MainPage_AddIntermediateDestination}"
-                                        Margin="0 5 0 0"
-                                        Padding="0 4 8 4"
-                                        Style="{ThemeResource TextBlockButtonStyle}">
+                            Command="{x:Bind AddIntermediatePlaceCommand}"
+                            Content="{Binding Source={StaticResource Strings}, Path=MainPage_AddIntermediateDestination}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="0 5 0 0"
+                            Padding="0 4 0 4"
+                            Style="{ThemeResource TextBlockButtonStyle}">
                         <Button.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -170,6 +172,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="65"/>
                             <RowDefinition Height="65"/>
                         </Grid.RowDefinitions>
@@ -191,15 +194,43 @@
                                                    UseCurrentDate="{x:Bind IsUsingCurrentDate, Mode=TwoWay}"
                                                    HorizontalAlignment="Stretch"/>
 
+                        <Grid x:Name="RouteOptimizationPanel"
+                                   Grid.Row="2" Grid.ColumnSpan="3"
+                                   Visibility="{x:Bind IsTransitPanelVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
+                                   HorizontalAlignment="Stretch"
+                                   Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            
+                            <ComboBox x:Name="WalkingAmountComboBox"
+                                      Grid.Column="0"
+                                      HorizontalAlignment="Stretch"
+                                      Header="Walking amount"
+                                      Margin="0 0 5 0"/>
+                            <ComboBox x:Name="WalkingSpeedComboBox"                                                                             
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      Header="Walking speed"
+                                      Margin="5 0 0 0"/>
+
+                            <Interactivity:Interaction.Behaviors>
+                                <lclBhvrs:AnimateVisibilityBehavior/>
+                            </Interactivity:Interaction.Behaviors>
+                            
+                        </Grid>
+
                         <TextBlock x:Name="TransitTypeHeader" 
-                                       Grid.Row="2"
+                                       Grid.Row="3"
                                        Grid.Column="0"
                                        Grid.ColumnSpan="3"
                                        Margin="0 10 0 -5"
                                        Text="{Binding Source={StaticResource Strings}, Path=TripForm_TransitTypeHeader}"/>
 
                         <CheckBox x:Name="BusCheckBox"                                                      
-                                      Grid.Row="3" Grid.Column="0" MinWidth="100"
+                                      Grid.Row="4" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsBusChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslBusBlueBrush}"                                                              
@@ -207,7 +238,7 @@
                                           Glyph="{Binding BusIcon, Source={StaticResource FontIcons}}"/>
                         </CheckBox>
                         <CheckBox x:Name="TramCheckBox"                                                       
-                                      Grid.Row="3" Grid.Column="1" MinWidth="100"
+                                      Grid.Row="4" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsTramChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslTramGreenBrush}"
@@ -215,7 +246,7 @@
                                           Glyph="{Binding TramIcon, Source={StaticResource FontIcons}}"/>
                         </CheckBox>
                         <CheckBox x:Name="TrainCheckBox" 
-                                      Grid.Row="3" Grid.Column="2" MinWidth="100"
+                                      Grid.Row="4" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsTrainChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{StaticResource HslTrainPurpleBrush}"
@@ -223,7 +254,7 @@
                                           Glyph="{Binding TrainIcon, Source={StaticResource FontIcons}}"/>
                         </CheckBox>
                         <CheckBox x:Name="MetroCheckBox" 
-                                      Grid.Row="4" Grid.Column="0" MinWidth="100"
+                                      Grid.Row="5" Grid.Column="0" MinWidth="100"
                                       IsChecked="{x:Bind IsMetroChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}"
                                           Foreground="{Binding Source={StaticResource HslMetroOrangeBrush}}"
@@ -231,7 +262,7 @@
                                           Glyph="{Binding MetroIcon, Source={StaticResource FontIcons}}" />
                         </CheckBox>
                         <CheckBox x:Name="FerryCheckBox"
-                                      Grid.Row="4" Grid.Column="1" MinWidth="100"
+                                      Grid.Row="5" Grid.Column="1" MinWidth="100"
                                       IsChecked="{x:Bind IsFerryChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}" 
                                           Foreground="{Binding Source={StaticResource HslFerryBlueBrush}}"
@@ -239,7 +270,7 @@
                                           Glyph="{Binding FerryIcon, Source={StaticResource FontIcons}}"/>
                         </CheckBox>
                         <CheckBox x:Name="BikeCheckBox"
-                                      Grid.Row="4" Grid.Column="2" MinWidth="100"
+                                      Grid.Row="5" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsBikeChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}" 
                                           Foreground="{Binding Source={StaticResource HslBikeGoldenrodBrush}}"
@@ -248,19 +279,23 @@
                         </CheckBox>
                     </Grid>
 
-                    <HyperlinkButton x:Name="HideShowOptionsButton"                                          
-                                         Grid.Row="1"
-                                         Click="HideShowOptionsButton_Click">
-                        <HyperlinkButton.Transitions>
+                    <Button x:Name="HideShowOptionsButton"                                          
+                            Grid.Row="1"
+                            Click="HideShowOptionsButton_Click"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Padding="0 4"
+                            Style="{StaticResource TextBlockButtonStyle}">
+                        <Button.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
                             </TransitionCollection>
-                        </HyperlinkButton.Transitions>
-
-                        <TextBlock>
-                                <Run FontSize="20" Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/> <Run FontFamily="Segoe MDL2 Assets" Text="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
-                        </TextBlock>
-                    </HyperlinkButton>
+                        </Button.Transitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="20" Text="{x:Bind ShowHideTransitPanelText, Mode=OneWay}"/>
+                            <TextBlock FontFamily="{ThemeResource SymbolThemeFontFamily}" Margin="5 3 0 0" VerticalAlignment="Center" Text ="{x:Bind ShowHideTransitPanelGlyph, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Button>
 
                     <ListView x:Name="PinnedFavoritesControl"
                               Grid.Row="2"                              
