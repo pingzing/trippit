@@ -31,11 +31,11 @@ namespace DigiTransit10.Controls
     {
         private readonly IGeolocationService _geolocationService;
 
-        private static IRandomAccessStream _themeIconSource;
-        private static IRandomAccessStream _themeIconPointerOverSource;
-        private static IRandomAccessStream _themeIconSelectedSource;
+        private static Task<IRandomAccessStream> _themeIconSource;
+        private static Task<IRandomAccessStream> _themeIconPointerOverSource;
+        private static Task<IRandomAccessStream> _themeIconSelectedSource;
 
-        private static IRandomAccessStream _greyIconSource;
+        private static Task<IRandomAccessStream> _greyIconSource;
 
         private LiveGeolocationToken _liveUpdateToken;
         private CompassReading _lastKnownHeading;
@@ -224,7 +224,7 @@ namespace DigiTransit10.Controls
         public static readonly DependencyProperty PlacesProperty =
             DependencyProperty.Register("Places", typeof(IEnumerable<IMapPoi>), typeof(DigiTransitMap), new PropertyMetadata(null,
                 new PropertyChangedCallback(OnPlacesChanged)));
-        private static void OnPlacesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void OnPlacesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var _this = d as DigiTransitMap;
             if(_this == null)
@@ -254,7 +254,7 @@ namespace DigiTransit10.Controls
             foreach(var place in newList.OfType<IMapPoi>())
             {
                 MapIcon element = new MapIcon();
-                element.Image = RandomAccessStreamReference.CreateFromStream(_themeIconSource);
+                element.Image = RandomAccessStreamReference.CreateFromStream(await _themeIconSource);
                 element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
                 element.Location = new Geopoint(place.Coords);
                 element.Title = place.Name;
@@ -271,7 +271,7 @@ namespace DigiTransit10.Controls
             set { SetValue(PlacesProperty, value); }
         }
 
-        private void OnPlacesCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        private async void OnPlacesCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             if(args.Action == NotifyCollectionChangedAction.Move)
             {
@@ -288,7 +288,7 @@ namespace DigiTransit10.Controls
                 foreach (IMapPoi place in args.NewItems.OfType<IMapPoi>())
                 {
                     var element = new MapIcon();
-                    element.Image = RandomAccessStreamReference.CreateFromStream(_themeIconSource);
+                    element.Image = RandomAccessStreamReference.CreateFromStream(await _themeIconSource);
                     element.CollisionBehaviorDesired = MapElementCollisionBehavior.RemainVisible;
                     element.Location = new Geopoint(place.Coords);
                     element.Title = place.Name;
@@ -479,26 +479,26 @@ namespace DigiTransit10.Controls
             MapServiceToken = MapHelper.MapApiToken.Value;
         }
 
-        private async void DigiTransitMapControl_Loaded(object sender, RoutedEventArgs e)
+        private void DigiTransitMapControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (_themeIconSource == null)
             {
-                _themeIconSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
+                _themeIconSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
             }
 
             if (_greyIconSource == null)
             {
-                _greyIconSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.GreyedOut);
+                _greyIconSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.GreyedOut);
             }
 
             if (_themeIconPointerOverSource == null)
             {
-                _themeIconPointerOverSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
+                _themeIconPointerOverSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorPointerOver);
             }
 
             if (_themeIconSelectedSource == null)
             {
-                _themeIconSelectedSource = await CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorSelected);
+                _themeIconSelectedSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorSelected);
             }
         }
 
