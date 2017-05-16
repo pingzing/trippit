@@ -220,7 +220,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private readonly RelayCommand _planTripWideViewCommand = null;
+        private readonly RelayCommand _planTripWideViewCommand;
         public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTrip));
 
         private readonly RelayCommand _toggleTransitPanelCommand = null;

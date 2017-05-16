@@ -37,8 +37,15 @@ namespace DigiTransit10.ViewModels
 
         public int AlertCount => _trafficAlerts.Count;
 
+        private bool _areAlertsFresh = true;
+        public bool AreAlertsFresh
+        {
+            get { return _areAlertsFresh; }
+            set { Set(ref _areAlertsFresh, value); }
+        }
+
         private RelayCommand _viewAlertsCommand;
-        public RelayCommand ViewAlertsCommand => _viewAlertsCommand ?? new RelayCommand(ViewAlerts);
+        public RelayCommand ViewAlertsCommand => _viewAlertsCommand ?? (_viewAlertsCommand = new RelayCommand(ViewAlerts));
 
         public MainViewModel(INetworkService networkService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, ILogger logger)
@@ -89,7 +96,19 @@ namespace DigiTransit10.ViewModels
 
         private async void ViewAlerts()
         {
-            await NavigationService.NavigateAsync(typeof(AlertsPage), TrafficAlerts);
+            AreAlertsFresh = false;
+            await NavigationService.NavigateAsync(typeof(AlertsPage), TrafficAlerts);            
+        }
+        
+        private async Task UpdateAlerts()
+        {
+            ApiResult<IEnumerable<TransitTrafficAlert>> response = await _networkService.GetTrafficAlertsAsync();
+            if (response.HasResult)
+            {
+                List<TransitTrafficAlert> newAlerts = response.Result.ToList();                
+                AreAlertsFresh = newAlerts.Any(newAlert => TrafficAlerts.All(oldAlert => oldAlert.Id != newAlert.Id));
+                TrafficAlerts = newAlerts;
+            }
         }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState)
@@ -100,11 +119,7 @@ namespace DigiTransit10.ViewModels
             }
             await TripFormViewModel.OnNavigatedToAsync(parameter, mode, suspensionState);
 
-            ApiResult<IEnumerable<TransitTrafficAlert>> response = await _networkService.GetTrafficAlertsAsync();
-            if (response.HasResult)
-            {
-                TrafficAlerts = response.Result.ToList();
-            }
+            await UpdateAlerts();
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> suspensionState, bool suspending)

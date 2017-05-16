@@ -11,7 +11,7 @@
     xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:models="using:DigiTransit10.Models"
-    
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     x:Class="DigiTransit10.Views.MainPage"    
     x:Name="ThisMainPage"
     
@@ -469,7 +469,7 @@
                               Command="{x:Bind ViewModel.ViewAlertsCommand}"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
-                              Label="Alerts"                              
+                              Label="{Binding Source={StaticResource Strings}, Path=MainPageHeaderCommand_Alerts}"                              
                               VerticalContentAlignment="Stretch"
                               VerticalAlignment="Stretch"                              
                               Style="{StaticResource BadgeAppBarButtonStyle}">
@@ -477,13 +477,30 @@
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                   FontSize="20"
                                   Glyph="{Binding Source={StaticResource FontIcons}, Path=WarningTriangle}"/>
-                        <Border Background="Red"
+                        <Border x:Name="BadgeBorder" 
+                                Background="Red"
                                 CornerRadius="10"                                                                
                                 HorizontalAlignment="Center"                                    
                                 Padding="4 0"
                                 RenderTransformOrigin="0.5, 0.5"
                                 VerticalAlignment="Center"
                                 Visibility="{x:Bind ViewModel.AlertCount, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}">
+                            <Interactivity:Interaction.Behaviors>
+                                <Core:DataTriggerBehavior Binding="{x:Bind ViewModel.AreAlertsFresh, Mode=OneWay}"
+                                                          ComparisonCondition="Equal"
+                                                          Value="True">
+                                    <Core:ChangePropertyAction TargetObject="{x:Bind BadgeBorder}"
+                                                               PropertyName="Background"
+                                                               Value="Red"/>
+                                </Core:DataTriggerBehavior>
+                                <Core:DataTriggerBehavior Binding="{x:Bind ViewModel.AreAlertsFresh, Mode=OneWay}"
+                                                          ComparisonCondition="Equal"
+                                                          Value="False">
+                                    <Core:ChangePropertyAction TargetObject="{x:Bind BadgeBorder}"
+                                                               PropertyName="Background"
+                                                               Value="Gray"/>
+                                </Core:DataTriggerBehavior>
+                            </Interactivity:Interaction.Behaviors>
                             <TextBlock Foreground="White"
                                        FontSize="12"
                                        VerticalAlignment="Center"

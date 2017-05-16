@@ -6,6 +6,7 @@ using DigiTransit10.Models.ApiModels;
 using DigiTransit10.Models.Geocoding;
 using DigiTransit10.Services.SettingsServices;
 using MetroLog;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -407,10 +408,21 @@ namespace DigiTransit10.Services
             return new ApiResult<TransitStopDetails>(new TransitStopDetails(response.Result, forDate));
         }
 
+        // Some debug stuff for testing out alerts. HSL doesn't publish alerts very often,
+        // and also doesn't have a Test Alerts endpoint, so we can just stub out the real call
+        // with some pregenerated data.
+        //private const string hardcodedAlertsTestResponse = "{\"data\":{\"alerts\":[{\"id\": \"1\", \"alertHeaderTextTranslations\":[],\"alertDescriptionTextTranslations\":[{\"text\":\"Raitiolinja 1A KÃ¤pylÃ¤n suuntaan , myÃ¶hÃ¤ssÃ¤. Syy: tekninen vika. Arvioitu kesto: 17:28 - 17:40.\",\"language\":\"fi\"},{\"text\":\"SpÃ¥rvÃ¤gslinje 1A mot Kottby , fÃ¶rsenad. Orsak: tekniska problem. BerÃ¤knad tid: 17:28 - 17:40.\",\"language\":\"sv\"},{\"text\":\"Tram 1A to KÃ¤pylÃ¤ , delayed. Cause: technical problems. Estimated time: 17:28 - 17:40.\",\"language\":\"en\"}],\"alertUrl\":null,\"effectiveStartDate\":1494944983,\"effectiveEndDate\":1494945600,\"route\":{\"gtfsId\":\"HSL:1001A\"},\"stop\":null},{\"id\": \"2\", \"alertHeaderTextTranslations\":[],\"alertDescriptionTextTranslations\":[{\"text\":\"Helsingin sisÃ¤isen liikenteen linja 67 Rautatientorilta, klo 17:00 peruttu. Syy: tekninen vika.\",\"language\":\"fi\"},{\"text\":\"Helsingfors lokaltrafik, linje 67 frÃ¥n JÃ¤rnvÃ¤gstorget, kl. 17:00 instÃ¤lld. Orsak: tekniska problem.\",\"language\":\"sv\"},{\"text\":\"Helsinki local traffic, line 67 from Rautatientori, 17:00 cancelled.Cause: technical problems.\",\"language\":\"en\"}],\"alertUrl\":null,\"effectiveStartDate\":1494943500,\"effectiveEndDate\":1494946800,\"route\":{\"gtfsId\":\"HSL:1067\"},\"stop\":null}]}}";
+        //new ApiResult<IEnumerable<ApiAlert>>(
+        //        JsonConvert.DeserializeObject<ApiDataContainer>(hardcodedAlertsTestResponse)
+        //        .Data
+        //        .First
+        //        .First
+        //        .ToObject<IEnumerable<ApiAlert>>());
         public async Task<ApiResult<IEnumerable<TransitTrafficAlert>>> GetTrafficAlertsAsync(CancellationToken token = default(CancellationToken))
         {
             GqlQuery query = new GqlQuery(ApiGqlMembers.alerts)
                 .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.id),
                     new GqlReturnValue(ApiGqlMembers.alertHeaderTextTranslations,
                         new GqlReturnValue(ApiGqlMembers.text),
                         new GqlReturnValue(ApiGqlMembers.language)
@@ -431,6 +443,7 @@ namespace DigiTransit10.Services
                 );
 
             ApiResult<IEnumerable<ApiAlert>> response = await GetGraphQLAsync<IEnumerable<ApiAlert>>(query, token);
+
             if (!response.HasResult)
             {
                 return ApiResult<IEnumerable<TransitTrafficAlert>>.FailWithReason(response.Failure.Reason);

@@ -1414,6 +1414,11 @@ namespace DigiTransit10.Localization.Strings
         /// </summary>
         public static string TripForm_WalkingAmountHeader => resourceLoader.GetString(nameof(TripForm_WalkingAmountHeader));
 
+        /// <summary>
+        /// Localized resource similar to "Alerts"
+        /// </summary>
+        public static string MainPageHeaderCommand_Alerts => resourceLoader.GetString(nameof(MainPageHeaderCommand_Alerts));
+
 
     }
 }

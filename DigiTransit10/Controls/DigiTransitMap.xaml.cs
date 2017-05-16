@@ -468,8 +468,7 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            this.Unloaded += DigiTransitMap_Unloaded;
-            this.DigiTransitMapControl.Loaded += DigiTransitMapControl_Loaded;
+            this.Unloaded += DigiTransitMap_Unloaded;            
             this.DigiTransitMapControl.CenterChanged += DigiTransitMapControl_CenterChanged;
             this.DigiTransitMapControl.MapTapped += DigiTransitMapControl_MapTapped;
             this.DigiTransitMapControl.MapRightTapped += DigiTransitMapControl_MapRightTapped;
@@ -477,10 +476,7 @@ namespace DigiTransit10.Controls
             _geolocationService = SimpleIoc.Default.GetInstance<IGeolocationService>();
 
             MapServiceToken = MapHelper.MapApiToken.Value;
-        }
 
-        private void DigiTransitMapControl_Loaded(object sender, RoutedEventArgs e)
-        {
             if (_themeIconSource == null)
             {
                 _themeIconSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColor);
@@ -500,7 +496,7 @@ namespace DigiTransit10.Controls
             {
                 _themeIconSelectedSource = CircleMapIconSource.GenerateIconAsync(CircleMapIconSource.IconType.ThemeColorSelected);
             }
-        }
+        }        
 
         private void DigiTransitMap_Unloaded(object sender, RoutedEventArgs e)
         {

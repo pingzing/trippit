@@ -501,4 +501,7 @@ Default: 3</value>
   <data name="TripForm_WalkingSpeedHeader" xml:space="preserve">
     <value>Walking speed</value>
   </data>
+  <data name="MainPageHeaderCommand_Alerts" xml:space="preserve">
+    <value>Alerts</value>
+  </data>
 </root>

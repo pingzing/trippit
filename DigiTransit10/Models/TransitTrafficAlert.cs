@@ -12,6 +12,7 @@ namespace DigiTransit10.Models
         // We use this for a "null" URL because attempting to bind to something that's not a valid URL causes crashes.
         private const string DummyUrl = "https://dummyurl";
 
+        public string Id { get; set; }
         public TranslatedString HeaderText { get; set; }
         public TranslatedString DescriptionText { get; set; }
         public string Url { get; set; }
@@ -62,6 +63,7 @@ namespace DigiTransit10.Models
 
         public TransitTrafficAlert(ApiAlert result, string requestedLanguage)
         {
+            Id = result.Id;
             Language requested = LanguageEnum.LanguageCodeToLanuage(requestedLanguage.Substring(0, 2));
             if (result.AlertHeaderTextTranslations != null && result.AlertHeaderTextTranslations.Any())
             {
