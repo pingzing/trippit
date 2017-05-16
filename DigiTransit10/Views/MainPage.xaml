@@ -184,7 +184,8 @@
 
                         <TextBlock x:Name="DateHeader"                                                                               
                                        Grid.Row="0" Grid.Column="0"
-                                       Grid.ColumnSpan="2"
+                                       Grid.ColumnSpan="3"
+                                   Margin="0 0 0 5"
                                        Text="{Binding LiteralDate, Source={StaticResource Strings}}"/>
 
                         <lclCtls:CurrentDatePicker x:Name="DatePicker"
@@ -204,22 +205,35 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            
                             <ComboBox x:Name="WalkingAmountComboBox"
                                       Grid.Column="0"
+                                      DisplayMemberPath="DisplayName"
                                       HorizontalAlignment="Stretch"
-                                      Header="Walking amount"
+                                      Header="{Binding Source={StaticResource Strings}, Path=TripForm_WalkingAmountHeader}"
+                                      ItemsSource="{x:Bind WalkingAmounts}"
+                                      SelectedItem="{Binding SelectedWalkingAmount, Mode=TwoWay}"
                                       Margin="0 0 5 0"/>
                             <ComboBox x:Name="WalkingSpeedComboBox"                                                                             
                                       Grid.Column="1"
                                       HorizontalAlignment="Stretch"
-                                      Header="Walking speed"
-                                      Margin="5 0 0 0"/>
+                                      Header="{Binding Source={StaticResource Strings}, Path=TripForm_WalkingSpeedHeader}"
+                                      ItemsSource="{x:Bind WalkingSpeeds}"
+                                      SelectedItem="{Binding SelectedWalkingSpeed, Mode=TwoWay}"
+                                      Margin="5 0 0 0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:WalkingSpeed">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{x:Bind DisplayName}"/>
+                                            <TextBlock Foreground="Gray" FontStyle="Italic" Margin="5 0 0 0" Text="{x:Bind DisplaySubtitle}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
                             <Interactivity:Interaction.Behaviors>
                                 <lclBhvrs:AnimateVisibilityBehavior/>
                             </Interactivity:Interaction.Behaviors>
-                            
+
                         </Grid>
 
                         <TextBlock x:Name="TransitTypeHeader" 
@@ -410,7 +424,7 @@
         <RelativePanel.RenderTransform>
             <CompositeTransform/>
         </RelativePanel.RenderTransform>
-        
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
                 <VisualState x:Name="VisualStateNarrow">
@@ -449,8 +463,40 @@
                              RelativePanel.AlignRightWithPanel="True"
                              RelativePanel.AlignTopWithPanel="True"
                              Style="{StaticResource PageHeaderBoldStyle}"
-                             Text="{Binding MainPage_Header, Source={StaticResource Strings}}"/>
-        <!--  secondary commands  -->
+                             Text="{Binding MainPage_Header, Source={StaticResource Strings}}">
+            <controls:MemorySafePageHeader.PrimaryCommands>
+                <AppBarButton x:Name="ViewAlertsButton"         
+                              Command="{x:Bind ViewModel.ViewAlertsCommand}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Label="Alerts"                              
+                              VerticalContentAlignment="Stretch"
+                              VerticalAlignment="Stretch"                              
+                              Style="{StaticResource BadgeAppBarButtonStyle}">
+                    <Grid>
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  FontSize="20"
+                                  Glyph="{Binding Source={StaticResource FontIcons}, Path=WarningTriangle}"/>
+                        <Border Background="Red"
+                                CornerRadius="10"                                                                
+                                HorizontalAlignment="Center"                                    
+                                Padding="4 0"
+                                RenderTransformOrigin="0.5, 0.5"
+                                VerticalAlignment="Center"
+                                Visibility="{x:Bind ViewModel.AlertCount, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}">
+                            <TextBlock Foreground="White"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Text="{x:Bind ViewModel.AlertCount, Mode=OneWay}"/>
+                            <Border.RenderTransform>
+                                <CompositeTransform TranslateX="10" TranslateY="10"/>
+                            </Border.RenderTransform>
+                        </Border>
+                    </Grid>
+                </AppBarButton>
+            </controls:MemorySafePageHeader.PrimaryCommands>
+        </controls:MemorySafePageHeader>
 
         <RelativePanel x:Name="RootContentPanel" 
                        RelativePanel.Below="PageHeader" 

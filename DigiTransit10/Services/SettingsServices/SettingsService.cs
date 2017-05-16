@@ -176,13 +176,13 @@ namespace DigiTransit10.Services.SettingsServices
         public WalkingSpeedType PreferredWalkingSpeed
         {
             get { return _helper.Read(nameof(PreferredWalkingSpeed), WalkingSpeedType.Normal, SettingsStrategies.Roam); }
-            set { _helper.Write(nameof(WalkingSpeedType), value, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(PreferredWalkingSpeed), value, SettingsStrategies.Roam); }
         }
 
         public WalkingAmountType PreferredWalkingAmount
         {
             get { return _helper.Read(nameof(PreferredWalkingAmount), WalkingAmountType.Normal, SettingsStrategies.Roam); }
-            set { _helper.Write(nameof(WalkingAmountType), value, SettingsStrategies.Roam); }
+            set { _helper.Write(nameof(PreferredWalkingAmount), value, SettingsStrategies.Roam); }
         }
 
         public IPlace PreferredFromPlace

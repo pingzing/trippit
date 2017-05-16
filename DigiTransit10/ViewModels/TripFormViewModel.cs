@@ -120,6 +120,22 @@ namespace DigiTransit10.ViewModels
             set { Set(ref _toPlace, value); }
         }
 
+        public IList<WalkingSpeed> WalkingSpeeds => Constants.WalkingSpeeds;
+        private WalkingSpeed _selectedWalkingSpeed;
+        public WalkingSpeed SelectedWalkingSpeed
+        {
+            get { return _selectedWalkingSpeed; }
+            set { Set(ref _selectedWalkingSpeed, value); }
+        }
+
+        public IList<WalkingAmount> WalkingAmounts => Constants.WalkingAmounts;
+        private WalkingAmount _selectedWalkingAmount;
+        public WalkingAmount SelectedWalkingAmount
+        {
+            get { return _selectedWalkingAmount; }
+            set { Set(ref _selectedWalkingAmount, value); }
+        }
+
         private bool? _isBusChecked = true;
         public bool? IsBusChecked
         {
@@ -246,6 +262,10 @@ namespace DigiTransit10.ViewModels
             _messengerService.Register<SecondaryTilePayload>(this, SecondaryTileInvoked);
             FromPlace = _settingsService.PreferredFromPlace;
             ToPlace = _settingsService.PreferredToPlace;
+            SelectedWalkingAmount = WalkingAmounts.FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount) 
+                ?? Constants.DefaultWalkingAmount;
+            SelectedWalkingSpeed = WalkingSpeeds.FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed) 
+                ?? Constants.DefaultWalkingSpeed;
         }
 
         private void TransitTogglePannel()
@@ -322,7 +342,9 @@ namespace DigiTransit10.ViewModels
                     IsUsingCurrentDate ? DateTime.Today : SelectedDate.DateTime,
                     IsArrivalChecked == true,
                     ConstructTransitModes((bool)IsBusChecked, (bool)IsTramChecked, (bool)IsTrainChecked,
-                                          (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked)
+                                          (bool)IsMetroChecked, (bool)IsFerryChecked, (bool)IsBikeChecked),
+                    SelectedWalkingAmount,
+                    SelectedWalkingSpeed
                 );
 
                 SetBusy(true, AppResources.TripForm_PlanningTrip);

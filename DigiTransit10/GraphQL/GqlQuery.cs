@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -45,17 +46,18 @@ namespace DigiTransit10.GraphQL
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("{\"query\": \"{ ");
-            sb.Append($"{MethodName}("); //method name, opening paren
+            sb.Append($"{MethodName}"); //method name
             if (Parameters != null)
             {
+                sb.Append("("); //opening paren
                 foreach (var param in Parameters)
                 {
                     bool isLast = Parameters.IndexOf(param) == Parameters.Count - 1;
                     sb.Append($"{param.Name}: {ParserHelpers.ParseValue(param.Value, dateHandling)}");
                     if (!isLast) sb.Append(", ");
                 }
-            }
-            sb.Append(")"); //closing method paren
+                sb.Append(")"); //closing method paren
+            }            
             if (ReturnValues != null)
             {
                 foreach (var retVal in ReturnValues)
@@ -97,7 +99,7 @@ namespace DigiTransit10.GraphQL
             }
             if(retVal.Descendants?.Count > 0) sb.Append("}");
             return sb;
-        }
+        }        
     }
 
     public enum DateParsingStrategy

@@ -5,7 +5,23 @@
     /// so we can avoid needing to deal with raw strings when constructing a <see cref="GqlQuery"/> .
     /// </summary>
     public static class ApiGqlMembers
-    {        
+    {
+        internal static string effectiveEndDate => nameof(effectiveEndDate);
+
+        internal static string effectiveStartDate => nameof(effectiveStartDate);
+
+        internal static string alertUrl => nameof(alertUrl);
+
+        internal static string language => nameof(language);
+
+        internal static string text => nameof(text);
+
+        internal static string alertDescriptionTextTranslations => nameof(alertDescriptionTextTranslations);
+
+        internal static string alertHeaderTextTranslations => nameof(alertHeaderTextTranslations);
+
+        internal static string alertHeaderText => nameof(alertHeaderText);
+
         public static string points => nameof(points);
         public static string length => nameof(length);
         public static string legGeometry => nameof(legGeometry);
@@ -68,5 +84,8 @@
         public static string realtimeDeparture => nameof(realtimeDeparture);
         public static string stopHeadsign => nameof(stopHeadsign);
         public static string ids => nameof(ids);
+        public static string walkSpeed => nameof(walkSpeed);
+        public static string walkReluctance => nameof(walkReluctance);
+        public static string alerts => nameof(alerts);
     }
 }

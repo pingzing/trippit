@@ -24,5 +24,6 @@
         public static string RightArrow => "\uE09F";
         public static string Ellipsis => "\uE10C";
         public static string Bus => "\uE806";
+        public static string WarningTriangle => "\uE7BA";
     }
 }

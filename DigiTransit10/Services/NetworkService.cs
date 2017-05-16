@@ -37,6 +37,7 @@ namespace DigiTransit10.Services
         Task<ApiResult<IEnumerable<TransitLine>>> GetLinesAsync(IEnumerable<string> gtfsIds, CancellationToken token = default(CancellationToken));
         Task<ApiResult<IEnumerable<TransitStop>>> GetStopsByBoundingRadius(float lat, float lon, int radiusMeters, CancellationToken token = default(CancellationToken));        
         Task<ApiResult<TransitStopDetails>> GetStopDetails(string stopId, DateTime forDate, CancellationToken token = default(CancellationToken));
+        Task<ApiResult<IEnumerable<TransitTrafficAlert>>> GetTrafficAlertsAsync(CancellationToken token = default(CancellationToken));
     }
 
     public class NetworkService : INetworkService
@@ -170,7 +171,9 @@ namespace DigiTransit10.Services
                     new GqlParameter(ApiGqlMembers.time, details.Time),
                     new GqlParameter(ApiGqlMembers.date, details.Date),
                     new GqlParameter(ApiGqlMembers.arriveBy, details.IsTimeTypeArrival),
-                    new GqlParameter(ApiGqlMembers.modes, details.TransitModes)
+                    new GqlParameter(ApiGqlMembers.modes, details.TransitModes),
+                    new GqlParameter(ApiGqlMembers.walkSpeed, details.WalkSpeed.UnderlyingMetersPerSecond),
+                    new GqlParameter(ApiGqlMembers.walkReluctance, details.WalkAmount.UnderlyingWalkReluctance)
                 )
                 .WithReturnValues(
                     new GqlReturnValue(ApiGqlMembers.from,
@@ -402,6 +405,38 @@ namespace DigiTransit10.Services
             }
 
             return new ApiResult<TransitStopDetails>(new TransitStopDetails(response.Result, forDate));
+        }
+
+        public async Task<ApiResult<IEnumerable<TransitTrafficAlert>>> GetTrafficAlertsAsync(CancellationToken token = default(CancellationToken))
+        {
+            GqlQuery query = new GqlQuery(ApiGqlMembers.alerts)
+                .WithReturnValues(
+                    new GqlReturnValue(ApiGqlMembers.alertHeaderTextTranslations,
+                        new GqlReturnValue(ApiGqlMembers.text),
+                        new GqlReturnValue(ApiGqlMembers.language)
+                    ),
+                    new GqlReturnValue(ApiGqlMembers.alertDescriptionTextTranslations,
+                        new GqlReturnValue(ApiGqlMembers.text),
+                        new GqlReturnValue(ApiGqlMembers.language)
+                    ),
+                    new GqlReturnValue(ApiGqlMembers.alertUrl),
+                    new GqlReturnValue(ApiGqlMembers.effectiveStartDate),
+                    new GqlReturnValue(ApiGqlMembers.effectiveEndDate),
+                    new GqlReturnValue(ApiGqlMembers.route,
+                        new GqlReturnValue(ApiGqlMembers.gtfsId)
+                    ),
+                    new GqlReturnValue(ApiGqlMembers.stop,
+                        new GqlReturnValue(ApiGqlMembers.gtfsId)
+                    )
+                );
+
+            ApiResult<IEnumerable<ApiAlert>> response = await GetGraphQLAsync<IEnumerable<ApiAlert>>(query, token);
+            if (!response.HasResult)
+            {
+                return ApiResult<IEnumerable<TransitTrafficAlert>>.FailWithReason(response.Failure.Reason);
+            }
+
+            return new ApiResult<IEnumerable<TransitTrafficAlert>>(response.Result.Select(x => new TransitTrafficAlert(x, _settingsService.CurrentLanguage)));
         }
 
         private async Task<ApiResult<T>> GetGraphQLAsync<T>(GqlQuery query, CancellationToken token = default(CancellationToken))

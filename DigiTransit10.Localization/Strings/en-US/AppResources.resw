@@ -495,4 +495,10 @@ Default: 3</value>
   <data name="SystemSettingThemeName" xml:space="preserve">
     <value>System theme</value>
   </data>
+  <data name="TripForm_WalkingAmountHeader" xml:space="preserve">
+    <value>Walking amount</value>
+  </data>
+  <data name="TripForm_WalkingSpeedHeader" xml:space="preserve">
+    <value>Walking speed</value>
+  </data>
 </root>

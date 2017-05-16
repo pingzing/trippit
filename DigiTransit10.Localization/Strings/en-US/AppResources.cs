@@ -1404,6 +1404,16 @@ namespace DigiTransit10.Localization.Strings
         /// </summary>
         public static string SettingsPage_FavoritesPanelExplanation => resourceLoader.GetString(nameof(SettingsPage_FavoritesPanelExplanation));
 
+        /// <summary>
+        /// Localized resource similar to "Walking speed"
+        /// </summary>
+        public static string TripForm_WalkingSpeedHeader => resourceLoader.GetString(nameof(TripForm_WalkingSpeedHeader));
+
+        /// <summary>
+        /// Localized resource similar to "Walking amount"
+        /// </summary>
+        public static string TripForm_WalkingAmountHeader => resourceLoader.GetString(nameof(TripForm_WalkingAmountHeader));
+
 
     }
 }

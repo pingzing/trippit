@@ -15,10 +15,13 @@ namespace DigiTransit10.Models
         public List<ApiCoordinates> IntermediateCoords { get; set; }
         public ApiCoordinates ToPlaceCoordinates { get; set; }
         public string TransitModes { get; set;}
+        public WalkingAmount WalkAmount { get; set; }
+        public WalkingSpeed WalkSpeed { get; set; }
 
         public TripQueryDetails(ApiCoordinates fromCoords, string fromString, 
             List<ApiCoordinates> intermediateCoords, ApiCoordinates toCoords, string toString, 
-            TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit)
+            TimeSpan time, DateTime date, bool isTimeTypeArrival, string transit,
+            WalkingAmount walkAmount, WalkingSpeed walkSpeed)
         {
             FromPlaceCoords = fromCoords;
             FromPlaceString = fromString;
@@ -29,6 +32,8 @@ namespace DigiTransit10.Models
             Time = time;
             Date = date;
             IsTimeTypeArrival = isTimeTypeArrival;
+            WalkAmount = walkAmount;
+            WalkSpeed = walkSpeed;
         }
     }
 }

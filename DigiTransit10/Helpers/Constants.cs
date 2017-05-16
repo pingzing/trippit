@@ -1,4 +1,9 @@
-﻿namespace DigiTransit10.Helpers
+﻿using DigiTransit10.Localization.Strings;
+using DigiTransit10.Models;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
+namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
@@ -57,5 +62,83 @@
         //Font sizes
         public const double SymbolFontSize = 20;
         public const double HslFontSize = 28;
+
+        //Walking amounts and speeds
+        public static readonly ImmutableList<WalkingSpeed> WalkingSpeeds = new List<WalkingSpeed>
+        {
+            new WalkingSpeed
+            {
+                SpeedType = WalkingSpeedType.Glacial,
+                DisplayName = AppResources.WalkingSpeed_0,
+                DisplaySubtitle = AppResources.WalkingSpeed_0_Subtitle,
+                UnderlyingMetersPerSecond = 0.5f
+            },
+            new WalkingSpeed
+            {
+                SpeedType = WalkingSpeedType.Slow,
+                DisplayName = AppResources.WalkingSpeed_1,
+                DisplaySubtitle = AppResources.WalkingSpeed_1_Subtitle,
+                UnderlyingMetersPerSecond = 0.83f
+            },
+            new WalkingSpeed
+            {
+                SpeedType = WalkingSpeedType.Normal,
+                DisplayName = AppResources.WalkingSpeed_2,
+                DisplaySubtitle = AppResources.WalkingSpeed_2_Subtitle,
+                UnderlyingMetersPerSecond = 1.2f
+            },
+            new WalkingSpeed
+            {
+                SpeedType = WalkingSpeedType.Fast,
+                DisplayName = AppResources.WalkingSpeed_3,
+                DisplaySubtitle = AppResources.WalkingSpeed_3_Subtitle,
+                UnderlyingMetersPerSecond = 2.083f
+            },
+            new WalkingSpeed
+            {
+                SpeedType = WalkingSpeedType.Breakneck,
+                DisplayName = AppResources.WalkingSpeed_4,
+                DisplaySubtitle = AppResources.WalkingSpeed_4_Subtitle,
+                UnderlyingMetersPerSecond = 3
+            }
+        }.ToImmutableList();
+
+        public static WalkingSpeed DefaultWalkingSpeed => WalkingSpeeds[2];
+
+        public static readonly ImmutableList<WalkingAmount> WalkingAmounts = new List<WalkingAmount>
+        {
+            new WalkingAmount
+            {
+                AmountType = WalkingAmountType.BareMinimum,
+                DisplayName = AppResources.WalkingAmount_0,
+                UnderlyingWalkReluctance = 6
+            },
+            new WalkingAmount
+            {
+                AmountType = WalkingAmountType.Some,
+                DisplayName = AppResources.WalkingAmount_1,
+                UnderlyingWalkReluctance = 3.6f
+            },
+            new WalkingAmount
+            {
+                AmountType = WalkingAmountType.Normal,
+                DisplayName = AppResources.WalkingAmount_2,
+                UnderlyingWalkReluctance = 2
+            },
+            new WalkingAmount
+            {
+                AmountType = WalkingAmountType.Lots,
+                DisplayName = AppResources.WalkingAmount_3,
+                UnderlyingWalkReluctance = 1.4f
+            },
+            new WalkingAmount
+            {
+                AmountType = WalkingAmountType.Maximum,
+                DisplayName = AppResources.WalkingAmount_4,
+                UnderlyingWalkReluctance = 0.8f
+            }
+        }.ToImmutableList();
+
+        public static WalkingAmount DefaultWalkingAmount => WalkingAmounts[2];
     }
 }

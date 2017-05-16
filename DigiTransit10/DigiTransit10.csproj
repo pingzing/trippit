@@ -250,10 +250,14 @@
     <Compile Include="Models\ApiModels\ApiStopAtDistanceEdge.cs" />
     <Compile Include="Models\ApiModels\ApiStoptime.cs" />
     <Compile Include="Models\ApiModels\ApiStoptimesInPattern.cs" />
+    <Compile Include="Models\ApiModels\ApiTranslatedString.cs" />
     <Compile Include="Models\ApiModels\ApiTrip.cs" />
     <Compile Include="Models\ApiModels\ApiPlan.cs" />
     <Compile Include="Models\BasicMapPoi.cs" />
+    <Compile Include="Models\LanguageEnum.cs" />
     <Compile Include="Models\PageAnimation.cs" />
+    <Compile Include="Models\TransitTrafficAlert.cs" />
+    <Compile Include="Models\TranslatedString.cs" />
     <Compile Include="Models\WalkingAmount.cs" />
     <Compile Include="Models\WalkingSpeed.cs" />
     <Compile Include="Models\ColoredGeocircle.cs" />
@@ -317,6 +321,7 @@
     <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\SearchPagePivotViewSelector.cs" />
     <Compile Include="TemplateSelectors\StopsSearchTemplate.cs" />
+    <Compile Include="ViewModels\AlertsViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchContentViewModel.cs" />
     <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
@@ -330,6 +335,9 @@
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\TripFormViewModel.cs" />
     <Compile Include="ViewModels\TripResultViewModel.cs" />
+    <Compile Include="Views\AlertsPage.xaml.cs">
+      <DependentUpon>AlertsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
     </Compile>
@@ -629,6 +637,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Views\AlertsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Busy.xaml">
       <Generator>MSBuild:Compile</Generator>

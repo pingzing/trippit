@@ -19,5 +19,6 @@ namespace DigiTransit10.Models
     {
         public WalkingAmountType AmountType { get; set; }
         public string DisplayName { get; set; }
+        public float UnderlyingWalkReluctance { get; set; }
     }
 }

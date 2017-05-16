@@ -104,13 +104,13 @@
                     <ComboBox x:Name="WalkingAmountComboBox"
                               DisplayMemberPath="DisplayName"                          
                               Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_WalkingAmountHeader}"                          
-                              ItemsSource="{x:Bind ViewModel.WalkingAmounts, Mode=OneWay}"
+                              ItemsSource="{x:Bind ViewModel.WalkingAmounts}"
                               Margin="0 10 0 0"
                               SelectedItem="{Binding SelectedWalkingAmount, Mode=TwoWay}">
                     </ComboBox>
                     <ComboBox x:Name="WalkingSpeedComboBox"                         
                               Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_WalkingSpeedHeader}"
-                              ItemsSource="{x:Bind ViewModel.WalkingSpeeds, Mode=OneWay}"
+                              ItemsSource="{x:Bind ViewModel.WalkingSpeeds}"
                               Margin="0 10 0 0"
                               SelectedItem="{Binding SelectedWalkingSpeed, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
