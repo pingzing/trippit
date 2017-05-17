@@ -30,6 +30,7 @@ namespace DigiTransit10.Controls
         private static readonly IFavoritesService _favoritesService;
 
         private CancellationTokenSource _currentToken = new CancellationTokenSource();
+        private List<FavoritePlace> _allFavorites = new List<FavoritePlace>();
         private bool _favoritesInserted = false;
 
         private readonly GroupedPlaceList _stopList = new GroupedPlaceList(ModelEnums.PlaceType.Stop,
@@ -127,8 +128,8 @@ namespace DigiTransit10.Controls
             _userCurrentLocationList.Add(new Place { Name = AppResources.SuggestBoxHeader_MyLocation, Type = ModelEnums.PlaceType.UserCurrentLocation });
             SuggestedPlaces.Add(_userCurrentLocationList);
             //Load favorites in the Loaded handler           
-            SuggestedPlaces.Add(_stopList);
             SuggestedPlaces.Add(_addressList);
+            SuggestedPlaces.Add(_stopList);            
             PlacesCollection.Source = SuggestedPlaces;
 
             this.SearchBox.GotFocus += SearchBox_GotFocus;
@@ -143,11 +144,10 @@ namespace DigiTransit10.Controls
             if (!_favoritesInserted)
             {
                 _favoritesInserted = true;
-                foreach (var favorite in (await _favoritesService.GetFavoritesAsync())
-                    .Where(x => x is FavoritePlace))
-                {
-                    _favoritePlacesList.AddSorted(favorite as FavoritePlace);
-                }
+                _allFavorites = (await _favoritesService.GetFavoritesAsync())
+                    .OfType<FavoritePlace>()                    
+                    .ToList();
+                
                 int insertIndex = IsUserCurrentLocationListed ? 1 : 0;
                 SuggestedPlaces.Insert(insertIndex, _favoritePlacesList);
             }
@@ -353,6 +353,7 @@ namespace DigiTransit10.Controls
             {
                 _stopList.Clear();
                 _addressList.Clear();
+                _favoritePlacesList.Clear();
 
                 // this has to happen after the list clearing. clearing _stopList seems to force a SuggestionChosen(), which grabs the first item in the still-filled _addressList.
                 SearchText = "";
@@ -436,13 +437,14 @@ namespace DigiTransit10.Controls
 
             _currentToken = new CancellationTokenSource();
 
+            Task favoritesTask = SearchFavorites(searchString, _currentToken.Token);
             Task addressTask = SearchAddresses(searchString, _currentToken.Token);
             Task stopTask = SearchStops(searchString, _currentToken.Token);
 
             IsWaiting = true;
             try
             {
-                await Task.WhenAll(addressTask, stopTask);
+                await Task.WhenAll(favoritesTask, addressTask, stopTask);
             }
             catch (OperationCanceledException)
             {
@@ -452,26 +454,55 @@ namespace DigiTransit10.Controls
             IsWaiting = false;
         }
 
+        private async Task SearchFavorites(string searchString, CancellationToken token)
+        {
+            List<FavoritePlace> foundFavorites = _allFavorites
+                .Where(x => x.Name.Contains(searchString) || x.UserChosenName.Contains(searchString))
+                .ToList();
+
+            List<IPlace> staleFavorites = _favoritePlacesList.Except(foundFavorites).ToList();
+
+            foreach(IPlace stale in staleFavorites)
+            {
+                _favoritePlacesList.Remove(stale);
+            }
+
+            foreach(IPlace place in foundFavorites)
+            {
+                if (_favoritePlacesList.Contains(place))
+                {
+                    continue;
+                }
+
+                _favoritePlacesList.AddSorted(place, _placeComparer);
+
+                await Task.CompletedTask; // Allowing this method to be async in case we need it in the future...
+            }
+        }
+
         private async Task SearchAddresses(string searchString, CancellationToken token)
         {
             //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var response = await _networkService.SearchAddressAsync(searchString);
+            ApiResult<GeocodingResponse> response = await _networkService.SearchAddressAsync(searchString);
             if (token.IsCancellationRequested || response.IsFailure)
             {
+                if (response.Failure.Reason == Enums.FailureReason.NoResults)
+                {
+                    _addressList.Clear();
+                }
                 return;
             }
 
             GeocodingResponse result = response.Result;
-
             //Remove entries in old list not in new response
             List<string> responseIds = result.Features.Select(x => x.Properties.Id).ToList();
             List<IPlace> stalePlaces = _addressList.Where(x => !responseIds.Contains(x.StringId)).ToList();
-            foreach (var stale in stalePlaces)
+            foreach (IPlace stale in stalePlaces)
             {
                 _addressList.Remove(stale);
             }
 
-            foreach (var place in result.Features)
+            foreach (GeocodingFeature place in result.Features)
             {
                 if (_addressList.Any(x => x.StringId == place.Properties.Id))
                 {
@@ -500,14 +531,17 @@ namespace DigiTransit10.Controls
         private async Task SearchStops(string searchString, CancellationToken token)
         {
             //not sending the token into the network request, because they get called super frequently, and cancelling a network request is a HUGE perf hit on phones
-            var response = await _networkService.GetStopsAsync(searchString);
+            ApiResult<IEnumerable<TransitStop>> response = await _networkService.GetStopsAsync(searchString);
             if (token.IsCancellationRequested || response.IsFailure)
             {
+                if (response.Failure.Reason == Enums.FailureReason.NoResults)
+                {
+                    _stopList.Clear();
+                }
                 return;
             }
 
             var result = response.Result;
-
             //Remove entries in old list not in new response
             List<string> responseIds = result.Select(x => x.GtfsId).ToList();
             List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.StringId)).ToList();
@@ -580,16 +614,16 @@ namespace DigiTransit10.Controls
         {
             if (args.AddedFavorites?.Count > 0)
             {
-                foreach (IPlace added in args.AddedFavorites.OfType<IPlace>())
+                foreach (FavoritePlace added in args.AddedFavorites.OfType<FavoritePlace>())
                 {
-                    _favoritePlacesList.AddSorted(added);
+                    _allFavorites.AddSorted(added);
                 }
             }
             if (args.RemovedFavorites?.Count > 0)
             {
-                foreach (IPlace removed in args.RemovedFavorites.OfType<IPlace>())
+                foreach (FavoritePlace removed in args.RemovedFavorites.OfType<FavoritePlace>())
                 {
-                    _favoritePlacesList.Remove(removed);
+                    _allFavorites.Remove(removed);
                 }
             }
 

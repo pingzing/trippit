@@ -96,6 +96,11 @@ namespace DigiTransit10.Services
                     .AsStreamForRead()
                     .DeseriaizeJsonFromStream<GeocodingResponse>();
 
+                if (!geoResponse.Features.Any())
+                {
+                    return ApiResult<GeocodingResponse>.FailWithReason(FailureReason.NoResults);
+                }
+
                 return new ApiResult<GeocodingResponse>(geoResponse);
             }
             catch(Exception ex) when (ex is COMException || ex is HttpRequestException || ex is OperationCanceledException)
