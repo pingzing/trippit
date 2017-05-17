@@ -161,6 +161,9 @@
     <Compile Include="Controls\StopSearchElement.xaml.cs">
       <DependentUpon>StopSearchElement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TooFarIntoPastDialog.xaml.cs">
+      <DependentUpon>TooFarIntoPastDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TripDetailListIntermediates.xaml.cs">
       <DependentUpon>TripDetailListIntermediates.xaml</DependentUpon>
     </Compile>
@@ -583,6 +586,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StopSearchElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TooFarIntoPastDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

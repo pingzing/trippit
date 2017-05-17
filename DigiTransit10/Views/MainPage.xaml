@@ -143,6 +143,14 @@
                             </TransitionCollection>
                         </lclCtls:CurrentTimePicker.Transitions>
                     </lclCtls:CurrentTimePicker>
+
+                    <TextBlock x:Name="SelectedTimeInPastWarningTextBlock"
+                               Foreground="PaleGoldenrod"
+                               Margin="0 5 0 0"
+                               Text="{Binding Source={StaticResource Strings}, Path=MainPage_TimeInPastWarning}"
+                               TextTrimming="Clip"
+                               TextWrapping="WrapWholeWords"
+                               Visibility="{x:Bind IsSelectedDateTimeInPast, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </StackPanel>
             </DataTemplate>
 

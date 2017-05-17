@@ -87,8 +87,9 @@ namespace DigiTransit10
                 };
 
                 nav.FrameFacade.Navigated += FrameFacade_Navigated;
-            }
+            }            
 
+            // TODO: DEBUG values, set the width to something less silly. Probably 300 at minimum.
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            

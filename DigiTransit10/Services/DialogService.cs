@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 
 namespace DigiTransit10.Services
 {
@@ -12,6 +13,8 @@ namespace DigiTransit10.Services
         Task ShowDialog(string message, string closeText, string title);
         Task<IUICommand> ShowDialog(string message, string okText, string cancelText, string title);
         Task<IUICommand> ShowDialog(MessageDialog dialog);
+        Task<ContentDialogResult> ShowContentDialog<T>() where T : ContentDialog, new();
+        Task<ContentDialogResult> ShowContentDialog(ContentDialog dialog);
     }
 
     public class DialogService : IDialogService
@@ -58,6 +61,29 @@ namespace DigiTransit10.Services
             _semaphore.Wait();
 
             var result = await dialog.ShowAsync();
+
+            _semaphore.Release();
+
+            return result;
+        }
+
+        public async Task<ContentDialogResult> ShowContentDialog<T>() where T : ContentDialog, new()
+        {
+            _semaphore.Wait();
+
+            ContentDialog dialog = new T();
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            _semaphore.Release();
+
+            return result;
+        }
+
+        public async Task<ContentDialogResult> ShowContentDialog(ContentDialog dialog)
+        {
+            _semaphore.Wait();
+
+            ContentDialogResult result = await dialog.ShowAsync();
 
             _semaphore.Release();
 

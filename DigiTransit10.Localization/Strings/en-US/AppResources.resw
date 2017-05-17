@@ -504,4 +504,28 @@ Default: 3</value>
   <data name="MainPageHeaderCommand_Alerts" xml:space="preserve">
     <value>Alerts</value>
   </data>
+  <data name="SettingsPage_VersionHeader" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="TooFarIntoPastDialog_Cancel" xml:space="preserve">
+    <value>No, thanks</value>
+  </data>
+  <data name="TooFarIntoPastDialog_Confirm" xml:space="preserve">
+    <value>Yes, please</value>
+  </data>
+  <data name="TooFarIntoPastDialog_Content" xml:space="preserve">
+    <value>You've selected a time in the past. Would you like to move your trip date to tomorrow to accommodate this?</value>
+  </data>
+  <data name="TooFarIntoPastDialog_DontShowCheckbox" xml:space="preserve">
+    <value>Don't show me this again</value>
+  </data>
+  <data name="TooFarIntoPastDialog_DontShowInfo" xml:space="preserve">
+    <value>From now on, your trip dates will automatically be moved forward to tomorrow if you select a time in the past.</value>
+  </data>
+  <data name="TooFarIntoPastDialog_Title" xml:space="preserve">
+    <value>Too Early</value>
+  </data>
+  <data name="MainPage_TimeInPastWarning" xml:space="preserve">
+    <value>Note: your selected date and time are in the past.</value>
+  </data>
 </root>

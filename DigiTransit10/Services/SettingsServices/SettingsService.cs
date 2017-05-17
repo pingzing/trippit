@@ -212,6 +212,12 @@ namespace DigiTransit10.Services.SettingsServices
             }
             set { _helper.Write(nameof(IsAnalyticsEnabled), value, SettingsStrategies.Roam); }
         }
+
+        public bool IsTooFarIntoPastDialogSuppressed
+        {
+            get { return _helper.Read(nameof(IsTooFarIntoPastDialogSuppressed), false, SettingsStrategies.Local); }
+            set { _helper.Write(nameof(IsTooFarIntoPastDialogSuppressed), value); }
+        }
     }
 }
 

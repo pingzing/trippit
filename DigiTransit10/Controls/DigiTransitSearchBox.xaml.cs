@@ -75,7 +75,7 @@ namespace DigiTransit10.Controls
         public bool IsFavoriteButtonEnabled
         {
             get
-            {
+            {                
                 if(SelectedPlace == null)
                 {
                     return false;
@@ -208,7 +208,7 @@ namespace DigiTransit10.Controls
                 }));
         public IPlace SelectedPlace
         {
-            get { return (IPlace)GetValue(SelectedPlaceProperty); }
+            get { return Windows.ApplicationModel.DesignMode.DesignModeEnabled ? null : (IPlace)GetValue(SelectedPlaceProperty); }
             set { SetValue(SelectedPlaceProperty, value); }
         }
 

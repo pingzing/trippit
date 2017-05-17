@@ -1419,6 +1419,44 @@ namespace DigiTransit10.Localization.Strings
         /// </summary>
         public static string MainPageHeaderCommand_Alerts => resourceLoader.GetString(nameof(MainPageHeaderCommand_Alerts));
 
+        /// <summary>
+        /// Localized resource similar to "Version"
+        /// </summary>
+        public static string SettingsPage_VersionHeader => resourceLoader.GetString(nameof(SettingsPage_VersionHeader));
 
+        /// <summary>
+        /// Localized resource similar to "TOO EARLY"
+        /// </summary>
+        public static string TooFarIntoPastDialog_Title => resourceLoader.GetString(nameof(TooFarIntoPastDialog_Title));
+
+        /// <summary>
+        /// Localized resource similar to "Yes, please"
+        /// </summary>
+        public static string TooFarIntoPastDialog_Confirm => resourceLoader.GetString(nameof(TooFarIntoPastDialog_Confirm));
+
+        /// <summary>
+        /// Localized resource similar to "No, I meant to do that"
+        /// </summary>
+        public static string TooFarIntoPastDialog_Cancel => resourceLoader.GetString(nameof(TooFarIntoPastDialog_Cancel));
+
+        /// <summary>
+        /// Localized resource similar to "You've selected a time in the past. Would you like to move your trip date to tomorrow to accommodate this?"
+        /// </summary>
+        public static string TooFarIntoPastDialog_Content => resourceLoader.GetString(nameof(TooFarIntoPastDialog_Content));
+
+        /// <summary>
+        /// Localized resource similar to "Don't show me this again"
+        /// </summary>
+        public static string TooFarIntoPastDialog_DontShowCheckbox => resourceLoader.GetString(nameof(TooFarIntoPastDialog_DontShowCheckbox));
+
+        /// <summary>
+        /// Localized resource similar to "From now on, your trip dates will automatically be moved forward a day, if you select a time in the past."
+        /// </summary>
+        public static string TooFarIntoPastDialog_DontShowInfo => resourceLoader.GetString(nameof(TooFarIntoPastDialog_DontShowInfo));
+
+        /// <summary>
+        /// Localized resource similar to "Note: your selected date and time are in the past."
+        /// </summary>
+        public static string MainPage_TimeInPastWarning => resourceLoader.GetString(nameof(MainPage_TimeInPastWarning));
     }
 }

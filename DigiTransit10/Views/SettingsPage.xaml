@@ -78,6 +78,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <StackPanel x:Name="DefaultSearchStackPanel" HorizontalAlignment="Stretch" Margin="10 0 10 0" >
@@ -181,6 +182,14 @@
                                Style="{StaticResource SubtitleTextBlockStyle}"/>
                     <TextBlock x:Name="LicensesTextBlock"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesText}"/>
+                </StackPanel>
+
+                <StackPanel x:Name="VersionPanel" Grid.Row="6" Margin="10 20 10 0">
+                    <TextBlock x:Name="VersionHeader"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_VersionHeader}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="VersionTextBlock"
+                               Text="{x:Bind ViewModel.VersionString}"/>
                 </StackPanel>
 
             </Grid>

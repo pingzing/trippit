@@ -1,4 +1,5 @@
-﻿using DigiTransit10.ExtensionMethods;
+﻿using DigiTransit10.Controls;
+using DigiTransit10.ExtensionMethods;
 using DigiTransit10.Helpers;
 using DigiTransit10.Helpers.PageNavigationContainers;
 using DigiTransit10.Localization.Strings;
@@ -20,6 +21,7 @@ using System.Threading.Tasks;
 using Template10.Common;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using static DigiTransit10.Helpers.Enums;
@@ -47,14 +49,22 @@ namespace DigiTransit10.ViewModels
         public bool IsUsingCurrentTime
         {
             get { return _isUsingCurrentTime; }
-            set { Set(ref _isUsingCurrentTime, value); }
+            set
+            {
+                Set(ref _isUsingCurrentTime, value);
+                RaisePropertyChanged(nameof(IsSelectedDateTimeInPast));
+            }
         }
 
         private bool _isUsingCurrentDate = true;
         public bool IsUsingCurrentDate
         {
             get { return _isUsingCurrentDate; }
-            set { Set(ref _isUsingCurrentDate, value); }
+            set
+            {
+                Set(ref _isUsingCurrentDate, value);
+                RaisePropertyChanged(nameof(IsSelectedDateTimeInPast));
+            }
         }
 
         private bool? _isArrivalChecked = false;
@@ -96,14 +106,58 @@ namespace DigiTransit10.ViewModels
         public TimeSpan SelectedTime
         {
             get { return _selectedTime; }
-            set { Set(ref _selectedTime, value); }
+            set
+            {
+                Set(ref _selectedTime, value);
+                RaisePropertyChanged(nameof(IsSelectedDateTimeInPast));
+                // Only show the dialog if the user is using an automatic date. If they've manually
+                // set their date, we should assume they know what they're doing.
+                if (IsSelectedDateTimeInPast && IsUsingCurrentDate)
+                {
+                    ShowTooFarIntoPastDialog().DoNotAwait();
+                }
+            }
         }
 
         private DateTimeOffset _selectedDate = DateTime.Now;
         public DateTimeOffset SelectedDate
         {
             get { return _selectedDate; }
-            set { Set(ref _selectedDate, value); }
+            set
+            {
+                Set(ref _selectedDate, value);
+                RaisePropertyChanged(nameof(IsSelectedDateTimeInPast));
+            }
+        }
+        
+        public bool IsSelectedDateTimeInPast
+        {
+            get
+            {
+                if (IsUsingCurrentDate && IsUsingCurrentTime)
+                {
+                    return false;
+                }
+
+                DateTime now = DateTime.Now;
+                DateTime selectedDate = IsUsingCurrentDate ? DateTime.Today : SelectedDate.DateTime.Date;                                
+                TimeSpan selectedTime = IsUsingCurrentTime ? now.TimeOfDay : SelectedTime;
+                
+                // Bring selectedTime's seconds up to 59, so we don't have people setting their time to 1:30,
+                // but being told they're in the past, because it's currently 1:30:01.
+                selectedTime = selectedTime.Add(TimeSpan.FromSeconds(60 - selectedTime.Seconds));
+                DateTime selectedDateTime = selectedDate.Add(selectedTime);
+
+                if (selectedDateTime < now)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
         }
 
         private IPlace _fromPlace = new Place { Type = PlaceType.UserCurrentLocation, Name = AppResources.SuggestBoxHeader_MyLocation };
@@ -627,6 +681,23 @@ namespace DigiTransit10.ViewModels
                 error.AppendLine($"● {result.ResolvedPlace.Name}");
             }
             await _dialogService.ShowDialog(error.ToString(), AppResources.DialogTitle_NoLocationFound);
+        }
+
+        private async Task ShowTooFarIntoPastDialog()
+        {
+            if (_settingsService.IsTooFarIntoPastDialogSuppressed)
+            {
+                IsUsingCurrentDate = false;
+                SelectedDate = DateTime.Today + TimeSpan.FromDays(1);
+                return;
+            }            
+
+            ContentDialogResult result = await _dialogService.ShowContentDialog<TooFarIntoPastDialog>();
+            if (result == ContentDialogResult.Primary)
+            {
+                IsUsingCurrentDate = false;
+                SelectedDate = DateTime.Today + TimeSpan.FromDays(1);
+            }
         }
 
         private void SetBusy(bool newBusy, string message = null)

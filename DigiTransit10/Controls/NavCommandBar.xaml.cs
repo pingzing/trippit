@@ -76,6 +76,7 @@ namespace DigiTransit10.Controls
             UpdateNavSeparatorVisibility();
             this.UpdateLayout();
 
+            UpdateSelectionVisual(); // Call this once first, to make sure that _currentlySelected gets populated before we start Reflow()ing.
             ReflowCommands(this.RenderSize, this.RenderSize);
             UpdateSelectionVisual();
 
@@ -214,7 +215,8 @@ namespace DigiTransit10.Controls
             var navWidth = this.NavigationButtons.ActualWidth;
             //Only factor in visible elements for width calculations
             double primaryCommandsWidth = this.PrimaryCommands
-                .OfType<UIElement>()
+                .Where(item => item is AppBarButton || item is AppBarToggleButton)
+                .Cast<UIElement>()
                 .Count(x => x.Visibility == Visibility.Visible) * appButtonWidth + ellipsisButtonWidth;
 
             //shrinking or staying the same
@@ -235,7 +237,10 @@ namespace DigiTransit10.Controls
                     }
                     else //no more space, start removing PrimaryCommands
                     {
-                        var buttonToMove = (ICommandBarElement)this.PrimaryCommands.Max(x => x as ISortableAppBarButton);
+                        var buttonToMove = (ICommandBarElement)this.PrimaryCommands
+                            .Where(x => ((UIElement)x).Visibility == Visibility.Visible)
+                            .Max(x => x as ISortableAppBarButton);
+
                         if (buttonToMove == null)
                         {
                             break;

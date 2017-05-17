@@ -13,6 +13,18 @@ namespace DigiTransit10.Converters
                 bool bVal = (bool)value;
                 return bVal ? Visibility.Visible : Visibility.Collapsed;
             }
+            else if (value is bool?)
+            {
+                bool? bval = (bool?)value;
+                if (bval == null || bval.Value == false)
+                {
+                    return Visibility.Collapsed;
+                }                
+                else
+                {
+                    return Visibility.Visible;
+                }
+            }
             else
             {
                 return DependencyProperty.UnsetValue;

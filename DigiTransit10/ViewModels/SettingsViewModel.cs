@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using DigiTransit10.Helpers;
+using Windows.ApplicationModel;
 
 namespace DigiTransit10.ViewModels
 {
@@ -135,6 +136,15 @@ namespace DigiTransit10.ViewModels
             {
                 _settingsService.IsAnalyticsEnabled = value;
                 RaisePropertyChanged(nameof(IsAnalyticsEnabled));
+            }
+        }
+
+        public string VersionString
+        {
+            get
+            {
+                PackageVersion version = Package.Current.Id.Version;
+                return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
             }
         }
 
