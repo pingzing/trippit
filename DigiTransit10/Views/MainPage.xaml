@@ -150,7 +150,16 @@
                                Text="{Binding Source={StaticResource Strings}, Path=MainPage_TimeInPastWarning}"
                                TextTrimming="Clip"
                                TextWrapping="WrapWholeWords"
-                               Visibility="{x:Bind IsSelectedDateTimeInPast, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                               Visibility="{x:Bind IsSelectedDateTimeInPast, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Interactivity:Interaction.Behaviors>
+                            <lclBhvrs:AnimateVisibilityBehavior/>
+                        </Interactivity:Interaction.Behaviors>
+                        <TextBlock.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </TextBlock.Transitions>
+                    </TextBlock>
                 </StackPanel>
             </DataTemplate>
 

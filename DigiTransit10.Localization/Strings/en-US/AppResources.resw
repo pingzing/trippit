@@ -526,6 +526,6 @@ Default: 3</value>
     <value>Too Early</value>
   </data>
   <data name="MainPage_TimeInPastWarning" xml:space="preserve">
-    <value>Note: your selected date and time are in the past.</value>
+    <value>Note: Your selected date and time are in the past.</value>
   </data>
 </root>
