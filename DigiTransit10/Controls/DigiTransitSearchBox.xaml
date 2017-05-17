@@ -392,15 +392,36 @@
                                     <Border.RenderTransform>
                                         <TranslateTransform x:Name="UpwardTransform"/>
                                     </Border.RenderTransform>
-                                    <ListView x:Name="SuggestionsList" BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}" BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" DisplayMemberPath="{TemplateBinding DisplayMemberPath}" IsItemClickEnabled="True" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" MaxHeight="{ThemeResource AutoSuggestListMaxHeight}" Margin="{ThemeResource AutoSuggestListMargin}" Padding="{ThemeResource AutoSuggestListPadding}">
-                                        <ListView.ItemContainerTransitions>
-                                            <TransitionCollection>
-                                                <RepositionThemeTransition/>
-                                                <AddDeleteThemeTransition/>
-                                                <ReorderThemeTransition/>
-                                            </TransitionCollection>
-                                        </ListView.ItemContainerTransitions>
-                                    </ListView>
+                                    <Grid>
+                                        <ListView x:Name="SuggestionsList" BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}" BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}" Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" DisplayMemberPath="{TemplateBinding DisplayMemberPath}" IsItemClickEnabled="True" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" MaxHeight="{ThemeResource AutoSuggestListMaxHeight}" Margin="{ThemeResource AutoSuggestListMargin}" Padding="{ThemeResource AutoSuggestListPadding}" 
+                                                  Loaded="SuggestionsList_Loaded">
+                                            <ListView.ItemContainerTransitions>
+                                                <TransitionCollection>
+                                                    <RepositionThemeTransition/>
+                                                    <AddDeleteThemeTransition/>
+                                                    <ReorderThemeTransition/>
+                                                </TransitionCollection>
+                                            </ListView.ItemContainerTransitions>
+                                        </ListView>
+                                        <TextBlock x:Name="PopupListTopArrow"
+                                                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                   FontSize="15"
+                                                   HorizontalAlignment="Center"
+                                                   IsHitTestVisible="False"
+                                                   Margin="0 5 0 0"
+                                                   Text="{Binding Source={StaticResource FontIcons}, Path=BoldUpArrow}"
+                                                   VerticalAlignment="Top"
+                                                   Visibility="{Binding IsTopPopupListArrowVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        <TextBlock x:Name="PopupListBottomArrow" 
+                                                   FontFamily="{ThemeResource SymbolThemeFontFamily}"           
+                                                   FontSize="15"
+                                                   HorizontalAlignment="Center"
+                                                   IsHitTestVisible="False"
+                                                   Margin="0 0 0 5"
+                                                   Text="{Binding Source={StaticResource FontIcons}, Path=BoldDownArrow}"
+                                                   VerticalAlignment="Bottom"
+                                                   Visibility="{Binding IsBottomPopupListArrowVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    </Grid>
                                 </Border>
                             </Popup>
                         </Grid>

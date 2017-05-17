@@ -73,6 +73,34 @@ namespace DigiTransit10.Controls
             }
         }
 
+        private bool _isTopPopupListArrowVisible = false;
+        public bool IsTopPopupListArrowVisible
+        {
+            get { return _isTopPopupListArrowVisible; }
+            set
+            {
+                if (_isTopPopupListArrowVisible != value)
+                {
+                    _isTopPopupListArrowVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool _isBottomPopupListArrowVisible = false;
+        public bool IsBottomPopupListArrowVisible
+        {
+            get { return _isBottomPopupListArrowVisible; }
+            set
+            {
+                if (_isBottomPopupListArrowVisible != value)
+                {
+                    _isBottomPopupListArrowVisible = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public bool IsFavoriteButtonEnabled
         {
             get
@@ -642,10 +670,88 @@ namespace DigiTransit10.Controls
             }
         }
 
+        private bool ScrollViewerObtained = false;
+        // Grab the AutoSuggetBox's Popup's ListView's ScrollViewer so we can track its scroll events.
+        private void SuggestionsList_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ScrollViewerObtained)
+            {
+                return;
+            }
+
+            ListView listView = sender as ListView;
+            if (listView == null)
+            {
+                return;
+            }
+
+            ScrollViewer scrollViewer = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(listView, 0), 0) as ScrollViewer;
+            if (scrollViewer == null)
+            {
+                return;
+            }
+            ScrollViewerObtained = true;
+
+            scrollViewer.ViewChanged -= PopupListViewScrollViewer_ViewChanged;
+            scrollViewer.ViewChanged += PopupListViewScrollViewer_ViewChanged;
+
+            scrollViewer.SizeChanged -= PopupListViewScrollViewer_SizeChanged;
+            scrollViewer.SizeChanged += PopupListViewScrollViewer_SizeChanged;
+        }
+
+        private void PopupListViewScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            if (sv == null)
+            {
+                return;
+            }
+
+            UpdateScrollViewerArrows(sv);
+        }
+
+        private void PopupListViewScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            ScrollViewer sv = sender as ScrollViewer;
+            if (sv == null)
+            {
+                return;
+            }
+
+            UpdateScrollViewerArrows(sv);
+        }
+
+        private void UpdateScrollViewerArrows(ScrollViewer sv)
+        {
+            double verticalOffset = sv.VerticalOffset;
+            double maxVerticalOffset = sv.ScrollableHeight;
+
+            if (maxVerticalOffset <= 0) // no scrolling possible
+            {
+                IsTopPopupListArrowVisible = false;
+                IsBottomPopupListArrowVisible = false;
+            }
+            else if (verticalOffset == 0) // at the top
+            {                
+                IsTopPopupListArrowVisible = false;
+                IsBottomPopupListArrowVisible = true;
+            }
+            else if (verticalOffset == maxVerticalOffset) // at the bottom
+            {
+                IsTopPopupListArrowVisible = true;
+                IsBottomPopupListArrowVisible = false;
+            }
+            else // somewhere in the middle
+            {
+                IsTopPopupListArrowVisible = true;
+                IsBottomPopupListArrowVisible = true;
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void RaisePropertyChanged([CallerMemberName]string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        }       
     }
 }

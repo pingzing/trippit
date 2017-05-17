@@ -7,6 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     
+    MaxHeight="400"
+    FullSizeDesired="False"    
     
     Title="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Title}"
     PrimaryButtonText="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Confirm}"
@@ -35,7 +37,7 @@
         <CheckBox x:Name="DontShowAgainCheckbox"
                   Grid.Row="2"
                   Content="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_DontShowCheckbox}"
-                  IsChecked="True"
+                  IsChecked="False"
                   Margin="0 10 0 0"/>
         <TextBlock x:Name="DontShowInfoTextBlock" 
                    Grid.Row="3"
