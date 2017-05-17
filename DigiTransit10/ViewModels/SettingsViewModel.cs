@@ -144,7 +144,7 @@ namespace DigiTransit10.ViewModels
             get
             {
                 PackageVersion version = Package.Current.Id.Version;
-                return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+                return $"v{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
             }
         }
 

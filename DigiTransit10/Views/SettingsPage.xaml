@@ -168,23 +168,7 @@
                                Style="{StaticResource ExplanationTextBlockStyle}"/>
                 </StackPanel>
 
-                <StackPanel x:Name="SpecialThanksPanel" Grid.Row="4" Margin="10 20 10 0">
-                    <TextBlock x:Name="SpecialThanksHeader"
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksHeader}"
-                               Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock x:Name="SpecialThanksTextBlock"
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksText}"/>
-                </StackPanel>
-
-                <StackPanel x:Name="LicensesPanel" Grid.Row="5" Margin="10 20 10 0">
-                    <TextBlock x:Name="LicensesHeader"
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesHeader}"
-                               Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock x:Name="LicensesTextBlock"
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesText}"/>
-                </StackPanel>
-
-                <StackPanel x:Name="VersionPanel" Grid.Row="6" Margin="10 20 10 0">
+                <StackPanel x:Name="VersionPanel" Grid.Row="4" Margin="10 20 10 0">
                     <TextBlock x:Name="VersionHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_VersionHeader}"
                                Style="{StaticResource SubtitleTextBlockStyle}"/>
@@ -192,6 +176,25 @@
                                Text="{x:Bind ViewModel.VersionString}"/>
                 </StackPanel>
 
+                <StackPanel x:Name="SpecialThanksPanel" Grid.Row="5" Margin="10 20 10 0">
+                    <TextBlock x:Name="SpecialThanksHeader"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksHeader}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="SpecialThanksTextBlock"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_SpecialThanksText}"
+                               TextTrimming="Clip"
+                               TextWrapping="WrapWholeWords"/>
+                </StackPanel>
+
+                <StackPanel x:Name="LicensesPanel" Grid.Row="6" Margin="10 20 10 0">
+                    <TextBlock x:Name="LicensesHeader"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesHeader}"
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="LicensesTextBlock"
+                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_LicensesText}"
+                               TextTrimming="Clip"
+                               TextWrapping="WrapWholeWords"/>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </RelativePanel>
