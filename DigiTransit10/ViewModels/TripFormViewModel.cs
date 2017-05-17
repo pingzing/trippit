@@ -274,32 +274,41 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private readonly RelayCommand _planTripWideViewCommand;
-        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand ?? (new RelayCommand(PlanTrip));
+        private RelayCommand _planTripWideViewCommand = null;
+        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand 
+            ?? ( _planTripWideViewCommand = new RelayCommand(PlanTrip));
 
-        private readonly RelayCommand _toggleTransitPanelCommand = null;
-        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand ?? new RelayCommand(TransitTogglePannel);
+        private RelayCommand _toggleTransitPanelCommand = null;
+        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand 
+            ?? (_toggleTransitPanelCommand = new RelayCommand(TransitTogglePannel));
 
-        private readonly RelayCommand _setDateToTodayCommand = null;
-        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand ?? new RelayCommand(SetDateToToday);        
+        private  RelayCommand _setDateToTodayCommand = null;
+        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand 
+            ?? (_setDateToTodayCommand = new RelayCommand(SetDateToToday));        
 
-        private readonly RelayCommand<FavoritePlace> _favoritePlaceClickedCommand = null;
-        public RelayCommand<FavoritePlace> FavoritePlaceClickedCommand
-            => _favoritePlaceClickedCommand ?? new RelayCommand<FavoritePlace>(FavoritePlaceClicked);
+        private RelayCommand<IFavorite> _pinnedFavoriteClickedCommand = null;
+        public RelayCommand<IFavorite> PinnedFavoriteClickedCommand => _pinnedFavoriteClickedCommand 
+            ?? (_pinnedFavoriteClickedCommand = new RelayCommand<IFavorite>(PinnedFavoriteClicked));
 
-        private readonly RelayCommand<IFavorite> _removePinnedFavoriteCommand = null;
-        public RelayCommand<IFavorite> RemovePinnedFavoriteCommand
-            => _removePinnedFavoriteCommand ?? new RelayCommand<IFavorite>(RemovePinnedFavorite);
+        private RelayCommand<IFavorite> _removePinnedFavoriteCommand = null;
+        public RelayCommand<IFavorite> RemovePinnedFavoriteCommand=> _removePinnedFavoriteCommand 
+            ?? (_removePinnedFavoriteCommand = new RelayCommand<IFavorite>(RemovePinnedFavorite));
 
-        public RelayCommand SwapFirstLocationCommand => new RelayCommand(SwapFirstLocation);
+        private RelayCommand _swapFirstLocationCommand = null;
+        public RelayCommand SwapFirstLocationCommand => _swapFirstLocationCommand
+            ?? (_swapFirstLocationCommand = new RelayCommand(SwapFirstLocation));
 
-        public RelayCommand<IntermediateSearchViewModel> SwapIntermediateLocationCommand
-            => new RelayCommand<IntermediateSearchViewModel>(SwapIntermediateLocation);
+        private RelayCommand<IntermediateSearchViewModel> _swapIntermediateLocationCommand = null;
+        public RelayCommand<IntermediateSearchViewModel> SwapIntermediateLocationCommand => _swapIntermediateLocationCommand
+            ?? (_swapIntermediateLocationCommand = new RelayCommand<IntermediateSearchViewModel>(SwapIntermediateLocation));
 
-        public RelayCommand AddIntermediatePlaceCommand => new RelayCommand(AddIntermediatePlace);
+        private RelayCommand _addIntermediatePlaceCommand = null;
+        public RelayCommand AddIntermediatePlaceCommand => _addIntermediatePlaceCommand 
+            ?? (_addIntermediatePlaceCommand = new RelayCommand(AddIntermediatePlace));
 
-        public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand
-            => new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate);
+        private RelayCommand<IntermediateSearchViewModel> _removeIntermediateCommand = null;
+        public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand => _removeIntermediateCommand 
+            ?? (_removeIntermediateCommand = new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate));
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
@@ -564,13 +573,25 @@ namespace DigiTransit10.ViewModels
             await FillPinnedFavorites();
         }
 
-        private void FavoritePlaceClicked(FavoritePlace obj)
+        private void PinnedFavoriteClicked(IFavorite favorite)
         {
-            ToPlace = obj;
+            FavoritePlace place = favorite as FavoritePlace;
+            if (place != null)
+            {
+                ToPlace = place;
+            }
+
+            FavoriteRoute route = favorite as FavoriteRoute;
+            if (route != null)
+            {
+                FromPlace = route.RoutePlaces.First();
+                ToPlace = route.RoutePlaces.Last();
+            }
             if (PlanTripCommand.CanExecute(null))
             {
                 PlanTrip();
             }
+
         }
 
         private void RemovePinnedFavorite(IFavorite favorite)

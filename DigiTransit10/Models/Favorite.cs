@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigiTransit10.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -214,10 +215,42 @@ namespace DigiTransit10.Models
     }
 
     //Only used for seralization due to its small footprint.
-    public struct SimpleFavoritePlace
+    public struct SimpleFavoritePlace : IPlace
     {
         public string Name { get; set; }
         public double Lat { get; set; }
         public double Lon { get; set; }
+
+        /// <summary>
+        /// Optional.
+        /// </summary>
+        public string StringId { get; set; }
+        
+        public PlaceType Type { get; set; }
+
+        /// <summary>
+        /// Always returns null on this type.
+        /// </summary>
+        public double? Confidence
+        {
+            get { return null; }
+            set { }
+        }
+
+        public BasicGeoposition Coords => BasicGeopositionExtensions.Create(0.0, Lon, Lat);
+
+        /// <summary>
+        /// Always returns Guid.Empty on this type.
+        /// </summary>
+        public Guid Id
+        {
+            get { return Guid.Empty; }
+            set { }
+        }
+
+        public int CompareTo(IPlace other)
+        {
+            return string.Compare(Name, other.Name, StringComparison.Ordinal);
+        }
     }
 }

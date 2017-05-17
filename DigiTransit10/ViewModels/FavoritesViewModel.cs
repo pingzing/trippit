@@ -6,6 +6,7 @@ using DigiTransit10.Localization.Strings;
 using DigiTransit10.Models;
 using DigiTransit10.Services;
 using DigiTransit10.Services.SettingsServices;
+using DigiTransit10.Styles;
 using DigiTransit10.Views;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
@@ -19,6 +20,7 @@ using Template10.Mvvm;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.ViewModels
 {
@@ -359,7 +361,7 @@ namespace DigiTransit10.ViewModels
 
             IEnumerable<ColoredMapLinePoint> mapPoints = faveRoute.RouteGeometryStrings
                     .SelectMany(str => GooglePolineDecoder.Decode(str))
-                    .Select(coords => new ColoredMapLinePoint(coords, Colors.Blue));
+                    .Select(coords => new ColoredMapLinePoint(coords, HslColors.GetModeColor(ApiMode.Bus)));
             var mapLine = new ColoredMapLine(mapPoints, faveRoute.Id);
             mapLine.OptionalId = faveRoute.Id;
             MappableFavoriteRoutes.Add(mapLine);

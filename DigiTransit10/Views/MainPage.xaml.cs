@@ -74,19 +74,19 @@ namespace DigiTransit10.Views
             ViewModel?.TripFormViewModel?.ToggleTransitPanelCommand.Execute(null);
         }
 
-        private FavoritePlace _pinnedFavoriteClicked;
+        private IFavorite _pinnedFavoriteClicked;
         private ListView _pinnedFavoritesList;
         private bool _isPlayingExitAnimation;
         private void PinnedFavoritesControl_OnItemClick(object sender, ItemClickEventArgs e)
         {
-            _pinnedFavoriteClicked = e.ClickedItem as FavoritePlace;
+            _pinnedFavoriteClicked = e.ClickedItem as IFavorite;
             if(_pinnedFavoritesList == null)
             {
                 _pinnedFavoritesList = sender as ListView;
             }
             if (_pinnedFavoriteClicked != null)
             {
-                ViewModel?.TripFormViewModel?.FavoritePlaceClickedCommand.Execute(_pinnedFavoriteClicked);
+                ViewModel?.TripFormViewModel?.PinnedFavoriteClickedCommand.Execute(_pinnedFavoriteClicked);
                 if(AdaptiveVisualStateGroup.CurrentState.Name == Constants.VisualStateNarrow)
                 {
                     _isPlayingExitAnimation = true;

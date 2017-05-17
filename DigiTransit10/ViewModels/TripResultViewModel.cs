@@ -209,13 +209,15 @@ namespace DigiTransit10.ViewModels
             {
                 Lat = startPlace.StartCoords.Latitude,
                 Lon = startPlace.StartCoords.Longitude,
-                Name = routeToSave.StartingPlaceName
+                Name = routeToSave.StartingPlaceName,
+                Type = ModelEnums.PlaceType.FavoritePlace
             });
             places.Add(new SimpleFavoritePlace
             {
                 Lat = endPlace.EndCoords.Latitude,
                 Lon = endPlace.EndCoords.Longitude,
-                Name = routeToSave.EndingPlaceName
+                Name = routeToSave.EndingPlaceName,
+                Type = ModelEnums.PlaceType.FavoritePlace
             });
 
             route.RoutePlaces = places;

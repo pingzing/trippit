@@ -7,20 +7,22 @@ using static DigiTransit10.Models.ModelEnums;
 namespace DigiTransit10.Models
 {
     public interface IPlace : IComparable<IPlace>, IMapPoi
-    {
-        /// <summary>
-        /// Optional.
-        /// </summary>
-        string StringId { get; set; }
+    {        
         new string Name { get; set; }
         double Lat { get; set; }
         double Lon { get; set; }
         PlaceType Type { get; set; }
+
+        /// <summary>
+        /// Optional.
+        /// </summary>
+        string StringId { get; set; }
+
         /// <summary>
         /// Optional.
         /// </summary>
         double? Confidence { get; set; }
-    }
+    }       
 
     public class Place : IPlace
     {
