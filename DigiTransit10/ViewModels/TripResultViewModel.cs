@@ -227,7 +227,7 @@ namespace DigiTransit10.ViewModels
 
         private void SearchForLine(string lineId)
         {
-            _messengerService.Send(new MessageTypes.LineSearchRequested(lineId, MessageTypes.LineSearchType.ById));
+            _messengerService.Send(new MessageTypes.LineSearchRequested(lineId, MessageTypes.LineSearchType.ById, typeof(TripResultViewModel)));
         }
 
         private void GoBackToTripList()

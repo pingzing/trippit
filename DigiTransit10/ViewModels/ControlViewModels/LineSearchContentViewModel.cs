@@ -87,7 +87,8 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             set { Set(ref _isOverviewLoading, value); }
         }
 
-        public RelayCommand<string> GetLinesCommand => new RelayCommand<string>(GetLinesAsync);
+        private RelayCommand<string> _getLinesCommand;
+        public RelayCommand<string> GetLinesCommand => _getLinesCommand ?? (_getLinesCommand = new RelayCommand<string>(GetLinesAsync));        
 
         public LineSearchContentViewModel(INetworkService network, IMessenger messenger, SearchSection ownedBy, string title)
         {            
@@ -172,7 +173,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
 
         public void SetMapSelectedPlace(IEnumerable<Guid> obj)
         {
-            throw new NotImplementedException(); // How to handle this?
+            // TODO: No functionality here yet. Not quite sure what to do with it.
         }
     }
 }

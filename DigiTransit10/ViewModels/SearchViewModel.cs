@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Template10.Common;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Navigation;
@@ -28,11 +29,12 @@ namespace DigiTransit10.ViewModels
     }
 
     public class SearchViewModel : ViewModelBase
-    {        
+    {                
         private readonly INetworkService _networkService;
         private readonly IGeolocationService _geolocation;
         private readonly IMessenger _messenger;
 
+        ISearchViewModel _interceptedBackButtonDestination = null;
         private StopSearchContentViewModel _nearbyStopsViewModel;
         private StopSearchContentViewModel _searchStopsViewModel;
         private LineSearchContentViewModel _linesSearchViewModel;
@@ -109,6 +111,7 @@ namespace DigiTransit10.ViewModels
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             _messenger.Register<MessageTypes.LineSearchRequested>(this, SearchForLine);
+            BootStrapper.BackRequested += BootStrapper_BackRequested;
 
             var searchArgs = parameter as MessageTypes.LineSearchRequested;
             if (searchArgs != null)
@@ -149,11 +152,13 @@ namespace DigiTransit10.ViewModels
             MapCircles = SelectedPivot.MapCircles;
             MapPlaces = SelectedPivot.MapPlaces;
             MapLines = SelectedPivot.MapLines;
-        }
+        }        
 
         public override Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             _messenger.Unregister<MessageTypes.LineSearchRequested>(this, SearchForLine);
+            BootStrapper.BackRequested -= BootStrapper_BackRequested;
+            _interceptedBackButtonDestination = null;
 
             MapCircles = null;
             MapPlaces = null;
@@ -161,14 +166,23 @@ namespace DigiTransit10.ViewModels
 
             //TODO: HACK! For some reason, if we leave while SelectedPivot is anything by
             // the first pivot in the collection, when we come back to the page, we hard crash with
-            // no stack trace and no (useful) error message.
-            // Theory: Maybe related to the memory leak we keep seeing with the MapControl?
-            // Further theory: Probably not memory leak related, more like some race condition deep in the binding system.
+            // no stack trace and no (useful) error message.            
+            // Theoryheory: Probably some race condition deep in the binding system.
             // It RARELY happens if navigating to the page and quickly switching pivots at a very specific instant.
             SelectedPivot = _nearbyStopsViewModel;
             //-----end hack
             
             return Task.CompletedTask;
+        }
+
+        private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
+        {
+            if (_interceptedBackButtonDestination != null)
+            {
+                e.Handled = true;
+                SelectedPivot = _interceptedBackButtonDestination;
+                _interceptedBackButtonDestination = null;                                
+            }
         }
 
         private async void MoveNearbyCircle(Geopoint point)
@@ -207,8 +221,13 @@ namespace DigiTransit10.ViewModels
 
         private void SearchForLine(MessageTypes.LineSearchRequested args)
         {
+            if (args.Source == typeof(StopSearchContentViewModel))
+            {
+                _interceptedBackButtonDestination = SelectedPivot;
+            }
+
             SelectedPivot = _linesSearchViewModel;
             _linesSearchViewModel.GetLinesByIdAsync(args.Line.GtfsId).DoNotAwait();
-        }
+        }        
     }
 }

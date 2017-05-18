@@ -343,7 +343,7 @@ namespace DigiTransit10.ViewModels.ControlViewModels
         private void ViewLine(ITransitLine line)
         {
             RaiseStateChanged(StopSearchState.Overview);
-            _messenger.Send(new MessageTypes.LineSearchRequested(line));
+            _messenger.Send(new MessageTypes.LineSearchRequested(line, typeof(StopSearchContentViewModel)));
         }
 
         private void Loaded()

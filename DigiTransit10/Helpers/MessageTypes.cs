@@ -169,6 +169,10 @@ namespace DigiTransit10.Helpers
 
         public class LineSearchRequested
         {
+            /// <summary>
+            /// The ViewModel or Page the request originated from.
+            /// </summary>
+            public Type Source { get; set; }
             public LineSearchType SearchType { get; set; }
             public ITransitLine Line { get; set; }            
             public string SearchTerm { get; set; }
@@ -178,16 +182,18 @@ namespace DigiTransit10.Helpers
             /// </summary>
             public LineSearchRequested() { }
 
-            public LineSearchRequested(ITransitLine line)
+            public LineSearchRequested(ITransitLine line, Type source)
             {
                 Line = line;
                 SearchType = LineSearchType.ByTransitLine;
+                Source = source;
             }
 
-            public LineSearchRequested(string searchTerm, LineSearchType searchType)
+            public LineSearchRequested(string searchTerm, LineSearchType searchType, Type source)
             {
                 SearchTerm = searchTerm;
                 SearchType = searchType;
+                Source = source;
             }                                    
         }
     }

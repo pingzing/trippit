@@ -9,16 +9,37 @@ using Template10.Utils;
 using Windows.Globalization;
 using Windows.UI.Xaml;
 using DigiTransit10.Models;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace DigiTransit10.Services.SettingsServices
 {
-    public class SettingsService
+    public class SettingsService : IAsyncInitializable
     {
+        private const uint SettingsVersion = 1;
+
         public static SettingsService Instance { get; } = new SettingsService();
-        ISettingsHelper _helper;
+
+        public Task Initialization { get; private set; }
+
+        private ISettingsHelper _helper;
         private SettingsService()
         {
             _helper = new SettingsHelper();
+            Initialization = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            await ApplicationData.Current.SetVersionAsync(SettingsVersion, SetSettingsVersion);
+        }
+
+        private void SetSettingsVersion(SetVersionRequest setVersionRequest)
+        {
+            if (setVersionRequest.CurrentVersion < setVersionRequest.DesiredVersion)
+            {
+                // In the future, we'll have code here that migrates old app data versions to new app data versions.
+            }
         }
 
         public bool UseShellBackButton
@@ -217,7 +238,7 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get { return _helper.Read(nameof(IsTooFarIntoPastDialogSuppressed), false, SettingsStrategies.Local); }
             set { _helper.Write(nameof(IsTooFarIntoPastDialogSuppressed), value); }
-        }
+        }        
     }
 }
 

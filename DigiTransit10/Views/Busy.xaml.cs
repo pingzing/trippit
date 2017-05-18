@@ -54,7 +54,7 @@ namespace DigiTransit10.Views
                     modal.ModalContent = view = new Busy();
                 modal.CanBackButtonDismiss = dismissable;
                 modal.IsModal = view.IsBusy = busy;
-                view.BusyText = text;
+                view.BusyText = text;                
             });
         }
 

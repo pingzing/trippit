@@ -87,11 +87,9 @@ namespace DigiTransit10.ViewModels
         }
 
         private void SearchLine(MessageTypes.LineSearchRequested lineSearchMessage)
-        {
-            // MainViewModel shouldn't be responsible for events coming from anywhere else.
-            // Alternatively, I guess we could change the message itself to have a "Source" parameter?
-            if (NavigationService.CurrentPageType == typeof(MainPage) ||
-                NavigationService.CurrentPageType == typeof(TripResultPage))
+        {            
+            // We don't want to intercept messages coming from the SearchPage!
+            if (lineSearchMessage.Source == typeof(TripResultViewModel))
             {
                 NavigationService.NavigateAsync(typeof(SearchPage), lineSearchMessage);
             }
