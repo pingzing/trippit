@@ -8,6 +8,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static DigiTransit10.ExtensionMethods.MapElementExtensions;
+using Template10.Utils;
+using DigiTransit10.ExtensionMethods;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -75,8 +77,10 @@ namespace DigiTransit10.Controls
                     vm.IsSelected = false;
                 }
             }
+
+            ListView listView = sender as ListView;            
             foreach (StopSearchElementViewModel vm in e.AddedItems.OfType<StopSearchElementViewModel>())
-            {
+            {                
                 if (!vm.IsSelected)
                 {
                     Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.Selected));
@@ -84,6 +88,7 @@ namespace DigiTransit10.Controls
                     list.ScrollIntoView(vm, ScrollIntoViewAlignment.Default);
                     vm.IsSelected = true;
                 }
+                listView.ScrollIntoView(vm, ScrollIntoViewAlignment.Leading);
             }
 
         }

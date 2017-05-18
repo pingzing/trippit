@@ -52,7 +52,7 @@
 
         <ListView x:Name="StopsList"                  
                   Grid.Row="1"
-                  ItemContainerStyle="{StaticResource BlandListViewItemStyle}"
+                  ItemContainerStyle="{StaticResource BlandListViewItemStyle}"                  
                   ItemsSource="{x:Bind ViewModel.StopsResultList, Mode=OneWay}"                  
                   SelectedItem="{Binding SelectedStop, Mode=TwoWay}"
                   SelectionChanged="StopsList_SelectionChanged">

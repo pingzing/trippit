@@ -24,6 +24,8 @@ namespace DigiTransit10.ViewModels
         private readonly ILogger _logger;
         private readonly Services.SettingsServices.SettingsService _settingsService;
 
+        private TransitTrafficAlertComparer _transitTrafficAlertComparer;
+
         private List<TransitTrafficAlert> _trafficAlerts = new List<TransitTrafficAlert>();
         public List<TransitTrafficAlert> TrafficAlerts
         {
@@ -57,6 +59,7 @@ namespace DigiTransit10.ViewModels
 
             _messengerService.Register<MessageTypes.PlanFoundMessage>(this, PlanFound);
             _messengerService.Register<MessageTypes.LineSearchRequested>(this, SearchLine);
+            _transitTrafficAlertComparer = new TransitTrafficAlertComparer();             
 
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
@@ -105,7 +108,11 @@ namespace DigiTransit10.ViewModels
             ApiResult<IEnumerable<TransitTrafficAlert>> response = await _networkService.GetTrafficAlertsAsync();
             if (response.HasResult)
             {
-                List<TransitTrafficAlert> newAlerts = response.Result.ToList();                
+                List<TransitTrafficAlert> newAlerts = response
+                    .Result
+                    .Distinct(_transitTrafficAlertComparer) // Sometimes we get a bunch of duplicate alerts that have different IDs, but no other difference
+                    .Where(x => !String.IsNullOrWhiteSpace(x.DescriptionText.Text)) // or empty alerts
+                    .ToList();                
                 AreAlertsFresh = newAlerts.Any(newAlert => TrafficAlerts.All(oldAlert => oldAlert.Id != newAlert.Id));
                 TrafficAlerts = newAlerts;
             }
@@ -139,6 +146,29 @@ namespace DigiTransit10.ViewModels
             await Task.CompletedTask;
         }
 
+    }
+
+    internal class TransitTrafficAlertComparer : IEqualityComparer<TransitTrafficAlert>
+    {
+        public bool Equals(TransitTrafficAlert x, TransitTrafficAlert y)
+        {
+            return x.DescriptionText.Language == y.DescriptionText.Language
+                && x.DescriptionText.Text == y.DescriptionText.Text
+                && x.StartDate == y.StartDate
+                && x.EndDate == y.EndDate;
+        }
+
+        public int GetHashCode(TransitTrafficAlert obj)
+        {
+            unchecked
+            {
+                var hashCode = obj.DescriptionText.Language.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.DescriptionText.Text?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ obj.StartDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ obj.EndDate.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }
 
