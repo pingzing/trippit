@@ -366,7 +366,9 @@
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>10707NeilApps.FutuMapTest</MainPackageIdentityName>
     <MainPackageIdentityName>10707NeilApps.Codeco</MainPackageIdentityName>
+    <MainPackageIdentityName>10707NeilApps.FOODDIoTShoppingList</MainPackageIdentityName>
     <MainPackageIdentityName>10707NeilApps.MagicPacketSender</MainPackageIdentityName>
+    <MainPackageIdentityName>10707NeilApps.MerryChristmasKaisa</MainPackageIdentityName>
     <MainPackageIdentityName>10707NeilApps.Talebook</MainPackageIdentityName>
   </AccountPackageIdentityNames>
   <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9NBLGGH3ZR5R" />
