@@ -101,6 +101,7 @@
     <Content Include="Assets\Fonts\hsl-pikto-normal-webfont.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Fonts\TripIconFont.ttf" />
     <None Include="DigiTransit10_StoreKey.pfx" />
     <None Include="DigiTransit10_TemporaryKey.pfx" />
     <None Include="project.json" />

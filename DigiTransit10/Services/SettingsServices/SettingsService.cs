@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using DigiTransit10.Models;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Foundation;
 
 namespace DigiTransit10.Services.SettingsServices
 {
@@ -20,12 +21,14 @@ namespace DigiTransit10.Services.SettingsServices
 
         public static SettingsService Instance { get; } = new SettingsService();
 
+        public event TypedEventHandler<ApplicationData, object> RoamingDataChanged;
         public Task Initialization { get; private set; }
 
         private ISettingsHelper _helper;
         private SettingsService()
         {
             _helper = new SettingsHelper();
+            ApplicationData.Current.DataChanged += Current_DataChanged;
             Initialization = InitializeAsync();
         }
 
@@ -102,7 +105,7 @@ namespace DigiTransit10.Services.SettingsServices
             {
                 if (_pinnedFavoriteIds == null)
                 {
-                    string serialized = _helper.Read(nameof(PinnedFavoriteIds), "", SettingsStrategies.Roam);
+                    string serialized = _helper.Read(nameof(PinnedFavoriteIds), "");
                     if (String.IsNullOrEmpty(serialized) || serialized == "null")
                     {
                         _pinnedFavoriteIds = new List<Guid>();
@@ -122,7 +125,7 @@ namespace DigiTransit10.Services.SettingsServices
             set
             {
                 _pinnedFavoriteIds = value.ToList();
-                _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds), SettingsStrategies.Roam);
+                _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds));
             }
         }
 
@@ -160,7 +163,7 @@ namespace DigiTransit10.Services.SettingsServices
 
         public void FlushPinnedFavoriteIdsToStorage()
         {
-            _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds), SettingsStrategies.Roam);
+            _helper.Write(nameof(PinnedFavoriteIds), JsonConvert.SerializeObject(_pinnedFavoriteIds));
         }
 
         /// <summary>
@@ -238,7 +241,75 @@ namespace DigiTransit10.Services.SettingsServices
         {
             get { return _helper.Read(nameof(IsTooFarIntoPastDialogSuppressed), false, SettingsStrategies.Local); }
             set { _helper.Write(nameof(IsTooFarIntoPastDialogSuppressed), value); }
-        }        
+        }
+
+        private void Current_DataChanged(ApplicationData sender, object args)
+        {
+            Application​Data​Container​Settings roamedSettings = (Application​Data​Container​Settings )sender.RoamingSettings.Values;
+
+            if (roamedSettings.ContainsKey(nameof(PreferredWalkingAmount)))
+            {
+                PreferredWalkingAmount = GetFromCompositeValue<WalkingAmountType>((ApplicationDataCompositeValue)roamedSettings[nameof(PreferredWalkingAmount)]);
+            }
+
+            if (roamedSettings.ContainsKey(nameof(PreferredWalkingSpeed)))
+            {
+                PreferredWalkingSpeed = GetFromCompositeValue<WalkingSpeedType>((ApplicationDataCompositeValue)roamedSettings[nameof(PreferredWalkingSpeed)]);
+            }
+
+            if (roamedSettings.ContainsKey(nameof(PreferredFromPlace)))
+            {
+                PreferredFromPlace = GetFromCompositeValue<IPlace>((ApplicationDataCompositeValue)roamedSettings[nameof(PreferredFromPlace)]);
+            }
+
+            if (roamedSettings.ContainsKey(nameof(PreferredToPlace)))
+            {
+                PreferredToPlace = GetFromCompositeValue<IPlace>((ApplicationDataCompositeValue)roamedSettings[nameof(PreferredToPlace)]);
+            }
+
+            if (roamedSettings.ContainsKey(nameof(IsAnalyticsEnabled)))
+            {
+                IsAnalyticsEnabled = GetFromCompositeValue<bool>((ApplicationDataCompositeValue)roamedSettings[nameof(IsAnalyticsEnabled)]);
+            }
+
+            RoamingDataChanged?.Invoke(sender, args);
+        }
+        
+        private const string ValueKey = "Value";
+        private const string TypeKey = "Type";
+        private T GetFromCompositeValue<T>(ApplicationDataCompositeValue value)
+        {
+            if (value == null)
+            {
+                return default(T);
+            }
+
+            Type concreteType = null;
+            object serializedType;
+            if (value.TryGetValue(TypeKey, out serializedType))
+            {
+                concreteType = Type.GetType(serializedType.ToString());
+            }
+
+            object serializedData;
+            if (value.TryGetValue(ValueKey, out serializedData))
+            {
+                // We need this if we're trying to deserialize an interface. When being serialized, we saved
+                // the concrete type. So we deserialize to that, then cast to the requested interface.
+                if (concreteType != null)
+                {
+                    return (T)JsonConvert.DeserializeObject(serializedData.ToString(), concreteType);
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<T>(serializedData.ToString());
+                }
+            }
+            else
+            {
+                return default(T);
+            }
+        } 
     }
 }
 

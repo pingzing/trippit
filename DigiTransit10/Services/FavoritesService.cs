@@ -43,6 +43,7 @@ namespace DigiTransit10.Services
             _settingsService = settingsService;
             _fileService = fileService;
             Initialization = InitializeAsync();
+            _settingsService.RoamingDataChanged += _settingsService_RoamingDataChanged;
         }
 
         private async Task InitializeAsync()
@@ -185,6 +186,11 @@ namespace DigiTransit10.Services
                 System.Diagnostics.Debug.WriteLine($"Could not deserialize favorites: {ex}: {ex.Message}");
                 return null;
             }
+        }
+
+        private void _settingsService_RoamingDataChanged(ApplicationData sender, object args)
+        {
+            //todo: when we get around to implementing Roamed favorites, this is where we'd do the heavy lifting
         }
     }
 }

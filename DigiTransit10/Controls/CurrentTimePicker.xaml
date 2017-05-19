@@ -252,7 +252,7 @@
             <Button.RenderTransform>
                 <CompositeTransform/>
             </Button.RenderTransform>
-            <Border x:Name="ButtonBorder" BorderBrush="{ThemeResource SystemControlBackgroundBaseMediumBrush}" BorderThickness="2" Padding="8 4 8 4">
+            <Border x:Name="ButtonBorder" BorderBrush="{ThemeResource SystemControlBackgroundBaseHighBrush}" BorderThickness="2" Padding="8 4 8 4">
                 <Border.RenderTransform>
                     <CompositeTransform/>
                 </Border.RenderTransform>
