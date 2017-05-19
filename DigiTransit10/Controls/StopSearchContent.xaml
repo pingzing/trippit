@@ -75,6 +75,7 @@
         </ListView>
 
         <ProgressRing IsActive="{x:Bind ViewModel.IsDetailsLoading, Mode=OneWay}" 
+                      Margin="0 -30 0 0"
                       Visibility="{x:Bind ViewModel.IsDetailsLoading, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
         <!--Note: When we switch into the Details view, we lock the parent's pivot.-->

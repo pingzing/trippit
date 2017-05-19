@@ -300,14 +300,14 @@
                                           FontSize="50" 
                                           Glyph="{Binding FerryIcon, Source={StaticResource FontIcons}}"/>
                         </CheckBox>
-                        <CheckBox x:Name="BikeCheckBox"
+                        <!--<CheckBox x:Name="BikeCheckBox"
                                       Grid.Row="5" Grid.Column="2" MinWidth="100"
                                       IsChecked="{x:Bind IsBikeChecked, Mode=TwoWay}">
                             <FontIcon FontFamily="{StaticResource HslPiktoFrameFont}" 
                                           Foreground="{Binding Source={StaticResource HslBikeGoldenrodBrush}}"
                                           FontSize="50" 
                                           Glyph="{Binding BikeIcon, Source={StaticResource FontIcons}}"/>
-                        </CheckBox>
+                        </CheckBox>-->
                     </Grid>
 
                     <Button x:Name="HideShowOptionsButton"                                          

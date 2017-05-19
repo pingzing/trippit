@@ -93,7 +93,7 @@ namespace DigiTransit10
 #if DEBUG
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
 #else
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(300, 600));
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(400, 600));
 #endif
 
             this.SessionState = new StateItems(); //apparently this needs to be initialized by hand            
