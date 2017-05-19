@@ -554,4 +554,7 @@ Default: 3</value>
   <data name="AlertsPage_ViewOnline" xml:space="preserve">
     <value>View online</value>
   </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Trippit</value>
+  </data>
 </root>

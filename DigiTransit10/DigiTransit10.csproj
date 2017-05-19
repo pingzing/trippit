@@ -106,6 +106,13 @@
     <None Include="DigiTransit10_TemporaryKey.pfx" />
     <None Include="project.json" />
     <None Include="Service References\HockeyApp\ConnectedService.json" />
+    <PRIResource Include="Strings\en-US\AppResources.resw">
+      <Generator>ReswFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.cs</LastGenOutput>
+      <CustomToolNamespace>DigiTransit10.Localization.Strings</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </PRIResource>
+    <PRIResource Include="Strings\fi-FI\AppResources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -319,6 +326,11 @@
       <DependentUpon>ContinuumNavigationExitFactory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
+    <Compile Include="Strings\en-US\AppResources.cs">
+      <DependentUpon>AppResources.resw</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Styles\HslColors.cs" />
     <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
     <Compile Include="TemplateSelectors\FavoritesListTemplateSelector.cs" />
