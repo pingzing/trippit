@@ -1463,5 +1463,25 @@ namespace DigiTransit10.Localization.Strings
         /// Localized resource similar to "Cancel"
         /// </summary>
         public static string LiteralCancel => resourceLoader.GetString(nameof(LiteralCancel));
+
+        /// <summary>
+        /// Localized resource similar to "From:"
+        /// </summary>        
+        public static string AlertsPage_TimeStart => resourceLoader.GetString(nameof(AlertsPage_TimeStart));
+
+        /// <summary>
+        /// Localized resource similar to "To:"
+        /// </summary>
+        public static string AlertsPage_TimeEnd => resourceLoader.GetString(nameof(AlertsPage_TimeEnd));
+
+        /// <summary>
+        /// Localized resource similar to "View online"
+        /// </summary>
+        public static string AlertsPage_ViewOnline => resourceLoader.GetString(nameof(AlertsPage_ViewOnline));
+
+        /// <summary>
+        /// Localized resource similar to "Affects"
+        /// </summary>
+        public static string AlertsPage_Affects => resourceLoader.GetString(nameof(AlertsPage_Affects));
     }
 }

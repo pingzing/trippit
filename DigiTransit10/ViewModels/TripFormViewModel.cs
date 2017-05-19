@@ -22,7 +22,6 @@ using Template10.Common;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using static DigiTransit10.Helpers.Enums;
 using static DigiTransit10.Helpers.MessageTypes;
@@ -373,7 +372,7 @@ namespace DigiTransit10.ViewModels
                     SetBusy(false);
                     return;
                 }
-                IEnumerable<IPlace> places = placeResolutionResults.Select(x => x.ResolvedPlace);
+                IEnumerable<IPlace> places = placeResolutionResults.Select(x => x.AttemptedResolvedPlace);
 
                 FromPlace = places.First(); //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
                 if(IntermediatePlaces.Any())
@@ -434,8 +433,8 @@ namespace DigiTransit10.ViewModels
             }
             catch (OperationCanceledException ex)
             {
-                //Log and swallow. Cancellation should only happen on user request here.
-                System.Diagnostics.Debug.WriteLine("Cancellation requested.");
+                //Log and swallow. Cancellation should only happen on user request here.                
+                _logger.Debug("User cancelled place lookup.");
             }
             finally
             {
@@ -465,7 +464,12 @@ namespace DigiTransit10.ViewModels
                             FailureReason reason = resp.Result.Failure == null
                                 ? FailureReason.Unspecified
                                 : resp.Result.Failure.Reason;
-                            return new PlaceResolutionResult(reason);
+                            return new PlaceResolutionResult(placeToFind, reason);
+                        }
+                        if (resp.Result.Result.Features[0].Properties.Confidence <= Constants.SearchResultsMinimumConfidence)
+                        {
+                            FailureReason reason = FailureReason.NoResults;
+                            return new PlaceResolutionResult(placeToFind, reason);
                         }
                         IPlace foundPlace = new Place
                         {
@@ -485,11 +489,11 @@ namespace DigiTransit10.ViewModels
                     getAddressTasks.Add(task.ContinueWith<PlaceResolutionResult>(resp => {
                         if(resp.Result.IsFailure)
                         {
-                            return new PlaceResolutionResult(resp.Result.Failure.Reason);
+                            return new PlaceResolutionResult(placeToFind, resp.Result.Failure.Reason);
                         }
                         if(resp.Result.Result.Coordinate?.Point?.Position == null)
                         {
-                            return new PlaceResolutionResult(FailureReason.NoResults);
+                            return new PlaceResolutionResult(placeToFind, FailureReason.NoResults);
                         }
                         var loc = resp.Result.Result.Coordinate.Point.Position;
                         IPlace foundPlace = new Place
@@ -689,7 +693,7 @@ namespace DigiTransit10.ViewModels
                 return;
             }
 
-            if (unresolvedPlaces.Any(x => x.ResolvedPlace.Type == PlaceType.UserCurrentLocation))
+            if (unresolvedPlaces.Any(x => x.AttemptedResolvedPlace?.Type == PlaceType.UserCurrentLocation))
             {
                 await _dialogService.ShowDialog(AppResources.DialogMessage_UserLocationFailed, AppResources.DialogTitle_NoLocationFound);
                 return;
@@ -699,7 +703,7 @@ namespace DigiTransit10.ViewModels
             error.AppendLine(AppResources.DialogMessage_PlaceResolutionFailed);
             foreach (PlaceResolutionResult result in unresolvedPlaces)
             {
-                error.AppendLine($"● {result.ResolvedPlace.Name}");
+                error.AppendLine($"● {result.AttemptedResolvedPlace.Name}");
             }
             await _dialogService.ShowDialog(error.ToString(), AppResources.DialogTitle_NoLocationFound);
         }

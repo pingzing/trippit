@@ -110,6 +110,7 @@ namespace DigiTransit10.ViewModels
                     .Result
                     .Distinct(_transitTrafficAlertComparer) // Sometimes we get a bunch of duplicate alerts that have different IDs, but no other difference
                     .Where(x => !String.IsNullOrWhiteSpace(x.DescriptionText.Text)) // or empty alerts
+                    .OrderBy(x => x.StartDate)
                     .ToList();                
                 AreAlertsFresh = newAlerts.Any(newAlert => TrafficAlerts.All(oldAlert => oldAlert.Id != newAlert.Id));
                 TrafficAlerts = newAlerts;

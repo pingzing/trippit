@@ -7,6 +7,11 @@ namespace DigiTransit10.Helpers
 {
     public static class Constants
     {
+        /// <summary>
+        /// Any search results with a confidence lower than this will be filtered out.
+        /// </summary>
+        public const double SearchResultsMinimumConfidence = 0.35;
+
         //Font faces
         public const string SegoeMdl2FontName = "Segoe MDL2 Assets";
         public const string SymbolThemeFontResource = "SymbolThemeFontFamily";

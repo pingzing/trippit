@@ -542,4 +542,16 @@ Default: 3</value>
   <data name="LiteralCancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="AlertsPage_Affects" xml:space="preserve">
+    <value>Affects</value>
+  </data>
+  <data name="AlertsPage_TimeEnd" xml:space="preserve">
+    <value>To:</value>
+  </data>
+  <data name="AlertsPage_TimeStart" xml:space="preserve">
+    <value>From:</value>
+  </data>
+  <data name="AlertsPage_ViewOnline" xml:space="preserve">
+    <value>View online</value>
+  </data>
 </root>
