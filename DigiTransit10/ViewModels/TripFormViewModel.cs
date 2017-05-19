@@ -410,7 +410,7 @@ namespace DigiTransit10.ViewModels
                     SelectedWalkingSpeed
                 );
 
-                SetBusy(true, AppResources.TripForm_PlanningTrip);
+                Views.Busy.SetBusyText(AppResources.TripForm_PlanningTrip);
 
                 var result = await _networkService.PlanTripAsync(details, _cts.Token);
                 if (result.IsFailure)
@@ -740,7 +740,7 @@ namespace DigiTransit10.ViewModels
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
 
-            BootStrapper.BackRequested += BootStrapper_BackRequested;
+            Views.Busy.BusyCancelled += Busy_BusyCancelled;
 
             if (mode != NavigationMode.Back)
             {
@@ -819,22 +819,18 @@ namespace DigiTransit10.ViewModels
                     PlanTripCommand.Execute(null);
                 }
             }
-        }
+        }       
 
-        private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
+        private void Busy_BusyCancelled(object sender, EventArgs e)
         {
-            if (_isBusy)
-            {
-                //don't mark this as handled, because the Busy control will do that when it dismisses itself.                
-                _messengerService.Send(new MessageTypes.NavigationCanceled());
-                _cts.Cancel();
-            }
+            _messengerService.Send(new MessageTypes.NavigationCanceled());
+            _cts.Cancel();
         }
 
         public override async Task OnNavigatedFromAsync(IDictionary<string, object> pageState, bool suspending)
         {
             _favoritesService.FavoritesChanged -= FavoritesChanged;
-            BootStrapper.BackRequested -= BootStrapper_BackRequested;
+            Views.Busy.BusyCancelled -= Busy_BusyCancelled;
             await Task.CompletedTask;
         }
     }

@@ -539,4 +539,7 @@ Default: 3</value>
   <data name="MainPage_TimeInPastWarning" xml:space="preserve">
     <value>Note: Your selected date and time are in the past.</value>
   </data>
+  <data name="LiteralCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 </root>

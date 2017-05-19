@@ -1458,5 +1458,10 @@ namespace DigiTransit10.Localization.Strings
         /// Localized resource similar to "Note: your selected date and time are in the past."
         /// </summary>
         public static string MainPage_TimeInPastWarning => resourceLoader.GetString(nameof(MainPage_TimeInPastWarning));
+
+        /// <summary>
+        /// Localized resource similar to "Cancel"
+        /// </summary>
+        public static string LiteralCancel => resourceLoader.GetString(nameof(LiteralCancel));
     }
 }

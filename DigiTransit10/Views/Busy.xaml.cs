@@ -7,8 +7,9 @@ using Windows.UI.Xaml.Controls;
 namespace DigiTransit10.Views
 {
     public sealed partial class Busy : UserControl
-    {
+    {        
         public static event EventHandler<bool> BusyChanged;
+        public static event EventHandler BusyCancelled;
 
         public Busy()
         {
@@ -51,16 +52,64 @@ namespace DigiTransit10.Views
                 var modal = Window.Current.Content as ModalDialog;
                 var view = modal.ModalContent as Busy;
                 if (view == null)
+                {
                     modal.ModalContent = view = new Busy();
-                modal.CanBackButtonDismiss = dismissable;
-                modal.IsModal = view.IsBusy = busy;
+                }
+                
+                if (dismissable)
+                {
+                    BootStrapper.BackRequested -= view.BootStrapper_BackRequested;
+                    BootStrapper.BackRequested += view.BootStrapper_BackRequested;
+                }
+
+                modal.IsModal = view.IsBusy = busy;                
                 view.BusyText = text;                
             });
         }
 
+        public static void SetBusyText(string text)
+        {
+            WindowWrapper.Current().Dispatcher.Dispatch(() =>
+            {
+                var modal = Window.Current.Content as ModalDialog;
+                var view = modal.ModalContent as Busy;
+                if (view == null)
+                {
+                    modal.ModalContent = view = new Busy();
+                }
+
+                view.BusyText = text;
+            });
+        }
+
+        private void BootStrapper_BackRequested(object sender, HandledEventArgs e)
+        {
+            if (IsBusy)
+            {
+                e.Handled = true;
+                SetBusy(false);
+                RaiseBusyCancelled();
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsBusy)
+            {
+                SetBusy(false);
+                RaiseBusyCancelled();
+            }
+        }       
+
         private void RaiseBusyChanged(bool newIsBusy)
         {
             BusyChanged?.Invoke(this, newIsBusy);
+        }        
+
+        private void RaiseBusyCancelled()
+        {
+            System.Diagnostics.Debug.WriteLine("Busy cancelled early.");
+            BusyCancelled?.Invoke(this, EventArgs.Empty);
         }
     }
 }
