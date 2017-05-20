@@ -5,21 +5,21 @@ It's an HSL DigiTransit app for Helsinki. Written as a UWA.
 
 ## Building
 Requirements
-* [Resw Code File Generator](https://reswcodegen.codeplex.com/)
+* [Resw Code File Generator](https://reswcodegen.codeplex.com/) (only works with VS2015 at the moment)
 
 ## Feature Epics
 - [x] Trip planning
 - [x] Favorites
 - [x] Detailed trip plan
-- [ ] Line search
-- [ ] Stop search
+- [x] Line search
+- [x] Stop search
 - [x] Multi-leg trip planning
-- [ ] Show nearby stops
-- [ ] Transit service alerts
+- [x] Show nearby stops
+- [x] Transit service alerts
 - [x] Stop/route tile pinning
 - [ ] Subscribe to a line, receive notifications when it stops somewhere
 - [x] Crash reporting
-- [ ] Analytics
+- [x] Analytics
 - [ ] Testing
 
 ## Design Notes
