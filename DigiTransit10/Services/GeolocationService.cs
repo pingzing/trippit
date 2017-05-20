@@ -1,6 +1,7 @@
 ﻿using DigiTransit10.Helpers;
 using GalaSoft.MvvmLight.Threading;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Sensors;
@@ -48,7 +49,8 @@ namespace DigiTransit10.Services
         /// <returns></returns>
         public async Task<GenericResult<Geoposition>> GetCurrentLocationAsync()
         {
-            if(await GetAccessStatus() == GeolocationAccessStatus.Allowed)
+            CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            if(await GetAccessStatus(cts.Token) == GeolocationAccessStatus.Allowed)
             {
                 try
                 {
@@ -100,17 +102,28 @@ namespace DigiTransit10.Services
             }
         }
 
-        private async Task<GeolocationAccessStatus> GetAccessStatus()
+        private async Task<GeolocationAccessStatus> GetAccessStatus(CancellationToken timeoutToken)
         {
             GeolocationAccessStatus accessStatus = GeolocationAccessStatus.Unspecified;
             TaskCompletionSource<bool> resultRetrieved = new TaskCompletionSource<bool>();
 
             DispatcherHelper.CheckBeginInvokeOnUI(
-                () => Geolocator.RequestAccessAsync().AsTask()
-                .ContinueWith(status => {
-                    accessStatus = status.Result;
-                    resultRetrieved.SetResult(true);
-                }));
+                async () =>
+                {
+                    try
+                    {
+                        accessStatus = await Geolocator.RequestAccessAsync().AsTask(timeoutToken);
+                    }
+                    catch(OperationCanceledException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Request access call timed out. Seems to be a CU only bug?");
+                        accessStatus = GeolocationAccessStatus.Denied;
+                    }
+                    finally
+                    {
+                        resultRetrieved.SetResult(true);
+                    }                    
+                });
 
             await resultRetrieved.Task;
             return accessStatus;
