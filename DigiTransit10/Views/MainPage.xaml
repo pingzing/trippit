@@ -172,7 +172,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
                     </Grid.RowDefinitions>
 
                     <Grid x:Name="TransitContentPanel" 
@@ -392,22 +391,6 @@
                             </MenuFlyout>
                         </FlyoutBase.AttachedFlyout>
                     </ListView>
-
-                    <Button x:Name="PlanTripButton"
-                            Grid.Row="3"
-                            VerticalAlignment="Bottom"
-                            Margin="0 10 0 10" 
-                            Background="{ThemeResource SystemControlBackgroundAccentBrush}"
-                            Foreground="White"
-                            HorizontalAlignment="Stretch"
-                            Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"
-                            Command="{x:Bind PlanTripCommand}">
-                        <Button.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </Button.Transitions>
-                    </Button>
                 </Grid>
             </DataTemplate>
 
@@ -770,6 +753,21 @@
 
             </Hub>
         </RelativePanel>
+        <Border x:Name="PlanTripHost" 
+                RelativePanel.AlignBottomWithPanel="True"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"                            
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                Padding="10">
+            <Button x:Name="PlanTripButton"                 
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"             
+                    Command="{x:Bind ViewModel.TripFormViewModel.PlanTripCommand}"
+                    Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                
+                    Foreground="White"     
+                    HorizontalAlignment="Stretch">
+            </Button>
+        </Border>
+
     </RelativePanel>
 
     <Page.BottomAppBar>
