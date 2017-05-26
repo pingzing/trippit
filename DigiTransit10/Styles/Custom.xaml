@@ -4,63 +4,16 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-
             <Color x:Key="SystemListLowerColor">#15000000</Color>
             <Color x:Key="SystemListLowerPressedColor"></Color>
             <Color x:Key="CustomColor">SteelBlue</Color>
             <Color x:Key="ContrastColor">Black</Color>
-            
-
-            <Style TargetType="controls:HamburgerMenu">
-                <Setter Property="HamburgerBackground" Value="{StaticResource HighlightColorBrush}" />
-                <Setter Property="HamburgerForeground" Value="White" />
-                <Setter Property="NavAreaBackground" Value="{StaticResource AppBarBackgroundThemeBrush}" />
-                <Setter Property="NavButtonForeground" Value="White" />
-                <Setter Property="NavButtonBackground" Value="Transparent" />
-                <Setter Property="NavButtonHoverForeground" Value="White" />
-                <Setter Property="NavButtonHoverBackground" Value="#FF585858" />
-                <Setter Property="NavButtonPressedForeground" Value="White" />
-                <Setter Property="NavButtonPressedBackground" Value="#FF848484" />
-                <Setter Property="NavButtonCheckedForeground" Value="White" />
-                <Setter Property="NavButtonCheckedBackground" Value="#FF2A4E6C" />
-                <Setter Property="NavButtonCheckedIndicatorBrush" Value="Transparent" />
-
-                <Setter Property="VisualStateNarrowMinWidth" Value="{StaticResource NarrowMinWidth}" />
-                <Setter Property="VisualStateNormalMinWidth" Value="{StaticResource NormalMinWidth}" />
-                <Setter Property="VisualStateWideMinWidth" Value="{StaticResource WideMinWidth}" />
-            </Style>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Default">
-
             <Color x:Key="SystemListLowerColor">#15FFFFFF</Color>
             <Color x:Key="CustomColor">SteelBlue</Color>
             <Color x:Key="ContrastColor">White</Color>
-
-            <Style TargetType="controls:HamburgerMenu">
-
-                <!--
-
-                Windows 10 2015 (1511) Hamburger Menu Style
-                Simply replace AccentColor with the follow setters.-->
-
-                <Setter Property="HamburgerBackground" Value="{StaticResource HighlightColorBrush}" />
-                <Setter Property="HamburgerForeground" Value="White" />
-                <Setter Property="NavAreaBackground" Value="{StaticResource AppBarBackgroundThemeBrush}" />
-                <Setter Property="NavButtonForeground" Value="White" />
-                <Setter Property="NavButtonBackground" Value="Transparent" />
-                <Setter Property="NavButtonHoverForeground" Value="White" />
-                <Setter Property="NavButtonHoverBackground" Value="#FF585858" />
-                <Setter Property="NavButtonPressedForeground" Value="White" />
-                <Setter Property="NavButtonPressedBackground" Value="#FF848484" />
-                <Setter Property="NavButtonCheckedForeground" Value="White" />
-                <Setter Property="NavButtonCheckedBackground" Value="#FF2A4E6C" />
-                <Setter Property="NavButtonCheckedIndicatorBrush" Value="Transparent" />
-
-                <Setter Property="VisualStateNarrowMinWidth" Value="{StaticResource NarrowMinWidth}" />
-                <Setter Property="VisualStateNormalMinWidth" Value="{StaticResource NormalMinWidth}" />
-                <Setter Property="VisualStateWideMinWidth" Value="{StaticResource WideMinWidth}" />
-            </Style>
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="HighContrast">
@@ -91,6 +44,9 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <!--An Icon font where the letter A (that is, a capital a) is replaced with the app's icon-->
+    <FontFamily x:Key="AppIconFont">/Assets/Fonts/TripIconFont.ttf#TripIconFont</FontFamily>
+
     <x:Double x:Key="NarrowMinWidth">0</x:Double>
     <x:Double x:Key="NormalMinWidth">640</x:Double>
     <x:Double x:Key="WideMinWidth">1200</x:Double>
@@ -98,16 +54,33 @@
     <x:Double x:Key="TallTextBoxHeight">48</x:Double>
     <x:Double x:Key="TallTextBoxFontSize">20</x:Double>
 
-    <SolidColorBrush x:Key="CustomColorBrush" Color="{ThemeResource HighlightColorBrush}" />
     <SolidColorBrush x:Key="ContrastColorBrush" Color="{ThemeResource ContrastColor}" />
     <SolidColorBrush x:Key="ExtendedSplashBackground" Color="{ThemeResource CustomColor}" />
     <SolidColorBrush x:Key="ExtendedSplashForeground" Color="{ThemeResource ContrastColor}" />
-    
+
     <SolidColorBrush x:Key="BlandListViewItemSelectedBackgroundBrush" Color="{ThemeResource SystemListLowerColor}"/>
-    <SolidColorBrush x:Key="HighlightColorBrush" Color="{ThemeResource SystemAccentColor}"/>
     <SolidColorBrush x:Key="HighOpacityBackgroundBrush" Color="{ThemeResource SystemAltHighColor}" Opacity=".8"/>
     <SolidColorBrush x:Key="MostlyTransparentWhite" Color="White" Opacity=".0000001"/>
     <SolidColorBrush x:Key="DarkTransparentForegroundBrush" Color="{ThemeResource SystemBaseHighColor}" Opacity=".6"/>
+
+    <Style TargetType="controls:HamburgerMenu">
+        <Setter Property="HamburgerBackground" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
+        <Setter Property="HamburgerForeground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+        <Setter Property="NavAreaBackground" Value="{ThemeResource AppBarBackgroundThemeBrush}" />
+        <Setter Property="NavButtonForeground" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
+        <Setter Property="NavButtonBackground" Value="Transparent" />
+        <Setter Property="NavButtonHoverForeground" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+        <Setter Property="NavButtonHoverBackground" Value="{ThemeResource SystemControlHighlightListLowBrush}" />
+        <Setter Property="NavButtonPressedForeground" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+        <Setter Property="NavButtonPressedBackground" Value="{ThemeResource SystemControlHighlightListMediumBrush}" />
+        <Setter Property="NavButtonCheckedForeground" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+        <Setter Property="NavButtonCheckedBackground" Value="Transparent" />
+        <Setter Property="NavButtonCheckedIndicatorBrush" Value="{ThemeResource SystemControlHighlightAltBaseHighBrush}" />
+
+        <Setter Property="VisualStateNarrowMinWidth" Value="{StaticResource NarrowMinWidth}" />
+        <Setter Property="VisualStateNormalMinWidth" Value="{StaticResource NormalMinWidth}" />
+        <Setter Property="VisualStateWideMinWidth" Value="{StaticResource WideMinWidth}" />
+    </Style>
 
     <Style TargetType="controls:PageHeader">
         <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
@@ -117,7 +90,7 @@
     </Style>
 
     <Style TargetType="controls:Resizer">
-        <Setter Property="GrabberBrush" Value="{ThemeResource HighlightColorBrush}" />
+        <Setter Property="GrabberBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="GrabberVisibility" Value="Visible" />
     </Style>
 
@@ -135,9 +108,18 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}"                                
-                               Style="{StaticResource BaseTextBlockStyle}"
-                               FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontWeight="Bold"
+                                   VerticalAlignment="Center" 
+                                   Text="{Binding}"                                
+                                   Style="{StaticResource BaseTextBlockStyle}"/>
+                        <FontIcon FontFamily="{StaticResource AppIconFont}"
+                                  FontSize="25"
+                                  Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                  Glyph="A"
+                                  Margin="10 0 0 2"
+                                  Opacity=".6"/>
+                    </StackPanel>
                 </DataTemplate>
             </Setter.Value>
         </Setter>

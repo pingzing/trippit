@@ -161,7 +161,7 @@
                             </DoubleAnimationUsingKeyFrames>
                             <DoubleAnimation Duration="0:0:0.8" To="90" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock"/>
                             <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemBaseMediumColor}" To="{ThemeResource SystemAccentColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
-                            <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetProperty="(Border.BorderBrush).(Brush.Opacity)" Storyboard.TargetName="border">
+                            <DoubleAnimationUsingKeyFrames EnableDependentAnimation="True" Storyboard.TargetProperty="(Border.BorderBrush).(Brush.Opacity)" Storyboard.TargetName="ButtonBorder">
                                 <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
                                 <DiscreteDoubleKeyFrame KeyTime="0:0:0.8" Value="0"/>
                                 <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="1"/>
@@ -197,9 +197,9 @@
                             </DoubleAnimationUsingKeyFrames>
                             <DoubleAnimation Duration="0:0:0.8" From="90" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock"/>
                             <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemAccentColor}" To="{ThemeResource SystemBaseMediumColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
-                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="border">
-                                <LinearColorKeyFrame KeyTime="0:0:0.2" Value="#00FFFFFF"/>
-                                <LinearColorKeyFrame KeyTime="0:0:0.8" Value="#FFFFFFFF"/>
+                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="ButtonBorder">
+                                <LinearColorKeyFrame KeyTime="0:0:0.2" Value="Transparent"/>
+                                <LinearColorKeyFrame KeyTime="0:0:0.8" Value="{ThemeResource SystemBaseMediumColor}"/>
                             </ColorAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualTransition>
@@ -213,10 +213,11 @@
                     <VisualState.Setters>
                         <Setter Target="ArrowTextBlock.(UIElement.RenderTransform).(CompositeTransform.Rotation)" Value="90"/>
                         <Setter Target="ArrowTextBlock.(TextBlock.Foreground)" Value="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                        <Setter Target="CurrentTimeBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemBaseMediumColor}"/>
+                        <Setter Target="CurrentTimeBox.(TextBlock.Foreground)" Value="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
                         <Setter Target="CurrentTimeButton.(FrameworkElement.Width)" Value="50"/>
                         <Setter Target="CurrentTimeButton.(FrameworkElement.HorizontalAlignment)" Value="Right"/>
                         <Setter Target="CurrentTimeBox.(UIElement.Opacity)" Value="0"/>
+                        <Setter Target="ButtonBorder.BorderBrush" Value="{ThemeResource SystemBaseHighColor}"/>
                     </VisualState.Setters>
                     <Storyboard/>
                 </VisualState>
@@ -251,7 +252,7 @@
             <Button.RenderTransform>
                 <CompositeTransform/>
             </Button.RenderTransform>
-            <Border x:Name="border" BorderBrush="{ThemeResource TextBoxBorderThemeBrush}" BorderThickness="2" Padding="8 4 8 4">
+            <Border x:Name="ButtonBorder" BorderBrush="{ThemeResource SystemControlBackgroundBaseHighBrush}" BorderThickness="2" Padding="8 4 8 4">
                 <Border.RenderTransform>
                     <CompositeTransform/>
                 </Border.RenderTransform>

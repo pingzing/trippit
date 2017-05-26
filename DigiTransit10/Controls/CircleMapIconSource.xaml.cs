@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Threading;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -59,9 +60,12 @@ namespace DigiTransit10.Controls
             TypeToXamlMappings.Add(IconType.ThemeColorPointerOver, _source.ThemeColoredPointerOverCircle);
             TypeToXamlMappings.Add(IconType.ThemeColorSelected, _source.ThemeColoredSelectedCircle);
 
-            _topmostGrid.Children.Add(_source);
-            _initialized = true;
-            _topmostGrid.UpdateLayout();
+            DispatcherHelper.CheckBeginInvokeOnUI(() => 
+            {
+                _topmostGrid.Children.Add(_source);
+                _topmostGrid.UpdateLayout();
+                _initialized = true;
+            });                                    
         }        
 
         public static async Task<IRandomAccessStream> GenerateIconAsync(IconType iconType)

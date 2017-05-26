@@ -32,7 +32,7 @@
                                           AutomationProperties.Name="Favorites">
                 <StackPanel Orientation="Horizontal">
                     <SymbolIcon Width="48" Height="48" 
-                               Symbol="Favorite"/>
+                               Symbol="OutlineStar"/>
                     <TextBlock Margin="12 0 0 0 "
                                VerticalAlignment="Center"
                                Text="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Favorites}"/>

@@ -64,8 +64,8 @@
                             <DoubleAnimation Duration="0:0:0.8" From="90" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.Rotation)" Storyboard.TargetName="ArrowTextBlock"/>
                             <ColorAnimation Duration="0:0:0.8" From="{ThemeResource SystemAccentColor}" To="{ThemeResource SystemBaseMediumColor}" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="ArrowTextBlock"/>
                             <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="ButtonBorder">
-                                <LinearColorKeyFrame KeyTime="0:0:0.2" Value="#00FFFFFF"/>
-                                <LinearColorKeyFrame KeyTime="0:0:0.8" Value="#FFFFFFFF"/>
+                                <LinearColorKeyFrame KeyTime="0:0:0.2" Value="Transparent"/>
+                                <LinearColorKeyFrame KeyTime="0:0:0.8" Value="{ThemeResource SystemBaseMediumColor}"/>
                             </ColorAnimationUsingKeyFrames>
                         </Storyboard>
                     </VisualTransition>
@@ -81,10 +81,11 @@
                     <VisualState.Setters>
                         <Setter Target="ArrowTextBlock.(UIElement.RenderTransform).(CompositeTransform.Rotation)" Value="90"/>
                         <Setter Target="ArrowTextBlock.(TextBlock.Foreground)" Value="{ThemeResource SystemControlForegroundAccentBrush}"/>
-                        <Setter Target="CurrentDateBox.(TextBlock.Foreground).(SolidColorBrush.Color)" Value="{ThemeResource SystemBaseMediumColor}"/>
+                        <Setter Target="CurrentDateBox.(TextBlock.Foreground)" Value="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
                         <Setter Target="CurrentDateButton.(FrameworkElement.Width)" Value="50"/>
                         <Setter Target="CurrentDateButton.(FrameworkElement.HorizontalAlignment)" Value="Right"/>
                         <Setter Target="CurrentDateBox.(UIElement.Opacity)" Value="0"/>
+                        <Setter Target="ButtonBorder.BorderBrush" Value="{ThemeResource SystemBaseHighColor}"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -114,7 +115,7 @@
             <Button.RenderTransform>
                 <CompositeTransform/>
             </Button.RenderTransform>
-            <Border x:Name="ButtonBorder" BorderBrush="#FFFFFFFF" BorderThickness="2" Padding="8 4 8 4">
+            <Border x:Name="ButtonBorder" BorderBrush="{ThemeResource SystemControlBackgroundBaseMediumBrush}" BorderThickness="2" Padding="8 4 8 4">
                 <Border.RenderTransform>
                     <CompositeTransform/>
                 </Border.RenderTransform>

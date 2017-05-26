@@ -532,13 +532,26 @@ namespace DigiTransit10.Controls
 
             foreach (GeocodingFeature place in result.Features)
             {
-                if (_addressList.Any(x => x.StringId == place.Properties.Id))
+                // If it already exists... 
+                IPlace address = _addressList.FirstOrDefault(x => x.StringId == place.Properties.Id);
+                if (address != null)
                 {
-                    IPlace address = _addressList.First(x => x.StringId == place.Properties.Id);
+                    // ...update its confidence. Remove if the confidence falls too low
                     if (address.Confidence != place.Properties.Confidence)
                     {
                         address.Confidence = place.Properties.Confidence;
+                        if (address.Confidence < Constants.SearchResultsMinimumConfidence)
+                        {
+                            _addressList.Remove(address);
+                        }
                     }
+                    // ...and move on to the next result.
+                    continue;
+                }
+
+                // Do not add if the confidence doesn't hit the minimum threshold.
+                if (place.Properties.Confidence < Constants.SearchResultsMinimumConfidence)
+                {
                     continue;
                 }
                 string name = place.Properties.Name;
@@ -573,24 +586,26 @@ namespace DigiTransit10.Controls
             //Remove entries in old list not in new response
             List<string> responseIds = result.Select(x => x.GtfsId).ToList();
             List<IPlace> stalePlaces = _stopList.Where(x => !responseIds.Contains(x.StringId)).ToList();
-            foreach (var stale in stalePlaces)
+            foreach (IPlace stale in stalePlaces)
             {
                 _stopList.Remove(stale);
             }
 
-            foreach (var stop in result)
+            foreach (TransitStop stop in result)
             {
-                if (_stopList.Any(x => x.StringId == stop.GtfsId))
-                {
+                IPlace address = _addressList.FirstOrDefault(x => x.StringId == stop.GtfsId);
+                if (address != null)
+                {                    
                     continue;
                 }
+
                 Place foundPlace = new Place
                 {
                     StringId = stop.GtfsId,
                     Name = stop.Name,
                     Lat = stop.Coords.Latitude,
                     Lon = stop.Coords.Longitude,
-                    Type = ModelEnums.PlaceType.Stop
+                    Type = PlaceType.Stop
                 };
                 if (!String.IsNullOrWhiteSpace(stop.Code))
                 {

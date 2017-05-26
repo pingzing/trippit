@@ -440,11 +440,14 @@ namespace DigiTransit10.Services
                     new GqlReturnValue(ApiGqlMembers.effectiveStartDate),
                     new GqlReturnValue(ApiGqlMembers.effectiveEndDate),
                     new GqlReturnValue(ApiGqlMembers.route,
-                        new GqlReturnValue(ApiGqlMembers.gtfsId)
+                        new GqlReturnValue(ApiGqlMembers.gtfsId),
+                        new GqlReturnValue(ApiGqlMembers.shortName),
+                        new GqlReturnValue(ApiGqlMembers.longName),
+                        new GqlReturnValue(ApiGqlMembers.mode)
                     ),
                     new GqlReturnValue(ApiGqlMembers.stop,
                         new GqlReturnValue(ApiGqlMembers.gtfsId)
-                    )
+                    )                    
                 );
 
             ApiResult<IEnumerable<ApiAlert>> response = await GetGraphQLAsync<IEnumerable<ApiAlert>>(query, token);

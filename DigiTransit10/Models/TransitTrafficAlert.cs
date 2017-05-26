@@ -4,10 +4,11 @@ using DigiTransit10.Models.ApiModels;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Globalization;
+using static DigiTransit10.Models.ApiModels.ApiEnums;
 
 namespace DigiTransit10.Models
 {
-    public class TransitTrafficAlert
+    public class TransitTrafficAlert : ITransitLine
     {
         // We use this for a "null" URL because attempting to bind to something that's not a valid URL causes crashes.
         private const string DummyUrl = "https://dummyurl";
@@ -19,6 +20,9 @@ namespace DigiTransit10.Models
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string AffectedLineId { get; set; }
+        public string AffectedLineShortName { get; set; }
+        public string AffectedLineLongName { get; set; }
+        public ApiMode AffectedLineMode { get; set; }
         public string AffectedStopId { get; set; }
 
         [JsonIgnore]
@@ -54,7 +58,7 @@ namespace DigiTransit10.Models
                     return null;
                 }
             }
-        }
+        }        
 
         /// <summary>
         /// This constructor exists just to make the serializers happy.
@@ -103,7 +107,49 @@ namespace DigiTransit10.Models
             }
 
             AffectedLineId = result.Route.GtfsId;
+            AffectedLineShortName = result.Route.ShortName;
+            AffectedLineLongName = result.Route.LongName;
+            AffectedLineMode = result.Route.Mode;
+
             AffectedStopId = result.Route.GtfsId;
+        }
+
+        // ITransitLine implementation. All proxies to differently-named properties.
+
+        /// <summary>
+        /// alias for AffectedLineMode.
+        /// </summary>
+        public ApiMode TransitMode
+        {
+            get { return AffectedLineMode; }
+            set { AffectedLineMode = value; }
+        }
+
+        /// <summary>
+        /// Aliass for AffectedLineId.
+        /// </summary>
+        public string GtfsId
+        {
+            get { return AffectedLineId; }
+            set { AffectedLineId = value; }
+        }
+        
+        /// <summary>
+        /// Alias for AffectedLineShortName.
+        /// </summary>
+        public string ShortName
+        {
+            get { return AffectedLineShortName; }
+            set { AffectedLineShortName = value; }
+        }
+
+        /// <summary>
+        /// Alias for AffectedLineLongName.
+        /// </summary>
+        public string LongName
+        {
+            get { return AffectedLineLongName; }
+            set { AffectedLineLongName = value; }
         }
     }
 }

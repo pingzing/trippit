@@ -251,7 +251,7 @@ namespace DigiTransit10.ViewModels
             }
         }
 
-        private async void PinToStart(IFavorite obj)
+        private async void PinToStart(IFavorite clickedFavorite)
         {
             if (ListSelectionMode == ListViewSelectionMode.Multiple
                 && _selectedItems != null
@@ -259,21 +259,16 @@ namespace DigiTransit10.ViewModels
             {
                 foreach (var selectedFave in _selectedItems.Cast<IFavorite>())
                 {
-                    await PinSingleFavorite(selectedFave);
+                    await _tileService.PinFavoriteToStartAsync(selectedFave);
                 }
             }
             else
             {
-                await PinSingleFavorite(obj);
+                await _tileService.PinFavoriteToStartAsync(clickedFavorite);
             }
-        }
+        }        
 
-        private async Task PinSingleFavorite(IFavorite favorite)
-        {
-            await _tileService.PinFavoriteToStartAsync(favorite);
-        }
-
-        private void PinToMainPage(IFavorite obj)
+        private void PinToMainPage(IFavorite clickedFavorite)
         {
             if (ListSelectionMode == ListViewSelectionMode.Multiple
                 && _selectedItems != null
@@ -286,7 +281,7 @@ namespace DigiTransit10.ViewModels
             }
             else
             {
-                _settingsService.PushFavoriteId(obj.Id);
+                _settingsService.PushFavoriteId(clickedFavorite.Id);
             }
         }
 

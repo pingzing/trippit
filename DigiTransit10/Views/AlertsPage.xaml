@@ -35,7 +35,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:TransitTrafficAlert">
-                    <StackPanel Margin="0 0 0 5">
+                    <StackPanel Margin="0 0 0 10">
                         <TextBlock Text="{x:Bind HeaderText.Text}"
                                    TextWrapping="WrapWholeWords"
                                    TextTrimming="Clip"
@@ -46,20 +46,48 @@
                                    TextWrapping="WrapWholeWords"
                                    Visibility="{x:Bind DescriptionText, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
                         <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Source={StaticResource Strings}, Path=AlertsPage_Affects}" VerticalAlignment="Center"/>
+                            <Button Background="Transparent"
+                                    Command="{Binding ElementName=AlertsList, Path=DataContext.LineClickedCommand}"
+                                    CommandParameter="{x:Bind}"
+                                    Padding="0">
+                                <Button.Content>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon Foreground="{x:Bind AffectedLineMode, Converter={StaticResource TransitModeToForegroundBrushConverter}}"
+                                                  FontFamily="{StaticResource HslPiktoFrameFont}"
+                                                  Glyph="{x:Bind AffectedLineMode, Converter={StaticResource TransitModeToFontIconConverter}}"/>
+                                        <TextBlock Grid.Column="1" 
+                                                   Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                                   Margin="5 0 0 0">
+                                            <Run Text="{x:Bind AffectedLineShortName}"/><Run Text=":"/>
+                                            <Run Text="{x:Bind AffectedLineLongName}"/>
+                                        </TextBlock>
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                        FontWeight="SemiBold"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Visibility="{x:Bind StartDate, Converter={StaticResource EmptyNullToVisibilityConverter}}">
-                                <Run Text="From:"/><Run Text="{x:Bind StartDateAsLocalTimeString}"/>
+                                <Run Text="{Binding Source={StaticResource Strings}, Path=AlertsPage_TimeStart}"/>
+                                <Run Text="{x:Bind StartDateAsLocalTimeString}"/>
                             </TextBlock>
                             <TextBlock Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" 
                                        FontWeight="SemiBold"
+                                       Margin="5 0 0 0"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Visibility="{x:Bind EndDate, Converter={StaticResource EmptyNullToVisibilityConverter}}">
-                                <Run Text="To:"/><Run Text="{x:Bind EndDateAsLocalTimeString}"/>
+                                <Run Text="{Binding Source={StaticResource Strings}, Path=AlertsPage_TimeEnd}"/>
+                                <Run Text="{x:Bind EndDateAsLocalTimeString}"/>
                             </TextBlock>
                         </StackPanel>
-                        <HyperlinkButton Content="View online" 
+                        <HyperlinkButton Content="{Binding Source={StaticResource Strings}, Path=AlertsPage_ViewOnline}" 
                                          FontSize="12"
                                          NavigateUri="{x:Bind Url}" 
                                          Padding="0"

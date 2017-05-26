@@ -101,6 +101,7 @@
     <Content Include="Assets\Fonts\hsl-pikto-normal-webfont.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Fonts\TripIconFont.ttf" />
     <None Include="DigiTransit10_StoreKey.pfx" />
     <None Include="DigiTransit10_TemporaryKey.pfx" />
     <None Include="project.json" />
@@ -513,7 +514,9 @@
     <Content Include="Assets\Images\Wide310x150Logo.scale-400.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Package.StoreAssociation.xml" />
+    <None Include="Package.StoreAssociation.xml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="maps-api-key.txt" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
