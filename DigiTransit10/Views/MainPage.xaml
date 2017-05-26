@@ -9,6 +9,7 @@
     
     xmlns:vm="using:DigiTransit10.ViewModels"
     xmlns:lclBhvrs="using:DigiTransit10.Behaviors"
+    xmlns:t10Bhvrs="using:Template10.Behaviors"
     xmlns:ctlVms="using:DigiTransit10.ViewModels.ControlViewModels"
     xmlns:models="using:DigiTransit10.Models"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -27,7 +28,21 @@
                 <StackPanel>
                     <lclCtls:DigiTransitSearchBox x:Name="FromBox"                                                     
                                                   Header="{Binding MainPage_FromHeader, Source={StaticResource Strings}}"                                                  
-                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}"/>
+                                                  SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}">
+                        <Interactivity:Interaction.Behaviors>
+                            <t10Bhvrs:KeyBehavior Key="Enter">
+                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                            Operator="IsTrue">
+                                    <Core:InvokeCommandAction Command="{x:Bind PlanTripCommand}"/>
+                                </t10Bhvrs:ConditionalAction>
+                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                            Operator="IsFalse">
+                                    <Core:InvokeCommandAction Command="{x:Bind MoveFocusCommand}"
+                                                              CommandParameter="2"/>
+                                </t10Bhvrs:ConditionalAction>
+                            </t10Bhvrs:KeyBehavior>
+                        </Interactivity:Interaction.Behaviors>
+                    </lclCtls:DigiTransitSearchBox>
                     <Button x:Name="SwapButton"
                                         Background="Transparent"
                                         Command="{x:Bind SwapFirstLocationCommand}"
@@ -61,7 +76,21 @@
                                     </Grid.ColumnDefinitions>
 
                                     <lclCtls:DigiTransitSearchBox x:Name="ListIntermediateDestination"
-                                                                  SelectedPlace="{x:Bind IntermediatePlace, Mode=TwoWay}"/>
+                                                                  SelectedPlace="{x:Bind IntermediatePlace, Mode=TwoWay}">
+                                        <Interactivity:Interaction.Behaviors>
+                                            <t10Bhvrs:KeyBehavior Key="Enter">
+                                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                                Operator="IsTrue">
+                                                    <Core:InvokeCommandAction Command="{x:Bind ParentViewModel.PlanTripCommand}"/>
+                                                </t10Bhvrs:ConditionalAction>
+                                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                                Operator="IsFalse">
+                                                    <Core:InvokeCommandAction Command="{x:Bind ParentViewModel.MoveFocusCommand}"
+                                                                              CommandParameter="2"/>
+                                                </t10Bhvrs:ConditionalAction>
+                                            </t10Bhvrs:KeyBehavior>
+                                        </Interactivity:Interaction.Behaviors>
+                                    </lclCtls:DigiTransitSearchBox>
                                     <Button x:Name="RemoveItemButton"                                            
                                             Grid.Row="0" Grid.Column="1"                                            
                                             Click="IntermediatePlaceRemoved_Click"
@@ -102,6 +131,19 @@
                                                   Margin="0 -20 0 0"
                                                   Header="{Binding MainPage_ToHeader, Source={StaticResource Strings}}"
                                                   SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}">
+                        <Interactivity:Interaction.Behaviors>
+                            <t10Bhvrs:KeyBehavior Key="Enter">
+                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                                Operator="IsTrue">
+                                    <Core:InvokeCommandAction Command="{x:Bind PlanTripCommand}"/>
+                                </t10Bhvrs:ConditionalAction>
+                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
+                                                                Operator="IsFalse">
+                                    <Core:InvokeCommandAction Command="{x:Bind MoveFocusCommand}"
+                                                              CommandParameter="1"/>
+                                </t10Bhvrs:ConditionalAction>
+                            </t10Bhvrs:KeyBehavior>
+                        </Interactivity:Interaction.Behaviors>
                         <lclCtls:DigiTransitSearchBox.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>

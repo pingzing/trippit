@@ -8,6 +8,7 @@ namespace DigiTransit10.ViewModels.
     public class IntermediateSearchViewModel : BindableBase
     {
         private readonly TripFormViewModel _parentVm;
+        public TripFormViewModel ParentViewModel => _parentVm;
 
         public RelayCommand SwapLocationsCommand => new RelayCommand(SwapLocations);        
         public RelayCommand RemoveIntermediateCommand => new RelayCommand(RemoveIntermediate);

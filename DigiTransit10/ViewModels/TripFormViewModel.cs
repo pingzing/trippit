@@ -22,6 +22,7 @@ using Template10.Common;
 using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using static DigiTransit10.Helpers.Enums;
 using static DigiTransit10.Helpers.MessageTypes;
@@ -309,6 +310,10 @@ namespace DigiTransit10.ViewModels
         public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand => _removeIntermediateCommand 
             ?? (_removeIntermediateCommand = new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate));
 
+        private RelayCommand<int> _moveFocusCommand = null;
+        public RelayCommand<int> MoveFocusCommand => _moveFocusCommand
+            ?? (_moveFocusCommand = new RelayCommand<int>(MoveFocus));        
+
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
             IDialogService dialogService, IFavoritesService favoritesService, ILogger logger)
@@ -328,6 +333,14 @@ namespace DigiTransit10.ViewModels
                 ?? Constants.DefaultWalkingAmount;
             SelectedWalkingSpeed = WalkingSpeeds.FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed) 
                 ?? Constants.DefaultWalkingSpeed;
+        }
+
+        private void MoveFocus(int placesToMove)
+        {
+            for (int i = 0; i < placesToMove; i++)
+            {
+                FocusManager.TryMoveFocus(FocusNavigationDirection.Down);
+            }
         }
 
         private void TransitTogglePannel()
