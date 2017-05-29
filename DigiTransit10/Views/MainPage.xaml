@@ -31,30 +31,23 @@
                                                   SelectedPlace="{x:Bind FromPlace, Mode=TwoWay}">
                         <Interactivity:Interaction.Behaviors>
                             <t10Bhvrs:KeyBehavior Key="Enter">
-                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                            Operator="IsTrue">
-                                    <Core:InvokeCommandAction Command="{x:Bind PlanTripCommand}"/>
-                                </t10Bhvrs:ConditionalAction>
-                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                            Operator="IsFalse">
-                                    <Core:InvokeCommandAction Command="{x:Bind MoveFocusCommand}"
-                                                              CommandParameter="2"/>
-                                </t10Bhvrs:ConditionalAction>
+                                <Core:InvokeCommandAction Command="{x:Bind SearchBoxEnterPressedCommand}"
+                                                          CommandParameter="2"/>
                             </t10Bhvrs:KeyBehavior>
                         </Interactivity:Interaction.Behaviors>
                     </lclCtls:DigiTransitSearchBox>
                     <Button x:Name="SwapButton"
-                                        Background="Transparent"
-                                        Command="{x:Bind SwapFirstLocationCommand}"
-                                        CommandParameter="{x:Bind FromPlace, Mode=OneWay}"
-                                        Content="&#xE13C;"
-                                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                        FontSize="20"
-                                        Height="40" Width="40"
-                                        Margin="0 5 0 0"
-                                        HorizontalAlignment="Center" 
-                                        RenderTransformOrigin="0.5,0.5"
-                                        Style="{ThemeResource NavigationBackButtonNormalStyle}">
+                            Background="Transparent"
+                            Command="{x:Bind SwapFirstLocationCommand}"
+                            CommandParameter="{x:Bind FromPlace, Mode=OneWay}"
+                            Content="&#xE13C;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="20"
+                            Height="40" Width="40"
+                            Margin="0 5 0 0"
+                            HorizontalAlignment="Center" 
+                            RenderTransformOrigin="0.5,0.5"
+                            Style="{ThemeResource NavigationBackButtonNormalStyle}">
                         <Button.RenderTransform>
                             <CompositeTransform Rotation="90"/>
                         </Button.RenderTransform>
@@ -79,15 +72,8 @@
                                                                   SelectedPlace="{x:Bind IntermediatePlace, Mode=TwoWay}">
                                         <Interactivity:Interaction.Behaviors>
                                             <t10Bhvrs:KeyBehavior Key="Enter">
-                                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                                Operator="IsTrue">
-                                                    <Core:InvokeCommandAction Command="{x:Bind ParentViewModel.PlanTripCommand}"/>
-                                                </t10Bhvrs:ConditionalAction>
-                                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                                Operator="IsFalse">
-                                                    <Core:InvokeCommandAction Command="{x:Bind ParentViewModel.MoveFocusCommand}"
-                                                                              CommandParameter="2"/>
-                                                </t10Bhvrs:ConditionalAction>
+                                                <Core:InvokeCommandAction Command="{x:Bind ParentViewModel.SearchBoxEnterPressedCommand}"
+                                                                          CommandParameter="2"/>
                                             </t10Bhvrs:KeyBehavior>
                                         </Interactivity:Interaction.Behaviors>
                                     </lclCtls:DigiTransitSearchBox>
@@ -133,15 +119,8 @@
                                                   SelectedPlace="{x:Bind ToPlace, Mode=TwoWay}">
                         <Interactivity:Interaction.Behaviors>
                             <t10Bhvrs:KeyBehavior Key="Enter">
-                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                                Operator="IsTrue">
-                                    <Core:InvokeCommandAction Command="{x:Bind PlanTripCommand}"/>
-                                </t10Bhvrs:ConditionalAction>
-                                <t10Bhvrs:ConditionalAction LeftValue="{Binding ElementName=PlanTripButton, Path=IsEnabled}"
-                                                                Operator="IsFalse">
-                                    <Core:InvokeCommandAction Command="{x:Bind MoveFocusCommand}"
-                                                              CommandParameter="1"/>
-                                </t10Bhvrs:ConditionalAction>
+                                <Core:InvokeCommandAction Command="{x:Bind SearchBoxEnterPressedCommand}"
+                                                          CommandParameter="0"/>
                             </t10Bhvrs:KeyBehavior>
                         </Interactivity:Interaction.Behaviors>
                         <lclCtls:DigiTransitSearchBox.Transitions>
@@ -582,6 +561,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -636,6 +616,19 @@
                             </TransitionCollection>
                         </ContentControl.Transitions>
                     </ContentControl>
+                    <Border x:Name="NarrowPlanTripHost" 
+                            Grid.Row="3" Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Bottom"
+                            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                        <Button x:Name="NarrowPlanTripButton"                 
+                                Background="{ThemeResource SystemControlBackgroundAccentBrush}"             
+                                Command="{x:Bind ViewModel.TripFormViewModel.PlanTripCommand}"
+                                Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                
+                                Foreground="White"     
+                                HorizontalAlignment="Stretch">
+                        </Button>
+                    </Border>
                 </Grid>
             </ScrollViewer>
 
@@ -693,6 +686,7 @@
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition Height="Auto"/>
                                                 <RowDefinition/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
 
                                             <ContentControl Grid.Row="1"
@@ -733,6 +727,20 @@
                                                     </TransitionCollection>
                                                 </ContentPresenter.Transitions>
                                             </ContentPresenter>
+
+                                            <Border x:Name="WidePlanTripHost" 
+                                                    Grid.Row="4"
+                                                    HorizontalAlignment="Stretch" 
+                                                    VerticalAlignment="Bottom"
+                                                    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                                                <Button x:Name="WidePlanTripButton"                 
+                                                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"             
+                                                        Command="{x:Bind TripFormViewModel.PlanTripCommand}"
+                                                        Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                
+                                                        Foreground="White"     
+                                                        HorizontalAlignment="Stretch">
+                                                </Button>
+                                            </Border>
                                         </Grid>
                                     </ContentControl.Content>
                                 </ContentControl>
@@ -795,21 +803,6 @@
 
             </Hub>
         </RelativePanel>
-        <Border x:Name="PlanTripHost" 
-                RelativePanel.AlignBottomWithPanel="True"
-                RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True"                            
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                Padding="10">
-            <Button x:Name="PlanTripButton"                 
-                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"             
-                    Command="{x:Bind ViewModel.TripFormViewModel.PlanTripCommand}"
-                    Content="{Binding TripForm_PlanTripButton, Source={StaticResource Strings}}"                
-                    Foreground="White"     
-                    HorizontalAlignment="Stretch">
-            </Button>
-        </Border>
-
     </RelativePanel>
 
     <Page.BottomAppBar>

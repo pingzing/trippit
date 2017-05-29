@@ -129,7 +129,7 @@ namespace DigiTransit10.ViewModels
                 RaisePropertyChanged(nameof(IsSelectedDateTimeInPast));
             }
         }
-        
+
         public bool IsSelectedDateTimeInPast
         {
             get
@@ -140,9 +140,9 @@ namespace DigiTransit10.ViewModels
                 }
 
                 DateTime now = DateTime.Now;
-                DateTime selectedDate = IsUsingCurrentDate ? DateTime.Today : SelectedDate.DateTime.Date;                                
+                DateTime selectedDate = IsUsingCurrentDate ? DateTime.Today : SelectedDate.DateTime.Date;
                 TimeSpan selectedTime = IsUsingCurrentTime ? now.TimeOfDay : SelectedTime;
-                
+
                 // Bring selectedTime's seconds up to 59, so we don't have people setting their time to 1:30,
                 // but being told they're in the past, because it's currently 1:30:01.
                 selectedTime = selectedTime.Add(TimeSpan.FromSeconds(60 - selectedTime.Seconds));
@@ -156,7 +156,7 @@ namespace DigiTransit10.ViewModels
                 {
                     return false;
                 }
-                
+
             }
         }
 
@@ -254,44 +254,49 @@ namespace DigiTransit10.ViewModels
         }
 
         private RelayCommand _planTripCommand = null;
-        public RelayCommand PlanTripCommand {
+        public RelayCommand PlanTripCommand
+        {
             get
             {
-                if(_planTripCommand != null)
+                if (_planTripCommand != null)
                 {
                     return _planTripCommand;
                 }
-                _planTripCommand = new RelayCommand(PlanTrip,
-                    () => (
-                        (bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked
-                        || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked)
-                        && FromPlace != null
-                        && (IntermediatePlaces.Count == 0 || IntermediatePlaces.All(x => x.IntermediatePlace != null))
-                        && ToPlace != null
-                    );
+                _planTripCommand = new RelayCommand(PlanTrip, CanPlanTripExecute);
                 this.PropertyChanged += (s, e) => _planTripCommand.RaiseCanExecuteChanged();
                 return _planTripCommand;
             }
         }
 
+        private bool CanPlanTripExecute()
+        {
+            return ((bool)IsFerryChecked || (bool)IsBusChecked || (bool)IsTramChecked
+                        || (bool)IsTrainChecked || (bool)IsMetroChecked || (bool)IsBikeChecked
+                    )
+                    && FromPlace != null
+                    && (IntermediatePlaces.Count == 0 || IntermediatePlaces.All(x => x.IntermediatePlace != null))
+                    && ToPlace != null
+                    && !_isBusy;
+        }
+
         private RelayCommand _planTripWideViewCommand = null;
-        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand 
-            ?? ( _planTripWideViewCommand = new RelayCommand(PlanTrip));
+        public RelayCommand PlanTripWideViewCommand => _planTripWideViewCommand
+            ?? (_planTripWideViewCommand = new RelayCommand(PlanTrip));
 
         private RelayCommand _toggleTransitPanelCommand = null;
-        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand 
+        public RelayCommand ToggleTransitPanelCommand => _toggleTransitPanelCommand
             ?? (_toggleTransitPanelCommand = new RelayCommand(TransitTogglePannel));
 
-        private  RelayCommand _setDateToTodayCommand = null;
-        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand 
-            ?? (_setDateToTodayCommand = new RelayCommand(SetDateToToday));        
+        private RelayCommand _setDateToTodayCommand = null;
+        public RelayCommand SetDateToTodayCommand => _setDateToTodayCommand
+            ?? (_setDateToTodayCommand = new RelayCommand(SetDateToToday));
 
         private RelayCommand<IFavorite> _pinnedFavoriteClickedCommand = null;
-        public RelayCommand<IFavorite> PinnedFavoriteClickedCommand => _pinnedFavoriteClickedCommand 
+        public RelayCommand<IFavorite> PinnedFavoriteClickedCommand => _pinnedFavoriteClickedCommand
             ?? (_pinnedFavoriteClickedCommand = new RelayCommand<IFavorite>(PinnedFavoriteClicked));
 
         private RelayCommand<IFavorite> _removePinnedFavoriteCommand = null;
-        public RelayCommand<IFavorite> RemovePinnedFavoriteCommand=> _removePinnedFavoriteCommand 
+        public RelayCommand<IFavorite> RemovePinnedFavoriteCommand => _removePinnedFavoriteCommand
             ?? (_removePinnedFavoriteCommand = new RelayCommand<IFavorite>(RemovePinnedFavorite));
 
         private RelayCommand _swapFirstLocationCommand = null;
@@ -303,16 +308,36 @@ namespace DigiTransit10.ViewModels
             ?? (_swapIntermediateLocationCommand = new RelayCommand<IntermediateSearchViewModel>(SwapIntermediateLocation));
 
         private RelayCommand _addIntermediatePlaceCommand = null;
-        public RelayCommand AddIntermediatePlaceCommand => _addIntermediatePlaceCommand 
+        public RelayCommand AddIntermediatePlaceCommand => _addIntermediatePlaceCommand
             ?? (_addIntermediatePlaceCommand = new RelayCommand(AddIntermediatePlace));
 
         private RelayCommand<IntermediateSearchViewModel> _removeIntermediateCommand = null;
-        public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand => _removeIntermediateCommand 
-            ?? (_removeIntermediateCommand = new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate));
+        public RelayCommand<IntermediateSearchViewModel> RemoveIntermediateCommand => _removeIntermediateCommand
+            ?? (_removeIntermediateCommand = new RelayCommand<IntermediateSearchViewModel>(RemoveIntermediate));        
 
-        private RelayCommand<int> _moveFocusCommand = null;
-        public RelayCommand<int> MoveFocusCommand => _moveFocusCommand
-            ?? (_moveFocusCommand = new RelayCommand<int>(MoveFocus));        
+        private RelayCommand<string> _searchBoxEnterPressedCommand = null;
+        public RelayCommand<string> SearchBoxEnterPressedCommand => _searchBoxEnterPressedCommand
+            ?? (_searchBoxEnterPressedCommand = new RelayCommand<string>(SearchBoxEnterPressed));
+
+        private void SearchBoxEnterPressed(string placesToMoveString)
+        {
+            if (CanPlanTripExecute())
+            {
+                PlanTrip();
+            }
+            else
+            {
+                int placesToMove;
+                bool success = Int32.TryParse(placesToMoveString, out placesToMove);
+                if (success)
+                {
+                    for (int i = 0; i < placesToMove; i++)
+                    {
+                        FocusManager.TryMoveFocus(FocusNavigationDirection.Down);
+                    }
+                }
+            }
+        }
 
         public TripFormViewModel(INetworkService netService, IMessenger messengerService,
             Services.SettingsServices.SettingsService settings, IGeolocationService geolocationService,
@@ -329,24 +354,16 @@ namespace DigiTransit10.ViewModels
             _messengerService.Register<SecondaryTilePayload>(this, SecondaryTileInvoked);
             FromPlace = _settingsService.PreferredFromPlace;
             ToPlace = _settingsService.PreferredToPlace;
-            SelectedWalkingAmount = WalkingAmounts.FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount) 
+            SelectedWalkingAmount = WalkingAmounts.FirstOrDefault(x => x.AmountType == _settingsService.PreferredWalkingAmount)
                 ?? Constants.DefaultWalkingAmount;
-            SelectedWalkingSpeed = WalkingSpeeds.FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed) 
+            SelectedWalkingSpeed = WalkingSpeeds.FirstOrDefault(x => x.SpeedType == _settingsService.PreferredWalkingSpeed)
                 ?? Constants.DefaultWalkingSpeed;
-        }
-
-        private void MoveFocus(int placesToMove)
-        {
-            for (int i = 0; i < placesToMove; i++)
-            {
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Down);
-            }
-        }
+        }        
 
         private void TransitTogglePannel()
         {
             IsTransitPanelVisible = !IsTransitPanelVisible;
-            if(IsTransitPanelVisible)
+            if (IsTransitPanelVisible)
             {
                 ShowHideTransitPanelText = AppResources.TripForm_FewerOptions;
                 ShowHideTransitPanelGlyph = FontIconGlyphs.BoldUpArrow;
@@ -377,7 +394,7 @@ namespace DigiTransit10.ViewModels
                     searchPlaces.AddRange(IntermediatePlaces.Select(x => x.IntermediatePlace));
                 }
                 searchPlaces.Add(ToPlace);
-                IEnumerable<PlaceResolutionResult> placeResolutionResults = await ResolvePlaces(searchPlaces, _cts.Token);                
+                IEnumerable<PlaceResolutionResult> placeResolutionResults = await ResolvePlaces(searchPlaces, _cts.Token);
 
                 if (placeResolutionResults.Any(x => x.IsFailure))
                 {
@@ -387,20 +404,20 @@ namespace DigiTransit10.ViewModels
                 }
                 IEnumerable<IPlace> places = placeResolutionResults.Select(x => x.AttemptedResolvedPlace);
 
-                FromPlace = places.First(); //todo: these will be replaced with some kind of list and loop when we move to "arbitrary # of legs" style input
-                if(IntermediatePlaces.Any())
+                FromPlace = places.First();
+                if (IntermediatePlaces.Any())
                 {
                     int intermediateIndex = 0;
-                    foreach(IPlace intermediate in places.Skip(1))
+                    foreach (IPlace intermediate in places.Skip(1))
                     {
-                        if(intermediate == places.Last())
+                        if (intermediate == places.Last())
                         {
                             continue;
                         }
                         IntermediatePlaces[intermediateIndex].IntermediatePlace = intermediate;
                     }
                 }
-                ToPlace = places.Last(); // but for now, magic numbers wheee            
+                ToPlace = places.Last();
 
                 ApiCoordinates fromCoords = new ApiCoordinates { Lat = (float)FromPlace.Lat, Lon = (float)FromPlace.Lon };
                 List<ApiCoordinates> intermediateCoords = IntermediatePlaces
@@ -454,7 +471,7 @@ namespace DigiTransit10.ViewModels
                 SetBusy(false);
             }
         }
-        
+
         /// <summary>
         /// Takes a list of places, and resolves NameOnly or UserLocation places 
         /// into a usable Place with lat/lon coordinates. Leaves other Place types alone.
@@ -464,9 +481,9 @@ namespace DigiTransit10.ViewModels
         /// <returns></returns>
         private async Task<IEnumerable<PlaceResolutionResult>> ResolvePlaces(List<IPlace> places, CancellationToken token)
         {
-            List<Task<PlaceResolutionResult>> getAddressTasks = new List<Task<PlaceResolutionResult>>();            
+            List<Task<PlaceResolutionResult>> getAddressTasks = new List<Task<PlaceResolutionResult>>();
             foreach (IPlace placeToFind in places)
-            {                
+            {
                 if (placeToFind.Type == PlaceType.NameOnly)
                 {
                     Task<ApiResult<GeocodingResponse>> task = _networkService.SearchAddressAsync(placeToFind.Name, token);
@@ -499,12 +516,13 @@ namespace DigiTransit10.ViewModels
                 else if (placeToFind.Type == PlaceType.UserCurrentLocation)
                 {
                     Task<GenericResult<Geoposition>> task = _geolocationService.GetCurrentLocationAsync();
-                    getAddressTasks.Add(task.ContinueWith<PlaceResolutionResult>(resp => {
-                        if(resp.Result.IsFailure)
+                    getAddressTasks.Add(task.ContinueWith<PlaceResolutionResult>(resp =>
+                    {
+                        if (resp.Result.IsFailure)
                         {
                             return new PlaceResolutionResult(placeToFind, resp.Result.Failure.Reason);
                         }
-                        if(resp.Result.Result.Coordinate?.Point?.Position == null)
+                        if (resp.Result.Result.Coordinate?.Point?.Position == null)
                         {
                             return new PlaceResolutionResult(placeToFind, FailureReason.NoResults);
                         }
@@ -526,7 +544,7 @@ namespace DigiTransit10.ViewModels
                 }
             }
             return await Task.WhenAll(getAddressTasks);
-        }        
+        }
 
         private string ConstructTransitModes(bool isBus, bool isTram, bool isTrain, bool isMetro, bool isFerry, bool isBike)
         {
@@ -562,11 +580,11 @@ namespace DigiTransit10.ViewModels
         private void SetDateToToday()
         {
             SelectedDate = DateTime.Now;
-        }        
+        }
 
         private async Task FillPinnedFavorites()
         {
-           if(_settingsService.PinnedFavoriteIds.Count == 0)
+            if (_settingsService.PinnedFavoriteIds.Count == 0)
             {
                 PinnedFavorites.Clear();
                 return;
@@ -575,7 +593,7 @@ namespace DigiTransit10.ViewModels
             var pinned = await _favoritesService.GetPinnedFavorites();
 
             var toRemove = PinnedFavorites.Except(pinned).ToList();
-            foreach(var staleFave in toRemove)
+            foreach (var staleFave in toRemove)
             {
                 PinnedFavorites.Remove(staleFave);
             }
@@ -621,7 +639,7 @@ namespace DigiTransit10.ViewModels
         {
             IPlace first = FromPlace;
             IPlace nextPlace;
-            if(IntermediatePlaces.Count > 0)
+            if (IntermediatePlaces.Count > 0)
             {
                 nextPlace = IntermediatePlaces.First().IntermediatePlace;
                 FromPlace = nextPlace;
@@ -641,7 +659,7 @@ namespace DigiTransit10.ViewModels
             int intermediateIndex = IntermediatePlaces.IndexOf(obj);
             IPlace nextPlace;
             //If we're at the end of the list, then we need to swap with the To box
-            if(intermediateIndex + 1 < IntermediatePlaces.Count)
+            if (intermediateIndex + 1 < IntermediatePlaces.Count)
             {
                 nextPlace = IntermediatePlaces[intermediateIndex + 1].IntermediatePlace;
                 IntermediatePlaces[intermediateIndex + 1].IntermediatePlace = obj.IntermediatePlace;
@@ -683,11 +701,11 @@ namespace DigiTransit10.ViewModels
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundNoServer;
             }
-            else if(result.Failure.Reason == FailureReason.ServerDown)
+            else if (result.Failure.Reason == FailureReason.ServerDown)
             {
                 errorMessage = AppResources.DialogMessage_NoTripsFoundServerDown;
             }
-            else if(result.Failure.Reason == FailureReason.Canceled)
+            else if (result.Failure.Reason == FailureReason.Canceled)
             {
                 return; //swallow cancellation, the only way it can happen here is user-triggered
             }
@@ -728,7 +746,7 @@ namespace DigiTransit10.ViewModels
                 IsUsingCurrentDate = false;
                 SelectedDate = DateTime.Today + TimeSpan.FromDays(1);
                 return;
-            }            
+            }
 
             ContentDialogResult result = await _dialogService.ShowContentDialog<TooFarIntoPastDialog>();
             if (result == ContentDialogResult.Primary)
@@ -740,7 +758,7 @@ namespace DigiTransit10.ViewModels
 
         private void SetBusy(bool newBusy, string message = null)
         {
-            if(newBusy == _isBusy && message == _currentBusyMessage)
+            if (newBusy == _isBusy && message == _currentBusyMessage)
             {
                 return;
             }
@@ -801,13 +819,13 @@ namespace DigiTransit10.ViewModels
                 }
 
                 //---Plan trip from tile                                
-                if(SessionState.ContainsKey(NavParamKeys.SecondaryTilePayload))
+                if (SessionState.ContainsKey(NavParamKeys.SecondaryTilePayload))
                 {
                     var secondaryTileArgs = (SecondaryTilePayload)SessionState[NavParamKeys.SecondaryTilePayload];
                     SecondaryTileInvoked(secondaryTileArgs);
                     SessionState.Remove(NavParamKeys.SecondaryTilePayload);
                 }
-            }            
+            }
 
             await FillPinnedFavorites();
 
@@ -836,7 +854,7 @@ namespace DigiTransit10.ViewModels
                     PlanTripCommand.Execute(null);
                 }
             }
-        }       
+        }
 
         private void Busy_BusyCancelled(object sender, EventArgs e)
         {
