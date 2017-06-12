@@ -45,7 +45,7 @@
                                    TextTrimming="Clip"
                                    TextWrapping="WrapWholeWords"
                                    Visibility="{x:Bind DescriptionText, Converter={StaticResource EmptyNullToVisibilityConverter}}"/>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Bind AffectedLineId, Mode=OneWay, Converter={StaticResource EmptyNullToVisibilityConverter}}">
                             <TextBlock Text="{Binding Source={StaticResource Strings}, Path=AlertsPage_Affects}" VerticalAlignment="Center"/>
                             <Button Background="Transparent"
                                     Command="{Binding ElementName=AlertsList, Path=DataContext.LineClickedCommand}"

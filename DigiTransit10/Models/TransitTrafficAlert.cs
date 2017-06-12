@@ -106,12 +106,12 @@ namespace DigiTransit10.Models
                 EndDate = DateTimeOffset.FromUnixTimeSeconds(result.EffectiveEndDate.Value);
             }
 
-            AffectedLineId = result.Route.GtfsId;
-            AffectedLineShortName = result.Route.ShortName;
-            AffectedLineLongName = result.Route.LongName;
-            AffectedLineMode = result.Route.Mode;
+            AffectedLineId = result.Route?.GtfsId;
+            AffectedLineShortName = result.Route?.ShortName;
+            AffectedLineLongName = result.Route?.LongName;
+            AffectedLineMode = result.Route?.Mode ?? ApiMode.Bus;
 
-            AffectedStopId = result.Route.GtfsId;
+            AffectedStopId = result.Route?.GtfsId;
         }
 
         // ITransitLine implementation. All proxies to differently-named properties.
