@@ -1,4 +1,4 @@
-﻿namespace DigiTransit10.Helpers.FontLoading
+﻿namespace DigiTransit10.Helpers
 {
     public static class HslFontGlyphs
     {

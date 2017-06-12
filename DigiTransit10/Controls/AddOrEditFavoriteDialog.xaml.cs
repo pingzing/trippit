@@ -26,8 +26,7 @@ namespace DigiTransit10.Controls
 
     public sealed partial class AddOrEditFavoriteDialog : ContentDialog, INotifyPropertyChanged
     {
-
-        private readonly ICustomFontService _fontService;
+        
         private AddOrEditDialogType _dialogType;
         private string _editDialogIconGlyph;
         private string _editDialogIconFont;
@@ -169,8 +168,7 @@ namespace DigiTransit10.Controls
         {
             this.InitializeComponent();
             this.Loaded += AddOrEditFavoriteDialog_Loaded;
-            SingleMap.MapElementsChanged += SingleMap_MapElementsChanged;
-            _fontService = (ICustomFontService)ServiceLocator.Current.GetService(typeof(ICustomFontService));
+            SingleMap.MapElementsChanged += SingleMap_MapElementsChanged;            
             _dialogType = AddOrEditDialogType.Add;
         }
 
@@ -208,7 +206,7 @@ namespace DigiTransit10.Controls
 
             List<FavoriteIcon> iconsList = new List<FavoriteIcon>();
 
-            List<int> fontInts = (await _fontService.GetFontGlyphsAsync(hslFamily.Source)).ToList();       
+            List<int> fontInts = HslFontGlyphs.PiktoFrame.ToList();
 
             foreach (int value in fontInts)
             {

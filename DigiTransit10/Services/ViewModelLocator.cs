@@ -40,8 +40,7 @@ namespace DigiTransit10.Services
                 SimpleIoc.Default.Register<IMessenger>(() => Messenger.Default);
                 SimpleIoc.Default.Register<IGeolocationService>(() => new GeolocationService());
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
-                SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));
-                SimpleIoc.Default.Register<ICustomFontService>(() => new CustomFontService(fileService));
+                SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));                
                 SimpleIoc.Default.Register<ITileService>(() => new TileService(settingsService, logger));
                 SimpleIoc.Default.Register<IAnalyticsService>(() => new AnalyticsService(settingsService));
             }

@@ -217,12 +217,9 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\FontIconGlyphs.cs" />
-    <Compile Include="Helpers\FontLoading\CustomFontFileLoader.cs" />
-    <Compile Include="Helpers\FontLoading\CustomFontFileEnumerator.cs" />
-    <Compile Include="Helpers\FontLoading\CustomFontFileStream.cs" />
-    <Compile Include="Helpers\FontLoading\HslFontGlyphs.cs" />
     <Compile Include="Helpers\GeoHelper.cs" />
     <Compile Include="Helpers\GooglePolineDecoder.cs" />
+    <Compile Include="Helpers\HslFontGlyphs.cs" />
     <Compile Include="Helpers\IFailure.cs" />
     <Compile Include="Helpers\IFailureReason.cs" />
     <Compile Include="Helpers\IResult.cs" />
@@ -299,7 +296,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Services\AnalyticsService.cs" />
-    <Compile Include="Services\CustomFontService.cs" />
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\FavoritesChangedEventArgs.cs" />
     <Compile Include="Services\FavoritesService.cs" />
