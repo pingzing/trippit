@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
@@ -76,6 +77,14 @@ namespace DigiTransit10.Views
         private async Task TrySetMapViewWithMargin(BasicGeoposition pos, double boundingBoxZoomAdjustment, MapAnimationKind mapAnimation = MapAnimationKind.None)
         {
             double narrowZoomAdjustment = boundingBoxZoomAdjustment / 2;
+
+            // Creators update changed maps a bit, so we need to zoom in closer on any device running it.
+            // MapStyle is a decent proxy for "are we on Creators or not"
+            if (DeviceTypeHelper.GetDeviceFormFactorType() == DeviceFormFactorType.Phone
+                && !ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Maps.MapStyle"))
+            {
+                narrowZoomAdjustment = boundingBoxZoomAdjustment / 1.35;
+            }
 
             // Create a box surrounding the specified point to emulate a zoom level on the map.
             // We're using a simulated bounding box, because we need to be able to specify a margin,

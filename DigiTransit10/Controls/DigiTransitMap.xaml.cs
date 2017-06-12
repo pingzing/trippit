@@ -754,7 +754,7 @@ namespace DigiTransit10.Controls
                 SelfMarker.RotationDegrees = args.Reading.HeadingMagneticNorth;
             }
         }
-
+        
         public async Task TrySetViewBoundsAsync(GeoboundingBox bounds, Thickness? margin, MapAnimationKind animation, bool retryOnFailure = false)
         {
             if(DigiTransitMapControl == null)
@@ -762,18 +762,23 @@ namespace DigiTransit10.Controls
                 return;
             }
 
-            if(margin != null && DeviceTypeHelper.GetDeviceFormFactorType() != DeviceFormFactorType.Phone)
+            // We're checking for the MapStyle type as a proxy for "are we running on Creators or higher?".
+            // We don't need to run the following code if we are.
+            if (margin != null
+                && !ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.Maps.MapStyle")
+                && DeviceTypeHelper.GetDeviceFormFactorType() != DeviceFormFactorType.Phone)
             {
                 //Margins are a little smaller on desktop for some reason. investigate this a little further, may just be a DPI thing?
                 const int desktopPlusCoeff = 40;
                 margin = new Thickness(margin.Value.Left + desktopPlusCoeff, margin.Value.Top + desktopPlusCoeff,
                     margin.Value.Right + desktopPlusCoeff, margin.Value.Bottom + desktopPlusCoeff);
             }
+
             //If map movement fails, keep retrying until we get it right
             bool moved = false;
             do
             {
-                moved = await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);
+                moved = await DigiTransitMapControl.TrySetViewBoundsAsync(bounds, margin, animation);                
                 if (moved)
                 {
                     break;

@@ -202,6 +202,11 @@ namespace DigiTransit10.ViewModels
             MapCircles = newPivotSelection.MapCircles;
             MapPlaces = newPivotSelection.MapPlaces;
             MapLines = newPivotSelection.MapLines;
+
+            if (newPivotSelection.OwnedBy == SearchSection.Nearby)
+            {
+                (SelectedPivot as StopSearchContentViewModel)?.CenterMapOnNearbyCircle();
+            }
             return;            
         }
 

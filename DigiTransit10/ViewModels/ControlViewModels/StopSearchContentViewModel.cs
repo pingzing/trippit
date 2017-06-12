@@ -239,7 +239,8 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             {
                 MapCircles.Clear();
                 _messenger.Send(new MessageTypes.CenterMapOnGeoposition(result.Result.Coordinate.Point.Position));
-                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+                MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(result.Result.Coordinate.Point, GeocircleRadiusMeters, GeocircleNumberOfPoints), 
+                    result.Result.Coordinate.Point.Position));
                 await UpdateNearbyPlaces(new Geocircle(result.Result.Coordinate.Point.Position, GeocircleRadiusMeters), _tokenSource.Token);
             }
 
@@ -262,11 +263,19 @@ namespace DigiTransit10.ViewModels.ControlViewModels
             IsOverviewLoading = true;
 
             MapCircles.Clear();
-            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadiusMeters, GeocircleNumberOfPoints)));
+            MapCircles.Add(new ColoredGeocircle(GeoHelper.GetGeocirclePoints(point, GeocircleRadiusMeters, GeocircleNumberOfPoints), point.Position));
             await UpdateNearbyPlaces(new Geocircle(point.Position, GeocircleRadiusMeters), _tokenSource.Token);
 
             IsOverviewLoading = false;
-        }        
+        }  
+        
+        internal void CenterMapOnNearbyCircle()
+        {
+            if (MapCircles.Count > 0 && MapCircles.First().Center != null)
+            {
+                _messenger.Send(new MessageTypes.CenterMapOnGeoposition(MapCircles.First().Center.Value));
+            }
+        }
         
         private async Task UpdateNearbyPlaces(Geocircle circle, CancellationToken token)
         {                                   
