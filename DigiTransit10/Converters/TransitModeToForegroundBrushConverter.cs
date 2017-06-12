@@ -33,7 +33,7 @@ namespace DigiTransit10.Converters
                 case ApiMode.Walk:
                     return Application.Current.Resources[Constants.WalkBrushName];
                 default:
-                    return DependencyProperty.UnsetValue;
+                    return Application.Current.Resources[Constants.WalkBrushName];
             }
 
         }

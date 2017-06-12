@@ -450,6 +450,8 @@ namespace DigiTransit10.Services
                     )                    
                 );
 
+             
+
             ApiResult<IEnumerable<ApiAlert>> response = await GetGraphQLAsync<IEnumerable<ApiAlert>>(query, token);
 
             if (!response.HasResult)

@@ -558,4 +558,7 @@ Default: 3</value>
   <data name="WalkingSpeed_4_Subtitle" xml:space="preserve">
     <value>180 m/min</value>
   </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Trippit it makes it easy to get around using public transit in the greater Helsinki area.</value>
+  </data>
 </root>

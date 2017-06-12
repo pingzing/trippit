@@ -50,7 +50,8 @@
                 </TransitionCollection>
             </Button.Transitions>
         </Button>
-        <FlyoutBase.AttachedFlyout>
+        <!--TODO: All of this. Cutting it out for 1.0, because meh.-->
+        <!--<FlyoutBase.AttachedFlyout>
             <MenuFlyout Placement="Bottom">
                 <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
                     <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"/>
@@ -65,6 +66,6 @@
             <Core:EventTriggerBehavior EventName="RightTapped">
                 <Behaviors:OpenFlyoutAction/>
             </Core:EventTriggerBehavior>
-        </Interactivity:Interaction.Behaviors>
+        </Interactivity:Interaction.Behaviors>-->
     </Grid>
 </UserControl>

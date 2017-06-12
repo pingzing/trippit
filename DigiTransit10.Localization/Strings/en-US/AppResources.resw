@@ -344,7 +344,7 @@
     <value>Edit</value>
   </data>
   <data name="Flyout_MainPage" xml:space="preserve">
-    <value>Main page</value>
+    <value>Home page</value>
   </data>
   <data name="Flyout_PinTo" xml:space="preserve">
     <value>Pin to...</value>
@@ -371,7 +371,7 @@
     <value>Lines</value>
   </data>
   <data name="DialogMessage_NoTripsFoundServerDown" xml:space="preserve">
-    <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try again later.</value>
+    <value>Unable to retrieve information from the server. It's reporting that service is currently unavailable. Try again later.</value>
   </data>
   <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
     <value>Today</value>
@@ -459,10 +459,10 @@
     <value>Licenses</value>
   </data>
   <data name="SettingsPage_LicensesText" xml:space="preserve">
-    <value>• Roslynator under the Apache 2.0 License
-• Template10 under the Apache 2.0 License
-• The HockeyApp SDK under the MIT License
-• MetroLog under the MIT License
+    <value>• Roslynator under the Apache 2.0 license
+• Template10 under the Apache 2.0 license
+• The HockeyApp SDK under the MIT license
+• MetroLog under the MIT license
 • The official XAML Behaviors library under the MIT license
 • MVVM Light under the MIT license
 • JSON.NET under the MIT license
@@ -492,7 +492,7 @@
     <value>Light</value>
   </data>
   <data name="SettingsPage_FavoritesPanelExplanation" xml:space="preserve">
-    <value>Set the maximum number of pinned favorites to display on the main page of the app.
+    <value>Set the maximum number of pinned favorites to display on the Home page of the app.
 Default: 3</value>
   </data>
   <data name="SettingsPage_FavoritesPanelHeader" xml:space="preserve">
@@ -558,5 +558,8 @@ Default: 3</value>
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Trippit</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Trippit it makes it easy to get around using public transit in the greater Helsinki area.</value>
   </data>
 </root>

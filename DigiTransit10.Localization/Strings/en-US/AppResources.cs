@@ -878,7 +878,7 @@ namespace DigiTransit10.Localization.Strings
         }
         
         /// <summary>
-        /// Localized resource similar to "Main page"
+        /// Localized resource similar to "Home page"
         /// </summary>
         public static string Flyout_MainPage
         {
@@ -1400,7 +1400,7 @@ namespace DigiTransit10.Localization.Strings
         public static string SettingsPage_PinnedFavoritesNumberComboBoxHeader => resourceLoader.GetString(nameof(SettingsPage_PinnedFavoritesNumberComboBoxHeader));
 
         /// <summary>
-        /// Localized resource similar to "Set the maximum number of pinned favorites to display on the main page of the app. Default: 3"
+        /// Localized resource similar to "Set the maximum number of pinned favorites to display on the Home page of the app. Default: 3"
         /// </summary>
         public static string SettingsPage_FavoritesPanelExplanation => resourceLoader.GetString(nameof(SettingsPage_FavoritesPanelExplanation));
 

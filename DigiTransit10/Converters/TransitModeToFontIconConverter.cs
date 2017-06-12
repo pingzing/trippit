@@ -33,7 +33,7 @@ namespace DigiTransit10.Converters
                 case ApiMode.Walk:
                     return FontIconGlyphs.WalkIcon;
                 default:
-                    return DependencyProperty.UnsetValue;
+                    return FontIconGlyphs.WalkIcon;
             }
         }
 
