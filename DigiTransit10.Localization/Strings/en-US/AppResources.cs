@@ -1483,5 +1483,10 @@ namespace DigiTransit10.Localization.Strings
         /// Localized resource similar to "Affects"
         /// </summary>
         public static string AlertsPage_Affects => resourceLoader.GetString(nameof(AlertsPage_Affects));
+
+        /// <summary>
+        /// Localized resource similar to "ALERTS"
+        /// </summary>
+        public static string AlertsPage_PageHeader => resourceLoader.GetString(nameof(AlertsPage_PageHeader));
     }
 }

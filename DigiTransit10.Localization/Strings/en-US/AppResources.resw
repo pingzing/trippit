@@ -135,20 +135,11 @@
   <data name="MainPage_ToHeader" xml:space="preserve">
     <value>To</value>
   </data>
-  <data name="SuggestBoxHeader_Addresses" xml:space="preserve">
-    <value>Addresses</value>
-  </data>
-  <data name="SuggestBoxHeader_TransitStops" xml:space="preserve">
-    <value>Transit Stops</value>
-  </data>
   <data name="TimeType_Arrival" xml:space="preserve">
     <value>Arrival</value>
   </data>
   <data name="TimeType_Departure" xml:space="preserve">
     <value>Departure</value>
-  </data>
-  <data name="TimeType_PlaceholderText" xml:space="preserve">
-    <value>Arrival or departure time?</value>
   </data>
   <data name="TripForm_PlanATripHeader" xml:space="preserve">
     <value>Plan a trip</value>
@@ -174,9 +165,6 @@
   <data name="TripForm_TransitTypeHeader" xml:space="preserve">
     <value>Transit types</value>
   </data>
-  <data name="SuggestBoxHeader_MyLocation" xml:space="preserve">
-    <value>My location</value>
-  </data>
   <data name="LiteralNow" xml:space="preserve">
     <value>Now</value>
   </data>
@@ -197,9 +185,6 @@
   </data>
   <data name="LiteralDelete" xml:space="preserve">
     <value>Delete</value>
-  </data>
-  <data name="SuggestBoxHeader_FavoritePlaces" xml:space="preserve">
-    <value>Favorites</value>
   </data>
   <data name="CurrentTimePicker_CurrentTime" xml:space="preserve">
     <value>Now</value>
@@ -526,7 +511,7 @@ Default: 3</value>
     <value>Yes, please</value>
   </data>
   <data name="TooFarIntoPastDialog_Content" xml:space="preserve">
-    <value>You've selected a time in the past. Would you like to move your trip date to tomorrow to accommodate this?</value>
+    <value>You've selected a time in the past. Would you like to set your trip date to tomorrow?</value>
   </data>
   <data name="TooFarIntoPastDialog_DontShowCheckbox" xml:space="preserve">
     <value>Don't show me this again</value>
@@ -535,7 +520,7 @@ Default: 3</value>
     <value>From now on, your trip dates will automatically be moved forward to tomorrow if you select a time in the past.</value>
   </data>
   <data name="TooFarIntoPastDialog_Title" xml:space="preserve">
-    <value>Too Early</value>
+    <value>Are you a time traveler?</value>
   </data>
   <data name="MainPage_TimeInPastWarning" xml:space="preserve">
     <value>Note: Your selected date and time are in the past.</value>
@@ -561,5 +546,23 @@ Default: 3</value>
   </data>
   <data name="AppDescription" xml:space="preserve">
     <value>Trippit it makes it easy to get around using public transit in the greater Helsinki area.</value>
+  </data>
+  <data name="SuggestBoxHeader_Addresses" xml:space="preserve">
+    <value>Addresses</value>
+  </data>
+  <data name="SuggestBoxHeader_FavoritePlaces" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="SuggestBoxHeader_FavoritePlaces1" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="SuggestBoxHeader_MyLocation" xml:space="preserve">
+    <value>My location</value>
+  </data>
+  <data name="AlertsPage_PageHeader" xml:space="preserve">
+    <value>ALERTS</value>
+  </data>
+  <data name="SuggestBoxHeader_TransitStops" xml:space="preserve">
+    <value>Stops</value>
   </data>
 </root>

@@ -153,6 +153,7 @@ namespace DigiTransit10.Views
                 storyboard.Begin();
             }
             base.OnNavigatedTo(e);
+            this.IsEnabled = true;
         }
 
         private void NavigationCanceledByUser(NavigationCanceled _)

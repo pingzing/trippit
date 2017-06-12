@@ -118,447 +118,445 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddOrEditFavoriteDialog_AddHeader" xml:space="preserve">
-    <value>Add Favorite</value>
+    <value>Lisää suosikki</value>
   </data>
   <data name="AddOrEditFavoriteDialog_Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Peruuta</value>
   </data>
   <data name="AddOrEditFavoriteDialog_EditHeader" xml:space="preserve">
-    <value>Edit Favorite</value>
+    <value>Muokkaa suosikkia</value>
   </data>
   <data name="AddOrEditFavoriteDialog_IconsHeader" xml:space="preserve">
-    <value>Icon</value>
+    <value>Kuvake</value>
   </data>
   <data name="AddOrEditFavoriteDialog_Save" xml:space="preserve">
-    <value>Save</value>
+    <value>Tallenna</value>
   </data>
   <data name="AddOrEditFavoriteDialog_SearchBoxHeader" xml:space="preserve">
-    <value>Location</value>
+    <value>Sijainti</value>
   </data>
   <data name="AddOrEditFavoriteDialog_UserChosenNameHeader" xml:space="preserve">
-    <value>Name</value>
+    <value>Nimi</value>
   </data>
   <data name="AlertsPage_Affects" xml:space="preserve">
-    <value>Affects</value>
+    <value>Koskee</value>
   </data>
   <data name="AlertsPage_TimeEnd" xml:space="preserve">
-    <value>To:</value>
+    <value>Lähtöaika:</value>
   </data>
   <data name="AlertsPage_TimeStart" xml:space="preserve">
-    <value>From:</value>
+    <value>Saapumisaika:</value>
   </data>
   <data name="AlertsPage_ViewOnline" xml:space="preserve">
-    <value>View online</value>
+    <value>Tarkastele verkossa</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Trippit helpottaa julkisen liikenteen käyttöä pääkaupunkiseudulla.</value>
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Trippit</value>
   </data>
   <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
-    <value>Today</value>
+    <value>Tänään</value>
   </data>
   <data name="CurrentTimePicker_CurrentTime" xml:space="preserve">
-    <value>Now</value>
+    <value>Nyt</value>
   </data>
   <data name="DarkThemeName" xml:space="preserve">
-    <value>Dark</value>
+    <value>Tumma</value>
   </data>
   <data name="DialogMessage_NoTripsFoundNoResults" xml:space="preserve">
-    <value>No routes found. Check your search parameters.</value>
+    <value>Reittejä ei löytynyt. Tarkista hakuehdot.</value>
   </data>
   <data name="DialogMessage_NoTripsFoundNoServer" xml:space="preserve">
-    <value>No routes found, because a connection with the server couldn't be established. Check your internet connection, or try again later.</value>
+    <value>Reittejä ei löytynyt, koska yhteyttä palvelimeen ei ole käytettävissä. Tarkista verkkoasetuksesi tai yritä myöhemmin uudelleen.</value>
   </data>
   <data name="DialogMessage_NoTripsFoundServerDown" xml:space="preserve">
-    <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try agin later.</value>
+    <value>Tietoja ei saatu palvelimelta. Palvelu ei ole käytettävissä. Yritä myöhemmin uudelleen.</value>
   </data>
   <data name="DialogMessage_NoTripsFoundUnknown" xml:space="preserve">
-    <value>No routes found. Please try again.</value>
+    <value>Reittejä ei löytynyt. Yritä uudelleen.</value>
   </data>
   <data name="DialogMessage_PlaceResolutionFailed" xml:space="preserve">
-    <value>We were unable to locate the following places:</value>
+    <value>Seuraavia ei löytynyt:</value>
   </data>
   <data name="DialogMessage_UserLocationFailed" xml:space="preserve">
-    <value>We were unable to locate you. Are location services enabled for this app?</value>
+    <value>Sijaintiasi ei löytynyt. Varmista, että olet antanut tälle sovellukselle luvan käyttää laitteesi paikannusta.</value>
   </data>
   <data name="DialogTitle_NoLocationFound" xml:space="preserve">
-    <value>Location failure</value>
+    <value>Virhe paikannuksessa</value>
   </data>
   <data name="DialogTitle_NoTripsFound" xml:space="preserve">
-    <value>No routes found</value>
+    <value>Reittejä ei löytynyt</value>
   </data>
   <data name="FavoritesPage_CommandBarAddFavorite" xml:space="preserve">
-    <value>Add favorite</value>
+    <value>Lisää suosikki</value>
   </data>
   <data name="FavoritesPage_CommandBarDeleteSelected" xml:space="preserve">
-    <value>Delete Selected</value>
+    <value>Poista valitut</value>
   </data>
   <data name="FavoritesPage_CommandBarSelect" xml:space="preserve">
-    <value>Select</value>
+    <value>Valitse</value>
   </data>
   <data name="FavoritesPage_PageHeader" xml:space="preserve">
-    <value>FAVORITES</value>
+    <value>SUOSIKIT</value>
   </data>
   <data name="Favorites_EmptyList" xml:space="preserve">
-    <value>You haven't saved any favorites yet</value>
+    <value>Et ole vielä tallentanut yhtään suosikkia</value>
   </data>
   <data name="Favorites_FavoritesHeader" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Suosikit</value>
   </data>
   <data name="Favorites_PinToStartAlreadyExists" xml:space="preserve">
-    <value>is already pinned to Start!</value>
+    <value>on jo kiinnitetty Aloitukseen!</value>
   </data>
   <data name="Favorites_PinToStartErrorTitle" xml:space="preserve">
-    <value>Could not pin to Start</value>
+    <value>Kiinnitys Aloitukseen ei onnistunut</value>
   </data>
   <data name="Favorites_PinToStartGenericFailure" xml:space="preserve">
-    <value>Not sure why, but we weren't able to pin {0} to Start.</value>
+    <value>Jotakin meni pieleen, kohteen {0} kiinnittäminen Aloitukseen ei onnistunut.</value>
     <comment>{0} filled with user's place name by String.Format call</comment>
   </data>
   <data name="Favorites_PlacesGroupHeader" xml:space="preserve">
-    <value>Places</value>
+    <value>Paikat</value>
   </data>
   <data name="Favorites_RoutesGroupHeader" xml:space="preserve">
-    <value>Routes</value>
+    <value>Reitit</value>
   </data>
   <data name="Flyout_AddToFavorites" xml:space="preserve">
-    <value>Add to favorites</value>
+    <value>Lisää suosikkeihin</value>
   </data>
   <data name="Flyout_Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>Muokkaa</value>
   </data>
   <data name="Flyout_MainPage" xml:space="preserve">
-    <value>Main page</value>
+    <value>Etusivu</value>
   </data>
   <data name="Flyout_PinTo" xml:space="preserve">
-    <value>Pin to...</value>
+    <value>Kiinnitä...</value>
   </data>
   <data name="Flyout_Select" xml:space="preserve">
-    <value>Select</value>
+    <value>Valitse</value>
   </data>
   <data name="Flyout_SetAsDestination" xml:space="preserve">
-    <value>Set as destination</value>
+    <value>Aseta kohteeksi</value>
   </data>
   <data name="Flyout_SetAsOrigin" xml:space="preserve">
-    <value>Set as origin</value>
+    <value>Aseta lähtöpaikaksi</value>
   </data>
   <data name="Flyout_Start" xml:space="preserve">
-    <value>Start</value>
+    <value>Aloitus</value>
   </data>
   <data name="LightThemeName" xml:space="preserve">
-    <value>Light</value>
+    <value>Vaalea</value>
   </data>
   <data name="LiteralCancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Peruuta</value>
   </data>
   <data name="LiteralDate" xml:space="preserve">
-    <value>Date</value>
+    <value>Päiväys</value>
   </data>
   <data name="LiteralDelete" xml:space="preserve">
-    <value>Delete</value>
+    <value>Poista</value>
   </data>
   <data name="LiteralNow" xml:space="preserve">
-    <value>Now</value>
+    <value>Nyt</value>
   </data>
   <data name="LiteralPinToStart" xml:space="preserve">
-    <value>Pin to Start</value>
+    <value>Kiinnitä Aloitukseen</value>
   </data>
   <data name="LiteralTime" xml:space="preserve">
-    <value>Time</value>
+    <value>Aika</value>
   </data>
   <data name="LoadingLiteral" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Ladataan...</value>
   </data>
   <data name="MainPageHeaderCommand_Alerts" xml:space="preserve">
-    <value>Alerts</value>
+    <value>Hälytykset</value>
   </data>
   <data name="MainPage_AddIntermediateDestination" xml:space="preserve">
-    <value>+ Add intermediate destination</value>
+    <value>+ Lisää välipysäkki</value>
   </data>
   <data name="MainPage_FromHeader" xml:space="preserve">
-    <value>From</value>
+    <value>Lähtöpaikka</value>
   </data>
   <data name="MainPage_Header" xml:space="preserve">
-    <value>TRIP PLANNING</value>
+    <value>MATKAN SUUNNITTELU</value>
   </data>
   <data name="MainPage_TimeInPastWarning" xml:space="preserve">
-    <value>Note: Your selected date and time are in the past.</value>
+    <value>Huom! Valittu päivämäärä ja aika ovat jo menneet.</value>
   </data>
   <data name="MainPage_ToHeader" xml:space="preserve">
-    <value>To</value>
+    <value>Kohde</value>
   </data>
   <data name="NavigationLabels_Favorites" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Suosikit</value>
   </data>
   <data name="NavigationLabels_Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Etusivu</value>
   </data>
   <data name="NavigationLabels_Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Haku</value>
   </data>
   <data name="NavigationLabels_Settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Asetukset</value>
   </data>
   <data name="PinnedFavoritesList_Unpin" xml:space="preserve">
-    <value>Unpin</value>
+    <value>Poista</value>
   </data>
   <data name="SearchPage_Header" xml:space="preserve">
-    <value>SEARCH</value>
+    <value>HAKU</value>
   </data>
   <data name="SearchPage_LinesHeader" xml:space="preserve">
-    <value>Lines</value>
+    <value>Linjat</value>
   </data>
   <data name="SearchPage_MapContextFindPlacesAtMe" xml:space="preserve">
-    <value>Find stops near me</value>
+    <value>Hae pysäkkejä lähellä minua</value>
   </data>
   <data name="SearchPage_MapContextMenuFindPlacesHere" xml:space="preserve">
-    <value>Find stops near this point</value>
+    <value>Hae pysäkkejä lähellä tätä sijaintia</value>
   </data>
   <data name="SearchPage_NearbyHeader" xml:space="preserve">
-    <value>Nearby</value>
+    <value>Lähellä</value>
   </data>
   <data name="SearchPage_StopsHeader" xml:space="preserve">
-    <value>Stops</value>
+    <value>Pysäkit</value>
   </data>
   <data name="SettingsPage_AnalyticsExplanation" xml:space="preserve">
-    <value>If enabled, this will send anonymous usage information to the developer. He can use that to make future versions of the app better! =)
-(or abandon features that no one uses)</value>
+    <value>Sallimalla tämän sovellus lähettää nimettömiä tietoja sovelluksen kehittäjälle. Hän voi käyttää tietoja sovelluksen kehittämiseen tai käyttämättömien ominaisuuksien poistamiseen! Kiitos avusta! =)</value>
   </data>
   <data name="SettingsPage_AnalyticsHeader" xml:space="preserve">
-    <value>Analytics &amp; telemetry</value>
+    <value>Analytiikka ja teletiedot</value>
   </data>
   <data name="SettingsPage_AnalyticsToggleHeader" xml:space="preserve">
-    <value>Tracking</value>
+    <value>Seuranta</value>
   </data>
   <data name="SettingsPage_DefaultSearchExplanation" xml:space="preserve">
-    <value>You can set your default To and From locations, as well as the default route optimization settings. These settings will be used to populate the search page when opening the app.</value>
+    <value>Voit asettaa oletuskohteen ja -lähtöpaikan, sekä reitin oletusasetukset. Näitä asetuksia käytetään etusivulla, kun sovellus avataan.</value>
   </data>
   <data name="SettingsPage_DefaultSearchHeader" xml:space="preserve">
-    <value>Default search options</value>
+    <value>Oletushakuehdot</value>
   </data>
   <data name="SettingsPage_FavoritesPanelExplanation" xml:space="preserve">
-    <value>Set the maximum number of pinned favorites to display on the main page of the app.
-Default: 3</value>
+    <value>Aseta etusivulle kiinnitettyjen suosikkien maksimimäärä. Oletus: 3</value>
   </data>
   <data name="SettingsPage_FavoritesPanelHeader" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Suosikit</value>
   </data>
   <data name="SettingsPage_FromBoxHeader" xml:space="preserve">
-    <value>From</value>
+    <value>Lähtöpaikka</value>
   </data>
   <data name="SettingsPage_LicensesHeader" xml:space="preserve">
-    <value>Licenses</value>
+    <value>Lisenssit</value>
   </data>
   <data name="SettingsPage_LicensesText" xml:space="preserve">
-    <value>• Roslynator under the Apache 2.0 License
-• Template10 under the Apache 2.0 License
-• The HockeyApp SDK under the MIT License
-• MetroLog under the MIT License
-• The official XAML Behaviors library under the MIT license
-• MVVM Light under the MIT license
-• JSON.NET under the MIT license
-• The NotificationExtensions library under the MIT license</value>
+    <value>• Roslynator Apache 2.0 -lisenssillä
+• Template10 Apache 2.0 -lisenssillä
+• HockeyApp SDK MIT-lisenssillä
+• MetroLog MIT-lisenssillä
+• XAML Behaviors -kirjasto MIT-lisenssillä
+• MVVM Light MIT-lisenssillä
+• JSON.NET MIT-lisenssillä
+• NotificationExtensions -kirjasto MIT-lisenssillä</value>
   </data>
   <data name="SettingsPage_PageHeader" xml:space="preserve">
-    <value>SETTINGS</value>
+    <value>ASETUKSET</value>
   </data>
   <data name="SettingsPage_PinnedFavoritesNumberComboBoxHeader" xml:space="preserve">
-    <value>Number of pinned favorites</value>
+    <value>Kiinnitettyjen suosikkien määrä</value>
   </data>
   <data name="SettingsPage_SpecialThanksHeader" xml:space="preserve">
-    <value>Special thanks</value>
+    <value>Erityiskiitokset</value>
   </data>
   <data name="SettingsPage_SpecialThanksText" xml:space="preserve">
-    <value>• Kaisa. She knows why  ❤️
-• Olli Saarikivi, for his excellent Reitit app and freely-given advice
-• Alisa Suorava for the fantastic app icon
-• Teemu Turunen and everybody else who've made the Futurice Spice Program what it is
-• HSL for their open API and wealth of resources
-• You! For using this app!</value>
+    <value>• Kaisa. Miksi? Siksi! ❤️
+• Olli Saarikivi, oivallisesta Reitit-sovelluksesta ja vapaasti kylvetystä avusta
+• Alisa Suorava, fantastisesta sovelluskuvakkeesta
+• Teemu Turunen ja kaikki muut, joiden myötävaikutuksella Futurice Spice Program on syntynyt ja kehittynyt sellaiseksi kuin se on
+• HSL, avoimesta API:sta ja runsaasta resurssitarjonnasta
+• Sinä! Siitä, että käytät tätä sovellusta!</value>
   </data>
   <data name="SettingsPage_ThemeComboBoxHeader" xml:space="preserve">
-    <value>Display theme</value>
+    <value>Näytön teema</value>
   </data>
   <data name="SettingsPage_ThemeExplanation" xml:space="preserve">
-    <value>Set your chosen application theme.</value>
+    <value>Aseta sovelluksen teema</value>
   </data>
   <data name="SettingsPage_ThemeHeader" xml:space="preserve">
-    <value>Theme</value>
+    <value>Teema</value>
   </data>
   <data name="SettingsPage_ToBoxHeader" xml:space="preserve">
-    <value>To</value>
+    <value>Kohde</value>
   </data>
   <data name="SettingsPage_VersionHeader" xml:space="preserve">
-    <value>Version</value>
+    <value>Versio</value>
   </data>
   <data name="SettingsPage_WalkingAmountHeader" xml:space="preserve">
-    <value>Amount of walking</value>
+    <value>Kävelyn määrä</value>
   </data>
   <data name="SettingsPage_WalkingSpeedHeader" xml:space="preserve">
-    <value>Walking speed</value>
+    <value>Kävelynopeus</value>
   </data>
   <data name="StopSearchContent_DetailsDeparturesHeader" xml:space="preserve">
-    <value>Upcoming Departures</value>
+    <value>Tulevat lähdöt</value>
   </data>
   <data name="StopSearchContent_DetailsEmptyDeparturesListHeader" xml:space="preserve">
-    <value>Looks like there aren't any more upcoming departures today</value>
+    <value>Näyttää siltä, ettei tänään ole enää tulevia lähtöjä</value>
   </data>
   <data name="StopSearchContent_DetailsLinesHeader" xml:space="preserve">
-    <value>Lines</value>
+    <value>Linjat</value>
   </data>
   <data name="StopSearchElement_ViewDetails" xml:space="preserve">
-    <value>View stop details</value>
+    <value>Tarkastele pysäkin tietoja</value>
   </data>
   <data name="SuggestBoxHeader_Addresses" xml:space="preserve">
-    <value>Addresses</value>
+    <value>Osoitteet</value>
   </data>
   <data name="SuggestBoxHeader_FavoritePlaces" xml:space="preserve">
-    <value>Favorites</value>
+    <value>Suosikit</value>
   </data>
   <data name="SuggestBoxHeader_MyLocation" xml:space="preserve">
-    <value>My location</value>
+    <value>Sijaintini</value>
   </data>
   <data name="SuggestBoxHeader_TransitStops" xml:space="preserve">
-    <value>Transit Stops</value>
+    <value>Pysäkit</value>
   </data>
   <data name="SystemSettingThemeName" xml:space="preserve">
-    <value>System theme</value>
+    <value>Järjestelmän teema</value>
   </data>
   <data name="TimeType_Arrival" xml:space="preserve">
-    <value>Arrival</value>
+    <value>Saapumisaika</value>
   </data>
   <data name="TimeType_Departure" xml:space="preserve">
-    <value>Departure</value>
-  </data>
-  <data name="TimeType_PlaceholderText" xml:space="preserve">
-    <value>Arrival or departure time?</value>
+    <value>Lähtöaika</value>
   </data>
   <data name="TooFarIntoPastDialog_Cancel" xml:space="preserve">
-    <value>No, thanks</value>
+    <value>Ei kiitos</value>
   </data>
   <data name="TooFarIntoPastDialog_Confirm" xml:space="preserve">
-    <value>Yes, please</value>
+    <value>Kyllä!</value>
   </data>
   <data name="TooFarIntoPastDialog_Content" xml:space="preserve">
-    <value>You've selected a time in the past. Would you like to move your trip date to tomorrow to accommodate this?</value>
+    <value>Olet valinnut menneen ajankohdan. Haluaisitko siirtää matkasi päivämäärän huomiselle?</value>
   </data>
   <data name="TooFarIntoPastDialog_DontShowCheckbox" xml:space="preserve">
-    <value>Don't show me this again</value>
+    <value>Älä näytä tätä enää</value>
   </data>
   <data name="TooFarIntoPastDialog_DontShowInfo" xml:space="preserve">
-    <value>From now on, your trip dates will automatically be moved forward to tomorrow if you select a time in the past.</value>
+    <value>Matkasi päivämäärä siirretään jatkossa seuraavalle päivälle, jos valitset menneen ajankohdan.</value>
   </data>
   <data name="TooFarIntoPastDialog_Title" xml:space="preserve">
-    <value>Too Early</value>
+    <value>Oletko aikamatkustaja?</value>
   </data>
   <data name="TripDetailListIntermediates_IntermediateStopsNumber" xml:space="preserve">
-    <value>intermediate stop(s)</value>
+    <value>välipysäkki(ä)</value>
   </data>
   <data name="TripDetailListIntermediates_TransitDistance" xml:space="preserve">
-    <value>Travel {0} meters</value>
+    <value>Matkusta {0} metriä</value>
   </data>
   <data name="TripDetailListIntermediates_WalkDistance" xml:space="preserve">
-    <value>Walk {0} meters</value>
+    <value>Kävele {0} metriä</value>
   </data>
   <data name="TripForm_FewerOptions" xml:space="preserve">
-    <value>Fewer options</value>
+    <value>Vähemmän valintoja</value>
   </data>
   <data name="TripForm_MoreOptions" xml:space="preserve">
-    <value>More options</value>
+    <value>Lisää valintoja</value>
   </data>
   <data name="TripForm_PinnedFavoritesHeader" xml:space="preserve">
-    <value>Pinned favorites</value>
+    <value>Kiinnitetyt suosikit</value>
   </data>
   <data name="TripForm_PlanATripHeader" xml:space="preserve">
-    <value>Plan a trip</value>
+    <value>Suunnittele matka</value>
   </data>
   <data name="TripForm_PlanningTrip" xml:space="preserve">
-    <value>Planning...</value>
+    <value>Suunnitellaan...</value>
   </data>
   <data name="TripForm_PlanTripButton" xml:space="preserve">
-    <value>Plan</value>
+    <value>Suunnittele</value>
   </data>
   <data name="TripForm_SetDateToNow" xml:space="preserve">
-    <value>Set to today</value>
+    <value>Aseta tälle päivälle</value>
   </data>
   <data name="TripForm_SetTimeToNow" xml:space="preserve">
-    <value>Set to now</value>
+    <value>Aseta ajaksi nyt</value>
   </data>
   <data name="TripForm_TransitTypeHeader" xml:space="preserve">
-    <value>Transit types</value>
+    <value>Kulkuvälineet</value>
   </data>
   <data name="TripForm_WalkingAmountHeader" xml:space="preserve">
-    <value>Walking amount</value>
+    <value>Kävelyn määrä</value>
   </data>
   <data name="TripForm_WalkingSpeedHeader" xml:space="preserve">
-    <value>Walking speed</value>
+    <value>Kävelynopeus</value>
   </data>
   <data name="TripFrom_GettingsAddresses" xml:space="preserve">
-    <value>Resolving locations...</value>
+    <value>Haetaan sijainteja...</value>
   </data>
   <data name="TripPlanStrip_EndPlaceDefault" xml:space="preserve">
-    <value>Destination</value>
+    <value>Kohde</value>
   </data>
   <data name="TripPlanStrip_StartingPlaceDefault" xml:space="preserve">
-    <value>Origin</value>
+    <value>Lähtöpaikka</value>
   </data>
   <data name="TripResultCommandBar_Details" xml:space="preserve">
-    <value>Details</value>
+    <value>Tarkemmat tiedot</value>
   </data>
   <data name="TripResultCommandBar_Map" xml:space="preserve">
-    <value>Map</value>
+    <value>Kartta</value>
   </data>
   <data name="TripResults_SaveRoute" xml:space="preserve">
-    <value>Save route</value>
+    <value>Tallenna reitti</value>
   </data>
   <data name="TripResults_TripPlansHeader" xml:space="preserve">
-    <value>Trip plans</value>
+    <value>Matkasuunnitelmat</value>
   </data>
   <data name="WalkingAmount_0" xml:space="preserve">
-    <value>Bare minimum</value>
+    <value>Mahdollisimman vähän</value>
   </data>
   <data name="WalkingAmount_1" xml:space="preserve">
-    <value>Some</value>
+    <value>Vähän</value>
   </data>
   <data name="WalkingAmount_2" xml:space="preserve">
-    <value>Normal</value>
+    <value>Normaali</value>
   </data>
   <data name="WalkingAmount_3" xml:space="preserve">
-    <value>Lots</value>
+    <value>Paljon</value>
   </data>
   <data name="WalkingAmount_4" xml:space="preserve">
-    <value>Maximum</value>
+    <value>Mahdollisimman paljon</value>
   </data>
   <data name="WalkingSpeed_0" xml:space="preserve">
-    <value>Glacial</value>
+    <value>Etana kurvissa</value>
   </data>
   <data name="WalkingSpeed_0_Subtitle" xml:space="preserve">
     <value>30 m/min</value>
   </data>
   <data name="WalkingSpeed_1" xml:space="preserve">
-    <value>Slow</value>
+    <value>Hidas</value>
   </data>
   <data name="WalkingSpeed_1_Subtitle" xml:space="preserve">
     <value>50 m/min</value>
   </data>
   <data name="WalkingSpeed_2" xml:space="preserve">
-    <value>Normal</value>
+    <value>Normaali</value>
   </data>
   <data name="WalkingSpeed_2_Subtitle" xml:space="preserve">
     <value>72 m/min</value>
   </data>
   <data name="WalkingSpeed_3" xml:space="preserve">
-    <value>Fast</value>
+    <value>Reipas</value>
   </data>
   <data name="WalkingSpeed_3_Subtitle" xml:space="preserve">
     <value>125 m/min</value>
   </data>
   <data name="WalkingSpeed_4" xml:space="preserve">
-    <value>Breakneck</value>
+    <value>KIIRE!</value>
   </data>
   <data name="WalkingSpeed_4_Subtitle" xml:space="preserve">
     <value>180 m/min</value>
   </data>
-  <data name="AppDescription" xml:space="preserve">
-    <value>Trippit it makes it easy to get around using public transit in the greater Helsinki area.</value>
+  <data name="AlertsPage_PageHeader" xml:space="preserve">
+    <value>HÄLYTYKSET</value>
   </data>
 </root>

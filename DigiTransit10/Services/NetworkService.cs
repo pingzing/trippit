@@ -9,6 +9,7 @@ using MetroLog;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -66,12 +67,12 @@ namespace DigiTransit10.Services
         {
             string urlString = $"{DefaultGeocodingRequestUrl}" +
                 $"search?text={searchString}" +
-                $"&boundary.rect.min_lat={GeocodingConstants.BoundaryRectMinLat}" +
-                $"&boundary.rect.max_lat={GeocodingConstants.BoundaryRectMaxLat}" +
-                $"&boundary.rect.min_lon={GeocodingConstants.BoundaryRectMinLon}" +
-                $"&boundary.rect.max_lon={GeocodingConstants.BoundaryRectMaxLon}" +
-                $"&focus.point.lat={GeocodingConstants.FocusPointLat}" +
-                $"&focus.point.lon={GeocodingConstants.FocusPointLon}" +
+                $"&boundary.rect.min_lat={GeocodingConstants.BoundaryRectMinLat.ToString(NumberFormatInfo.InvariantInfo)}" +
+                $"&boundary.rect.max_lat={GeocodingConstants.BoundaryRectMaxLat.ToString(NumberFormatInfo.InvariantInfo)}" +
+                $"&boundary.rect.min_lon={GeocodingConstants.BoundaryRectMinLon.ToString(NumberFormatInfo.InvariantInfo)}" +
+                $"&boundary.rect.max_lon={GeocodingConstants.BoundaryRectMaxLon.ToString(NumberFormatInfo.InvariantInfo)}" +
+                $"&focus.point.lat={GeocodingConstants.FocusPointLat.ToString(NumberFormatInfo.InvariantInfo)}" +
+                $"&focus.point.lon={GeocodingConstants.FocusPointLon.ToString(NumberFormatInfo.InvariantInfo)}" +
                 $"&lang={_settingsService.CurrentLanguage.Substring(0, 2)}";
             Uri uri = new Uri(urlString);
 
@@ -170,9 +171,9 @@ namespace DigiTransit10.Services
 
             GqlQuery query = new GqlQuery(ApiGqlMembers.plan)
                 .WithParameters(
-                    new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat}, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
-                    new GqlParameter(ApiGqlMembers.intermediatePlaces, new GqlParameterArray(details.IntermediateCoords.Select(x => new GqlTuple { { ApiGqlMembers.lat, x.Lat }, { ApiGqlMembers.lon, x.Lon } }))),
-                    new GqlParameter(ApiGqlMembers.to, new GqlTuple { { ApiGqlMembers.lat, details.ToPlaceCoordinates.Lat}, { ApiGqlMembers.lon, details.ToPlaceCoordinates.Lon} }),
+                    new GqlParameter(ApiGqlMembers.from, new GqlTuple { { ApiGqlMembers.lat, details.FromPlaceCoords.Lat }, { ApiGqlMembers.lon, details.FromPlaceCoords.Lon } }),
+                    new GqlParameter(ApiGqlMembers.intermediatePlaces, new GqlParameterArray(details.IntermediateCoords.Select(x => new GqlTuple { { ApiGqlMembers.lat, x.Lat}, { ApiGqlMembers.lon, x.Lon } }))),
+                    new GqlParameter(ApiGqlMembers.to, new GqlTuple { { ApiGqlMembers.lat, details.ToPlaceCoordinates.Lat }, { ApiGqlMembers.lon, details.ToPlaceCoordinates.Lon } }),
                     new GqlParameter(ApiGqlMembers.numItineraries, 5),
                     new GqlParameter(ApiGqlMembers.time, details.Time),
                     new GqlParameter(ApiGqlMembers.date, details.Date),

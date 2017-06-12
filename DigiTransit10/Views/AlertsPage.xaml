@@ -22,7 +22,7 @@
 
         <controls:MemorySafePageHeader Grid.Row="0"
                                        Style="{StaticResource PageHeaderBoldStyle}"
-                                       Text="ALERTS"/>
+                                       Text="{Binding Source={StaticResource Strings}, Path=AlertsPage_PageHeader}"/>
 
         <ListView x:Name="AlertsList"     
                   Grid.Row="1"
