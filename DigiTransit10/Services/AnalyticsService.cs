@@ -14,19 +14,19 @@ namespace DigiTransit10.Services
         void TrackPageView(string name);
         void TrackTrace(string message);
         void TrackTrace(string message, SeverityLevel severityLevel);
-        void TrackTrace(string message, IDictionary<string, string> properties);        
-        void TrackTrace(string message, SeverityLevel severityLevel, IDictionary<string, string> properties);        
+        void TrackTrace(string message, IDictionary<string, string> properties);
+        void TrackTrace(string message, SeverityLevel severityLevel, IDictionary<string, string> properties);
     }
 
     public class AnalyticsService : IAnalyticsService
     {
         private SettingsService _settings;
         private IHockeyClient _hockeyClient = HockeyClient.Current;
-        
+
         public AnalyticsService(SettingsService settings)
         {
             _hockeyClient.Configure("c2a732e8165446bc81e0ea6087509c2b");
-            _settings = settings;        
+            _settings = settings;
         }
 
         public void TrackDependency(string dependencyName, string command, DateTimeOffset startTime, TimeSpan duration, bool success)

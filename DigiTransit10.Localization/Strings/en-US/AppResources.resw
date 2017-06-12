@@ -371,7 +371,7 @@
     <value>Lines</value>
   </data>
   <data name="DialogMessage_NoTripsFoundServerDown" xml:space="preserve">
-    <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try agin later.</value>
+    <value>Unable to retreive information from the server. It's reporting that service is currently unavailable. Try again later.</value>
   </data>
   <data name="CurrentDatePicker_CurrentDate" xml:space="preserve">
     <value>Today</value>
@@ -474,6 +474,7 @@
   <data name="SettingsPage_SpecialThanksText" xml:space="preserve">
     <value>• Kaisa. She knows why  ❤️
 • Olli Saarikivi, for his excellent Reitit app and freely-given advice
+• Alisa Suorava for the fantastic app icon
 • Teemu Turunen and everybody else who've made the Futurice Spice Program what it is
 • HSL for their open API and wealth of resources
 • You! For using this app!</value>
@@ -538,6 +539,7 @@ Default: 3</value>
   </data>
   <data name="MainPage_TimeInPastWarning" xml:space="preserve">
     <value>Note: Your selected date and time are in the past.</value>
+    <comment>Really harsh horizontal limits here before we force a newline. Shorter is better for this string.</comment>
   </data>
   <data name="LiteralCancel" xml:space="preserve">
     <value>Cancel</value>

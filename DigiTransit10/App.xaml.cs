@@ -26,9 +26,6 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace DigiTransit10
 {
-    /// Documentation on APIs used in this page:
-    /// https://github.com/Windows-XAML/Template10/wiki
-
     [Bindable]
     sealed partial class App : Template10.Common.BootStrapper
     {
@@ -41,7 +38,7 @@ namespace DigiTransit10
 
         public App()
         {
-            InitializeComponent();            
+            InitializeComponent();
             SplashFactory = (e) => new Views.Splash(e);
             this.UnhandledException += App_UnhandledException;
 
@@ -57,7 +54,7 @@ namespace DigiTransit10
 
             #endregion            
 
-            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());            
+            LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new StreamingFileTarget());
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -68,7 +65,7 @@ namespace DigiTransit10
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
         {
-            if (Window.Current.Content as ModalDialog == null)
+            if (!(Window.Current.Content is ModalDialog))
             {
                 if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
                 {
@@ -76,7 +73,7 @@ namespace DigiTransit10
                 }
 
                 // create a new frame 
-                INavigationService nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);                
+                INavigationService nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
 
                 // create modal root
                 Window.Current.Content = new ModalDialog
@@ -100,7 +97,7 @@ namespace DigiTransit10
 
             DispatcherHelper.Initialize();
             await Task.CompletedTask;
-        }        
+        }
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
         {
@@ -149,7 +146,7 @@ namespace DigiTransit10
         }
 
         private void FrameFacade_Navigated(object sender, NavigatedEventArgs e)
-        {                   
+        {
             if (_analyticsService == null)
             {
                 _analyticsService = (IAnalyticsService)ServiceLocator.Current.GetService(typeof(IAnalyticsService));

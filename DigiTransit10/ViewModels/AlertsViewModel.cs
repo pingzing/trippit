@@ -23,7 +23,7 @@ namespace DigiTransit10.ViewModels
         }
 
         private RelayCommand<TransitTrafficAlert> _lineClickedCommand;
-        public RelayCommand<TransitTrafficAlert> LineClickedCommand => _lineClickedCommand ?? (new RelayCommand<TransitTrafficAlert>(LineClicked));
+        public RelayCommand<TransitTrafficAlert> LineClickedCommand => _lineClickedCommand ?? (_lineClickedCommand = new RelayCommand<TransitTrafficAlert>(LineClicked));
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {

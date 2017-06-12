@@ -14,18 +14,18 @@ namespace DigiTransit10.Services
         Task<GenericResult<Geoposition>> GetCurrentLocationAsync();
         LiveGeolocationToken BeginLiveUpdates();
         event GeolocatorPositionChangedHandler PositionChanged;
-        event CompassHeadingChangedHandler HeadingChanged; 
+        event CompassHeadingChangedHandler HeadingChanged;
     }
 
     public class GeolocationService : IGeolocationService
     {
-        private const uint InactiveUpdateInterval = 10000;        
+        private const uint InactiveUpdateInterval = 10000;
         private const uint ActiveUpdateInterval = 1000;
         private volatile bool _isUpdatingLive = false;
 
         private readonly Geolocator _geolocator;
         private readonly Compass _compass;
-        private LiveGeolocationToken _token;        
+        private LiveGeolocationToken _token;
 
         public delegate void GeolocatorPositionChangedHandler(PositionChangedEventArgs args);
         public event GeolocatorPositionChangedHandler PositionChanged;
@@ -37,7 +37,7 @@ namespace DigiTransit10.Services
         {
             _geolocator = new Geolocator
             {
-                ReportInterval = InactiveUpdateInterval 
+                ReportInterval = InactiveUpdateInterval
             };
 
             _compass = Compass.GetDefault();
@@ -77,20 +77,20 @@ namespace DigiTransit10.Services
             }
             _isUpdatingLive = true;
             _geolocator.ReportInterval = ActiveUpdateInterval;
-            _geolocator.PositionChanged += Geolocator_PositionChanged;            
+            _geolocator.PositionChanged += Geolocator_PositionChanged;
             if(_compass != null)
             {
                 _compass.ReadingChanged += Compass_ReadingChanged;
             }
 
-            _token = new LiveGeolocationToken(this);            
+            _token = new LiveGeolocationToken(this);
             return _token;
         }
 
         public void EndLiveUpdates()
         {
             if (_isUpdatingLive)
-            {                
+            {
                 _geolocator.ReportInterval = InactiveUpdateInterval;
                 _geolocator.PositionChanged -= Geolocator_PositionChanged;
                 if(_compass != null)
@@ -122,7 +122,7 @@ namespace DigiTransit10.Services
                     finally
                     {
                         resultRetrieved.SetResult(true);
-                    }                    
+                    }
                 });
 
             await resultRetrieved.Task;
@@ -137,6 +137,6 @@ namespace DigiTransit10.Services
         private void Compass_ReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
         {
             DispatcherHelper.CheckBeginInvokeOnUI(() => HeadingChanged?.Invoke(args));
-        }               
+        }
     }
 }
