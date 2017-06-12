@@ -787,6 +787,10 @@ namespace DigiTransit10.Controls
 
         public async Task TrySetViewAsync(Geopoint point, double? zoomLevel, MapAnimationKind animation)
         {
+            if (zoomLevel <= DigiTransitMapControl.ZoomLevel)
+            {
+                zoomLevel = DigiTransitMapControl.ZoomLevel;
+            }
             await DigiTransitMapControl.TrySetViewAsync(point, zoomLevel, null, null, animation);
         }
 
