@@ -168,6 +168,7 @@ namespace DigiTransit10.Controls
         private async void DigiTransitSearchBox_Loaded(object sender, RoutedEventArgs e)
         {
             _favoritesService.FavoritesChanged += FavoritesChanged;
+            Views.Busy.BusyChanged += BusyView_BusyChanged;
 
             if (!_favoritesInserted)
             {
@@ -184,7 +185,9 @@ namespace DigiTransit10.Controls
         private void DigiTransitSearchBox_Unloaded(object sender, RoutedEventArgs e)
         {
             _favoritesService.FavoritesChanged -= FavoritesChanged;
+            Views.Busy.BusyChanged -= BusyView_BusyChanged;
         }
+
 
         public static readonly DependencyProperty SelectedPlaceProperty =
             DependencyProperty.Register("SelectedPlace", typeof(IPlace), typeof(DigiTransitSearchBox), new PropertyMetadata(null,
@@ -761,6 +764,11 @@ namespace DigiTransit10.Controls
                 IsTopPopupListArrowVisible = true;
                 IsBottomPopupListArrowVisible = true;
             }
+        }
+
+        private void BusyView_BusyChanged(object sender, bool e)
+        {
+            this.IsEnabled = !this.IsEnabled;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
