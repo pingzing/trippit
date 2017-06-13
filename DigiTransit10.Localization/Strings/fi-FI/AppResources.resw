@@ -559,4 +559,7 @@
   <data name="AlertsPage_PageHeader" xml:space="preserve">
     <value>HÄLYTYKSET</value>
   </data>
+  <data name="Flyout_SetAsRoute" xml:space="preserve">
+    <value>Aseta reittisi</value>
+  </data>
 </root>

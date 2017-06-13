@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="10707NeilApps.Trippit" Publisher="CN=mcali" Version="1.0.2.0" />
-  <mp:PhoneIdentity PhoneProductId="837da454-a846-4b92-a26d-5e72c6f88588" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="10707NeilApps.Trippit" Publisher="CN=B458EF9C-1F3A-4DD2-AB1A-76FB5056CF30" Version="1.0.5.0" />
+  <mp:PhoneIdentity PhoneProductId="2a6ba796-659e-4f60-90c5-77b040426db2" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>ms-resource:DigiTransit10.Localization/AppResources/AppName</DisplayName>
     <PublisherDisplayName>NeilApps</PublisherDisplayName>

@@ -1488,5 +1488,10 @@ namespace DigiTransit10.Localization.Strings
         /// Localized resource similar to "ALERTS"
         /// </summary>
         public static string AlertsPage_PageHeader => resourceLoader.GetString(nameof(AlertsPage_PageHeader));
+
+        /// <summary>
+        /// Localized resource similar to "Set as route"
+        /// </summary>
+        public static string Flyout_SetAsRoute => resourceLoader.GetString(nameof(Flyout_SetAsRoute));
     }
 }

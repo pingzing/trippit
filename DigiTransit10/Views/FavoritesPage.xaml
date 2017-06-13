@@ -134,7 +134,7 @@
                           VerticalAlignment="Center"/>
                 <FlyoutBase.AttachedFlyout>
                     <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="Edit"
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Edit}"
                                         Command="{Binding ElementName=FavoritesListView, Path=DataContext.EditFavoriteCommand, Mode=OneTime}"
                                         CommandParameter="{x:Bind}"
                                         Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
@@ -142,20 +142,20 @@
                                         Command="{Binding ElementName=FavoritesListView, Path=DataContext.DeleteFavoriteCommand, Mode=OneTime}"
                                         CommandParameter="{x:Bind}"/>
                         <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
-                        <MenuFlyoutSubItem Text="Pin to...">
-                            <MenuFlyoutItem Text="Start"
+                        <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"
                                             Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToStartCommand, Mode=OneTime}"
                                             CommandParameter="{x:Bind}"/>
-                            <MenuFlyoutItem Text="Main page"
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"
                                             Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToMainPageCommand, Mode=OneTime}"
                                             CommandParameter="{x:Bind}"/>
                         </MenuFlyoutSubItem>
-                        <MenuFlyoutItem Text="Set as route"                                                        
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsRoute}"                                                        
                                         Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsRouteCommand, Mode=OneTime}"
                                         CommandParameter="{x:Bind}"
                                         Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
                         <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
-                        <MenuFlyoutItem Text="Select"
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Select}"
                                         Command="{Binding ElementName=FavoritesListView, Path=DataContext.ToggleSelectionCommand, Mode=OneTime}"
                                         CommandParameter="{x:Bind}"
                                         Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>

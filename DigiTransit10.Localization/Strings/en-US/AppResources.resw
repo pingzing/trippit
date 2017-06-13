@@ -565,4 +565,7 @@ Default: 3</value>
   <data name="SuggestBoxHeader_TransitStops" xml:space="preserve">
     <value>Stops</value>
   </data>
+  <data name="Flyout_SetAsRoute" xml:space="preserve">
+    <value>Set as route</value>
+  </data>
 </root>
