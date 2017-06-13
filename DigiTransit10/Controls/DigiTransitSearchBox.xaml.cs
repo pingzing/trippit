@@ -167,6 +167,7 @@ namespace DigiTransit10.Controls
 
         private async void DigiTransitSearchBox_Loaded(object sender, RoutedEventArgs e)
         {
+            this.IsEnabled = true;
             _favoritesService.FavoritesChanged += FavoritesChanged;
             Views.Busy.BusyChanged += BusyView_BusyChanged;
 

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 
@@ -86,6 +87,12 @@ namespace DigiTransit10.Views
             {
                 await this.FavoritesMap.TrySetViewBoundsAsync(boundingBox, new Thickness(450, 50, 50, 50), MapAnimationKind.None);
             }
+        }
+
+        private void PinCommandBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            MovableAppBarButton button = (MovableAppBarButton)sender;
+            FlyoutBase.ShowAttachedFlyout(button);
         }
     }
 }

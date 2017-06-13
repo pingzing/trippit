@@ -152,8 +152,7 @@ namespace DigiTransit10.Views
                 var storyboard = ContinuumNavigationEntranceFactory.GetAnimation(clickedItem);
                 storyboard.Begin();
             }
-            base.OnNavigatedTo(e);
-            this.IsEnabled = true;
+            base.OnNavigatedTo(e);            
         }
 
         private void NavigationCanceledByUser(NavigationCanceled _)

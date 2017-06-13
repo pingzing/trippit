@@ -354,6 +354,7 @@
                                          Position="0"
                                          Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
             <lclCtls:MovableAppBarButton Icon="Pin"
+                                         Click="PinCommandBarButton_Click"
                                          IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
                                          Label="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}"
                                          Position="0"
@@ -366,11 +367,6 @@
                                             Command="{x:Bind ViewModel.PinToMainPageCommand}"/>
                     </MenuFlyout>
                 </FlyoutBase.AttachedFlyout>
-                <Interactivity:Interaction.Behaviors>
-                    <Core:EventTriggerBehavior EventName="Tapped">
-                        <t10Bhvrs:OpenFlyoutAction/>
-                    </Core:EventTriggerBehavior>
-                </Interactivity:Interaction.Behaviors>
             </lclCtls:MovableAppBarButton>
             <lclCtls:MovableAppBarToggleButton Command="{x:Bind ViewModel.ToggleSelectionCommand}"
                                                IsChecked="{x:Bind ViewModel.ListSelectionMode, Mode=OneWay, Converter={StaticResource ListViewSelectionModeToBoolConverter}}"
