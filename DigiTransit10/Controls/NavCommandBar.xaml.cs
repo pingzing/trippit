@@ -396,6 +396,12 @@ namespace DigiTransit10.Controls
             SearchButton.IsSelected = false;
             SettingsButton.IsSelected = false;
 
+            // These two are here to cover a rare edge case: If the user navigates while the software keyboard is visible,
+            // we never get an InputPanel_Closed event, so we never restore the command bar. This is here to make sure
+            // the Command Bar can't just disappear.
+            this.Opacity = 1;
+            this.IsHitTestVisible = true;
+
             if (_navigationService.CurrentPageType == typeof(Views.MainPage))
             {
                 HomeButton.IsSelected = true;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Template10.Utils;
 using Windows.Graphics.Display;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
@@ -50,7 +51,7 @@ namespace DigiTransit10.Controls
 
         private static void Initialize()
         {
-            _topmostGrid = Template10.Utils.XamlUtils.FirstChild<Grid>(Window.Current.Content);
+            _topmostGrid = Window.Current.Content.FirstChild<Grid>();
             _source = new CircleMapIconSource();
             _source.RenderTransform = new CompositeTransform { TranslateX = -500, TranslateY = -500 };
 

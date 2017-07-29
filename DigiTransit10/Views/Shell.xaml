@@ -11,60 +11,78 @@
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
 
-    <Controls:HamburgerMenu x:Name="MyHamburgerMenu" 
-                            OpenCloseMode="Swipe">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <RepositionThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
 
-        <Controls:HamburgerMenu.PrimaryButtons>
-            <!--  mainpage button  -->
-            <Controls:HamburgerButtonInfo ClearHistory="True" 
+        <Grid x:Name="AppGlobalHeader" Background="{ThemeResource SystemControlHighlightAltListAccentHighBrush}" Visibility="Collapsed">
+        </Grid>
+
+        <Controls:HamburgerMenu x:Name="MyHamburgerMenu" 
+                                Grid.Row="1"
+                                OpenCloseMode="Swipe">
+
+            <Controls:HamburgerMenu.PrimaryButtons>
+                <!--  mainpage button  -->
+                <Controls:HamburgerButtonInfo ClearHistory="True" 
                                           PageType="views:MainPage" 
                                           AutomationProperties.Name="Home">
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48"
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
                                 Symbol="Home" />
-                    <TextBlock Margin="12,0,0,0" 
+                        <TextBlock Margin="12,0,0,0" 
                                VerticalAlignment="Center"
                                Text="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Home}" />
-                </StackPanel>
-            </Controls:HamburgerButtonInfo>
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
 
-            <Controls:HamburgerButtonInfo PageType="views:FavoritesPage" 
+                <Controls:HamburgerButtonInfo PageType="views:FavoritesPage" 
                                           AutomationProperties.Name="Favorites">
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48" 
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48" 
                                Symbol="OutlineStar"/>
-                    <TextBlock Margin="12 0 0 0 "
+                        <TextBlock Margin="12 0 0 0 "
                                VerticalAlignment="Center"
                                Text="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Favorites}"/>
-                </StackPanel>
-            </Controls:HamburgerButtonInfo>
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
 
-            <Controls:HamburgerButtonInfo PageType="views:SearchPage"
+                <Controls:HamburgerButtonInfo PageType="views:SearchPage"
                                           AutomationProperties.Name="Search">
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48"
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
                                 Symbol="Find"/>
-                    <TextBlock Margin="12 0 0 0"
+                        <TextBlock Margin="12 0 0 0"
                                VerticalAlignment="Center"
                                Text="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Search}"/>
-                </StackPanel>
-                
-            </Controls:HamburgerButtonInfo>
-        </Controls:HamburgerMenu.PrimaryButtons>
+                    </StackPanel>
 
-        <Controls:HamburgerMenu.SecondaryButtons>
-            <Controls:HamburgerButtonInfo PageType="views:SettingsPage"
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.PrimaryButtons>
+
+            <Controls:HamburgerMenu.SecondaryButtons>
+                <Controls:HamburgerButtonInfo PageType="views:SettingsPage"
                                           AutomationProperties.Name="Settings">
-                <StackPanel Orientation="Horizontal">
-                    <SymbolIcon Width="48" Height="48"
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Width="48" Height="48"
                                 Symbol="Setting"/>
-                    <TextBlock Margin="12 0 0 0"
+                        <TextBlock Margin="12 0 0 0"
                                VerticalAlignment="Center"
                                Text="{Binding Source={StaticResource Strings}, Path=NavigationLabels_Settings}"/>
-                </StackPanel>
-            </Controls:HamburgerButtonInfo>
-        </Controls:HamburgerMenu.SecondaryButtons>
+                    </StackPanel>
+                </Controls:HamburgerButtonInfo>
+            </Controls:HamburgerMenu.SecondaryButtons>
 
-    </Controls:HamburgerMenu>
+        </Controls:HamburgerMenu>
+
+
+    </Grid>
 </Page>
 
