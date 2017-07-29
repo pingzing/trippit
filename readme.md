@@ -1,13 +1,16 @@
 # Trippit
 [![Build status](https://ci.appveyor.com/api/projects/status/lkk8wtd9gochr8fs/branch/master?svg=true)](https://ci.appveyor.com/project/pingzing/digi-transit-10/branch/master)
 
-It's an HSL DigiTransit app for Helsinki. Written as a UWP app, supports Windows 10 Mobile and Windows 10 Desktop.
+A UWP HSL Reittiopas app for the greater Helsinki region. Runs on Windows 10 for Desktops and Mobile.
 
 ## Building
 Requirements
 * [Resw Code File Generator](https://reswcodegen.codeplex.com/) (only works with VS2015 at the moment)
 
 ## Feature Epics
+
+### Completed
+
 - [x] Trip planning
 - [x] Favorites
 - [x] Detailed trip plan
@@ -17,14 +20,16 @@ Requirements
 - [x] Show nearby stops
 - [x] Transit service alerts
 - [x] Stop/route tile pinning
-- [ ] Subscribe to a line, receive notifications when it stops somewhere
 - [x] Crash reporting
 - [x] Analytics
-- [ ] Testing (really should write unit tests for the GraphQL parser...)
 
-## Design Notes
-#### Searching
-The official DigiTransit webapp does two things when the user enters a search term: Makes a GraphQL call for stops based on the search term, and a call to the REST endpoint for geocoding with the search string. It then collects the results, sorts them, and distinguishes between them with different icons in the autosuggest list. We should copy that strategy.
+### Planned
+
+- [ ] Subscribe to a line, receive notifications when it stops somewhere
+- [ ] Testing (really should write unit tests for the GraphQL parser...)
+- [ ] Show city bikes on map
+- [ ] Allow city bikes in route planning
+- [ ] Show journey-in-progress at top of app in the shell
 
 #### Poorly-documented GraphQL Info
 
