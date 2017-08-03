@@ -109,7 +109,7 @@
   <ItemGroup>
     <Compile Include="NetworkClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\DigiTransit10.Backend.rd.xml" />
+    <EmbeddedResource Include="Properties\Trippit.Backend.rd.xml" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

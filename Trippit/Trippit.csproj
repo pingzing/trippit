@@ -682,11 +682,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DigiTransit10.Backend\Trippit.Backend.csproj">
+    <ProjectReference Include="..\Trippit.Backend\Trippit.Backend.csproj">
       <Project>{2de64562-5327-403c-b77b-be2c21fcbe31}</Project>
       <Name>Trippit.Backend</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DigiTransit10.Localization\Trippit.Localization.csproj">
+    <ProjectReference Include="..\Trippit.Localization\Trippit.Localization.csproj">
       <Project>{79d20a80-cd61-433b-92f6-8410b5e9a6c8}</Project>
       <Name>Trippit.Localization</Name>
     </ProjectReference>

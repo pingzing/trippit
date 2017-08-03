@@ -25,7 +25,8 @@
     http://go.microsoft.com/fwlink/?LinkID=391919
 -->
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
-  <Library Name="DigiTransit10.Backend">
+  <Library Name="Trippit.Localization
+           ">
 
   	<!-- add directives for your library here -->
 

@@ -106,7 +106,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="project.json" />
     <PRIResource Include="Strings\en-US\AppResources.resw">
-      <CustomToolNamespace>DigiTransit10.Localization.Strings</CustomToolNamespace>
+      <CustomToolNamespace>Trippit.Localization.Strings</CustomToolNamespace>
       <SubType>Designer</SubType>
       <Generator>ReswFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.cs</LastGenOutput>
@@ -120,7 +120,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resw</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Properties\ClassLibrary1.rd.xml" />
+    <EmbeddedResource Include="Properties\Trippit.Localization.rd.xml" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

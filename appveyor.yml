@@ -21,4 +21,4 @@ install:
     
 before_build:
     - nuget restore
-    - ps: cd DigiTransit10; New-Item maps-api-key.txt
+    - ps: cd Trippit; New-Item maps-api-key.txt
