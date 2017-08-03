@@ -1,0 +1,717 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{EEFBDC2F-1008-48F7-81FC-59ABADBDDA10}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Trippit</RootNamespace>
+    <AssemblyName>Trippit</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>DigiTransit10_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <HockeyAppResourceId>c2a732e8165446bc81e0ea6087509c2b</HockeyAppResourceId>
+    <PackageCertificateThumbprint>5962E556093A874E89CF009F4F7D8CA335575414</PackageCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\Fonts\hsl-pikto-frame-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Fonts\hsl-pikto-normal-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Fonts\TripIconFont.ttf" />
+    <None Include="DigiTransit10_StoreKey.pfx" />
+    <None Include="DigiTransit10_TemporaryKey.pfx" />
+    <None Include="project.json" />
+    <None Include="Service References\HockeyApp\ConnectedService.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Behaviors\AnimateVisibilityBehavior.cs" />
+    <Compile Include="Controls\AddOrEditFavoriteDialog.xaml.cs">
+      <DependentUpon>AddOrEditFavoriteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnimatedPage.cs" />
+    <Compile Include="Controls\CurrentDatePicker.xaml.cs">
+      <DependentUpon>CurrentDatePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CurrentTimePicker.xaml.cs">
+      <DependentUpon>CurrentTimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DigiTransitMap.xaml.cs">
+      <DependentUpon>DigiTransitMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DigiTransitSearchBox.xaml.cs">
+      <DependentUpon>DigiTransitSearchBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FloatingPanel.xaml.cs">
+      <DependentUpon>FloatingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GroupedFavoriteList.cs" />
+    <Compile Include="Controls\GroupedPlaceList.cs" />
+    <Compile Include="Controls\ISortableAppBarButton.cs" />
+    <Compile Include="Controls\LineSearchContent.xaml.cs">
+      <DependentUpon>LineSearchContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LineSearchElement.xaml.cs">
+      <DependentUpon>LineSearchElement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CircleMapIconSource.xaml.cs">
+      <DependentUpon>CircleMapIconSource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MapSelfMarker.xaml.cs">
+      <DependentUpon>MapSelfMarker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MemorySafePageHeader.cs" />
+    <Compile Include="Controls\MovableAppBarButton.xaml.cs">
+      <DependentUpon>MovableAppBarButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NavAppBarButton.xaml.cs">
+      <DependentUpon>NavAppBarButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NavCommandBar.xaml.cs">
+      <DependentUpon>NavCommandBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StopSearchContent.xaml.cs">
+      <DependentUpon>StopSearchContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StopSearchElement.xaml.cs">
+      <DependentUpon>StopSearchElement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TooFarIntoPastDialog.xaml.cs">
+      <DependentUpon>TooFarIntoPastDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripDetailListIntermediates.xaml.cs">
+      <DependentUpon>TripDetailListIntermediates.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripPlanStrip\TripPlanPoint.xaml.cs">
+      <DependentUpon>TripPlanPoint.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripPlanStrip\TripPlanStrip.xaml.cs">
+      <DependentUpon>TripPlanStrip.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml.cs">
+      <DependentUpon>TripPlanTransitIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TripResultContent.xaml.cs">
+      <DependentUpon>TripResultContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverterInverted.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\DateTimeToLocalTimeStringConverter.cs" />
+    <Compile Include="Converters\ElementThemeToStringConverter.cs" />
+    <Compile Include="Converters\EmptyNullToBoolConverter.cs" />
+    <Compile Include="Converters\EmptyNullToVisibilityConverterInverted.cs" />
+    <Compile Include="Converters\EmptyNullToVisibilityConverter.cs" />
+    <Compile Include="Converters\IsTransitModeSearchableConverter.cs" />
+    <Compile Include="Converters\ListViewSelectionModeToBoolConverter.cs" />
+    <Compile Include="Converters\NegateBooleanConverter.cs" />
+    <Compile Include="Converters\NullToBooleanConverter.cs" />
+    <Compile Include="Converters\SecondsSinceDayStartToTimeConverter.cs" />
+    <Compile Include="Converters\SelectionChangedConverter.cs" />
+    <Compile Include="Converters\StringFormatConverter.cs" />
+    <Compile Include="Converters\TransitModeToConditionalAccentColorConverter.cs" />
+    <Compile Include="Converters\TransitModeToFontIconConverter.cs" />
+    <Compile Include="Converters\TransitModeToForegroundBrushConverter.cs" />
+    <Compile Include="Converters\UnixTimeToLocalTimeConverter.cs" />
+    <Compile Include="ExtensionMethods\BasicGeopositionExtensions.cs" />
+    <Compile Include="ExtensionMethods\DependencyObjectExtensions.cs" />
+    <Compile Include="ExtensionMethods\DictionaryExtensions.cs" />
+    <Compile Include="ExtensionMethods\GridExtensions.cs" />
+    <Compile Include="ExtensionMethods\MapElementExtensions.cs" />
+    <Compile Include="ExtensionMethods\ObservableCollectionExtensions.cs" />
+    <Compile Include="ExtensionMethods\StreamExtensions.cs" />
+    <Compile Include="ExtensionMethods\TaskExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GraphQL\GqlInlineMethodReturnValue.cs" />
+    <Compile Include="GraphQL\GqlParameter.cs" />
+    <Compile Include="GraphQL\GqlQuery.cs" />
+    <Compile Include="GraphQL\GqlReturnValue.cs" />
+    <Compile Include="GraphQL\GqlTuple.cs" />
+    <Compile Include="GraphQL\ParserHelpers.cs" />
+    <Compile Include="Helpers\ApiResult.cs" />
+    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Helpers\FontIconGlyphs.cs" />
+    <Compile Include="Helpers\GeoHelper.cs" />
+    <Compile Include="Helpers\GooglePolineDecoder.cs" />
+    <Compile Include="Helpers\HslFontGlyphs.cs" />
+    <Compile Include="Helpers\IFailure.cs" />
+    <Compile Include="Helpers\IFailureReason.cs" />
+    <Compile Include="Helpers\IResult.cs" />
+    <Compile Include="Helpers\MapHelper.cs" />
+    <Compile Include="Helpers\MessageTypes.cs" />
+    <Compile Include="Helpers\NavParamKeys.cs" />
+    <Compile Include="Helpers\GenericResult.cs" />
+    <Compile Include="Helpers\SuspensionKeys.cs" />
+    <Compile Include="Models\ApiModels\ApiAgency.cs" />
+    <Compile Include="Models\ApiModels\ApiAlert.cs" />
+    <Compile Include="Models\ApiModels\ApiBikeRentalStation.cs" />
+    <Compile Include="Models\ApiModels\ApiCluster.cs" />
+    <Compile Include="Models\ApiModels\ApiCoordinates.cs" />
+    <Compile Include="Models\ApiModels\ApiDataContainer.cs" />
+    <Compile Include="Models\ApiModels\ApiDebugOutput.cs" />
+    <Compile Include="Models\ApiModels\ApiEnums.cs" />
+    <Compile Include="Models\ApiModels\ApiFare.cs" />
+    <Compile Include="Models\ApiModels\ApiGqlMembers.cs" />
+    <Compile Include="Models\ApiModels\ApiItinerary.cs" />
+    <Compile Include="Models\ApiModels\ApiLeg.cs" />
+    <Compile Include="Models\ApiModels\ApiLegGeometry.cs" />
+    <Compile Include="Models\ApiModels\ApiPageInfo.cs" />
+    <Compile Include="Models\ApiModels\ApiPattern.cs" />
+    <Compile Include="Models\ApiModels\ApiPlace.cs" />
+    <Compile Include="Models\ApiModels\ApiRoute.cs" />
+    <Compile Include="Models\ApiModels\ApiStop.cs" />
+    <Compile Include="Models\ApiModels\ApiStopAtDistance.cs" />
+    <Compile Include="Models\ApiModels\ApiStopAtDistanceConnection.cs" />
+    <Compile Include="Models\ApiModels\ApiStopAtDistanceEdge.cs" />
+    <Compile Include="Models\ApiModels\ApiStoptime.cs" />
+    <Compile Include="Models\ApiModels\ApiStoptimesInPattern.cs" />
+    <Compile Include="Models\ApiModels\ApiTranslatedString.cs" />
+    <Compile Include="Models\ApiModels\ApiTrip.cs" />
+    <Compile Include="Models\ApiModels\ApiPlan.cs" />
+    <Compile Include="Models\BasicMapPoi.cs" />
+    <Compile Include="Models\LanguageEnum.cs" />
+    <Compile Include="Models\PageAnimation.cs" />
+    <Compile Include="Models\TransitTrafficAlert.cs" />
+    <Compile Include="Models\TranslatedString.cs" />
+    <Compile Include="Models\WalkingAmount.cs" />
+    <Compile Include="Models\WalkingSpeed.cs" />
+    <Compile Include="Models\ColoredGeocircle.cs" />
+    <Compile Include="Models\ColoredMapLine.cs" />
+    <Compile Include="Models\FavoriteIcon.cs" />
+    <Compile Include="Models\ITransitLine.cs" />
+    <Compile Include="Models\PageNavigationContainers\NavigateWithFavoritePlaceArgs.cs" />
+    <Compile Include="Models\PlaceResolutionResult.cs" />
+    <Compile Include="Models\SearchSectionChangedEventArgs.cs" />
+    <Compile Include="Models\SecondaryTilePayload.cs" />
+    <Compile Include="Models\TransitLine.cs" />
+    <Compile Include="Models\TransitLineWithoutStops.cs" />
+    <Compile Include="Models\TransitStop.cs" />
+    <Compile Include="Models\TransitStopDetails.cs" />
+    <Compile Include="Models\TransitStopTime.cs" />
+    <Compile Include="Models\TripLeg.cs" />
+    <Compile Include="Models\TripQueryDetails.cs" />
+    <Compile Include="Models\ColoredMapLinePoint.cs" />
+    <Compile Include="Models\Geocoding\Geocoding.cs" />
+    <Compile Include="Models\Geocoding\GeocodingConstants.cs" />
+    <Compile Include="Models\Geocoding\GeocodingEngine.cs" />
+    <Compile Include="Models\Geocoding\GeocodingFeature.cs" />
+    <Compile Include="Models\Geocoding\GeocodingGeometry.cs" />
+    <Compile Include="Models\Geocoding\GeocodingProperties.cs" />
+    <Compile Include="Models\Geocoding\GeocodingQuery.cs" />
+    <Compile Include="Models\Geocoding\GeocodingResponse.cs" />
+    <Compile Include="Models\IMapPoi.cs" />
+    <Compile Include="Models\ModelEnums.cs" />
+    <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\Place.cs" />
+    <Compile Include="Models\TripPlan.cs" />
+    <Compile Include="Controls\MovableAppBarToggleButton.xaml.cs">
+      <DependentUpon>MovableAppBarToggleButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\DeviceTypeHelper.cs" />
+    <Compile Include="Services\AnalyticsService.cs" />
+    <Compile Include="Services\DialogService.cs" />
+    <Compile Include="Services\FavoritesChangedEventArgs.cs" />
+    <Compile Include="Services\FavoritesService.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\GeolocationService.cs" />
+    <Compile Include="GraphQL\GqlParameterArray.cs" />
+    <Compile Include="Services\IAsyncInitializable.cs" />
+    <Compile Include="Services\LiveGeolocationToken.cs" />
+    <Compile Include="Services\NetworkService.cs" />
+    <Compile Include="Services\SettingsServices\SettingsService.cs" />
+    <Compile Include="Services\TileService.cs" />
+    <Compile Include="Services\ViewModelLocator.cs" />
+    <Compile Include="Storyboards\ContinuumNavigationEntranceFactory.xaml.cs">
+      <DependentUpon>ContinuumNavigationEntranceFactory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Storyboards\ContinuumNavigationExitFactory.xaml.cs">
+      <DependentUpon>ContinuumNavigationExitFactory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Storyboards\FadeInDownwardFactory.cs" />
+    <Compile Include="Styles\HslColors.cs" />
+    <Compile Include="TemplateSelectors\DetailedTripListLegItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\FavoritesListTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\PlaceItemTemplateSelector.cs" />
+    <Compile Include="TemplateSelectors\SearchPagePivotViewSelector.cs" />
+    <Compile Include="TemplateSelectors\StopsSearchTemplate.cs" />
+    <Compile Include="ViewModels\AlertsViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\IntermediateSearchViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\LineSearchContentViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\LineSearchElementViewModel.cs" />
+    <Compile Include="Models\ISearchViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\StopSearchContentViewModel.cs" />
+    <Compile Include="ViewModels\ControlViewModels\StopSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\FavoritesViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Models\TripItinerary.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\TripFormViewModel.cs" />
+    <Compile Include="ViewModels\TripResultViewModel.cs" />
+    <Compile Include="Views\AlertsPage.xaml.cs">
+      <DependentUpon>AlertsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Busy.xaml.cs">
+      <DependentUpon>Busy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FavoritesPage.xaml.cs">
+      <DependentUpon>FavoritesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchPage.xaml.cs">
+      <DependentUpon>SearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Splash.xaml.cs">
+      <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TripResultPage.xaml.cs">
+      <DependentUpon>TripResultPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VisualStateFramework\DataTrigger.cs" />
+    <Compile Include="VisualStateFramework\StateAwareViewModel.cs" />
+    <Compile Include="VisualStateFramework\VmStateChangedEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Images\NewStoreLogo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\NewStoreLogo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\NewStoreLogo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\NewStoreLogo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\NewStoreLogo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\SplashScreen.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\SplashScreen.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\SplashScreen.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\SplashScreen.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\SplashScreen.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square150x150Logo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square150x150Logo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square150x150Logo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square150x150Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square150x150Logo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square310x310Logo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square310x310Logo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square310x310Logo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square310x310Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square310x310Logo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-16_altform-unplated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-256_altform-unplated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-32_altform-unplated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-48.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square44x44Logo.targetsize-48_altform-unplated.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square71x71Logo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square71x71Logo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square71x71Logo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square71x71Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Square71x71Logo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\trip_icon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Wide310x150Logo.scale-100.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Wide310x150Logo.scale-125.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Wide310x150Logo.scale-150.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Wide310x150Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Wide310x150Logo.scale-400.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Package.StoreAssociation.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="maps-api-key.txt" />
+    <Content Include="Properties\Default.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AddOrEditFavoriteDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CurrentDatePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CurrentTimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DigiTransitMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DigiTransitSearchBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FloatingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LineSearchContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LineSearchElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\CircleMapIconSource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MapSelfMarker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MemorySafePageHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Controls\MovableAppBarButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NavAppBarButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NavCommandBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StopSearchContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\StopSearchElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TooFarIntoPastDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripDetailListIntermediates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanStrip\TripPlanPoint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanStrip\TripPlanStrip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanStrip\TripPlanTransitIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TripPlanStrip\TripPlanStripResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Controls\TripResultContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MovableAppBarToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Storyboards\ContinuumNavigationEntranceFactory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Storyboards\ContinuumNavigationExitFactory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Custom.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Styles\HslStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Themes\generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Views\AlertsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Busy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FavoritesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Splash.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TripResultPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DigiTransit10.Backend\Trippit.Backend.csproj">
+      <Project>{2de64562-5327-403c-b77b-be2c21fcbe31}</Project>
+      <Name>Trippit.Backend</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DigiTransit10.Localization\Trippit.Localization.csproj">
+      <Project>{79d20a80-cd61-433b-92f6-8410b5e9a6c8}</Project>
+      <Name>Trippit.Localization</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
+      <Name>Windows Mobile Extensions for the UWP</Name>
+    </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

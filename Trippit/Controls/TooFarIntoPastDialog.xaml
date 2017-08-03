@@ -1,0 +1,51 @@
+﻿<ContentDialog
+    x:Class="Trippit.Controls.TooFarIntoPastDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Trippit.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    
+    MaxHeight="400"
+    FullSizeDesired="False"    
+    
+    Title="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Title}"
+    PrimaryButtonText="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Confirm}"
+    SecondaryButtonText="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Cancel}"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="ContentTextBlock" 
+                   Grid.Row="0"
+                   Margin="0 10 0 0"
+                   Text="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_Content}"
+                   TextTrimming="Clip"
+                   TextWrapping="WrapWholeWords"/>
+        <Rectangle Grid.Row="1" 
+                   Fill="{ThemeResource SystemControlBackgroundBaseMediumBrush}" 
+                   Height="1"                   
+                   Margin="0 10 0 0"
+                   StrokeThickness="0"/>
+        <CheckBox x:Name="DontShowAgainCheckbox"
+                  Grid.Row="2"
+                  Content="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_DontShowCheckbox}"
+                  IsChecked="False"
+                  Margin="0 10 0 0"/>
+        <TextBlock x:Name="DontShowInfoTextBlock" 
+                   Grid.Row="3"
+                   Margin="0 10 0 0"
+                   Text="{Binding Source={StaticResource Strings}, Path=TooFarIntoPastDialog_DontShowInfo}"
+                   TextTrimming="Clip"
+                   TextWrapping="WrapWholeWords"
+                   Visibility="{x:Bind DontShowAgainCheckbox.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+    </Grid>
+</ContentDialog>

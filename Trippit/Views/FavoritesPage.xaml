@@ -1,0 +1,386 @@
+﻿<lclCtls:AnimatedPage
+    x:Class="Trippit.Views.FavoritesPage"    
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Behaviors="using:Template10.Behaviors"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
+    xmlns:controls="using:Template10.Controls"
+    xmlns:lclCtls="using:Trippit.Controls"
+    xmlns:vm="using:Trippit.ViewModels"
+    xmlns:models="using:Trippit.Models"
+    xmlns:selectors="using:Trippit.TemplateSelectors"
+    xmlns:t10Bhvrs="using:Template10.Behaviors"
+    
+    DataContext="{Binding Source={StaticResource Locator}, Mode=OneTime, Path=Favorites}"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <!--Favorites set in code-behind to make the designer happy.-->
+        <CollectionViewSource x:Key="FavoritesViewSourceKey"
+                              x:Name="FavoritesViewSource"
+                              IsSourceGrouped="True"/>
+
+        <DataTemplate x:Key="FavoritePlaceTemplate" x:DataType="models:IFavorite">
+            <!--The background is set because a transparent background (which is the default) 
+                            causes tap and click events to be ignored if they occur on the element's background.-->
+            <Grid x:Name="ListItemPanel" Background="{StaticResource MostlyTransparentWhite}" VerticalAlignment="Stretch">
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <FontIcon x:Name="FavoriteIcon"
+                          Grid.Column="0"
+                          FontFamily="{x:Bind IconFontFace}"
+                          FontSize="{x:Bind IconFontSize}"
+                          Glyph="{x:Bind FontIconGlyph}"
+                          VerticalAlignment="Center"/>
+                <TextBlock x:Name="RouteNameBlock" 
+                           Grid.Column="1"
+                           Margin="5 0 0 0"
+                           Text="{x:Bind UserChosenName}" 
+                           TextTrimming="Clip"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource BodyTextBlockStyle}"/>
+                <FontIcon x:Name="ListChevron"
+                          Grid.Column="2"
+                          FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                          Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                          Glyph="{Binding Source={StaticResource FontIcons}, Path=RightArrow}"
+                          VerticalAlignment="Center"/>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Edit}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.EditFavoriteCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.DeleteFavoriteCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"/>
+                        <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"
+                                            Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToStartCommand, Mode=OneTime}"
+                                            CommandParameter="{x:Bind}"/>
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"
+                                            Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToMainPageCommand, Mode=OneTime}"
+                                            CommandParameter="{x:Bind}"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsOrigin}"                                                        
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsOriginCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsDestination}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsDestinationCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Select}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.ToggleSelectionCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="RightTapped">
+                        <Behaviors:OpenFlyoutAction/>
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FavoriteRouteTemplate" x:DataType="models:IFavorite">
+            <!--The background is set because a transparent background (which is the default) 
+                            causes tap and click events to be ignored if they occur on the element's background.-->
+            <Grid x:Name="ListItemPanel" Background="{StaticResource MostlyTransparentWhite}" VerticalAlignment="Stretch">
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <FontIcon x:Name="FavoriteIcon"
+                          Grid.Column="0"
+                          FontFamily="{x:Bind IconFontFace}"
+                          FontSize="{x:Bind IconFontSize}"
+                          Glyph="{x:Bind FontIconGlyph}"
+                          VerticalAlignment="Center"/>
+                <TextBlock x:Name="RouteNameBlock" 
+                           Grid.Column="1"
+                           TextTrimming="Clip"
+                           Margin="5 0 0 0"
+                           Text="{x:Bind UserChosenName}" 
+                           VerticalAlignment="Center"
+                           Style="{StaticResource BodyTextBlockStyle}"/>
+                <FontIcon x:Name="ListChevron"
+                          Grid.Column="2"
+                          FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                          Foreground="{ThemeResource SystemControlBackgroundAccentBrush}"
+                          Glyph="{Binding Source={StaticResource FontIcons}, Path=RightArrow}"
+                          VerticalAlignment="Center"/>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Edit}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.EditFavoriteCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=LiteralDelete}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.DeleteFavoriteCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"/>
+                        <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutSubItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}">
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"
+                                            Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToStartCommand, Mode=OneTime}"
+                                            CommandParameter="{x:Bind}"/>
+                            <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"
+                                            Command="{Binding ElementName=FavoritesListView, Path=DataContext.PinToMainPageCommand, Mode=OneTime}"
+                                            CommandParameter="{x:Bind}"/>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_SetAsRoute}"                                                        
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.SetAsRouteCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutSeparator Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Select}"
+                                        Command="{Binding ElementName=FavoritesListView, Path=DataContext.ToggleSelectionCommand, Mode=OneTime}"
+                                        CommandParameter="{x:Bind}"
+                                        Visibility="{Binding ElementName=FavoritesListView, Path=DataContext.IsMultiSelectionActive, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="RightTapped">
+                        <Behaviors:OpenFlyoutAction/>
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </Grid>
+        </DataTemplate>
+
+
+        <selectors:FavoritesListTemplateSelector x:Key="FavoritesItemTemplateSelector"
+                                                 FavoritePlaceTemplate="{StaticResource FavoritePlaceTemplate}"
+                                                 FavoriteRouteTemplate="{StaticResource FavoriteRouteTemplate}"/>
+
+        <DataTemplate x:Name="FavoritesTemplate" x:DataType="vm:FavoritesViewModel">
+            <Grid Margin="10">
+
+                <TextBlock x:Name="EmptyListTextBlock"                    
+                               Visibility="{x:Bind IsFavoritesEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                               Text="{Binding Favorites_EmptyList, Source={StaticResource Strings}}"
+                               Style="{StaticResource EmptyListHeaderStyle}"/>
+                <ListView x:Name="FavoritesListView"
+                          ItemClick="FavoritesListView_ItemClick"                          
+                          IsItemClickEnabled="True"                          
+                          IsMultiSelectCheckBoxEnabled="True"
+                          ItemTemplateSelector="{StaticResource FavoritesItemTemplateSelector}"
+                          ItemsSource="{Binding Source={StaticResource FavoritesViewSourceKey}}"
+                          SelectionMode="{x:Bind ListSelectionMode, Mode=TwoWay}">
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="True">
+                            <GroupStyle.HeaderContainerStyle>
+                                <Style TargetType="ListViewHeaderItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </GroupStyle.HeaderContainerStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Stretch"
+                                               Text="{Binding Key}" 
+                                               Style="{StaticResource TitleTextBlockStyle}"/>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <Interactivity:Interaction.Behaviors>
+                        <Core:EventTriggerBehavior EventName="SelectionChanged">
+                            <Core:InvokeCommandAction Command="{x:Bind SelectionChangedCommand}"
+                                                      InputConverter="{StaticResource SelectionChangedConverter}"
+                                                      InputConverterParameter="{Binding ElementName=FavoritesListView}"/>
+                        </Core:EventTriggerBehavior>
+                    </Interactivity:Interaction.Behaviors>
+                </ListView>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="FavoritesBottomBar.Visibility" Value="Visible"/>
+                        <Setter Target="NarrowFavoritesList.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WideFavoritesPanel.Visibility" Value="Visible"/>
+                        <Setter Target="FavoritesMap.(Grid.RowSpan)" Value="2"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateWide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="WideFavoritesPanel.Visibility" Value="Visible"/>
+                        <Setter Target="FavoritesMap.(Grid.RowSpan)" Value="2"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <controls:MemorySafePageHeader x:Name="PageHeader" 
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True"   
+                             Style="{StaticResource PageHeaderBoldStyle}"
+                             Text="{Binding Source={StaticResource Strings}, Path=FavoritesPage_PageHeader}">
+
+            <!--  secondary commands  -->
+            <controls:MemorySafePageHeader.SecondaryCommands>
+            </controls:MemorySafePageHeader.SecondaryCommands>
+        </controls:MemorySafePageHeader>
+
+        <Grid x:Name="ContentRoot"
+              RelativePanel.Below="PageHeader"
+              RelativePanel.AlignLeftWithPanel="True"                                
+              RelativePanel.AlignRightWithPanel="True"
+              RelativePanel.AlignBottomWithPanel="True">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <lclCtls:DigiTransitMap x:Name="FavoritesMap"                                
+                                    Grid.Row="0"
+                                    Grid.RowSpan="1"
+                                    Places="{x:Bind ViewModel.MappableFavoritePlaces, Mode=OneWay}"
+                                    ColoredMapLines="{x:Bind ViewModel.MappableFavoriteRoutes, Mode=OneWay}"/>
+
+            <ContentControl x:Name="NarrowFavoritesList"
+                            x:DeferLoadStrategy="Lazy"
+                            Grid.Row="1"
+                            DataContext="{x:Bind ViewModel, Mode=OneWay}"
+                            ContentTemplate="{StaticResource FavoritesTemplate}"
+                            HorizontalContentAlignment="Stretch"
+                            Visibility="Collapsed">
+            </ContentControl>
+
+            <Grid x:Name="WideFavoritesPanel" 
+                  x:DeferLoadStrategy="Lazy"
+                  Grid.Row="0"
+                  Grid.RowSpan="2"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                  BorderBrush="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                  BorderThickness="2"
+                  Margin="10"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Stretch"
+                  Visibility="Collapsed"
+                  Width="400">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ContentControl x:Name="WideFavoritesList"            
+                                Grid.Row="0"
+                                DataContext="{x:Bind ViewModel, Mode=OneWay}"
+                                ContentTemplate="{StaticResource FavoritesTemplate}"                                
+                                HorizontalContentAlignment="Stretch"/>
+
+                <CommandBar x:Name="WideViewBottomBar"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom">
+                    <AppBarButton Command="{x:Bind ViewModel.AddNewFavoriteCommand}"
+                                  Icon="Add"
+                                  Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                    <AppBarButton Command="{x:Bind ViewModel.DeleteFavoriteCommand}"
+                                  Icon="Delete"
+                                  IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                  Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarDeleteSelected}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <AppBarToggleButton Command="{x:Bind ViewModel.ToggleSelectionCommand}"
+                                        IsChecked="{x:Bind ViewModel.ListSelectionMode, Mode=OneWay, Converter={StaticResource ListViewSelectionModeToBoolConverter}}"
+                                        Icon="Bullets"
+                                        Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarSelect}"/>
+                    <AppBarButton Command="{x:Bind ViewModel.PinToStartCommand}"
+                                  Icon="Pin"
+                                  IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                  Label="{Binding Source={StaticResource Strings}, Path=LiteralPinToStart}"
+                                  Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </CommandBar>
+            </Grid>
+        </Grid>
+
+    </RelativePanel>
+
+    <Page.BottomAppBar>
+        <lclCtls:NavCommandBar x:Name="FavoritesBottomBar" 
+                               x:DeferLoadStrategy="Lazy"
+                               Visibility="Collapsed">
+            <lclCtls:MovableAppBarButton Command="{x:Bind ViewModel.AddNewFavoriteCommand}"
+                                         Icon="Add" 
+                                         Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarAddFavorite}"
+                                         Position="0"
+                                         Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+            <lclCtls:MovableAppBarButton Icon="Pin"
+                                         Click="PinCommandBarButton_Click"
+                                         IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                         Label="{Binding Source={StaticResource Strings}, Path=Flyout_PinTo}"
+                                         Position="0"
+                                         Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout Placement="Top">
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_Start}"
+                                        Command="{x:Bind ViewModel.PinToStartCommand}"/>
+                        <MenuFlyoutItem Text="{Binding Source={StaticResource Strings}, Path=Flyout_MainPage}"
+                                            Command="{x:Bind ViewModel.PinToMainPageCommand}"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+            </lclCtls:MovableAppBarButton>
+            <lclCtls:MovableAppBarToggleButton Command="{x:Bind ViewModel.ToggleSelectionCommand}"
+                                               IsChecked="{x:Bind ViewModel.ListSelectionMode, Mode=OneWay, Converter={StaticResource ListViewSelectionModeToBoolConverter}}"
+                                               IsEnabled="True"
+                                               Icon="Bullets"
+                                               Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarSelect}"
+                                               Position="1"/>
+            <lclCtls:MovableAppBarButton Command="{x:Bind ViewModel.DeleteFavoriteCommand}"
+                                         Icon="Delete"
+                                         IsEnabled="{x:Bind ViewModel.SelectedItems.Count, Mode=OneWay, Converter={StaticResource EmptyNullToBoolConverter}}"
+                                         Label="{Binding Source={StaticResource Strings}, Path=FavoritesPage_CommandBarDeleteSelected}"
+                                         Position="2"
+                                         Visibility="{x:Bind ViewModel.IsMultiSelectionActive, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </lclCtls:NavCommandBar>
+    </Page.BottomAppBar>
+
+</lclCtls:AnimatedPage>

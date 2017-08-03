@@ -1,0 +1,52 @@
+﻿<UserControl
+    x:Class="Trippit.Controls.TripPlanStrip.TripPlanStrip"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Trippit.Controls.TripPlanStrip"    
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Trippit.Models"
+    mc:Ignorable="d"
+    d:DesignHeight="109"
+    d:DesignWidth="460">
+
+    <ItemsControl x:Name="ItemsStrip" ItemsSource="{x:Bind TripLegs, Mode=OneWay}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="models:TripLeg">
+                <Grid x:Name="LegContentRoot" Loaded="LegContentRoot_Loaded" Tag="{x:Bind}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <local:TripPlanPoint x:Name="StartPoint"
+                                         x:Phase="1"
+                                         PointTime="{x:Bind StartTime}"
+                                         Grid.Column="0"
+                                         IsStart="{x:Bind IsStart}"
+                                         PlaceName="{x:Bind StartPlaceName}" />
+                    <local:TripPlanTransitIcon x:Name="TransitIcon"
+                                               x:Phase="2"
+                                               Grid.Column="1"
+                                               TransitMode="{x:Bind Mode}"
+                                               ShortName="{x:Bind ShortName}"
+                                               Distance="{x:Bind DistanceMeters}"
+                                               HorizontalAlignment="Center" />
+                    <local:TripPlanPoint x:Name="OptionalEndPoint"
+                                         x:Phase="3"
+                                         Grid.Column="2"
+                                         Visibility="{x:Bind IsEnd, Converter={StaticResource BoolToVisibilityConverter}}"
+                                         IsEnd="{x:Bind IsEnd}"
+                                         PlaceName="{x:Bind EndPlaceName}"
+                                         PointTime="{x:Bind EndTime}" />
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>
