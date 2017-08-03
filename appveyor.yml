@@ -1,14 +1,23 @@
 version: '1.0.{build}'
+image: Visual Studio 2017
 platform:
     - x86
     - x64
     - ARM
+    
+environment:
+  store_cert_password:
+    secure: 8A67usGONNqMHQqKs1aD2Z5VbAY5uXGh1CLL6fG9iAc=
 
 configuration:    
     - Release
     
 matrix:
     fast_finish: true
+    
+install:
+    - nuget install secure-file -ExcludeVersion
+    - secure-file\tools\secure-file -decrypt .\Trippit\DigiTransit10_StoreKey.pfx.enc -secret %store_cert_password%
     
 before_build:
     - nuget restore
