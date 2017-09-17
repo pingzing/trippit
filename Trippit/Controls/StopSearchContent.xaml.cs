@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Linq;
+using Trippit.ExtensionMethods;
 using Trippit.Helpers;
 using Trippit.Models;
 using Trippit.ViewModels.ControlViewModels;
@@ -81,13 +82,12 @@ namespace Trippit.Controls
                 if (!vm.IsSelected)
                 {
                     Messenger.Default.Send(new MessageTypes.SetIconState(vm.BackingStop.Id, MapIconState.Selected));
-                    ListView list = (ListView)sender;
-                    list.ScrollIntoView(vm, ScrollIntoViewAlignment.Default);
+                    ListView list = (ListView)sender;                    
                     vm.IsSelected = true;
+                    list.SmoothScrollIntoViewAsync(vm, ItemPosition.Default);
                 }
-                listView.ScrollIntoView(vm, ScrollIntoViewAlignment.Leading);
+                listView.SmoothScrollIntoViewAsync(vm, ItemPosition.Default);
             }
-
         }
 
         private void DetailsLinesGrid_Click(object sender, ItemClickEventArgs e)
