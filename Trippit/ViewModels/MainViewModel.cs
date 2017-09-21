@@ -106,7 +106,7 @@ namespace Trippit.ViewModels
                 List<TransitTrafficAlert> newAlerts = response
                     .Result
                     .Distinct(_transitTrafficAlertComparer) // Sometimes we get a bunch of duplicate alerts that have different IDs, but no other difference
-                    .Where(x => !String.IsNullOrWhiteSpace(x.DescriptionText.Text)) // or empty alerts
+                    .Where(x => !String.IsNullOrWhiteSpace(x.DescriptionText?.Text)) // or empty alerts
                     .OrderBy(x => x.StartDate)
                     .ToList();                
                 AreAlertsFresh = newAlerts.Any(newAlert => TrafficAlerts.All(oldAlert => oldAlert.Id != newAlert.Id));
@@ -158,8 +158,8 @@ namespace Trippit.ViewModels
         {
             unchecked
             {
-                var hashCode = obj.DescriptionText.Language.GetHashCode();
-                hashCode = (hashCode * 397) ^ obj.DescriptionText.Text?.GetHashCode() ?? 0;
+                var hashCode = obj.DescriptionText != null ? obj.DescriptionText.Language.GetHashCode() : 0;
+                hashCode = (hashCode * 397) ^ obj.DescriptionText?.Text?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ obj.StartDate.GetHashCode();
                 hashCode = (hashCode * 397) ^ obj.EndDate.GetHashCode();
                 return hashCode;
