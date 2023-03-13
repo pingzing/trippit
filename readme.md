@@ -5,7 +5,7 @@ A UWP HSL Reittiopas app for the greater Helsinki region. Runs on Windows 10 for
 
 ## Building
 Requirements
-* [Resw Code File Generator](https://reswcodegen.codeplex.com/) (only works with VS2015 at the moment)
+* [Resw Code File Generator](https://marketplace.visualstudio.com/items?itemName=ChristianResmaHelle.ResWFileCodeGenerator) (only works with VS2015 at the moment)
 
 ## Feature Epics
 
