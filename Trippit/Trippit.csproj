@@ -14,21 +14,22 @@
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <GenerateTemporaryStoreCertificate>true</GenerateTemporaryStoreCertificate>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>DigiTransit10_StoreKey.pfx</PackageCertificateKeyFile>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
-    <HockeyAppResourceId>c2a732e8165446bc81e0ea6087509c2b</HockeyAppResourceId>
-    <PackageCertificateThumbprint>
-    </PackageCertificateThumbprint>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>
+    </PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>Trippit_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -110,26 +111,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Fonts\TripIconFont.ttf" />
-    <None Include="DigiTransit10_StoreKey.pfx" />
-    <None Include="DigiTransit10_TemporaryKey.pfx" />
   </ItemGroup>
-  <!-- AppxManifest stuff -->
-  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+  <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <AppxManifest Include="Package-dev.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-  </ItemGroup>
-  <!-- <PropertyGroup Condition=" '$(Configuration)' == 'Release' "> -->
-  <!-- <ApplicationManifest>Package.appxmanifest</ApplicationManifest> -->
-  <!-- </PropertyGroup> -->
-  <!-- <PropertyGroup Condition=" '$(Configuration)' == 'Debug' "> -->
-  <!-- <ApplicationManifest>Package-dev.appxmanifest</ApplicationManifest> -->
-  <!-- </PropertyGroup> -->
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -536,6 +523,7 @@
     <Content Include="digitransit-api-key.txt" />
     <Content Include="maps-api-key.txt" />
     <Content Include="Properties\Default.rd.xml" />
+    <None Include="Trippit_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
