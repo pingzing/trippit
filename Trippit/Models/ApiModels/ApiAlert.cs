@@ -38,7 +38,12 @@ namespace Trippit.Models.ApiModels
         [JsonProperty("alertDescriptionTextTranslations")]
         public List<ApiTranslatedString> AlertDescriptionTextTranslations { get; set; }
         [JsonProperty("alertUrl")]
-        public string AlertUrl { get; set; }        
+        public string AlertUrl { get; set; }
+        /// <summary>
+        /// Non-nullable.
+        /// </summary>
+        [JsonProperty("alertUrlTranslations")]
+        public List<ApiTranslatedString> AlertUrlTranslations { get; set; }
         [JsonProperty("effectiveStartDate")]
         public long? EffectiveStartDate { get; set; }        
         [JsonProperty("effectiveEndDate")]

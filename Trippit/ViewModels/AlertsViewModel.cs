@@ -22,7 +22,7 @@ namespace Trippit.ViewModels
         public RelayCommand<TransitTrafficAlert> LineClickedCommand => _lineClickedCommand ?? (_lineClickedCommand = new RelayCommand<TransitTrafficAlert>(LineClicked));
 
         public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
-        {
+        {            
             TrafficAlerts.Clear();
 
             List<TransitTrafficAlert> alerts = parameter as List<TransitTrafficAlert>;
@@ -31,6 +31,9 @@ namespace Trippit.ViewModels
                 TrafficAlerts = new ObservableCollection<TransitTrafficAlert>(alerts);
             }
 
+            // TODO (some day): To not have a million duplicates, we need to group the
+            // alerts by something (text header?)
+            // And list all the Affected Lines instead of mapping 1-to-1 an ApiAlert to a TransitTrafficAlert.
 
             return base.OnNavigatedToAsync(parameter, mode, state);
         }

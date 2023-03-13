@@ -436,6 +436,10 @@ namespace Trippit.Services
                         new GqlReturnValue(ApiGqlMembers.language)
                     ),
                     new GqlReturnValue(ApiGqlMembers.alertUrl),
+                    new GqlReturnValue(ApiGqlMembers.alertUrlTranslations,
+                        new GqlReturnValue(ApiGqlMembers.text),
+                        new GqlReturnValue(ApiGqlMembers.language)
+                    ),
                     new GqlReturnValue(ApiGqlMembers.effectiveStartDate),
                     new GqlReturnValue(ApiGqlMembers.effectiveEndDate),
                     new GqlReturnValue(ApiGqlMembers.route,
@@ -446,7 +450,7 @@ namespace Trippit.Services
                     ),
                     new GqlReturnValue(ApiGqlMembers.stop,
                         new GqlReturnValue(ApiGqlMembers.gtfsId)
-                    )                    
+                    )
                 );
 
              

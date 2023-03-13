@@ -154,20 +154,6 @@
                                Style="{StaticResource ExplanationTextBlockStyle}"/>
                 </StackPanel>
 
-                <StackPanel x:Name="AnalyticsPanel" 
-                            Grid.Row="3" 
-                            Margin="10 20 10 0">
-                    <TextBlock x:Name="AnalyticsHeader"
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsHeader}"
-                               Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <ToggleSwitch x:Name="AnalyticsSwitch"
-                                  Header="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsToggleHeader}"
-                                  IsOn="{x:Bind ViewModel.IsAnalyticsEnabled, Mode=TwoWay}"/>
-                    <TextBlock x:Name="AnalyticsSwitchExplanation"                           
-                               Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_AnalyticsExplanation}"
-                               Style="{StaticResource ExplanationTextBlockStyle}"/>
-                </StackPanel>
-
                 <StackPanel x:Name="VersionPanel" Grid.Row="4" Margin="10 20 10 0">
                     <TextBlock x:Name="VersionHeader"
                                Text="{Binding Source={StaticResource Strings}, Path=SettingsPage_VersionHeader}"

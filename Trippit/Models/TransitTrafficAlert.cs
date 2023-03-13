@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Trippit.Models.ApiModels;
@@ -10,12 +11,12 @@ namespace Trippit.Models
     public class TransitTrafficAlert : ITransitLine
     {
         // We use this for a "null" URL because attempting to bind to something that's not a valid URL causes crashes.
-        private const string DummyUrl = "https://dummyurl";
+        private static readonly Uri DummyUrl = new Uri("https://dummyurl");
 
         public string Id { get; set; }
         public TranslatedString HeaderText { get; set; }
         public TranslatedString DescriptionText { get; set; }
-        public string Url { get; set; }
+        public Uri Url { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string AffectedLineId { get; set; }
@@ -67,11 +68,11 @@ namespace Trippit.Models
         public TransitTrafficAlert(ApiAlert result, string requestedLanguage)
         {
             Id = result.Id;
-            Language requested = LanguageEnum.LanguageCodeToLanuage(requestedLanguage.Substring(0, 2));
+            Language language = LanguageEnum.LanguageCodeToLanuage(requestedLanguage.Substring(0, 2));
             if (result.AlertHeaderTextTranslations != null && result.AlertHeaderTextTranslations.Any())
             {
                 HeaderText = result.AlertHeaderTextTranslations
-                    .Where(x => x.LanguageAsEnum == requested)
+                    .Where(x => x.LanguageAsEnum == language)
                     .Select(x => new TranslatedString
                     {
                         Language = x.LanguageAsEnum,
@@ -84,7 +85,7 @@ namespace Trippit.Models
             if (result.AlertDescriptionTextTranslations != null && result.AlertDescriptionTextTranslations.Any())
             {
                 DescriptionText = result.AlertDescriptionTextTranslations
-                    .Where(x => x.LanguageAsEnum == requested)
+                    .Where(x => x.LanguageAsEnum == language)
                     .Select(x => new TranslatedString
                     {
                         Language = x.LanguageAsEnum,
@@ -94,7 +95,32 @@ namespace Trippit.Models
                     .FirstOrDefault();
             }
 
-            Url = result.AlertUrl ?? DummyUrl;
+            if (result.AlertUrlTranslations?.Any() == true)
+            {
+                string localizedUrl = result.AlertUrlTranslations.Where(x => x.LanguageAsEnum == language)
+                     .Select(x => new TranslatedString
+                     {
+                         Language = x.LanguageAsEnum,
+                         ShortLanguageCode = x.Language,
+                         Text = x.Text
+                     })
+                     .FirstOrDefault()?.Text;
+                if (localizedUrl == null)
+                {
+                    Url = DummyUrl;
+                }
+                else 
+                {
+                    bool validUrl = Uri.TryCreate(localizedUrl, UriKind.Absolute, out Uri localizedUri);
+                    Url = validUrl ? localizedUri : DummyUrl;
+                }
+            }
+            else
+            {
+                bool validUrl = Uri.TryCreate(result.AlertUrl, UriKind.Absolute, out Uri parsedUri);
+                Url = validUrl ? parsedUri : DummyUrl;
+            }
+
             if (result.EffectiveStartDate != null)
             {
                 StartDate = DateTimeOffset.FromUnixTimeSeconds(result.EffectiveStartDate.Value);

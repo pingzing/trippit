@@ -124,16 +124,6 @@ namespace Trippit.ViewModels
             }
         }
 
-        public bool IsAnalyticsEnabled
-        {
-            get { return _settingsService.IsAnalyticsEnabled; }
-            set
-            {
-                _settingsService.IsAnalyticsEnabled = value;
-                RaisePropertyChanged(nameof(IsAnalyticsEnabled));
-            }
-        }
-
         public string VersionString
         {
             get

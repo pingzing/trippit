@@ -221,22 +221,6 @@ namespace Trippit.Services.SettingsServices
             set { _helper.Write(nameof(PreferredToPlace), value, SettingsStrategies.Roam); }
         }
 
-        /// <summary>
-        /// This defaults to "true" in Debug configurations.
-        /// </summary>
-        public bool IsAnalyticsEnabled
-        {
-            get
-            {
-#if DEBUG
-                return _helper.Read(nameof(IsAnalyticsEnabled), true, SettingsStrategies.Roam);
-#else
-                return _helper.Read(nameof(IsAnalyticsEnabled), false, SettingsStrategies.Roam);
-#endif
-            }
-            set { _helper.Write(nameof(IsAnalyticsEnabled), value, SettingsStrategies.Roam); }
-        }
-
         public bool IsTooFarIntoPastDialogSuppressed
         {
             get { return _helper.Read(nameof(IsTooFarIntoPastDialogSuppressed), false, SettingsStrategies.Local); }
@@ -265,11 +249,6 @@ namespace Trippit.Services.SettingsServices
             if (roamedSettings.ContainsKey(nameof(PreferredToPlace)))
             {
                 PreferredToPlace = GetFromCompositeValue<IPlace>((ApplicationDataCompositeValue)roamedSettings[nameof(PreferredToPlace)]);
-            }
-
-            if (roamedSettings.ContainsKey(nameof(IsAnalyticsEnabled)))
-            {
-                IsAnalyticsEnabled = GetFromCompositeValue<bool>((ApplicationDataCompositeValue)roamedSettings[nameof(IsAnalyticsEnabled)]);
             }
 
             RoamingDataChanged?.Invoke(sender, args);

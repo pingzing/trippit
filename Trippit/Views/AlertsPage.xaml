@@ -91,7 +91,8 @@
                                          FontSize="12"
                                          NavigateUri="{x:Bind Url}" 
                                          Padding="0"
-                                         Visibility="{x:Bind IsDummyUrl, Converter={StaticResource BoolToVisibilityConverterInverted}}"/>
+                                         Visibility="{x:Bind IsDummyUrl, Converter={StaticResource BoolToVisibilityConverterInverted}}"
+                                         ToolTipService.ToolTip="{x:Bind Url}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

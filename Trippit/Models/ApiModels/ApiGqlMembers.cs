@@ -12,6 +12,8 @@
 
         internal static string alertUrl => nameof(alertUrl);
 
+        internal static string alertUrlTranslations => nameof(alertUrlTranslations);
+
         internal static string language => nameof(language);
 
         internal static string text => nameof(text);
