@@ -17,6 +17,7 @@ using Trippit.Models.ApiModels;
 using Trippit.Services;
 using Trippit.Services.SettingsServices;
 using Trippit.Styles;
+using Windows.Devices.Geolocation;
 using Windows.Storage;
 using Windows.UI.Xaml.Navigation;
 
@@ -166,6 +167,19 @@ namespace Trippit.ViewModels
                         }
                     })
                     .ToList();
+
+                // Add one extra point at the beginning if this is a walk leg to account for legs starting too far away
+                if (leg.Mode == ApiEnums.ApiMode.Walk && legIndex > 0)
+                {
+                    BasicGeoposition? previousLegLastPoint = ColoredMapLines.LastOrDefault()?.LastOrDefault()?.Coordinates;
+                    if (previousLegLastPoint != null)
+                    {
+                        coloredPoints.Insert(0, new ColoredMapLinePoint(previousLegLastPoint.Value, HslColors.GetModeColor(ApiEnums.ApiMode.Walk), true));
+                    }
+                }
+
+                // Add one extra point at the end to account for legs ending too early
+                coloredPoints.Add(new ColoredMapLinePoint(leg.EndCoords, HslColors.GetModeColor(leg.Mode), leg.Mode == ApiEnums.ApiMode.Walk));
                 var mapLine = new ColoredMapLine(coloredPoints, legIds[legIndex]);
                 ColoredMapLines.Add(mapLine);
                 legIndex++;
