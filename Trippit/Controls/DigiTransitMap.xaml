@@ -17,6 +17,7 @@
                          Opacity="1"
                          MapServiceToken="{x:Bind MapServiceToken, Mode=OneWay}"
                          Visibility="Visible"                         
+                         TransformOrigin="0.5,0.2"
                          ZoomLevel="{x:Bind ZoomLevel, Mode=OneWay}"
                          MapElementClick="DigiTransitMapControl_MapElementClick"
                          MapElementPointerEntered="DigiTransitMapControl_MapElementPointerEntered" 

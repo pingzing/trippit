@@ -6,6 +6,7 @@ Style Resources/
 Raw Assets/
 Design Reference/
 maps-api-key.txt
+digitransit-api-key.txt
 *.appx           
 _pkginfo.txt                            
 

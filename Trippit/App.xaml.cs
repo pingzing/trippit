@@ -25,8 +25,6 @@ namespace Trippit
     [Bindable]
     sealed partial class App : Template10.Common.BootStrapper
     {
-        private IAnalyticsService _analyticsService;
-
         /// <summary>
         /// App-wide easy access to the ViewModelLocator.
         /// </summary>
@@ -36,9 +34,6 @@ namespace Trippit
         {
             InitializeComponent();
             SplashFactory = (e) => new Views.Splash(e);
-            this.UnhandledException += App_UnhandledException;
-
-            #region App settings
 
             SettingsService _settings = SettingsService.Instance;
             CacheMaxDuration = _settings.CacheMaxDuration;
@@ -47,14 +42,6 @@ namespace Trippit
             {
                 RequestedTheme = SettingsService.Instance.AppTheme.ToApplicationTheme();
             }
-
-            #endregion                        
-        }
-
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            // TODO: Tell the user "oh noes, bad things happening"
-            System.Diagnostics.Debugger.Break();
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
@@ -79,6 +66,9 @@ namespace Trippit
 
                 nav.FrameFacade.Navigated += FrameFacade_Navigated;
             }
+
+            // Set up the API key for use by the rest of the app later.
+            await DigiTransitApiKey.InitKey();
             
 #if DEBUG
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Windows.Foundation.Size(250, 600));
@@ -87,7 +77,6 @@ namespace Trippit
 #endif            
 
             DispatcherHelper.Initialize();
-            await Task.CompletedTask;
         }
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args)
@@ -138,11 +127,7 @@ namespace Trippit
 
         private void FrameFacade_Navigated(object sender, NavigatedEventArgs e)
         {
-            if (_analyticsService == null)
-            {
-                _analyticsService = (IAnalyticsService)ServiceLocator.Current.GetService(typeof(IAnalyticsService));
-            }
-            _analyticsService.TrackPageView(e.PageType.Name);
+            // Used to track pageviews here. Now, nada.
         }
     }
 }

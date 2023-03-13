@@ -42,18 +42,21 @@ namespace Trippit.Services
     public class NetworkService : INetworkService
     {
         private readonly Backend.INetworkClient _networkClient;
-        private readonly SettingsService _settingsService;        
+        private readonly SettingsService _settingsService;
 
-        private HttpRequestHeaderCollection _defaultHeaders = null;
-
+#if DEBUG
+        public string DefaultGqlRequestUrl { get; } = "https://dev-api.digitransit.fi/routing/v1/routers/hsl/index/graphql";
+        public string DefaultGeocodingRequestUrl { get; } = "https://dev-api.digitransit.fi/geocoding/v1/";
+#else
         public string DefaultGqlRequestUrl { get; } = "https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql";
         public string DefaultGeocodingRequestUrl { get; } = "https://api.digitransit.fi/geocoding/v1/";
+#endif
 
         public NetworkService(Backend.INetworkClient networkClient, SettingsService settingsService)
         {
             _networkClient = networkClient;
             _settingsService = settingsService;
-            _defaultHeaders = _networkClient.DefaultHeaders;            
+            _networkClient.DefaultHeaders.Add("digitransit-subscription-key", DigiTransitApiKey.Key);
         }
 
         //---GEOCODING REQUESTS---

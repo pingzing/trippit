@@ -38,7 +38,6 @@ namespace Trippit.Services
                 SimpleIoc.Default.Register<IDialogService>(() => new DialogService());
                 SimpleIoc.Default.Register<IFavoritesService>(() => new FavoritesService(settingsService, fileService));                
                 SimpleIoc.Default.Register<ITileService>(() => new TileService(settingsService));
-                SimpleIoc.Default.Register<IAnalyticsService>(() => new AnalyticsService(settingsService));
             }
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<TripFormViewModel>();
